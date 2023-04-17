@@ -22,7 +22,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 # find the gcov program to analyze results with ctest
 find_program(GCOV_PATH gcov)
 
-# locate the direcotry containinng program source files for corresponding
+# locate the directory containinng program source files for corresponding
 # CMakeLists file
 add_subdirectory(src)
 
