@@ -6,6 +6,12 @@
 // Details:
 // V0.1
 //
+// Potential Future Additions:
+//  - could leverage internet connectivity
+//    * pull our processes and check if any are considered melicious
+//      against a database.
+//  - could prompt chapGPT
+//    * same as above
 // ============================================================================
 #include <iostream>
 #include <ctime>
@@ -26,7 +32,7 @@
 // ============================================================================
 int main()
 {
-  //  ** create log file **
+  //  ## create log system ##
   Log logFile("./log/", "log", 0, ".txt");
   time_t currTime;
   struct tm* dateTime;
@@ -63,12 +69,30 @@ int main()
       log << "LOG Started" << std::endl;
     }
 
-  // ** initiliaze curses **
+  // ## initialize curses and setup main window ##
   CurseWindow mainWindow;
-  
-  
 
+  // init the curses main window
+  mainWindow.setWindow(initscr());
+
+  // disable echoing characters to the window from getch();
+  noecho();
   
+  // make typed characters immediately available to program
+  // (override part of the tty driver protocol)
+  cbreak();
+
+  // disable keyboard cursor visbiility
+  curs_set(false);
+
+  // disable curses defined key values for getch() to mainWindow
+  keypad(mainWindow.getWindow(), false);
+  
+  while(true)
+    {
+      getch();
+      wrefresh(mainWindow.getWindow());
+    }
   
   return 0;
 } // end of "main"
