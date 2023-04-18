@@ -1,7 +1,7 @@
 // ============================================================================
 // File: main.c
 //
-// Program Description: A recreation of the Top program.
+// Program Description: A rendition of the Top program.
 //
 // Details:
 // V0.1
@@ -15,7 +15,7 @@
 #include <panel.h>
 #include "log.hpp"
 #include "foo.hpp"
-#include "curseWindows.hpp"
+#include "curseWindow.hpp"
 
 #define DEBUG 0
 
@@ -26,7 +26,7 @@
 // ============================================================================
 int main()
 {
-  // initialize the file logging system
+  //  ** create log file **
   Log logFile("./log/", "log", 0, ".txt");
   time_t currTime;
   struct tm* dateTime;
@@ -63,7 +63,8 @@ int main()
       log << "LOG Started" << std::endl;
     }
 
-  // begin curses initiliazation
+  // ** initiliaze curses **
+  CurseWindow mainWindow;
   
   
 
