@@ -15,6 +15,7 @@
 #include <panel.h>
 #include "log.hpp"
 #include "foo.hpp"
+#include "mainWindow.hpp"
 
 #define DEBUG 0
 
