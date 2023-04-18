@@ -11,8 +11,8 @@ CC=g++
 CPPFLAGS=-I$(IDIR)
 LIBS=-lm
 BINNAME=program
-_DEPS = foo.hpp log.hpp mainWindow.hpp
-_OBJ = main.o foo.o log.o mainWindow.o
+_DEPS = foo.hpp log.hpp curseWindows.hpp
+_OBJ = main.o foo.o log.o curseWindows.o
 
 DEPS = $(patsubst %,$(LDIR)/%,$(_DEPS))
 

@@ -1,5 +1,5 @@
 // ============================================================================
-// File: mainWindow.cpp
+// File: curseWindows.cpp
 // Description:
 // ============================================================================
-#include "mainWindow.hpp"
+#include "curseWindows.hpp"
