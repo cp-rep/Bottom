@@ -6,25 +6,6 @@
 
 
 
-/*
-// function prototypes
-void CurseWindow::setNumLines(const int& numLines);
-void CurseWindow::setNumCols(const int& numCols);
-void CurseWindow::setMaxWindowY(const int& maxWindowY);
-void CurseWindow::setMaxWindowX(const int& maxWindowX);
-void CurseWindow::setMinWindowY(const int& minWindowY);
-void CurseWindow::setMinWindowX(const int& minWindowX);
-void CurseWindow::setCenterY(const int& centerY);
-void CurseWindow::setCenterX(const int& centerX);
-void CurseWindow::setStartY(const int& startY);
-void CurseWindow::setStartX(const int& startX);
-void CurseWindow::setCurrentY(const int& currentY);
-void CurseWindow::setCurrentX(const int& currentX);
-void CurseWindow::setPreviousY(const int& previousY);
-void CurseWindow::setPreviousX(const int& previousX);
-*/
-
-
 // ==== CurseWindow Default Constructor =======================================
 // Description:
 //  Initializes the main window of the Top program.
@@ -49,23 +30,23 @@ void CurseWindow::setPreviousX(const int& previousX);
 // Output:
 //  None
 // ============================================================================
-CurseWindow::CurseWindow(WINDOW* curseWindow,
-		       const int& numLines,
-		       const int& numCols,
-		       const int& maxWindowY,
-		       const int& maxWindowX,
-		       const int& minWindowY,
-		       const int& minWindowX,
-		       const int& centerY,
-		       const int& centerX,
-		       const int& startY,
-		       const int& startX,
-		       const int& currentY,
-		       const int& currentX,
-		       const int& previousY,
-		       const int& previousX)
+CurseWindow::CurseWindow(WINDOW* window,
+			 const int& numLines,
+			 const int& numCols,
+			 const int& maxWindowY,
+			 const int& maxWindowX,
+			 const int& minWindowY,
+			 const int& minWindowX,
+			 const int& centerY,
+			 const int& centerX,
+			 const int& startY,
+			 const int& startX,
+			 const int& currentY,
+			 const int& currentX,
+			 const int& previousY,
+			 const int& previousX)
 {
-  m_curseWindow = curseWindow;
+  m_window = window;
   m_numLines = numLines;
   m_numCols = numCols;
   m_maxWindowY = maxWindowY;
@@ -81,6 +62,24 @@ CurseWindow::CurseWindow(WINDOW* curseWindow,
   m_previousY = previousY;
   m_previousX = previousX;
 } // end of "CurseWindow Default Constructor"
+
+
+
+// ==== CurseWindow::setWindow ================================================
+// 
+// ============================================================================
+void CurseWindow::setWindow(WINDOW* window)
+{ m_window = window;
+} // end of "CurseWindow::setWindow"
+
+
+// ==== CurseWindow::setWindow ================================================
+// 
+// ============================================================================
+WINDOW* CurseWindow::getWindow()
+{
+  return m_window;
+} // end of "CurseWindow::setWindow"
 
 
 
