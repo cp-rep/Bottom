@@ -1,16 +1,19 @@
 // ============================================================================
 // File: main.c
 //
-// Program Description:
-//   A simple template for small scale C++ programs on linux based operating
-//   systems.  A file logging system is provided along with a basic Foo class
-//   header and source file.
+// Program Description: A recreation of the Top program.
+//
+// Details:
+// V0.1
+//
 // ============================================================================
 #include <iostream>
 #include <ctime>
 #include <chrono>
 #include <fstream>
-#include "numberedFile.hpp"
+#include <curses.h>
+#include <panel.h>
+#include "log.hpp"
 #include "foo.hpp"
 
 #define DEBUG 0
@@ -23,7 +26,7 @@
 int main()
 {
   // initialize the file logging system
-  NumberedFile logFile("./log/", "log", 0, ".txt");
+  Log logFile("./log/", "log", 0, ".txt");
   time_t currTime;
   struct tm* dateTime;
   std::ofstream log;
@@ -39,7 +42,7 @@ int main()
 	  logFile.incrementFileName();
 	  doesFileExist.close();	  
 	}
-      // log doens't exist, create the new log file
+      // log doesn't exist, create the new log file
       else
 	{
 	  log.open(logFile.getFullPath());
@@ -55,14 +58,15 @@ int main()
     }
   else
     {
-      // Output start of log session
+      // output start of log session
       log << "LOG Started" << std::endl;
     }
 
-  // local variables
-  Foo myFoo(1);
+  // begin curses initiliazation
+  
+  
 
-  std::cout << myFoo << std::endl;
+  
   
   return 0;
 } // end of "main"
