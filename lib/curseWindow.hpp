@@ -12,7 +12,7 @@
 class CurseWindow {
 public:
   // constructors and destructor
-  CurseWindow(WINDOW* curseWindow = nullptr,
+  CurseWindow(WINDOW* window = nullptr,
 	      const int& numLines = 0,
 	      const int& numCols = 0,
 	      const int& maxWindowY  = 0,
@@ -29,6 +29,9 @@ public:
 	      const int& previousX = 0);
 
   // member functions
+  WINDOW* getWindow();
+  
+  void setWindow(WINDOW* window);
   void setNumLines(const int& numLines);
   void setNumCols(const int& numCols);
   void setMaxWindowY(const int& maxWindowY);
@@ -46,7 +49,7 @@ public:
   
 private:
   // member variables
-  WINDOW* m_curseWindow;  
+  WINDOW* m_window;  
   int m_numLines;
   int m_numCols;
   int m_maxWindowY;
