@@ -6,6 +6,9 @@
 // Details:
 // V0.1
 //
+// To Add:
+//  - Wrapper functions for the curse calls with error handling
+// 
 // Potential Future Additions:
 //  - could leverage internet connectivity
 //    * pull our processes and check if any are considered melicious
@@ -20,7 +23,6 @@
 #include <curses.h>
 #include <panel.h>
 #include "log.hpp"
-#include "foo.hpp"
 #include "curseWindow.hpp"
 
 #define DEBUG 0
@@ -32,6 +34,11 @@
 // ============================================================================
 int main()
 {
+  // window variables
+  CurseWindow mainWindow;  
+  int numLines;
+  int numCols;
+  
   //  ## create log system ##
   Log logFile("./log/", "log", 0, ".txt");
   time_t currTime;
@@ -70,9 +77,6 @@ int main()
     }
 
   // ## initialize curses and setup main window ##
-  CurseWindow mainWindow;
-
-  // init the curses main window
   mainWindow.setWindow(initscr());
 
   // disable echoing characters to the window from getch();
@@ -82,12 +86,21 @@ int main()
   // (override part of the tty driver protocol)
   cbreak();
 
-  // disable keyboard cursor visbiility
+  // disable keyboard cursor visibility
   curs_set(false);
 
   // disable curses defined key values for getch() to mainWindow
   keypad(mainWindow.getWindow(), false);
+
+  // get window dimensions
+  getmaxyx(mainWindow.getWindow(), numLines, numCols);
+
+  // set the window dimensions
+  mainWindow.setNumLines(numLines);
+  mainWindow.setNumCols(numCols);
   
+  
+
   while(true)
     {
       getch();
