@@ -34,6 +34,8 @@ public:
   const int getNumLines() const;
   const int getMaxWindowY() const;
   const int getMaxWindowX() const;
+  const int getMinWindowY() const;
+  const int getMinWindowX() const;  
   const int getCenterY() const;
   const int getCenterX() const;
   const int getStartY() const;

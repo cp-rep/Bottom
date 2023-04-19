@@ -127,6 +127,28 @@ const int CurseWindow::getMaxWindowX() const
   return m_maxWindowX;
 } // end of "CurseWindow::getMaxWindowX"
 
+/*
+  Function:
+
+  Description:
+*/
+const int CurseWindow::getMinWindowY() const
+{
+  return m_maxWindowY;
+} // end of "CurseWindow::getMinWindowY"
+
+
+
+/*
+  Function:
+
+  Description:
+*/
+const int CurseWindow::getMinWindowX() const
+{
+  return m_maxWindowX;
+} // end of "CurseWindow::getMinWindowX"
+
 
 
 /*
