@@ -5,10 +5,10 @@ add_library(Gtest)
 target_sources(Gtest
   PRIVATE
   # program source files
-  foo.cpp
+  curseWindow.cpp
   PUBLIC
   # program library files
-  ../lib/foo.hpp
+  ../lib/curseWindow.hpp
   )
 
 # direct the location of the files
