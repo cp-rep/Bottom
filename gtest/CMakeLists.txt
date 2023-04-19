@@ -14,7 +14,7 @@ FetchContent_MakeAvailable(googletest)
 # create executable that tests the code with attached source files
 add_executable(
     unit_tests
-    gtestsCurseWindow.cpp
+    gtest_curseWindow.cpp
     )
 
 # link the test source files to application source files
