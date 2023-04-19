@@ -9,7 +9,7 @@
 
 /*
   Function:
-  CursesWindow() Default Constructor
+  CursesWindow Default Constructor
    
   Description:
   Initializes the main screen of the Top program.
@@ -154,7 +154,7 @@ WINDOW* CursesWindow::getWindow()
 
   Description:
 */
-const std::string& CursesWindow::getWindowName()
+const std::string& CursesWindow::getWindowName() const
 {
   return m_windowName;
 } // end of "CursesWindow::getWindowName"

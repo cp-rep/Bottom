@@ -49,7 +49,7 @@ public:
   
   // getters
   WINDOW* getWindow();
-  const std::string& getWindowName();
+  const std::string& getWindowName() const;
   const int& getNumCols() const;
   const int& getNumLines() const;
   const int& getMaxWindowY() const;
