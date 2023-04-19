@@ -30,6 +30,18 @@ public:
 
   // member functions
   WINDOW* getWindow();
+  const int getNumCols() const;
+  const int getNumLines() const;
+  const int getMaxWindowY() const;
+  const int getMaxWindowX() const;
+  const int getCenterY() const;
+  const int getCenterX() const;
+  const int getStartY() const;
+  const int getStartX() const;
+  const int getCurrentY() const;
+  const int getCurrentX() const;
+  const int getPreviousY() const;
+  const int getPreviousX() const;  
   
   void setWindow(WINDOW* window);
   void setNumLines(const int& numLines);
