@@ -23,10 +23,13 @@
 #include <curses.h>
 #include <panel.h>
 #include "log.hpp"
-#include "curseWindow.hpp"
+#include "cursesWindow.hpp"
 
 #define DEBUG 0
 
+
+// function prototypes
+void printWindow();
 
 
 // ==== main ==================================================================
@@ -35,7 +38,7 @@
 int main()
 {
   // window variables
-  CurseWindow mainWindow;  
+  CursesWindow mainWindow;  
   int numLines;
   int numCols;
   
