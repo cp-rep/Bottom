@@ -1,14 +1,13 @@
-// ============================================================================
-// File: curseWindow.hpp
-// Description:
-// ============================================================================
+/*
+  File: curseWindow.hpp
+  Description:
+*/
 #ifndef CURSEWINDOW_HPP
 #define CURSEWINDOW_HPP
 #include <curses.h>
 
 
 
-// will represent the main screen window
 class CurseWindow {
 public:
   // constructors and destructor
@@ -29,22 +28,40 @@ public:
 	      const int& previousX = 0);
 
   // member functions
-  WINDOW* getWindow();
-  const int getNumCols() const;
-  const int getNumLines() const;
-  const int getMaxWindowY() const;
-  const int getMaxWindowX() const;
-  const int getMinWindowY() const;
-  const int getMinWindowX() const;  
-  const int getCenterY() const;
-  const int getCenterX() const;
-  const int getStartY() const;
-  const int getStartX() const;
-  const int getCurrentY() const;
-  const int getCurrentX() const;
-  const int getPreviousY() const;
-  const int getPreviousX() const;  
+  void defineWindow(WINDOW* window,
+		    const int& numLines,
+		    const int& numCols,
+		    const int& maxWindowY,
+		    const int& maxWindowX,
+		    const int& minWindowY,
+		    const int& minWindowX,
+		    const int& centerY,
+		    const int& centerX,
+		    const int& startY,
+		    const int& startX,
+		    const int& currentY,
+		    const int& currentX,
+		    const int& previousY,
+		    const int& previousX);
   
+  // getters
+  WINDOW* getWindow();
+  const int& getNumCols() const;
+  const int& getNumLines() const;
+  const int& getMaxWindowY() const;
+  const int& getMaxWindowX() const;
+  const int& getMinWindowY() const;
+  const int& getMinWindowX() const;  
+  const int& getCenterY() const;
+  const int& getCenterX() const;
+  const int& getStartY() const;
+  const int& getStartX() const;
+  const int& getCurrentY() const;
+  const int& getCurrentX() const;
+  const int& getPreviousY() const;
+  const int& getPreviousX() const;  
+
+  // setters
   void setWindow(WINDOW* window);
   void setNumLines(const int& numLines);
   void setNumCols(const int& numCols);

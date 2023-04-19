@@ -12,7 +12,7 @@
   CurseWindow() Default Constructor
    
   Description:
-  Initializes the main window of the Top program.
+  Initializes the main screen of the Top program.
 
   Input:
   curseWindow     -
@@ -50,6 +50,68 @@ CurseWindow::CurseWindow(WINDOW* window,
 			 const int& previousY,
 			 const int& previousX)
 {
+  defineWindow(window,
+	       numLines,
+	       numCols,
+	       maxWindowY,
+	       maxWindowX,
+	       minWindowY,
+	       minWindowX,
+	       centerY,
+	       centerX,
+	       startY,
+	       startX,
+	       currentY,
+	       currentX,
+	       previousY,
+	       previousX);
+} // end of "CurseWindow Default Constructor"
+
+
+
+/*
+  Function:
+  CurseWindow() Default Constructor
+   
+  Description:
+  Initializes the main screen of the Top program.
+
+  Input:
+  curseWindow     -
+  numLines        -
+  numCols         -
+  maxWindowY      -
+  maxWindowX      -
+  minWindowY      -
+  minWindowX      -
+  centerY         -
+  centerX         -
+  startY          -
+  startX          -
+  currentY        -
+  currentX        -
+  previousY       -
+  previousX       -
+
+  Output:
+  None
+*/
+void CurseWindow::defineWindow(WINDOW* window,
+			       const int& numLines,
+			       const int& numCols,
+			       const int& maxWindowY,
+			       const int& maxWindowX,
+			       const int& minWindowY,
+			       const int& minWindowX,
+			       const int& centerY,
+			       const int& centerX,
+			       const int& startY,
+			       const int& startX,
+			       const int& currentY,
+			       const int& currentX,
+			       const int& previousY,
+			       const int& previousX)
+{
   m_window = window;
   m_numLines = numLines;
   m_numCols = numCols;
@@ -64,8 +126,8 @@ CurseWindow::CurseWindow(WINDOW* window,
   m_currentY = currentY;
   m_currentX = currentX;
   m_previousY = previousY;
-  m_previousX = previousX;
-} // end of "CurseWindow Default Constructor"
+  m_previousX = previousX;  
+} // end of "CurseWindow::DefineWindow"
 
 
 
@@ -86,7 +148,7 @@ WINDOW* CurseWindow::getWindow()
 
   Description:
 */
-const int CurseWindow::getNumLines() const
+const int& CurseWindow::getNumLines() const
 {
   return m_numLines;
 } // end of "CurseWindow::getNumLines"
@@ -98,7 +160,7 @@ const int CurseWindow::getNumLines() const
 
   Description:
 */
-const int CurseWindow::getNumCols() const
+const int& CurseWindow::getNumCols() const
 {
   return m_numCols;
 } // end of "CurseWindow::getNumCols"
@@ -110,7 +172,7 @@ const int CurseWindow::getNumCols() const
 
   Description:
 */
-const int CurseWindow::getMaxWindowY() const
+const int& CurseWindow::getMaxWindowY() const
 {
   return m_maxWindowY;
 } // end of "CurseWindow::getMaxWindowY"
@@ -122,19 +184,21 @@ const int CurseWindow::getMaxWindowY() const
 
   Description:
 */
-const int CurseWindow::getMaxWindowX() const
+const int& CurseWindow::getMaxWindowX() const
 {
   return m_maxWindowX;
 } // end of "CurseWindow::getMaxWindowX"
+
+
 
 /*
   Function:
 
   Description:
 */
-const int CurseWindow::getMinWindowY() const
+const int& CurseWindow::getMinWindowY() const
 {
-  return m_maxWindowY;
+  return m_minWindowY;
 } // end of "CurseWindow::getMinWindowY"
 
 
@@ -144,9 +208,9 @@ const int CurseWindow::getMinWindowY() const
 
   Description:
 */
-const int CurseWindow::getMinWindowX() const
+const int& CurseWindow::getMinWindowX() const
 {
-  return m_maxWindowX;
+  return m_minWindowX;
 } // end of "CurseWindow::getMinWindowX"
 
 
@@ -156,7 +220,7 @@ const int CurseWindow::getMinWindowX() const
 
   Description:
 */
-const int CurseWindow::getCenterY() const
+const int& CurseWindow::getCenterY() const
 {
   return m_centerY;
 } // end of "CurseWindow::getCenterY"
@@ -168,7 +232,7 @@ const int CurseWindow::getCenterY() const
 
   Description:
 */
-const int CurseWindow::getCenterX() const
+const int& CurseWindow::getCenterX() const
 {
   return m_centerX;
 } //  end  of "CurseWindow::getCenterX"
@@ -180,7 +244,7 @@ const int CurseWindow::getCenterX() const
 
   Description:
 */
-const int CurseWindow::getStartY() const
+const int& CurseWindow::getStartY() const
 {
   return m_startY;
 } // end  of "CurseWindow::getStartY"
@@ -192,7 +256,7 @@ const int CurseWindow::getStartY() const
 
   Description:
 */
-const int CurseWindow::getStartX() const
+const int& CurseWindow::getStartX() const
 {
   return m_startX;
 } // end of "CurseWindow::getStartX"
@@ -204,7 +268,7 @@ const int CurseWindow::getStartX() const
 
   Description:
 */
-const int CurseWindow::getCurrentY() const
+const int& CurseWindow::getCurrentY() const
 {
   return m_currentY;
 } // end of "CurseWindow::getCurrentY"
@@ -216,7 +280,7 @@ const int CurseWindow::getCurrentY() const
 
   Description:
 */
-const int CurseWindow::getCurrentX() const
+const int& CurseWindow::getCurrentX() const
 {
   return m_currentX;
 } // end of "CurseWindow::getCurrentX"
@@ -228,7 +292,7 @@ const int CurseWindow::getCurrentX() const
 
   Description:
 */
-const int CurseWindow::getPreviousY() const
+const int& CurseWindow::getPreviousY() const
 {
   return m_previousY;
 } // end of  "CurseWindow::getPreviousY"
@@ -240,7 +304,7 @@ const int CurseWindow::getPreviousY() const
 
   Description:
 */
-const int CurseWindow::getPreviousX() const
+const int& CurseWindow::getPreviousX() const
 {
   return m_previousX;
 } // end of "CurseWindow::getPreviousX"
