@@ -15,6 +15,19 @@
 TEST(ClassTest, DefaultConstructor)
 {
   CurseWindow win;
-  EXPECT_EQ(0, win.getNumLines();
-  EXPECT_EQ(0, win.getNumCols);
+  EXPECT_EQ(nullptr, win.getWindow());
+  EXPECT_EQ(0, win.getNumLines());
+  EXPECT_EQ(0, win.getNumCols());
+  EXPECT_EQ(0, win.getMaxWindowY());
+  EXPECT_EQ(0, win.getMaxWindowX());
+  EXPECT_EQ(0, win.getMinWindowY());    
+  EXPECT_EQ(0, win.getMinWindowX());
+  EXPECT_EQ(0, win.getCenterY());
+  EXPECT_EQ(0, win.getCenterX());
+  EXPECT_EQ(0, win.getStartY());
+  EXPECT_EQ(0, win.getStartX());
+  EXPECT_EQ(0, win.getCurrentY());
+  EXPECT_EQ(0, win.getCurrentX());
+  EXPECT_EQ(0, win.getPreviousY());
+  EXPECT_EQ(0, win.getPreviousX());    
 }
