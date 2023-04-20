@@ -12,8 +12,7 @@
 class CursesWindow {
 public:
   // constructors and destructor
-  CursesWindow(WINDOW* window = nullptr,
-	       std::string windowName = "",	      
+  CursesWindow(std::string windowName = "",	      
 	       const int& numLines = 0,
 	       const int& numCols = 0,
 	       const int& maxWindowY  = 0,
@@ -30,8 +29,7 @@ public:
 	       const int& previousX = 0);
 
   // member functions
-  void defineWindow(WINDOW* window,
-		    std::string windowName,
+  void defineWindow(std::string windowName,
 		    const int& numLines,
 		    const int& numCols,
 		    const int& maxWindowY,

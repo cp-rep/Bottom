@@ -15,7 +15,6 @@
   Initializes the main screen of the Top program.
 
   Input:
-  window          -
   windowName      -
   numLines        -
   numCols         -
@@ -35,25 +34,23 @@
   Output:
   None
 */
-CursesWindow::CursesWindow(WINDOW* window,
-			 std::string windowName,
-			 const int& numLines,
-			 const int& numCols,
-			 const int& maxWindowY,
-			 const int& maxWindowX,
-			 const int& minWindowY,
-			 const int& minWindowX,
-			 const int& centerY,
-			 const int& centerX,
-			 const int& startY,
-			 const int& startX,
-			 const int& currentY,
-			 const int& currentX,
-			 const int& previousY,
-			 const int& previousX)
+CursesWindow::CursesWindow(std::string windowName,
+			   const int& numLines,
+			   const int& numCols,
+			   const int& maxWindowY,
+			   const int& maxWindowX,
+			   const int& minWindowY,
+			   const int& minWindowX,
+			   const int& centerY,
+			   const int& centerX,
+			   const int& startY,
+			   const int& startX,
+			   const int& currentY,
+			   const int& currentX,
+			   const int& previousY,
+			   const int& previousX)
 {
-  defineWindow(window,
-	       windowName,
+  defineWindow(windowName,
 	       numLines,
 	       numCols,
 	       maxWindowY,
@@ -74,13 +71,12 @@ CursesWindow::CursesWindow(WINDOW* window,
 
 /*
   Function:
-  CursesWindow() Default Constructor
+   defineWindow
    
   Description:
-  Initializes the main screen of the Top program.
+   Defines the values/dimensions for the named window.
 
   Input:
-  window          -
   windowName      -
   numLines        -
   numCols         -
@@ -100,24 +96,22 @@ CursesWindow::CursesWindow(WINDOW* window,
   Output:
   None
 */
-void CursesWindow::defineWindow(WINDOW* window,
-			       std::string windowName,
-			       const int& numLines,
-			       const int& numCols,
-			       const int& maxWindowY,
-			       const int& maxWindowX,
-			       const int& minWindowY,
-			       const int& minWindowX,
-			       const int& centerY,
-			       const int& centerX,
-			       const int& startY,
-			       const int& startX,
-			       const int& currentY,
-			       const int& currentX,
-			       const int& previousY,
-			       const int& previousX)
+void CursesWindow::defineWindow(std::string windowName,
+				const int& numLines,
+				const int& numCols,
+				const int& maxWindowY,
+				const int& maxWindowX,
+				const int& minWindowY,
+				const int& minWindowX,
+				const int& centerY,
+				const int& centerX,
+				const int& startY,
+				const int& startX,
+				const int& currentY,
+				const int& currentX,
+				const int& previousY,
+				const int& previousX)
 {
-  m_window = window;
   m_windowName.append(windowName);
   m_numLines = numLines;
   m_numCols = numCols;
