@@ -6,10 +6,18 @@
   Details:
   V0.1
 
+  Notes:
+  - Top's horizontal window scroll is determined by the total possible length
+    of the value the column is representing until you reach command.  Once
+    command is reached, every proceeding scroll is an 8 character window shift.
+
   To Add:
   - Wrapper functions for the curse calls with error handling
  
   Potential Future Additions:
+  - mouse functionality option which would then pop up a window with buttons
+    to click
+  - make the help menu more user friendly
   - could leverage internet connectivity.
   * pull our processes and check if any are considered melicious
   against a database.
@@ -77,14 +85,68 @@ int main()
       log << "LOG Started" << std::endl;
     }
 
-  // window variables
-  CursesWindow mainWindow;  
-  int numLines;
-  int numCols;
+  // local window variables
+  CursesWindow tasksWin;
+  CursesWindow cpuWin;
+  CursesWindow memWin;
+  CursesWindow processWin;
+  int numLines = 0;
+  int numCols = 0;
+  int maxWindowY = 0;
+  int maxWindowX = 0;
+  int minWindowY = 0;
+  int minWindowX = 0;
+  int centerY = 0;
+  int centerX = 0;
+  int startY = 0;
+  int startX = 0;
+  int currentY = 0;
+  int currentX = 0;
+  int previousY = 0;
+  int previousX = 0;
   
-  // ## initialize curses and setup main window ##
-  mainWindow.setWindow(initscr());
+  
+  // ## setup the main window ##
+  CursesWindow mainWin;
 
+  // init curses to main window
+  mainWin.setWindow(initscr());
+
+  // get main window dimensions
+  getmaxyx(mainWin.getWindow(), numLines, numCols);
+
+  // define the main window
+  maxWindowY = numLines;
+  maxWindowX = numCols;
+  minWindowY = 0;
+  minWindowX = 0;
+  centerY = numLines/2;
+  centerX = numCols/2;
+  startY = 0;
+  startX = 0;
+  currentY = 0;
+  currentX = 0;
+  previousY = 0;
+  previousX = 0;
+  mainWin.defineWindow("Main",
+		       numLines,
+		       numCols,
+		       maxWindowY,
+		       maxWindowX,
+		       minWindowY,
+		       minWindowX,
+		       centerY,
+		       centerX,
+		       startY,
+		       startX,
+		       currentY,
+		       currentX,
+		       previousY,
+		       previousX);
+  
+  // print main window to log file
+  printWindowToLog(log, mainWin);  
+  
   // disable echoing characters to the window from getch();
   noecho();
   
@@ -95,26 +157,71 @@ int main()
   // disable keyboard cursor visibility
   curs_set(false);
 
-  // disable curses defined key values for getch() to mainWindow
-  keypad(mainWindow.getWindow(), false);
+  // disable curses defined key values for getch() to mainWin
+  keypad(mainWin.getWindow(), false);
 
-  // get window dimensions
-  getmaxyx(mainWindow.getWindow(), numLines, numCols);
+  // ## setup top window ##
+  // define top window
+  numLines = 1;
+  numCols = numCols;
+  maxWindowY = 1;
+  maxWindowX = numCols;
+  minWindowY = 1;
+  minWindowX = 0;
+  centerY = 1;
+  centerX = numCols/2;
+  startY = 0;
+  startX = 0;
+  currentY = 0;
+  currentX = 0;
+  previousY = 0;
+  previousX = 0;
 
-  // set the window dimensions
-  mainWindow.setNumLines(numLines);
-  mainWindow.setNumCols(numCols);
+  CursesWindow topWin("Top",
+		      numLines,
+		      numCols,
+		      maxWindowY,
+		      maxWindowX,
+		      minWindowY,
+		      minWindowX,
+		      centerY,
+		      centerX,
+		      startY,
+		      startX,
+		      currentY,
+		      currentX,
+		      previousY,
+		      previousX);
 
-  // print the main window data to log file
-  printWindowToLog(log, mainWindow);
+  // print topWin to log file
+  printWindowToLog(log, topWin);
+  topWin.setWindow(newwin(topWin.getNumLines(),
+			  topWin.getNumCols(),
+			  topWin.getStartY(),
+			  topWin.getStartX()));
   
 
-  while(true)
+  box(topWin.getWindow(), 'A', 'B');
+  wrefresh(mainWin.getWindow());  
+  wrefresh(topWin.getWindow());
+
+
+  // ## for testing ##
+  if(has_colors())
     {
-      getch();
-      wrefresh(mainWindow.getWindow());
+      use_default_colors();
+      //init_pair(-1);
+      //init_color(COLOR_BLACK, 0, 0, 0);
+      color_set(0, NULL);
     }
+
+  // run the main program loop
+  do{
+    //    wrefresh(mainWin.getWindow());
+    //refresh();
+  }while(getch() != 'q');
   
+  endwin();
   return 0;
 } // end of "main"
 
