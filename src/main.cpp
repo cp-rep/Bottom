@@ -29,7 +29,6 @@
 #include <chrono>
 #include <fstream>
 #include <curses.h>
-#include <panel.h>
 #include "log.hpp"
 #include "cursesWindow.hpp"
 #include <climits>
@@ -50,6 +49,8 @@
 #include "TIMEWindow.hpp"
 #include "USERWindow.hpp"
 
+#include <iomanip>
+#include <limits>
 
 // function prototypes
 void printWindowToLog(std::ofstream& log,
@@ -74,20 +75,20 @@ int main()
   struct tm* timeinfo;
   std::ofstream log;
 
+  //  get time info
   time(&rawtime);
   timeinfo = localtime(&rawtime);
-  
 
   while(true)
     {
-      std::ifstream doesFileExist(logFile.getFullPath());
+      std::ifstream inFile(logFile.getFullPath());
       
       // check if log exists      
-      if(doesFileExist.is_open())
+      if(inFile.is_open())
 	{
 	  // increment the log number and close the open file	  
 	  logFile.incrementFileName();
-	  doesFileExist.close();	  
+	  inFile.close();	  
 	}
       // log doesn't exist, create the new log file
       else
@@ -167,9 +168,6 @@ int main()
 		       previousY,
 		       previousX);
   
-  // print main window to log file
-  printWindowToLog(log, mainWin);  
-  
   // disable echoing characters to the window from getch();
   noecho();
   
@@ -214,35 +212,14 @@ int main()
 		   currentY,
 		   currentX,
 		   previousY,
-		   previousX);
-  /*
-  CursesWindow topWin("top",
-		      numLines,
-		      numCols,
-		      maxWindowY,
-		      maxWindowX,
-		      minWindowY,
-		      minWindowX,
-		      centerY,
-		      centerX,
-		      startY,
-		      startX,
-		      currentY,
-		      currentX,
-		      previousY,
-		      previousX);
-  */
-
-  // print topWin to log file
-  //printWindowToLog(log, topWin);
+		   previousX,
+		   timeinfo);
 
   // create the curses top window
-  
   topWin.setWindow(newwin(topWin.getNumLines(),
 			  topWin.getNumCols(),
 			  topWin.getStartY(),
 			  topWin.getStartX()));
-  
 
   // ## setup tasks window ##
   // define tasks window
@@ -261,24 +238,25 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  CursesWindow tasksWin("Tasks",
-			numLines,
-			numCols,
-			maxWindowY,
-			maxWindowX,
-			minWindowY,
-			minWindowX,
-			centerY,
-			centerX,
-			startY,
-			startX,
-			currentY,
-			currentX,
-			previousY,
-			previousX);
+  TasksWindow tasksWin("Tasks",
+		       numLines,
+		       numCols,
+		       maxWindowY,
+		       maxWindowX,
+		       minWindowY,
+		       minWindowX,
+		       centerY,
+		       centerX,
+		       startY,
+		       startX,
+		       currentY,
+		       currentX,
+		       previousY,
+		       previousX);
 
   // print tasksWin to log file
   printWindowToLog(log, tasksWin);
+  log << std::endl;
 
   // create the curses task window
   tasksWin.setWindow(newwin(tasksWin.getNumLines(),
@@ -303,24 +281,25 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  CursesWindow cpuWin("CPU",
-		      numLines,
-		      numCols,
-		      maxWindowY,
-		      maxWindowX,
-		      minWindowY,
-		      minWindowX,
-		      centerY,
-		      centerX,
-		      startY,
-		      startX,
-		      currentY,
-		      currentX,
-		      previousY,
-		      previousX);
+  CpuWindow cpuWin("CPU",
+		   numLines,
+		   numCols,
+		   maxWindowY,
+		   maxWindowX,
+		   minWindowY,
+		   minWindowX,
+		   centerY,
+		   centerX,
+		   startY,
+		   startX,
+		   currentY,
+		   currentX,
+		   previousY,
+		   previousX);
 
   // print cpuWin to log file
   printWindowToLog(log, cpuWin);
+  log << std::endl;
 
   // create the curses cpu window
   cpuWin.setWindow(newwin(cpuWin.getNumLines(),
@@ -345,24 +324,25 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  CursesWindow memWin("MEM",
-		      numLines,
-		      numCols,
-		      maxWindowY,
-		      maxWindowX,
-		      minWindowY,
-		      minWindowX,
-		      centerY,
-		      centerX,
-		      startY,
-		      startX,
-		      currentY,
-		      currentX,
-		      previousY,
-		      previousX);
+  MemWindow memWin("MEM",
+		   numLines,
+		   numCols,
+		   maxWindowY,
+		   maxWindowX,
+		   minWindowY,
+		   minWindowX,
+		   centerY,
+		   centerX,
+		   startY,
+		   startX,
+		   currentY,
+		   currentX,
+		   previousY,
+		   previousX);
 
   // print topWin to log file
   printWindowToLog(log, memWin);
+  log << std::endl;  
 
   // create the curses task window
   memWin.setWindow(newwin(memWin.getNumLines(),
@@ -391,24 +371,25 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  CursesWindow PIDWin("PID",
-		      numLines,
-		      numCols,
-		      maxWindowY,
-		      maxWindowX,
-		      minWindowY,
-		      minWindowX,
-		      centerY,
-		      centerX,
-		      startY,
-		      startX,
-		      currentY,
-		      currentX,
-		      previousY,
-		      previousX);
+  PIDWindow PIDWin("PID",
+		   numLines,
+		   numCols,
+		   maxWindowY,
+		   maxWindowX,
+		   minWindowY,
+		   minWindowX,
+		   centerY,
+		   centerX,
+		   startY,
+		   startX,
+		   currentY,
+		   currentX,
+		   previousY,
+		   previousX);
 
   // print PIDWin to log file
   printWindowToLog(log, PIDWin);
+  log << std::endl;
 
   // create the curses top window
   PIDWin.setWindow(newwin(PIDWin.getNumLines(),
@@ -437,24 +418,25 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  CursesWindow USERWin("USER",
-		      numLines,
-		      numCols,
-		      maxWindowY,
-		      maxWindowX,
-		      minWindowY,
-		      minWindowX,
-		      centerY,
-		      centerX,
-		      startY,
-		      startX,
-		      currentY,
-		      currentX,
-		      previousY,
-		      previousX);
+  USERWindow USERWin("USER",
+		     numLines,
+		     numCols,
+		     maxWindowY,
+		     maxWindowX,
+		     minWindowY,
+		     minWindowX,
+		     centerY,
+		     centerX,
+		     startY,
+		     startX,
+		     currentY,
+		     currentX,
+		     previousY,
+		     previousX);
 
   // print USERWin to log file
   printWindowToLog(log, USERWin);
+  log << std::endl;
 
   // create the curses USER window
   USERWin.setWindow(newwin(USERWin.getNumLines(),
@@ -483,24 +465,25 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  CursesWindow PRWin("PR",
-		      numLines,
-		      numCols,
-		      maxWindowY,
-		      maxWindowX,
-		      minWindowY,
-		      minWindowX,
-		      centerY,
-		      centerX,
-		      startY,
-		      startX,
-		      currentY,
-		      currentX,
-		      previousY,
-		      previousX);
+  PRWindow PRWin("PR",
+		 numLines,
+		 numCols,
+		 maxWindowY,
+		 maxWindowX,
+		 minWindowY,
+		 minWindowX,
+		 centerY,
+		 centerX,
+		 startY,
+		 startX,
+		 currentY,
+		 currentX,
+		 previousY,
+		 previousX);
 
   // print PRWin to log file
   printWindowToLog(log, PRWin);
+  log << std::endl;  
 
   // create the curses PR window
   PRWin.setWindow(newwin(PRWin.getNumLines(),
@@ -529,24 +512,25 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  CursesWindow NIWin("NI",
-		      numLines,
-		      numCols,
-		      maxWindowY,
-		      maxWindowX,
-		      minWindowY,
-		      minWindowX,
-		      centerY,
-		      centerX,
-		      startY,
-		      startX,
-		      currentY,
-		      currentX,
-		      previousY,
-		      previousX);
+  NIWindow NIWin("NI",
+		 numLines,
+		 numCols,
+		 maxWindowY,
+		 maxWindowX,
+		 minWindowY,
+		 minWindowX,
+		 centerY,
+		 centerX,
+		 startY,
+		 startX,
+		 currentY,
+		 currentX,
+		 previousY,
+		 previousX);
 
   // print NIWin to log file
   printWindowToLog(log, NIWin);
+  log << std::endl;  
 
   // create the curses NI window
   NIWin.setWindow(newwin(NIWin.getNumLines(),
@@ -578,24 +562,25 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  CursesWindow VIRTWin("VIRT",
-		       numLines,
-		       numCols,
-		       maxWindowY,
-		       maxWindowX,
-		       minWindowY,
-		       minWindowX,
-		       centerY,
-		       centerX,
-		       startY,
-		       startX,
-		       currentY,
-		       currentX,
-		       previousY,
-		       previousX);
+  VIRTWindow VIRTWin("VIRT",
+		     numLines,
+		     numCols,
+		     maxWindowY,
+		     maxWindowX,
+		     minWindowY,
+		     minWindowX,
+		     centerY,
+		     centerX,
+		     startY,
+		     startX,
+		     currentY,
+		     currentX,
+		     previousY,
+		     previousX);
 
   // print VIRTWin to log file
   printWindowToLog(log, VIRTWin);
+  log << std::endl;  
 
   // create the curses VIRT window
   VIRTWin.setWindow(newwin(VIRTWin.getNumLines(),
@@ -628,24 +613,25 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  CursesWindow RESWin("RES",
-		       numLines,
-		       numCols,
-		       maxWindowY,
-		       maxWindowX,
-		       minWindowY,
-		       minWindowX,
-		       centerY,
-		       centerX,
-		       startY,
-		       startX,
-		       currentY,
-		       currentX,
-		       previousY,
-		       previousX);
+  RESWindow RESWin("RES",
+		   numLines,
+		   numCols,
+		   maxWindowY,
+		   maxWindowX,
+		   minWindowY,
+		   minWindowX,
+		   centerY,
+		   centerX,
+		   startY,
+		   startX,
+		   currentY,
+		   currentX,
+		   previousY,
+		   previousX);
 
   // print RESWin to log file
   printWindowToLog(log, RESWin);
+  log << std::endl;  
 
   // create the curses RES window
   RESWin.setWindow(newwin(RESWin.getNumLines(),
@@ -679,24 +665,25 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  CursesWindow SHRWin("SHR",
-		       numLines,
-		       numCols,
-		       maxWindowY,
-		       maxWindowX,
-		       minWindowY,
-		       minWindowX,
-		       centerY,
-		       centerX,
-		       startY,
-		       startX,
-		       currentY,
-		       currentX,
-		       previousY,
-		       previousX);
+  SHRWindow SHRWin("SHR",
+		   numLines,
+		   numCols,
+		   maxWindowY,
+		   maxWindowX,
+		   minWindowY,
+		   minWindowX,
+		   centerY,
+		   centerX,
+		   startY,
+		   startX,
+		   currentY,
+		   currentX,
+		   previousY,
+		   previousX);
 
   // print SHRWin to log file
   printWindowToLog(log, SHRWin);
+  log << std::endl;  
 
   // create the curses SHR window
   SHRWin.setWindow(newwin(SHRWin.getNumLines(),
@@ -731,24 +718,25 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  CursesWindow SWin("S",
-		    numLines,
-		    numCols,
-		    maxWindowY,
-		    maxWindowX,
-		    minWindowY,
-		    minWindowX,
-		    centerY,
-		    centerX,
-		    startY,
-		    startX,
-		    currentY,
-		    currentX,
-		    previousY,
-		    previousX);
+  SWindow SWin("S",
+	       numLines,
+	       numCols,
+	       maxWindowY,
+	       maxWindowX,
+	       minWindowY,
+	       minWindowX,
+	       centerY,
+	       centerX,
+	       startY,
+	       startX,
+	       currentY,
+	       currentX,
+	       previousY,
+	       previousX);
 
   // print SWin to log file
   printWindowToLog(log, SWin);
+  log << std::endl;  
 
   // create the curses S window
   SWin.setWindow(newwin(SWin.getNumLines(),
@@ -784,24 +772,25 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  CursesWindow PercentCPUWin("%CPU",
-			     numLines,
-			     numCols,
-			     maxWindowY,
-			     maxWindowX,
-			     minWindowY,
-			     minWindowX,
-			     centerY,
-			     centerX,
-			     startY,
-			     startX,
-			     currentY,
-			     currentX,
-			     previousY,
-			     previousX);
+  PercentCPUWindow PercentCPUWin("%CPU",
+				 numLines,
+				 numCols,
+				 maxWindowY,
+				 maxWindowX,
+				 minWindowY,
+				 minWindowX,
+				 centerY,
+				 centerX,
+				 startY,
+				 startX,
+				 currentY,
+				 currentX,
+				 previousY,
+				 previousX);
 
   // print PercentCPUWin to log file
   printWindowToLog(log, PercentCPUWin);
+  log << std::endl;  
 
   // create the curses PercentCPU window
   PercentCPUWin.setWindow(newwin(PercentCPUWin.getNumLines(),
@@ -839,24 +828,25 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  CursesWindow PercentMEMWin("%CPU",
-			     numLines,
-			     numCols,
-			     maxWindowY,
-			     maxWindowX,
-			     minWindowY,
-			     minWindowX,
-			     centerY,
-			     centerX,
-			     startY,
-			     startX,
-			     currentY,
-			     currentX,
-			     previousY,
-			     previousX);
+  PercentMEMWindow PercentMEMWin("%MEM",
+				 numLines,
+				 numCols,
+				 maxWindowY,
+				 maxWindowX,
+				 minWindowY,
+				 minWindowX,
+				 centerY,
+				 centerX,
+				 startY,
+				 startX,
+				 currentY,
+				 currentX,
+				 previousY,
+				 previousX);
 
   // print PercentMEMWin to log file
   printWindowToLog(log, PercentMEMWin);
+  log << std::endl;
 
   // create the curses PercentMEM window
   PercentMEMWin.setWindow(newwin(PercentMEMWin.getNumLines(),
@@ -894,24 +884,25 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  CursesWindow TIMEWin("%CPU",
-			     numLines,
-			     numCols,
-			     maxWindowY,
-			     maxWindowX,
-			     minWindowY,
-			     minWindowX,
-			     centerY,
-			     centerX,
-			     startY,
-			     startX,
-			     currentY,
-			     currentX,
-			     previousY,
-			     previousX);
+  TIMEWindow TIMEWin("TIME+",
+		     numLines,
+		     numCols,
+		     maxWindowY,
+		     maxWindowX,
+		     minWindowY,
+		     minWindowX,
+		     centerY,
+		     centerX,
+		     startY,
+		     startX,
+		     currentY,
+		     currentX,
+		     previousY,
+		     previousX);
 
   // print TIMEWin to log file
   printWindowToLog(log, TIMEWin);
+  log << std::endl;  
 
   // create the curses TIME window
   TIMEWin.setWindow(newwin(TIMEWin.getNumLines(),
@@ -952,24 +943,25 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  CursesWindow COMMANDWin("%CPU",
-			     numLines,
-			     numCols,
-			     maxWindowY,
-			     maxWindowX,
-			     minWindowY,
-			     minWindowX,
-			     centerY,
-			     centerX,
-			     startY,
-			     startX,
-			     currentY,
-			     currentX,
-			     previousY,
-			     previousX);
+  CursesWindow COMMANDWin("COMMAND",
+			  numLines,
+			  numCols,
+			  maxWindowY,
+			  maxWindowX,
+			  minWindowY,
+			  minWindowX,
+			  centerY,
+			  centerX,
+			  startY,
+			  startX,
+			  currentY,
+			  currentX,
+			  previousY,
+			  previousX);
 
   // print COMMANDWin to log file
   printWindowToLog(log, COMMANDWin);
+  log << std::endl;  
 
   // create the curses COMMAND window
   COMMANDWin.setWindow(newwin(COMMANDWin.getNumLines(),

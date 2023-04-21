@@ -42,7 +42,7 @@ public:
 		    const short& startX,
 		    const short& currentY,
 		    const short& currentX,
-		    const short& previousY,
+ 		    const short& previousY,
 		    const short& previousX);
   
   // getters

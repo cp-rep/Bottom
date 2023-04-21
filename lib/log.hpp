@@ -54,7 +54,7 @@ private:
   std::string m_pathName; // full path to a file
   std::string m_fileName; // desired filename
   unsigned int m_fileNum; // file number to be appended to filename
-  std::string m_fileType; // ile extension to be appended to file name
+  std::string m_fileType; // file extension to be appended to file name
   std::string m_fullPath; // full path including file name, number, and exension
 };
 
