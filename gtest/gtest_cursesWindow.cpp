@@ -15,7 +15,6 @@
 TEST(ClassTest, DefaultConstructor)
 {
   CursesWindow win;
-  EXPECT_EQ(nullptr, win.getWindow());
   EXPECT_EQ("", win.getWindowName());
   EXPECT_EQ(0, win.getNumLines());
   EXPECT_EQ(0, win.getNumCols());
@@ -37,8 +36,7 @@ TEST(ClassTest, DefaultConstructor)
 
 TEST(ClassTest, Constructor)
 {
-  CursesWindow win(nullptr,
-		   "Happy",
+  CursesWindow win("Happy",
 		   1,
 		   2,
 		   3,
@@ -54,7 +52,6 @@ TEST(ClassTest, Constructor)
 		   13,
 		   14);
 
-  EXPECT_EQ(nullptr, win.getWindow());
   EXPECT_EQ("Happy", win.getWindowName());
   EXPECT_EQ(1, win.getNumLines());
   EXPECT_EQ(2, win.getNumCols());
