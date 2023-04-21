@@ -33,10 +33,29 @@
 #include "log.hpp"
 #include "cursesWindow.hpp"
 #include <climits>
+#include "topWindow.hpp"
+#include "tasksWindow.hpp"
+#include "VIRTWindow.hpp"
+#include "COMMANDWindow.hpp"
+#include "cpuWindow.hpp"
+#include "memWindow.hpp"
+#include "NIWindow.hpp"
+#include "percentCPUWindow.hpp"
+#include "percentMEMWindow.hpp"
+#include "PIDWindow.hpp"
+#include "PRWindow.hpp"
+#include "RESWindow.hpp"
+#include "SHRWindow.hpp"
+#include "SWindow.hpp"
+#include "TIMEWindow.hpp"
+#include "USERWindow.hpp"
+
 
 // function prototypes
 void printWindowToLog(std::ofstream& log,
 		      const CursesWindow& win);
+
+void printTopWin(CursesWindow& topWin);
 
 
 
@@ -50,10 +69,14 @@ void printWindowToLog(std::ofstream& log,
 int main()
 {
   //  ## create log system ##
-  Log logFile("./log/", "log", 0, ".txt");
-  time_t currTime;
-  struct tm* dateTime;
+  Log logFile("./log/", "log", 0, ".log");
+  time_t rawtime;
+  struct tm* timeinfo;
   std::ofstream log;
+
+  time(&rawtime);
+  timeinfo = localtime(&rawtime);
+  
 
   while(true)
     {
@@ -84,24 +107,25 @@ int main()
     {
       // output start of log session
       log << "LOG Started" << std::endl;
+      log << "Current Local Time and Date: " << asctime(timeinfo) << std::endl;      
     }
 
   // local window variables
   CursesWindow processWin;
-  int numLines = 0;
-  int numCols = 0;
-  int maxWindowY = 0;
-  int maxWindowX = 0;
-  int minWindowY = 0;
-  int minWindowX = 0;
-  int centerY = 0;
-  int centerX = 0;
-  int startY = 0;
-  int startX = 0;
-  int currentY = 0;
-  int currentX = 0;
-  int previousY = 0;
-  int previousX = 0;
+  short numLines = 0;
+  short numCols = 0;
+  short maxWindowY = 0;
+  short maxWindowX = 0;
+  short minWindowY = 0;
+  short minWindowX = 0;
+  short centerY = 0;
+  short centerX = 0;
+  short startY = 0;
+  short startX = 0;
+  short currentY = 0;
+  short currentX = 0;
+  short previousY = 0;
+  short previousX = 0;
   
   
   // ## setup the main window ##
@@ -176,7 +200,23 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  CursesWindow topWin("Top",
+  TopWindow topWin("top",
+		   numLines,
+		   numCols,
+		   maxWindowY,
+		   maxWindowX,
+		   minWindowY,
+		   minWindowX,
+		   centerY,
+		   centerX,
+		   startY,
+		   startX,
+		   currentY,
+		   currentX,
+		   previousY,
+		   previousX);
+  /*
+  CursesWindow topWin("top",
 		      numLines,
 		      numCols,
 		      maxWindowY,
@@ -191,15 +231,18 @@ int main()
 		      currentX,
 		      previousY,
 		      previousX);
+  */
 
   // print topWin to log file
-  printWindowToLog(log, topWin);
+  //printWindowToLog(log, topWin);
 
   // create the curses top window
+  
   topWin.setWindow(newwin(topWin.getNumLines(),
 			  topWin.getNumCols(),
 			  topWin.getStartY(),
 			  topWin.getStartX()));
+  
 
   // ## setup tasks window ##
   // define tasks window
@@ -954,6 +997,7 @@ int main()
   box(COMMANDWin.getWindow(), 'P', 'P');  
     
   // refresh the windows to update drawn buffer to monitor
+  /*
   wrefresh(mainWin.getWindow());  
   wrefresh(topWin.getWindow());
   wrefresh(tasksWin.getWindow());
@@ -971,7 +1015,26 @@ int main()
   wrefresh(PercentMEMWin.getWindow());
   wrefresh(TIMEWin.getWindow());
   wrefresh(COMMANDWin.getWindow());  
-
+  */
+  wnoutrefresh(mainWin.getWindow());  
+  wnoutrefresh(topWin.getWindow());
+  wnoutrefresh(tasksWin.getWindow());
+  wnoutrefresh(cpuWin.getWindow());  
+  wnoutrefresh(memWin.getWindow());
+  wnoutrefresh(PIDWin.getWindow());    
+  wnoutrefresh(USERWin.getWindow());
+  wnoutrefresh(PRWin.getWindow());    
+  wnoutrefresh(NIWin.getWindow());
+  wnoutrefresh(VIRTWin.getWindow());
+  wnoutrefresh(RESWin.getWindow());
+  wnoutrefresh(SHRWin.getWindow());        
+  wnoutrefresh(SWin.getWindow());
+  wnoutrefresh(PercentCPUWin.getWindow());
+  wnoutrefresh(PercentMEMWin.getWindow());
+  wnoutrefresh(TIMEWin.getWindow());
+  wnoutrefresh(COMMANDWin.getWindow());  
+  doupdate();
+  
   // ## for testing ##
   if(has_colors())
     {
@@ -980,11 +1043,14 @@ int main()
       //init_color(COLOR_BLACK, 0, 0, 0);
       color_set(0, NULL);
     }
+  /*
+    wprintw(WINDOW* win, const char *FMT, ...)
+    mvwprintw(WINDOW* win, int y, int x, const char* fmt, ...)
+  */
 
-  // run the main program loop
+  
+  // ## run the main program loop ##
   do{
-    //    wrefresh(mainWin.getWindow());
-    refresh();
   }while(getch() != 'q');
   
   endwin();
@@ -1027,3 +1093,10 @@ void printWindowToLog(std::ofstream& log, const CursesWindow& win)
   log << "m_previousY: " << win.getPreviousY() << std::endl;
   log << "m_previousX: " << win.getPreviousX() << std::endl;
 } // end of "printWindow"
+
+
+
+
+void printTopWin(CursesWindow& topWin)
+{
+} //
