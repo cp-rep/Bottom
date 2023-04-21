@@ -13,91 +13,91 @@ class CursesWindow {
 public:
   // constructors and destructor
   CursesWindow(std::string windowName = "",	      
-	       const int& numLines = 0,
-	       const int& numCols = 0,
-	       const int& maxWindowY  = 0,
-	       const int& maxWindowX = 0,
-	       const int& minWindowY = 0,
-	       const int& minWindowX = 0,
-	       const int& centerY = 0,
-	       const int& centerX = 0,
-	       const int& startY = 0,
-	       const int& startX = 0,
-	       const int& currentY = 0,
-	       const int& currentX = 0,
-	       const int& previousY =  0,
-	       const int& previousX = 0);
+	       const short& numLines = 0,
+	       const short& numCols = 0,
+	       const short& maxWindowY  = 0,
+	       const short& maxWindowX = 0,
+	       const short& minWindowY = 0,
+	       const short& minWindowX = 0,
+	       const short& centerY = 0,
+	       const short& centerX = 0,
+	       const short& startY = 0,
+	       const short& startX = 0,
+	       const short& currentY = 0,
+	       const short& currentX = 0,
+	       const short& previousY =  0,
+	       const short& previousX = 0);
 
   // member functions
   void defineWindow(std::string windowName,
-		    const int& numLines,
-		    const int& numCols,
-		    const int& maxWindowY,
-		    const int& maxWindowX,
-		    const int& minWindowY,
-		    const int& minWindowX,
-		    const int& centerY,
-		    const int& centerX,
-		    const int& startY,
-		    const int& startX,
-		    const int& currentY,
-		    const int& currentX,
-		    const int& previousY,
-		    const int& previousX);
+		    const short& numLines,
+		    const short& numCols,
+		    const short& maxWindowY,
+		    const short& maxWindowX,
+		    const short& minWindowY,
+		    const short& minWindowX,
+		    const short& centerY,
+		    const short& centerX,
+		    const short& startY,
+		    const short& startX,
+		    const short& currentY,
+		    const short& currentX,
+		    const short& previousY,
+		    const short& previousX);
   
   // getters
   WINDOW* getWindow();
   const std::string& getWindowName() const;
-  const int& getNumCols() const;
-  const int& getNumLines() const;
-  const int& getMaxWindowY() const;
-  const int& getMaxWindowX() const;
-  const int& getMinWindowY() const;
-  const int& getMinWindowX() const;  
-  const int& getCenterY() const;
-  const int& getCenterX() const;
-  const int& getStartY() const;
-  const int& getStartX() const;
-  const int& getCurrentY() const;
-  const int& getCurrentX() const;
-  const int& getPreviousY() const;
-  const int& getPreviousX() const;  
+  const short& getNumCols() const;
+  const short& getNumLines() const;
+  const short& getMaxWindowY() const;
+  const short& getMaxWindowX() const;
+  const short& getMinWindowY() const;
+  const short& getMinWindowX() const;  
+  const short& getCenterY() const;
+  const short& getCenterX() const;
+  const short& getStartY() const;
+  const short& getStartX() const;
+  const short& getCurrentY() const;
+  const short& getCurrentX() const;
+  const short& getPreviousY() const;
+  const short& getPreviousX() const;  
 
   // setters
   void setWindow(WINDOW* window);
-  void setNumLines(const int& numLines);
-  void setNumCols(const int& numCols);
-  void setMaxWindowY(const int& maxWindowY);
-  void setMaxWindowX(const int& maxWindowX);
-  void setMinWindowY(const int& minWindowY);
-  void setMinWindowX(const int& minWindowX);
-  void setCenterY(const int& centerY);
-  void setCenterX(const int& centerX);
-  void setStartY(const int& startY);
-  void setStartX(const int& startX);
-  void setCurrentY(const int& currentY);
-  void setCurrentX(const int& currentX);
-  void setPreviousY(const int& previousY);
-  void setPreviousX(const int& previousX);
+  void setNumLines(const short& numLines);
+  void setNumCols(const short& numCols);
+  void setMaxWindowY(const short& maxWindowY);
+  void setMaxWindowX(const short& maxWindowX);
+  void setMinWindowY(const short& minWindowY);
+  void setMinWindowX(const short& minWindowX);
+  void setCenterY(const short& centerY);
+  void setCenterX(const short& centerX);
+  void setStartY(const short& startY);
+  void setStartX(const short& startX);
+  void setCurrentY(const short& currentY);
+  void setCurrentX(const short& currentX);
+  void setPreviousY(const short& previousY);
+  void setPreviousX(const short& previousX);
   
 private:
   // member variables
   WINDOW* m_window;
   std::string m_windowName;
-  int m_numLines;
-  int m_numCols;
-  int m_maxWindowY;
-  int m_maxWindowX;
-  int m_minWindowY;
-  int m_minWindowX;
-  int m_centerY;
-  int m_centerX;
-  int m_startY;
-  int m_startX;
-  int m_currentY;
-  int m_currentX;
-  int m_previousY;
-  int m_previousX;
+  short m_numLines;
+  short m_numCols;
+  short m_maxWindowY;
+  short m_maxWindowX;
+  short m_minWindowY;
+  short m_minWindowX;
+  short m_centerY;
+  short m_centerX;
+  short m_startY;
+  short m_startX;
+  short m_currentY;
+  short m_currentX;
+  short m_previousY;
+  short m_previousX;
 };
 
 #endif

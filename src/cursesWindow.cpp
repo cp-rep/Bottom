@@ -35,20 +35,20 @@
   None
 */
 CursesWindow::CursesWindow(std::string windowName,
-			   const int& numLines,
-			   const int& numCols,
-			   const int& maxWindowY,
-			   const int& maxWindowX,
-			   const int& minWindowY,
-			   const int& minWindowX,
-			   const int& centerY,
-			   const int& centerX,
-			   const int& startY,
-			   const int& startX,
-			   const int& currentY,
-			   const int& currentX,
-			   const int& previousY,
-			   const int& previousX)
+			   const short& numLines,
+			   const short& numCols,
+			   const short& maxWindowY,
+			   const short& maxWindowX,
+			   const short& minWindowY,
+			   const short& minWindowX,
+			   const short& centerY,
+			   const short& centerX,
+			   const short& startY,
+			   const short& startX,
+			   const short& currentY,
+			   const short& currentX,
+			   const short& previousY,
+			   const short& previousX)
 {
   defineWindow(windowName,
 	       numLines,
@@ -97,20 +97,20 @@ CursesWindow::CursesWindow(std::string windowName,
   None
 */
 void CursesWindow::defineWindow(std::string windowName,
-				const int& numLines,
-				const int& numCols,
-				const int& maxWindowY,
-				const int& maxWindowX,
-				const int& minWindowY,
-				const int& minWindowX,
-				const int& centerY,
-				const int& centerX,
-				const int& startY,
-				const int& startX,
-				const int& currentY,
-				const int& currentX,
-				const int& previousY,
-				const int& previousX)
+				const short& numLines,
+				const short& numCols,
+				const short& maxWindowY,
+				const short& maxWindowX,
+				const short& minWindowY,
+				const short& minWindowX,
+				const short& centerY,
+				const short& centerX,
+				const short& startY,
+				const short& startX,
+				const short& currentY,
+				const short& currentX,
+				const short& previousY,
+				const short& previousX)
 {
   m_windowName.append(windowName);
   m_numLines = numLines;
@@ -160,7 +160,7 @@ const std::string& CursesWindow::getWindowName() const
 
   Description:
 */
-const int& CursesWindow::getNumLines() const
+const short& CursesWindow::getNumLines() const
 {
   return m_numLines;
 } // end of "CursesWindow::getNumLines"
@@ -172,7 +172,7 @@ const int& CursesWindow::getNumLines() const
 
   Description:
 */
-const int& CursesWindow::getNumCols() const
+const short& CursesWindow::getNumCols() const
 {
   return m_numCols;
 } // end of "CursesWindow::getNumCols"
@@ -184,7 +184,7 @@ const int& CursesWindow::getNumCols() const
 
   Description:
 */
-const int& CursesWindow::getMaxWindowY() const
+const short& CursesWindow::getMaxWindowY() const
 {
   return m_maxWindowY;
 } // end of "CursesWindow::getMaxWindowY"
@@ -196,7 +196,7 @@ const int& CursesWindow::getMaxWindowY() const
 
   Description:
 */
-const int& CursesWindow::getMaxWindowX() const
+const short& CursesWindow::getMaxWindowX() const
 {
   return m_maxWindowX;
 } // end of "CursesWindow::getMaxWindowX"
@@ -208,7 +208,7 @@ const int& CursesWindow::getMaxWindowX() const
 
   Description:
 */
-const int& CursesWindow::getMinWindowY() const
+const short& CursesWindow::getMinWindowY() const
 {
   return m_minWindowY;
 } // end of "CursesWindow::getMinWindowY"
@@ -220,7 +220,7 @@ const int& CursesWindow::getMinWindowY() const
 
   Description:
 */
-const int& CursesWindow::getMinWindowX() const
+const short& CursesWindow::getMinWindowX() const
 {
   return m_minWindowX;
 } // end of "CursesWindow::getMinWindowX"
@@ -232,7 +232,7 @@ const int& CursesWindow::getMinWindowX() const
 
   Description:
 */
-const int& CursesWindow::getCenterY() const
+const short& CursesWindow::getCenterY() const
 {
   return m_centerY;
 } // end of "CursesWindow::getCenterY"
@@ -244,7 +244,7 @@ const int& CursesWindow::getCenterY() const
 
   Description:
 */
-const int& CursesWindow::getCenterX() const
+const short& CursesWindow::getCenterX() const
 {
   return m_centerX;
 } //  end  of "CursesWindow::getCenterX"
@@ -256,7 +256,7 @@ const int& CursesWindow::getCenterX() const
 
   Description:
 */
-const int& CursesWindow::getStartY() const
+const short& CursesWindow::getStartY() const
 {
   return m_startY;
 } // end  of "CursesWindow::getStartY"
@@ -268,7 +268,7 @@ const int& CursesWindow::getStartY() const
 
   Description:
 */
-const int& CursesWindow::getStartX() const
+const short& CursesWindow::getStartX() const
 {
   return m_startX;
 } // end of "CursesWindow::getStartX"
@@ -280,7 +280,7 @@ const int& CursesWindow::getStartX() const
 
   Description:
 */
-const int& CursesWindow::getCurrentY() const
+const short& CursesWindow::getCurrentY() const
 {
   return m_currentY;
 } // end of "CursesWindow::getCurrentY"
@@ -292,7 +292,7 @@ const int& CursesWindow::getCurrentY() const
 
   Description:
 */
-const int& CursesWindow::getCurrentX() const
+const short& CursesWindow::getCurrentX() const
 {
   return m_currentX;
 } // end of "CursesWindow::getCurrentX"
@@ -304,7 +304,7 @@ const int& CursesWindow::getCurrentX() const
 
   Description:
 */
-const int& CursesWindow::getPreviousY() const
+const short& CursesWindow::getPreviousY() const
 {
   return m_previousY;
 } // end of  "CursesWindow::getPreviousY"
@@ -316,7 +316,7 @@ const int& CursesWindow::getPreviousY() const
 
   Description:
 */
-const int& CursesWindow::getPreviousX() const
+const short& CursesWindow::getPreviousX() const
 {
   return m_previousX;
 } // end of "CursesWindow::getPreviousX"
@@ -339,7 +339,7 @@ void CursesWindow::setWindow(WINDOW* window)
 
   Description:
 */
-void CursesWindow::setNumLines(const int& numLines)
+void CursesWindow::setNumLines(const short& numLines)
 {
   m_numLines = numLines;
 } // end of "CursesWindow::setNumLines"
@@ -351,7 +351,7 @@ void CursesWindow::setNumLines(const int& numLines)
 
   Description:
 */
-void CursesWindow::setNumCols(const int& numCols)
+void CursesWindow::setNumCols(const short& numCols)
 {
   m_numCols = numCols;
 } // end of "CursesWindow::setNumCols"
@@ -363,7 +363,7 @@ void CursesWindow::setNumCols(const int& numCols)
 
   Description:
 */
-void CursesWindow::setMaxWindowY(const int& maxWindowY)
+void CursesWindow::setMaxWindowY(const short& maxWindowY)
 {
   m_maxWindowY = maxWindowY;
 } // end of "CursesWindow::setMaxWindowY"
@@ -375,7 +375,7 @@ void CursesWindow::setMaxWindowY(const int& maxWindowY)
 
   Description:
 */
-void CursesWindow::setMaxWindowX(const int& maxWindowX)
+void CursesWindow::setMaxWindowX(const short& maxWindowX)
 {
   m_maxWindowX = maxWindowX;
 } // end of "CursesWindow::setMaxWindowX"
@@ -387,7 +387,7 @@ void CursesWindow::setMaxWindowX(const int& maxWindowX)
 
   Description:
 */
-void CursesWindow::setMinWindowY(const int& minWindowY)
+void CursesWindow::setMinWindowY(const short& minWindowY)
 {
   m_minWindowY = minWindowY;
 } // end of "CursesWindow::setMinWindowY"
@@ -399,7 +399,7 @@ void CursesWindow::setMinWindowY(const int& minWindowY)
 
   Description:
 */
-void CursesWindow::setMinWindowX(const int& minWindowX)
+void CursesWindow::setMinWindowX(const short& minWindowX)
 {
   m_minWindowX = minWindowX;
 } // end of "CursesWindow::setMinWindowX"
@@ -411,7 +411,7 @@ void CursesWindow::setMinWindowX(const int& minWindowX)
 
   Description:
 */
-void CursesWindow::setCenterY(const int& centerY)
+void CursesWindow::setCenterY(const short& centerY)
 {
   m_centerY = centerY;
 } // end of "CursesWindow::setCenterY"
@@ -423,7 +423,7 @@ void CursesWindow::setCenterY(const int& centerY)
 
   Description:
 */
-void CursesWindow::setCenterX(const int& centerX)
+void CursesWindow::setCenterX(const short& centerX)
 {
   m_centerX = centerX;
 } // end of "CursesWindow::setCenterX"
@@ -435,7 +435,7 @@ void CursesWindow::setCenterX(const int& centerX)
 
   Description:
 */
-void CursesWindow::setStartY(const int& startY)
+void CursesWindow::setStartY(const short& startY)
 {
   m_startY = startY;
 } // end of "CursesWindow::setStartY"
@@ -447,7 +447,7 @@ void CursesWindow::setStartY(const int& startY)
 
   Description:
 */
-void CursesWindow::setStartX(const int& startX)
+void CursesWindow::setStartX(const short& startX)
 {
   m_startX = startX;
 } // end of "CursesWindow::setStartX"
@@ -459,7 +459,7 @@ void CursesWindow::setStartX(const int& startX)
 
   Description:
 */
-void CursesWindow::setCurrentY(const int& currentY)
+void CursesWindow::setCurrentY(const short& currentY)
 {
   m_currentY = currentY;
 } // end of "CursesWindow::setCurrentY"
@@ -471,7 +471,7 @@ void CursesWindow::setCurrentY(const int& currentY)
 
   Description:
 */
-void CursesWindow::setCurrentX(const int& currentX)
+void CursesWindow::setCurrentX(const short& currentX)
 {
   m_currentX = currentX;
 } // end of "CursesWindow::setCurrentX"
@@ -483,7 +483,7 @@ void CursesWindow::setCurrentX(const int& currentX)
 
   Description:
 */
-void CursesWindow::setPreviousY(const int& previousY)
+void CursesWindow::setPreviousY(const short& previousY)
 {
   m_previousY = previousY;
 } // end of "CursesWindow::setPreviousY"
@@ -495,7 +495,7 @@ void CursesWindow::setPreviousY(const int& previousY)
 
   Description:
 */
-void CursesWindow::setPreviousX(const int& previousX)
+void CursesWindow::setPreviousX(const short& previousX)
 {
   m_previousX = previousX;
 } // end of "CursesWindow::setPreviousX"
