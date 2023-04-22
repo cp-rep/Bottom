@@ -4,6 +4,9 @@
 */
 #include "topWindow.hpp"
 #include <fstream>
+#include <cstdlib>
+#include <iostream>
+
 
 
 /*
@@ -63,29 +66,8 @@ TopWindow::TopWindow(std::string windowName,
 							 previousY,
 							 previousX)
 {
-  m_time = "";
   m_uptime = "";
-  m_users = "";
-  m_loadAverage = "";
 } // end of "TopWindow Default Constructor"
-
-
-
-/*
-  Function:
-  getTime
-
-  Description:
-
-  Input:
-  NONE
-  Output:
-  NONE
- */
-const std::string& TopWindow::getTime() const
-{
-  return m_time;
-} // end of "getTime"
 
 
 
@@ -100,72 +82,34 @@ const std::string& TopWindow::getTime() const
   Output:
   NONE
  */
-const std::string& TopWindow::getUptime() const
+const std::string& TopWindow::getUptime()
 {
-  return m_uptime;
-} // end of "getUptime"
-
-
-
-/*
-  Function:
-  setTime
-
-  Description:
-
-  Input:
-  NONE
-  Output:
-  NONE
- */
-void TopWindow::setTime(struct tm* timeinfo)
-{
-  m_time.clear();
-  m_time.append(std::to_string(timeinfo->tm_hour));
-  m_time.append(":");
-  m_time.append(std::to_string(timeinfo->tm_min));
-  m_time.append(":");
-  m_time.append(std::to_string(timeinfo->tm_sec));
-} // end of "setTime"
-
-
-
-/*
-  Function:
-  setUptimeFromFile
-
-  Description:
-
-  Input:
-  NONE
-  Output:
-  NONE
- */
-void TopWindow::setUptimeFromFile()
-{
-  std::ifstream inFile;
-  inFile.open("/proc/uptime", std::ifstream::in);
-
-  if(!inFile.is_open())
-    {
-      return;
-    }
+  m_uptime.clear();
   
-  double quotient;
-  short hours;
-  short minutes;
+  FILE* usersFile;
+  char c = 0;
 
-  inFile >> quotient;
-  quotient = (quotient/60);
-  quotient = quotient/60;
-  hours = quotient;
-  quotient = quotient - hours;
-  minutes = quotient * 60;
+  usersFile = popen("uptime", "r");
 
-  m_uptime.append(std::to_string(hours));
-  m_uptime.append(":");
-  m_uptime.append(std::to_string(minutes));
-} // end of "setUptimeFromFile"
+
+  if(usersFile == nullptr)
+    {
+      perror("popen() failed to open users program.");
+      exit(EXIT_FAILURE);
+    }
+
+
+
+  while(fread(&c, sizeof c, 1, usersFile))
+    {
+      m_uptime.push_back(c);
+    }
+
+  pclose(usersFile);
+
+  return m_uptime;
+
+} // end of "getUptime"
 
 
 
