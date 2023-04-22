@@ -81,7 +81,7 @@ int main()
 
   while(true)
     {
-      std::ifstream inFile(logFile.getFullPath());
+      std::ifstream inFile(logFile.getFullPath(), std::ifstream::in);
       
       // check if log exists      
       if(inFile.is_open())
@@ -920,6 +920,13 @@ int main()
   wnoutrefresh(COMMANDWin.getWindow());  
   doupdate();
 
+
+  std::string test;
+
+  test = memWin.readMiBTotal();
+
+  log << std::endl << "Test: " << test << std::endl << std::endl;
+  
   // ## for testing ##
   if(has_colors())
     {

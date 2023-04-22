@@ -32,8 +32,6 @@ class TopWindow : public CursesWindow {
  private:
   // member data
   std::string m_uptime;
-
-  
 };
 
 
