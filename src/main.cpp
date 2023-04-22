@@ -101,14 +101,14 @@ int main()
   // check if the file remained open, exit with error otherwise
   if(!log.is_open())
     {
-      std::cerr << "Error creating log file. Exiting." << std::endl;
+      std::cerr << "Error creating log file." << std::endl;
       exit(EXIT_FAILURE);
     }
   else
     {
       // output start of log session
       log << "LOG Started" << std::endl;
-      log << "Current Local Time and Date: " << asctime(timeinfo) << std::endl;      
+      log << "Time and Date: " << asctime(timeinfo) << std::endl;      
     }
 
   // local window variables
@@ -181,7 +181,7 @@ int main()
   // disable curses defined key values for getch() to mainWin
   keypad(mainWin.getWindow(), false);
 
-  // ## setup top window ##
+  // ## define windows ##
   // define top window
   numLines = 1;
   numCols = numCols;
@@ -215,13 +215,6 @@ int main()
 		   previousX,
 		   timeinfo);
 
-  // create the curses top window
-  topWin.setWindow(newwin(topWin.getNumLines(),
-			  topWin.getNumCols(),
-			  topWin.getStartY(),
-			  topWin.getStartX()));
-
-  // ## setup tasks window ##
   // define tasks window
   numLines = 1;
   numCols = numCols;
@@ -254,17 +247,6 @@ int main()
 		       previousY,
 		       previousX);
 
-  // print tasksWin to log file
-  printWindowToLog(log, tasksWin);
-  log << std::endl;
-
-  // create the curses task window
-  tasksWin.setWindow(newwin(tasksWin.getNumLines(),
-			    tasksWin.getNumCols(),
-			    tasksWin.getStartY(),
-			    tasksWin.getStartX()));
-
-  // ## setup cpu window ##
   // define cpu window
   numLines = 1;
   numCols = numCols;
@@ -297,17 +279,6 @@ int main()
 		   previousY,
 		   previousX);
 
-  // print cpuWin to log file
-  printWindowToLog(log, cpuWin);
-  log << std::endl;
-
-  // create the curses cpu window
-  cpuWin.setWindow(newwin(cpuWin.getNumLines(),
-			  cpuWin.getNumCols(),
-			  cpuWin.getStartY(),
-			  cpuWin.getStartX()));
-  
-  // ## setup mem window ##
   // define mem window
   numLines = 2;
   numCols = numCols;
@@ -340,17 +311,6 @@ int main()
 		   previousY,
 		   previousX);
 
-  // print topWin to log file
-  printWindowToLog(log, memWin);
-  log << std::endl;  
-
-  // create the curses task window
-  memWin.setWindow(newwin(memWin.getNumLines(),
-			  memWin.getNumCols(),
-			  memWin.getStartY(),
-			  memWin.getStartX()));
-
-  // ## setup PID window ##
   // define PID window
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
@@ -387,17 +347,6 @@ int main()
 		   previousY,
 		   previousX);
 
-  // print PIDWin to log file
-  printWindowToLog(log, PIDWin);
-  log << std::endl;
-
-  // create the curses top window
-  PIDWin.setWindow(newwin(PIDWin.getNumLines(),
-			  PIDWin.getNumCols(),
-			  PIDWin.getStartY(),
-			  PIDWin.getStartX()));
-
-  // ## setup USER window ##
   // define USER window
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
@@ -434,17 +383,6 @@ int main()
 		     previousY,
 		     previousX);
 
-  // print USERWin to log file
-  printWindowToLog(log, USERWin);
-  log << std::endl;
-
-  // create the curses USER window
-  USERWin.setWindow(newwin(USERWin.getNumLines(),
-			   USERWin.getNumCols(),
-			   USERWin.getStartY(),
-			   USERWin.getStartX()));
-
-  // ## setup PR window ##
   // define PR window
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
@@ -481,17 +419,6 @@ int main()
 		 previousY,
 		 previousX);
 
-  // print PRWin to log file
-  printWindowToLog(log, PRWin);
-  log << std::endl;  
-
-  // create the curses PR window
-  PRWin.setWindow(newwin(PRWin.getNumLines(),
-			 PRWin.getNumCols(),
-			 PRWin.getStartY(),
-			 PRWin.getStartX()));
-  
-  // ## setup NI window ##
   // define NI window
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
@@ -528,17 +455,6 @@ int main()
 		 previousY,
 		 previousX);
 
-  // print NIWin to log file
-  printWindowToLog(log, NIWin);
-  log << std::endl;  
-
-  // create the curses NI window
-  NIWin.setWindow(newwin(NIWin.getNumLines(),
-			 NIWin.getNumCols(),
-			 NIWin.getStartY(),
-			 NIWin.getStartX()));
-
-  // ## setup VIRT window ##
   // define VIRT window
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
@@ -578,17 +494,6 @@ int main()
 		     previousY,
 		     previousX);
 
-  // print VIRTWin to log file
-  printWindowToLog(log, VIRTWin);
-  log << std::endl;  
-
-  // create the curses VIRT window
-  VIRTWin.setWindow(newwin(VIRTWin.getNumLines(),
-			 VIRTWin.getNumCols(),
-			 VIRTWin.getStartY(),
-			 VIRTWin.getStartX()));
-
-  // ## setup RES window ##
   // define RES window
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
@@ -629,17 +534,6 @@ int main()
 		   previousY,
 		   previousX);
 
-  // print RESWin to log file
-  printWindowToLog(log, RESWin);
-  log << std::endl;  
-
-  // create the curses RES window
-  RESWin.setWindow(newwin(RESWin.getNumLines(),
-			  RESWin.getNumCols(),
-			  RESWin.getStartY(),
-			  RESWin.getStartX()));
-
-  // ## setup SHR window ##
   // define SHR window
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
@@ -681,17 +575,6 @@ int main()
 		   previousY,
 		   previousX);
 
-  // print SHRWin to log file
-  printWindowToLog(log, SHRWin);
-  log << std::endl;  
-
-  // create the curses SHR window
-  SHRWin.setWindow(newwin(SHRWin.getNumLines(),
-			  SHRWin.getNumCols(),
-			  SHRWin.getStartY(),
-			  SHRWin.getStartX()));
-
-  // ## setup S window ##
   // define S window
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
@@ -734,17 +617,6 @@ int main()
 	       previousY,
 	       previousX);
 
-  // print SWin to log file
-  printWindowToLog(log, SWin);
-  log << std::endl;  
-
-  // create the curses S window
-  SWin.setWindow(newwin(SWin.getNumLines(),
-			SWin.getNumCols(),
-			SWin.getStartY(),
-			SWin.getStartX()));
-
-  // ## setup PercentCPU window ##
   // define PercentCPU window
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
@@ -788,18 +660,6 @@ int main()
 				 previousY,
 				 previousX);
 
-  // print PercentCPUWin to log file
-  printWindowToLog(log, PercentCPUWin);
-  log << std::endl;  
-
-  // create the curses PercentCPU window
-  PercentCPUWin.setWindow(newwin(PercentCPUWin.getNumLines(),
-				 PercentCPUWin.getNumCols(),
-				 PercentCPUWin.getStartY(),
-				 PercentCPUWin.getStartX()));
-
-  
-  // ## setup PercentMEM window ##
   // define PercentMEM window
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
@@ -844,17 +704,6 @@ int main()
 				 previousY,
 				 previousX);
 
-  // print PercentMEMWin to log file
-  printWindowToLog(log, PercentMEMWin);
-  log << std::endl;
-
-  // create the curses PercentMEM window
-  PercentMEMWin.setWindow(newwin(PercentMEMWin.getNumLines(),
-				 PercentMEMWin.getNumCols(),
-				 PercentMEMWin.getStartY(),
-				 PercentMEMWin.getStartX()));
-
-  // ## setup TIME window ##
   // define TIME window
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
@@ -900,24 +749,12 @@ int main()
 		     previousY,
 		     previousX);
 
-  // print TIMEWin to log file
-  printWindowToLog(log, TIMEWin);
-  log << std::endl;  
-
-  // create the curses TIME window
-  TIMEWin.setWindow(newwin(TIMEWin.getNumLines(),
-			   TIMEWin.getNumCols(),
-			   TIMEWin.getStartY(),
-			   TIMEWin.getStartX()));
-
-  // ## setup COMMAND window ##
   // define COMMAND window
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
              cpuWin.getNumLines() -
              tasksWin.getNumLines() -
              topWin.getNumLines() - 1;
-  //  numCols = 32767;  // max allowed value for a column initialization number
   numCols = SHRT_MAX;
   maxWindowY = 0;
   maxWindowX = 0;
@@ -959,15 +796,71 @@ int main()
 			  previousY,
 			  previousX);
 
-  // print COMMANDWin to log file
-  printWindowToLog(log, COMMANDWin);
-  log << std::endl;  
-
-  // create the curses COMMAND window
+  // ## create windows ##
+  topWin.setWindow(newwin(topWin.getNumLines(),
+			  topWin.getNumCols(),
+			  topWin.getStartY(),
+			  topWin.getStartX()));
+  tasksWin.setWindow(newwin(tasksWin.getNumLines(),
+			   tasksWin.getNumCols(),
+			   tasksWin.getStartY(),
+			   tasksWin.getStartX()));
+  cpuWin.setWindow(newwin(cpuWin.getNumLines(),
+			  cpuWin.getNumCols(),
+			  cpuWin.getStartY(),
+			  cpuWin.getStartX()));
+  memWin.setWindow(newwin(memWin.getNumLines(),
+			  memWin.getNumCols(),
+			  memWin.getStartY(),
+			  memWin.getStartX()));
+  PIDWin.setWindow(newwin(PIDWin.getNumLines(),
+			  PIDWin.getNumCols(),
+			  PIDWin.getStartY(),
+			  PIDWin.getStartX()));
+  USERWin.setWindow(newwin(USERWin.getNumLines(),
+			   USERWin.getNumCols(),
+			   USERWin.getStartY(),
+			   USERWin.getStartX()));
+  PRWin.setWindow(newwin(PRWin.getNumLines(),
+			 PRWin.getNumCols(),
+			 PRWin.getStartY(),
+			 PRWin.getStartX()));
+  NIWin.setWindow(newwin(NIWin.getNumLines(),
+			 NIWin.getNumCols(),
+			 NIWin.getStartY(),
+			 NIWin.getStartX()));
+  VIRTWin.setWindow(newwin(VIRTWin.getNumLines(),
+			   VIRTWin.getNumCols(),
+			   VIRTWin.getStartY(),
+			   VIRTWin.getStartX()));		  
+  RESWin.setWindow(newwin(RESWin.getNumLines(),
+			  RESWin.getNumCols(),
+			  RESWin.getStartY(),
+			  RESWin.getStartX()));
+  SHRWin.setWindow(newwin(SHRWin.getNumLines(),
+			  SHRWin.getNumCols(),
+			  SHRWin.getStartY(),
+			  SHRWin.getStartX()));
+  SWin.setWindow(newwin(SWin.getNumLines(),
+			SWin.getNumCols(),
+			SWin.getStartY(),
+			SWin.getStartX()));
+  PercentCPUWin.setWindow(newwin(PercentCPUWin.getNumLines(),
+				 PercentCPUWin.getNumCols(),
+				 PercentCPUWin.getStartY(),
+				 PercentCPUWin.getStartX()));
+  PercentMEMWin.setWindow(newwin(PercentMEMWin.getNumLines(),
+				 PercentMEMWin.getNumCols(),
+				 PercentMEMWin.getStartY(),
+				 PercentMEMWin.getStartX()));  
+  TIMEWin.setWindow(newwin(TIMEWin.getNumLines(),
+			   TIMEWin.getNumCols(),
+			   TIMEWin.getStartY(),
+			   TIMEWin.getStartX()));
   COMMANDWin.setWindow(newwin(COMMANDWin.getNumLines(),
 			      COMMANDWin.getNumCols(),
 			      COMMANDWin.getStartY(),
-			      COMMANDWin.getStartX()));    
+			      COMMANDWin.getStartX()));
 
   // ## draw window dimension boxes and update screen buffers ##
   // draw boxes to represent window dimensions
@@ -1026,7 +919,7 @@ int main()
   wnoutrefresh(TIMEWin.getWindow());
   wnoutrefresh(COMMANDWin.getWindow());  
   doupdate();
-  
+
   // ## for testing ##
   if(has_colors())
     {
@@ -1035,6 +928,7 @@ int main()
       //init_color(COLOR_BLACK, 0, 0, 0);
       color_set(0, NULL);
     }
+  
   /*
     wprintw(WINDOW* win, const char *FMT, ...)
     mvwprintw(WINDOW* win, int y, int x, const char* fmt, ...)
@@ -1043,6 +937,7 @@ int main()
   
   // ## run the main program loop ##
   do{
+    
   }while(getch() != 'q');
   
   endwin();
