@@ -6,9 +6,11 @@ target_sources(Gtest
   PRIVATE
   # program source files
   cursesWindow.cpp
+  extractFileData.cpp
   PUBLIC
   # program library files
   ../lib/cursesWindow.hpp
+  ../lib/extractFileData.hpp
   )
 
 # direct the location of the files

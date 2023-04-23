@@ -15,6 +15,7 @@ FetchContent_MakeAvailable(googletest)
 add_executable(
     unit_tests
     gtest_cursesWindow.cpp
+    gtest_extractFileData.cpp
     )
 
 # link the test source files to application source files
