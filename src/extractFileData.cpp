@@ -5,7 +5,6 @@
 #include "extractFileData.hpp"
 #include <cstdlib>
 #include <fstream>
-#include <iostream>
 
 
 
@@ -44,9 +43,11 @@ const std::string ExtractFileData::returnPhraseLine(const std::string& fileName,
 
 
   // read the file line by line looking for the matching phrase
-  for(int i = 0; ; i++)
+  for(int i = 0;; i++)
     {
       std::getline(inFile, tempLine);
+      if(tempLine == "")
+	break;
       
       for(int j = 0; tempLine.at(j) != ':'; j++)
 	{
