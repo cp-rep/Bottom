@@ -1,9 +1,10 @@
-// ============================================================================
-// File: gtest_cursesWindow.cpp
-// Description:
-//  Tests functionality of the CursesWindow class from the head and source file
-//  cursesWindow.hpp and cursesWindow.cpp
-// ============================================================================
+/*
+  File: gtest_cursesWindow.cpp
+  
+  Description:
+  Tests functionality of the CursesWindow class from the head and source file
+  cursesWindow.hpp and cursesWindow.cpp
+*/
 #include <gtest/gtest.h>
 #include "cursesWindow.hpp"
 
@@ -12,7 +13,7 @@
 /*
   Test the default constructor initializes correctly
  */
-TEST(ClassTest, DefaultConstructor)
+TEST(CursesWindow, DefaultConstructor)
 {
   CursesWindow win;
   EXPECT_EQ("", win.getWindowName());
@@ -34,7 +35,7 @@ TEST(ClassTest, DefaultConstructor)
 
 
 
-TEST(ClassTest, Constructor)
+TEST(CursesWindow, Constructor)
 {
   CursesWindow win("Happy",
 		   1,
