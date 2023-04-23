@@ -29,9 +29,11 @@
 #include <chrono>
 #include <fstream>
 #include <curses.h>
+#include <climits>
+#include <limits>
+#include <iomanip>
 #include "log.hpp"
 #include "cursesWindow.hpp"
-#include <climits>
 #include "topWindow.hpp"
 #include "tasksWindow.hpp"
 #include "VIRTWindow.hpp"
@@ -48,15 +50,14 @@
 #include "SWindow.hpp"
 #include "TIMEWindow.hpp"
 #include "USERWindow.hpp"
-
-#include <iomanip>
-#include <limits>
+#include "extractFileData.hpp"
 
 // function prototypes
 void printWindowToLog(std::ofstream& log,
 		      const CursesWindow& win);
-
 void printTopWin(CursesWindow& topWin);
+
+#define DEBUG 1
 
 
 
@@ -110,6 +111,19 @@ int main()
       log << "LOG Started" << std::endl;
       log << "Time and Date: " << asctime(timeinfo) << std::endl;      
     }
+
+  #if DEBUG
+  std::string myString;
+  int myInt;
+
+  ExtractFileData myExtract;
+  myString = myExtract.returnPhraseLine("/proc/meminfo", "MemTotal");
+  log << std::endl << "myString: " << myString << std::endl << std::endl;
+  myInt = myExtract.returnFirstIntFromLine(myString);
+  log << std::endl << "myInt: " << myInt << std::endl;
+  
+  
+  #endif
 
   // local window variables
   CursesWindow processWin;
@@ -919,12 +933,6 @@ int main()
   wnoutrefresh(TIMEWin.getWindow());
   wnoutrefresh(COMMANDWin.getWindow());  
   doupdate();
-
-  log << std::endl << "Test1: " << std::endl << std::endl;
-  
-  int test = memWin.defineMemData();
-
-  log << std::endl << "Test2: " << test << std::endl << std::endl;
   
   // ## for testing ##
   if(has_colors())
