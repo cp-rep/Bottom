@@ -3,8 +3,7 @@
   Description:
  */
 #include "memWindow.hpp"
-#include <fstream>
-#include <cstdlib>
+
 
 
 /*
@@ -84,101 +83,3 @@ MemWindow::MemWindow(std::string windowName,
   m_swapUsed = swapUsed;
   m_swapAvailable = swapAvailable;
 } // end of "MemWindow Default Constructor"
-
-
-
-
-/*
-  Function:
-  readMiBTotal
-   
-  Description:
-
-  Input:
-  NONE
-  
-  Output:
-  NONE
-*/
-const std::string MemWindow::returnLineWithPhrase(const std::string& phrase)
-{
-  std::string tempLine;
-  std::string tempPhrase;
-  bool found = false; 
-  std::ifstream inFile("/proc/meminfo", std::ifstream::in);
-  
-  for(int i = 0; ; i++)
-    {
-      std::getline(inFile, tempLine);
-      for(int j = 0; tempLine.at(i) != ':'; j++)
-	{
-	  tempPhrase.push_back(tempLine.at(i));
-	  
-	  if(tempPhrase == phrase)
-	    {
-	      found = true;
-	      break;
-	    }
-	}
-
-      if(found == true)
-	{
-	  break;
-	}
-    }
-  
-  inFile.close();
-  
-  return tempLine;
-} // end of "readMiBTotal"
-
-
-
-/*
-  Function:
-  parseMemoryString
-   
-  Description:
-
-  Input:
-  NONE
-  
-  Output:
-  NONE
-*/
-const int MemWindow::parseIntFromLine(const std::string& line)
-{
-  std::string temp;
-  
-  for(int i = 0; i < line.length(); i++)
-    {
-      if(line.at(i) >= '0' && line.at(i) <= '9')
-	{
-	  temp.push_back(line.at(i));
-	}	
-    }
-
-  return stoi(temp);
-}  // end of "parseMemoryLine"
-
-
-
-/*
-  Function:
-  defineMemData
-   
-  Description:
-
-  Input:
-  NONE
-  
-  Output:
-  NONE
-*/
-int MemWindow::defineMemData()
-{
-  std::string line = returnLineWithPhrase("MemTotal");
-  m_memTotal = parseIntFromLine(line);
-
-  return m_memTotal;
-} // end of "defineMemData"

@@ -36,21 +36,13 @@ public:
 	    const float swapFree = 0,
 	    const float swapUsed = 0,
 	    const float swapAvailable = 0);
-
-  // member functions
-  const std::string returnLineWithPhrase(const std::string& phrase);
-  int defineMemData();
-
+  
   // getters
   const float& getMemTotal() { return m_memTotal; }
 
-
   // setters
-  void setMemTotal(const int& memTotal);
+  void setMemTotal(const int& memTotal) { m_memTotal = memTotal; }
   
-
-  // helper functions
-  const int parseIntFromLine(const std::string& line);
   
 private:
   std::string m_MiB;
