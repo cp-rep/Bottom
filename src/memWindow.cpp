@@ -50,14 +50,14 @@ MemWindow::MemWindow(std::string windowName,
 		     const short& previousX,
 		     const std::string& MiB,
 		     const std::string& swap,
-		     const int memTotal,
-		     const int memFree,
-		     const int memUsed,
-		     const int buffCache,
-		     const int swapTotal,
-		     const int swapFree,
-		     const int swapUsed,
-		     const int swapAvailable) : CursesWindow(windowName,
+		     const float memTotal,
+		     const float memFree,
+		     const float memUsed,
+		     const float buffCache,
+		     const float swapTotal,
+		     const float swapFree,
+		     const float swapUsed,
+		     const float swapAvailable) : CursesWindow(windowName,
 							     numLines,
 							     numCols,
 							     maxWindowY,
@@ -100,11 +100,85 @@ MemWindow::MemWindow(std::string windowName,
   Output:
   NONE
 */
-const std::string MemWindow::readMiBTotal()
+const std::string MemWindow::returnLineWithPhrase(const std::string& phrase)
+{
+  std::string tempLine;
+  std::string tempPhrase;
+  bool found = false; 
+  std::ifstream inFile("/proc/meminfo", std::ifstream::in);
+  
+  for(int i = 0; ; i++)
+    {
+      std::getline(inFile, tempLine);
+      for(int j = 0; tempLine.at(i) != ':'; j++)
+	{
+	  tempPhrase.push_back(tempLine.at(i));
+	  
+	  if(tempPhrase == phrase)
+	    {
+	      found = true;
+	      break;
+	    }
+	}
+
+      if(found == true)
+	{
+	  break;
+	}
+    }
+  
+  inFile.close();
+  
+  return tempLine;
+} // end of "readMiBTotal"
+
+
+
+/*
+  Function:
+  parseMemoryString
+   
+  Description:
+
+  Input:
+  NONE
+  
+  Output:
+  NONE
+*/
+const int MemWindow::parseIntFromLine(const std::string& line)
 {
   std::string temp;
-  std::ifstream inFile("/proc/meminfo", std::ifstream::in);
-  std::getline(inFile, temp);
-  inFile.close();
-  return temp;
-} // end of "readMiBTotal"
+  
+  for(int i = 0; i < line.length(); i++)
+    {
+      if(line.at(i) >= '0' && line.at(i) <= '9')
+	{
+	  temp.push_back(line.at(i));
+	}	
+    }
+
+  return stoi(temp);
+}  // end of "parseMemoryLine"
+
+
+
+/*
+  Function:
+  defineMemData
+   
+  Description:
+
+  Input:
+  NONE
+  
+  Output:
+  NONE
+*/
+int MemWindow::defineMemData()
+{
+  std::string line = returnLineWithPhrase("MemTotal");
+  m_memTotal = parseIntFromLine(line);
+
+  return m_memTotal;
+} // end of "defineMemData"

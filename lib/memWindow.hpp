@@ -28,29 +28,41 @@ public:
 	    const short& previousX = 0,
 	    const std::string& MiB = "",
 	    const std::string& swap = "",
-	    const int memTotal = 0,
-	    const int memFree = 0,
-	    const int memUsed = 0,
-	    const int buffCache = 0,
-	    const int swapTotal = 0,
-	    const int swapFree = 0,
-	    const int swapUsed = 0,
-	    const int swapAvailable = 0);
+	    const float memTotal = 0,
+	    const float memFree = 0,
+	    const float memUsed = 0,
+	    const float buffCache = 0,
+	    const float swapTotal = 0,
+	    const float swapFree = 0,
+	    const float swapUsed = 0,
+	    const float swapAvailable = 0);
 
   // member functions
-  const std::string readMiBTotal();
+  const std::string returnLineWithPhrase(const std::string& phrase);
+  int defineMemData();
+
+  // getters
+  const float& getMemTotal() { return m_memTotal; }
+
+
+  // setters
+  void setMemTotal(const int& memTotal);
+  
+
+  // helper functions
+  const int parseIntFromLine(const std::string& line);
   
 private:
   std::string m_MiB;
   std::string m_swap;
-  int m_memTotal;
-  int m_memFree;
-  int m_memUsed;
-  int m_buffCache;
-  int m_swapTotal;
-  int m_swapFree;
-  int m_swapUsed;
-  int m_swapAvailable;
+  float m_memTotal;
+  float m_memFree;
+  float m_memUsed;
+  float m_buffCache;
+  float m_swapTotal;
+  float m_swapFree;
+  float m_swapUsed;
+  float m_swapAvailable;
 };
 
 #endif

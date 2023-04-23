@@ -920,12 +920,11 @@ int main()
   wnoutrefresh(COMMANDWin.getWindow());  
   doupdate();
 
+  log << std::endl << "Test1: " << std::endl << std::endl;
+  
+  int test = memWin.defineMemData();
 
-  std::string test;
-
-  test = memWin.readMiBTotal();
-
-  log << std::endl << "Test: " << test << std::endl << std::endl;
+  log << std::endl << "Test2: " << test << std::endl << std::endl;
   
   // ## for testing ##
   if(has_colors())
