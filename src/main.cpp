@@ -56,6 +56,7 @@
 void printWindowToLog(std::ofstream& log,
 		      const CursesWindow& win);
 void printTopWin(CursesWindow& topWin);
+const float kBToKiB(const float& val);
 
 #define DEBUG 1
 
@@ -874,12 +875,36 @@ int main()
 			      COMMANDWin.getStartY(),
 			      COMMANDWin.getStartX()));
 
+  #if DEBUG
+  // define the mem window
+  ExtractFileData fileData;
+  std::string tempString;
+  
+  tempString = fileData.returnPhraseLine("/proc/meminfo", "MemTotal");
+  memWin.setMemTotal(kBToKiB(fileData.returnFirstIntFromLine(tempString)));
+  tempString = fileData.returnPhraseLine("/proc/meminfo", "MemFree");
+  memWin.setMemFree(kBToKiB(fileData.returnFirstIntFromLine(tempString)));
+  memWin.setMemUsed();
+  tempString = fileData.returnPhraseLine("/proc/meminfo", "Cached");
+  memWin.setBuffCache(kBToKiB(fileData.returnFirstIntFromLine(tempString)));
+  tempString = fileData.returnPhraseLine("/proc/meminfo", "SwapTotal");
+  memWin.setSwapTotal(kBToKiB(fileData.returnFirstIntFromLine(tempString)));
+  tempString = fileData.returnPhraseLine("/proc/meminfo", "SwapFree");
+  memWin.setSwapFree(kBToKiB(fileData.returnFirstIntFromLine(tempString)));
+  memWin.setSwapUsed();
+  memWin.setMiB();
+
+  log << std::endl << memWin.getMiB() << std::endl << std::endl;
+
+  #endif
+  
+
   // ## draw window dimension boxes and update screen buffers ##
   // draw boxes to represent window dimensions
   box(topWin.getWindow(), 'A', 'A');
   box(tasksWin.getWindow(), 'B', 'B');
   box(cpuWin.getWindow(), 'C', 'C');  
-  box(memWin.getWindow(), 'D', 'D');
+  //  box(memWin.getWindow(), 'D', 'D');
   box(PIDWin.getWindow(), 'E', 'E');
   box(USERWin.getWindow(), 'F', 'F');
   box(PRWin.getWindow(), 'G', 'G');    
@@ -932,6 +957,8 @@ int main()
   wnoutrefresh(TIMEWin.getWindow());
   wnoutrefresh(COMMANDWin.getWindow());  
   doupdate();
+
+  
   
   // ## for testing ##
   if(has_colors())
@@ -1000,3 +1027,11 @@ void printWindowToLog(std::ofstream& log, const CursesWindow& win)
 void printTopWin(CursesWindow& topWin)
 {
 } //
+
+
+
+
+const float kBToKiB(const float& val)
+{
+  return val * .9765625;
+}
