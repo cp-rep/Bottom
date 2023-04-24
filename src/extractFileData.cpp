@@ -33,8 +33,7 @@ const std::string ExtractFileData::returnPhraseLine(const std::string& fileName,
   std::string tempLine;
   std::string tempPhrase;
   bool found = false; 
-  //   std::ifstream inFile(fileName, std::ifstream::in);
-   std::ifstream inFile(fileName, std::ifstream::in);   
+  std::ifstream inFile(fileName, std::ifstream::in);   
 
   // test if the file opened successfully
   if(!inFile.is_open())
@@ -45,6 +44,7 @@ const std::string ExtractFileData::returnPhraseLine(const std::string& fileName,
   // read the file line by line looking for the matching phrase
   for(int i = 0;; i++)
     {
+      tempPhrase.clear();
       std::getline(inFile, tempLine);
       if(tempLine == "")
 	break;

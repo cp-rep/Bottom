@@ -38,11 +38,26 @@ public:
 	    const float swapAvailable = 0);
   
   // getters
+  const std::string& getMiB() { return m_MiB; }
   const float& getMemTotal() { return m_memTotal; }
+  const float& getMemFree() { return m_memFree; }
+  const float getMemUsed() { return m_memUsed; }
+  const float& getBuffCache() { return m_buffCache; }
+  const float& getSwapTotal() { return m_swapTotal; }
+  const float& getSwapFree() { return m_swapFree; }
+  const float& getSwapUsed() { return m_swapUsed; }
+  const float& getSwapAvailable() { return m_swapAvailable; }  
 
   // setters
+  void setMiB();
   void setMemTotal(const int& memTotal) { m_memTotal = memTotal; }
-  
+  void setMemFree(const int& memFree) { m_memFree = memFree; }
+  void setMemUsed() { m_memUsed = m_memTotal - m_memFree; }
+  void setBuffCache(const int& buffCache) { m_buffCache = buffCache; }
+  void setSwapTotal(const int& swapTotal) { m_swapTotal = swapTotal; }
+  void setSwapFree(const int& swapFree) { m_swapFree = swapFree; }
+  void setSwapUsed() { m_swapUsed = m_swapTotal - m_swapFree; }
+  void setSwapAvailable(const int& swapAvailable) { m_swapAvailable = swapAvailable; }
   
 private:
   std::string m_MiB;

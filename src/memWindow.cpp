@@ -5,7 +5,6 @@
 #include "memWindow.hpp"
 
 
-
 /*
   Function:
   MemWindow Default Constructor
@@ -83,3 +82,21 @@ MemWindow::MemWindow(std::string windowName,
   m_swapUsed = swapUsed;
   m_swapAvailable = swapAvailable;
 } // end of "MemWindow Default Constructor"
+
+
+
+/*
+
+ */
+void MemWindow::setMiB()
+{
+  m_MiB.append("MiB Mem: ");
+  m_MiB.append(std::to_string(getMemTotal()));
+  m_MiB.append(" total, ");
+  m_MiB.append(std::to_string(getMemFree()));
+  m_MiB.append(" free, ");
+  m_MiB.append(std::to_string(getMemUsed()));
+  m_MiB.append(" used. ");
+  m_MiB.append(std::to_string(getBuffCache()));
+  m_MiB.append(" buff/cache");
+}
