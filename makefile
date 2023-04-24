@@ -5,6 +5,7 @@ GTESTDIR=./gtest
 LOGDIR=./log
 LDIR=./lib
 ODIR=obj
+TESTINGDIR=./Testing
 VALDIR=./valtest
 OPDIR=./open_project
 CC=g++
@@ -37,4 +38,5 @@ clean:
 	rm -rf $(BUILDDIR)/
 	rm -rf $(GTESTDIR)/*~
 	rm -rf $(LOGDIR)/*
+	rm -rf $(TESTINGDIR)/
 	rm -f ./*~
