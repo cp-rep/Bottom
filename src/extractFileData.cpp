@@ -33,14 +33,13 @@ const std::string ExtractFileData::returnPhraseLine(const std::string& fileName,
   std::string tempLine;
   std::string tempPhrase;
   bool found = false; 
-  std::ifstream inFile("/proc/meminfo", std::ifstream::in);
+  std::ifstream inFile(fileName, std::ifstream::in);
 
   // test if the file opened successfully
   if(!inFile.is_open())
     {
       return "N/A";
     }
-
 
   // read the file line by line looking for the matching phrase
   for(int i = 0;; i++)

@@ -115,13 +115,12 @@ int main()
   #if DEBUG
   std::string myString;
   int myInt;
-
   ExtractFileData myExtract;
+  
   myString = myExtract.returnPhraseLine("/proc/meminfo", "MemTotal");
   log << std::endl << "myString: " << myString << std::endl << std::endl;
-  myInt = myExtract.returnFirstIntFromLine(myString);
-  log << std::endl << "myInt: " << myInt << std::endl;
-  
+  //  myInt = myExtract.returnFirstIntFromLine(myString);
+  //  log << std::endl << "myInt: " << myInt << std::endl;
   
   #endif
 
@@ -141,8 +140,7 @@ int main()
   short currentX = 0;
   short previousY = 0;
   short previousX = 0;
-  
-  
+    
   // ## setup the main window ##
   CursesWindow mainWin;
 
@@ -915,6 +913,7 @@ int main()
   wrefresh(TIMEWin.getWindow());
   wrefresh(COMMANDWin.getWindow());  
   */
+  
   wnoutrefresh(mainWin.getWindow());  
   wnoutrefresh(topWin.getWindow());
   wnoutrefresh(tasksWin.getWindow());
