@@ -10,8 +10,7 @@ class ExtractFileData{
 public:
   const std::string returnPhraseLine(const std::string& fileName,
 				     const std::string& phrase);
-  const int returnFirstIntFromLine(const std::string line);
-
+  const int returnFirstIntFromLine(const std::string& line);
 private:
 };
 

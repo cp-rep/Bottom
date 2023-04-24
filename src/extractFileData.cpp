@@ -33,7 +33,8 @@ const std::string ExtractFileData::returnPhraseLine(const std::string& fileName,
   std::string tempLine;
   std::string tempPhrase;
   bool found = false; 
-  std::ifstream inFile(fileName, std::ifstream::in);
+  //   std::ifstream inFile(fileName, std::ifstream::in);
+   std::ifstream inFile(fileName, std::ifstream::in);   
 
   // test if the file opened successfully
   if(!inFile.is_open())
@@ -61,8 +62,9 @@ const std::string ExtractFileData::returnPhraseLine(const std::string& fileName,
     }
 
   inFile.close();
-  
+
   return tempLine;
+
 } // end of "returnPhraseLine"
 
 
@@ -82,7 +84,7 @@ const std::string ExtractFileData::returnPhraseLine(const std::string& fileName,
   Output:
   NONE
 */
-const int ExtractFileData::returnFirstIntFromLine(const std::string line)
+const int ExtractFileData::returnFirstIntFromLine(const std::string& line)
 {
   std::string temp;
   
@@ -94,5 +96,12 @@ const int ExtractFileData::returnFirstIntFromLine(const std::string line)
 	}	
     }
 
-  return stoi(temp);  
+  if(temp.empty())
+    {
+      return -1;
+    }
+  else
+    {
+      return stoi(temp);
+    }
 } // end of "returnFirstIntFromLine"
