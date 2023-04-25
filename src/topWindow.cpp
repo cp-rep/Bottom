@@ -82,7 +82,7 @@ TopWindow::TopWindow(std::string windowName,
   Output:
   NONE
  */
-const std::string& TopWindow::getUptime()
+const std::string& TopWindow::getUptimeFromPipe()
 {
   m_uptime.clear();
   
@@ -99,6 +99,7 @@ const std::string& TopWindow::getUptime()
     }
 
 
+  m_uptime.append("top - ");
 
   while(fread(&c, sizeof c, 1, usersFile))
     {

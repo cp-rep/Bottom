@@ -112,20 +112,10 @@ int main()
       log << "Time and Date: " << asctime(timeinfo) << std::endl;      
     }
 
-  #if DEBUG
-  std::string myString;
-  int myInt;
-  ExtractFileData myExtract;
-  
-  myString = myExtract.returnPhraseLine("/proc/meminfo", "MemTotal");
-  log << std::endl << "myString: " << myString << std::endl << std::endl;
-  //  myInt = myExtract.returnFirstIntFromLine(myString);
-  //  log << std::endl << "myInt: " << myInt << std::endl;
-  
-  #endif
-
   // local window variables
   CursesWindow processWin;
+  ExtractFileData fileData;
+  std::string getLineString;  
   short numLines = 0;
   short numCols = 0;
   short maxWindowY = 0;
@@ -192,6 +182,9 @@ int main()
 
   // disable curses defined key values for getch() to mainWin
   keypad(mainWin.getWindow(), false);
+
+  //
+  nodelay(mainWin.getWindow(), true);
 
   // ## define windows ##
   // define top window
@@ -874,115 +867,6 @@ int main()
 			      COMMANDWin.getStartY(),
 			      COMMANDWin.getStartX()));
 
-  #if DEBUG
-  // define the mem window
-  ExtractFileData fileData;
-  std::string tempString;
-
-  tempString = fileData.returnPhraseLine("/proc/meminfo", "MemTotal");
-  memWin.setMemTotal(memWin.convertkBToKiB(fileData.returnFirstIntFromLine(tempString)));
-  tempString = fileData.returnPhraseLine("/proc/meminfo", "MemFree");
-  memWin.setMemFree(memWin.convertkBToKiB(fileData.returnFirstIntFromLine(tempString)));
-  tempString = fileData.returnPhraseLine("/proc/meminfo", "Buffers");
-  memWin.setBuffers(memWin.convertkBToKiB(fileData.returnFirstIntFromLine(tempString)));
-  tempString = fileData.returnPhraseLine("/proc/meminfo", "Cached");
-  memWin.setCached(memWin.convertkBToKiB(fileData.returnFirstIntFromLine(tempString)));
-  tempString = fileData.returnPhraseLine("/proc/meminfo", "SReclaimable");
-  memWin.setSReclaimable(memWin.convertkBToKiB(fileData.returnFirstIntFromLine(tempString)));
-  tempString = fileData.returnPhraseLine("/proc/meminfo", "SwapTotal");
-  memWin.setSwapTotal(memWin.convertkBToKiB(fileData.returnFirstIntFromLine(tempString)));
-  tempString = fileData.returnPhraseLine("/proc/meminfo", "SwapFree");
-  memWin.setSwapFree(memWin.convertkBToKiB(fileData.returnFirstIntFromLine(tempString)));
-  tempString = fileData.returnPhraseLine("/proc/meminfo", "MemAvailable");
-  memWin.setMemAvailable(memWin.convertkBToKiB(fileData.returnFirstIntFromLine(tempString))); 
-  memWin.setSwapUsed(memWin.getSwapTotal(), memWin.getSwapFree());
-  memWin.setStringMiB();
-  memWin.setStringSwap();
-
-  log << std::endl << memWin.getMiB() << std::endl
-      << memWin.getSwap() << std::endl << std::endl;  
-
-  #endif
-
-
-
-  char arr[3] = {'H','I',0};
-  mvwaddstr(memWin.getWindow(),
-	    0,
-	    0,
-	    memWin.getMiB().c_str());
-  mvwaddstr(memWin.getWindow(),
-	    1,
-	    0,
-	    memWin.getSwap().c_str());
-
-
-  log << std::endl << memWin.getMiB() << std::endl;  
-
-
-  // ## draw window dimension boxes and update screen buffers ##
-  // draw boxes to represent window dimensions
-  box(topWin.getWindow(), 'A', 'A');
-  box(tasksWin.getWindow(), 'B', 'B');
-  box(cpuWin.getWindow(), 'C', 'C');  
-  //box(memWin.getWindow(), 'D', 'D');
-  box(PIDWin.getWindow(), 'E', 'E');
-  box(USERWin.getWindow(), 'F', 'F');
-  box(PRWin.getWindow(), 'G', 'G');    
-  box(NIWin.getWindow(), 'H', 'H');
-  box(VIRTWin.getWindow(), 'I', 'I');
-  box(RESWin.getWindow(), 'J', 'J');
-  box(SHRWin.getWindow(), 'K', 'K');
-  box(SWin.getWindow(), 'L', 'L');
-  box(PercentCPUWin.getWindow(), 'M', 'M');
-  box(PercentMEMWin.getWindow(), 'N', 'N');  
-  box(TIMEWin.getWindow(), 'O', 'O');
-  box(COMMANDWin.getWindow(), 'P', 'P');  
-    
-  // refresh the windows to update drawn buffer to monitor
-  /*
-  wrefresh(mainWin.getWindow());  
-  wrefresh(topWin.getWindow());
-  wrefresh(tasksWin.getWindow());
-  wrefresh(cpuWin.getWindow());  
-  wrefresh(memWin.getWindow());
-  wrefresh(PIDWin.getWindow());    
-  wrefresh(USERWin.getWindow());
-  wrefresh(PRWin.getWindow());    
-  wrefresh(NIWin.getWindow());
-  wrefresh(VIRTWin.getWindow());
-  wrefresh(RESWin.getWindow());
-  wrefresh(SHRWin.getWindow());        
-  wrefresh(SWin.getWindow());
-  wrefresh(PercentCPUWin.getWindow());
-  wrefresh(PercentMEMWin.getWindow());
-  wrefresh(TIMEWin.getWindow());
-  wrefresh(COMMANDWin.getWindow());  
-  */
-  
-
-  wnoutrefresh(mainWin.getWindow());  
-  wnoutrefresh(topWin.getWindow());
-  wnoutrefresh(tasksWin.getWindow());
-  wnoutrefresh(cpuWin.getWindow());  
-  wnoutrefresh(memWin.getWindow());
-  wnoutrefresh(PIDWin.getWindow());    
-  wnoutrefresh(USERWin.getWindow());
-  wnoutrefresh(PRWin.getWindow());    
-  wnoutrefresh(NIWin.getWindow());
-  wnoutrefresh(VIRTWin.getWindow());
-  wnoutrefresh(RESWin.getWindow());
-  wnoutrefresh(SHRWin.getWindow());        
-  wnoutrefresh(SWin.getWindow());
-  wnoutrefresh(PercentCPUWin.getWindow());
-  wnoutrefresh(PercentMEMWin.getWindow());
-  wnoutrefresh(TIMEWin.getWindow());
-  wnoutrefresh(COMMANDWin.getWindow());  
-  doupdate();
-
-
-  
-  
   // ## for testing ##
   if(has_colors())
     {
@@ -992,17 +876,74 @@ int main()
       color_set(0, NULL);
     }
   
-  /*
-    wprintw(WINDOW* win, const char *FMT, ...)
-
-    mvwprintw(WINDOW* win, int y, int x, const char* fmt, ...)
-  */
-
-
-  
-  
   // ## run the main program loop ##
   do{
+    // clear the windows
+    erase();
+
+    // get top window data and print to screen
+    topWin.getUptimeFromPipe();
+    mvwaddstr(topWin.getWindow(),
+	      0,
+	      0,
+	      topWin.getUptime().c_str());
+    
+    // get mem window data and print it to screen
+    getLineString = fileData.returnPhraseLine("/proc/meminfo", "MemTotal");
+    memWin.setMemTotal(memWin.convertkBToKiB
+		       (fileData.returnFirstIntFromLine(getLineString)));
+    getLineString = fileData.returnPhraseLine("/proc/meminfo", "MemFree");
+    memWin.setMemFree(memWin.convertkBToKiB
+		      (fileData.returnFirstIntFromLine(getLineString)));
+    getLineString = fileData.returnPhraseLine("/proc/meminfo", "Buffers");
+    memWin.setBuffers(memWin.convertkBToKiB
+		      (fileData.returnFirstIntFromLine(getLineString)));
+    getLineString = fileData.returnPhraseLine("/proc/meminfo", "Cached");
+    memWin.setCached(memWin.convertkBToKiB
+		     (fileData.returnFirstIntFromLine(getLineString)));
+    getLineString = fileData.returnPhraseLine("/proc/meminfo", "SReclaimable");
+    memWin.setSReclaimable(memWin.convertkBToKiB
+			   (fileData.returnFirstIntFromLine(getLineString)));
+    getLineString = fileData.returnPhraseLine("/proc/meminfo", "SwapTotal");
+    memWin.setSwapTotal(memWin.convertkBToKiB
+			(fileData.returnFirstIntFromLine(getLineString)));
+    getLineString = fileData.returnPhraseLine("/proc/meminfo", "SwapFree");
+    memWin.setSwapFree(memWin.convertkBToKiB
+		       (fileData.returnFirstIntFromLine(getLineString)));
+    getLineString = fileData.returnPhraseLine("/proc/meminfo", "MemAvailable");
+    memWin.setMemAvailable(memWin.convertkBToKiB
+			   (fileData.returnFirstIntFromLine(getLineString))); 
+    memWin.setSwapUsed(memWin.getSwapTotal(), memWin.getSwapFree());
+    memWin.setStringMiB();
+    memWin.setStringSwap();
+    mvwaddstr(memWin.getWindow(),
+	      0,
+	      0,
+	      memWin.getMiB().c_str());
+    mvwaddstr(memWin.getWindow(),
+	      1,
+	      0,
+	      memWin.getSwap().c_str());
+
+    // refresh the windows
+    wnoutrefresh(mainWin.getWindow()); 
+    wnoutrefresh(topWin.getWindow());
+    wnoutrefresh(tasksWin.getWindow());
+    wnoutrefresh(cpuWin.getWindow()); 
+    wnoutrefresh(memWin.getWindow());
+    wnoutrefresh(PIDWin.getWindow());   
+    wnoutrefresh(USERWin.getWindow());
+    wnoutrefresh(PRWin.getWindow());  
+    wnoutrefresh(NIWin.getWindow());
+    wnoutrefresh(VIRTWin.getWindow());
+    wnoutrefresh(RESWin.getWindow());
+    wnoutrefresh(SHRWin.getWindow());    
+    wnoutrefresh(SWin.getWindow());
+    wnoutrefresh(PercentCPUWin.getWindow());
+    wnoutrefresh(PercentMEMWin.getWindow());
+    wnoutrefresh(TIMEWin.getWindow());
+    wnoutrefresh(COMMANDWin.getWindow());
+    doupdate();
     
   }while(getch() != 'q');
   

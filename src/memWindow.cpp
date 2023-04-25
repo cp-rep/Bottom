@@ -109,6 +109,7 @@ const float MemWindow::convertKiBToMiB()
  */
 void MemWindow::setStringMiB()
 {
+  m_MiB.clear();
   m_MiB.append("MiB Mem: ");
   m_MiB.append(std::to_string(getMemTotal()));
   m_MiB.append(" total, ");
@@ -126,6 +127,7 @@ void MemWindow::setStringMiB()
  */
 void MemWindow::setStringSwap()
 {
+  m_swap.clear();
   m_swap.append("MiB Swap: ");
   m_swap.append(std::to_string(getSwapTotal()));
   m_swap.append(" total, ");
@@ -136,3 +138,5 @@ void MemWindow::setStringSwap()
   m_swap.append(std::to_string(getMemAvailable()));
   m_swap.append(" buff/cache");  
 } // end of "setStringSwap"
+
+
