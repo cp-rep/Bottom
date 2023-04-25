@@ -56,7 +56,6 @@
 void printWindowToLog(std::ofstream& log,
 		      const CursesWindow& win);
 void printTopWin(CursesWindow& topWin);
-const float kBToKiB(const float& val);
 
 #define DEBUG 1
 
@@ -879,32 +878,54 @@ int main()
   // define the mem window
   ExtractFileData fileData;
   std::string tempString;
-  
-  tempString = fileData.returnPhraseLine("/proc/meminfo", "MemTotal");
-  memWin.setMemTotal(kBToKiB(fileData.returnFirstIntFromLine(tempString)));
-  tempString = fileData.returnPhraseLine("/proc/meminfo", "MemFree");
-  memWin.setMemFree(kBToKiB(fileData.returnFirstIntFromLine(tempString)));
-  memWin.setMemUsed();
-  tempString = fileData.returnPhraseLine("/proc/meminfo", "Cached");
-  memWin.setBuffCache(kBToKiB(fileData.returnFirstIntFromLine(tempString)));
-  tempString = fileData.returnPhraseLine("/proc/meminfo", "SwapTotal");
-  memWin.setSwapTotal(kBToKiB(fileData.returnFirstIntFromLine(tempString)));
-  tempString = fileData.returnPhraseLine("/proc/meminfo", "SwapFree");
-  memWin.setSwapFree(kBToKiB(fileData.returnFirstIntFromLine(tempString)));
-  memWin.setSwapUsed();
-  memWin.setMiB();
 
-  log << std::endl << memWin.getMiB() << std::endl << std::endl;
+  tempString = fileData.returnPhraseLine("/proc/meminfo", "MemTotal");
+  memWin.setMemTotal(memWin.convertkBToKiB(fileData.returnFirstIntFromLine(tempString)));
+  tempString = fileData.returnPhraseLine("/proc/meminfo", "MemFree");
+  memWin.setMemFree(memWin.convertkBToKiB(fileData.returnFirstIntFromLine(tempString)));
+  tempString = fileData.returnPhraseLine("/proc/meminfo", "Buffers");
+  memWin.setBuffers(memWin.convertkBToKiB(fileData.returnFirstIntFromLine(tempString)));
+  tempString = fileData.returnPhraseLine("/proc/meminfo", "Cached");
+  memWin.setCached(memWin.convertkBToKiB(fileData.returnFirstIntFromLine(tempString)));
+  tempString = fileData.returnPhraseLine("/proc/meminfo", "SReclaimable");
+  memWin.setSReclaimable(memWin.convertkBToKiB(fileData.returnFirstIntFromLine(tempString)));
+  tempString = fileData.returnPhraseLine("/proc/meminfo", "SwapTotal");
+  memWin.setSwapTotal(memWin.convertkBToKiB(fileData.returnFirstIntFromLine(tempString)));
+  tempString = fileData.returnPhraseLine("/proc/meminfo", "SwapFree");
+  memWin.setSwapFree(memWin.convertkBToKiB(fileData.returnFirstIntFromLine(tempString)));
+  tempString = fileData.returnPhraseLine("/proc/meminfo", "MemAvailable");
+  memWin.setMemAvailable(memWin.convertkBToKiB(fileData.returnFirstIntFromLine(tempString))); 
+  memWin.setSwapUsed(memWin.getSwapTotal(), memWin.getSwapFree());
+  memWin.setStringMiB();
+  memWin.setStringSwap();
+
+  log << std::endl << memWin.getMiB() << std::endl
+      << memWin.getSwap() << std::endl << std::endl;  
 
   #endif
-  
+
+
+
+  char arr[3] = {'H','I',0};
+  mvwaddstr(memWin.getWindow(),
+	    0,
+	    0,
+	    memWin.getMiB().c_str());
+  mvwaddstr(memWin.getWindow(),
+	    1,
+	    0,
+	    memWin.getSwap().c_str());
+
+
+  log << std::endl << memWin.getMiB() << std::endl;  
+
 
   // ## draw window dimension boxes and update screen buffers ##
   // draw boxes to represent window dimensions
   box(topWin.getWindow(), 'A', 'A');
   box(tasksWin.getWindow(), 'B', 'B');
   box(cpuWin.getWindow(), 'C', 'C');  
-  //  box(memWin.getWindow(), 'D', 'D');
+  //box(memWin.getWindow(), 'D', 'D');
   box(PIDWin.getWindow(), 'E', 'E');
   box(USERWin.getWindow(), 'F', 'F');
   box(PRWin.getWindow(), 'G', 'G');    
@@ -939,6 +960,7 @@ int main()
   wrefresh(COMMANDWin.getWindow());  
   */
   
+
   wnoutrefresh(mainWin.getWindow());  
   wnoutrefresh(topWin.getWindow());
   wnoutrefresh(tasksWin.getWindow());
@@ -958,6 +980,7 @@ int main()
   wnoutrefresh(COMMANDWin.getWindow());  
   doupdate();
 
+
   
   
   // ## for testing ##
@@ -971,9 +994,12 @@ int main()
   
   /*
     wprintw(WINDOW* win, const char *FMT, ...)
+
     mvwprintw(WINDOW* win, int y, int x, const char* fmt, ...)
   */
 
+
+  
   
   // ## run the main program loop ##
   do{
@@ -1031,7 +1057,3 @@ void printTopWin(CursesWindow& topWin)
 
 
 
-const float kBToKiB(const float& val)
-{
-  return val * .9765625;
-}
