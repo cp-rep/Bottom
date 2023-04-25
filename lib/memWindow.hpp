@@ -28,48 +28,61 @@ public:
 	    const short& previousX = 0,
 	    const std::string& MiB = "",
 	    const std::string& swap = "",
-	    const float memTotal = 0,
-	    const float memFree = 0,
-	    const float memUsed = 0,
-	    const float buffCache = 0,
-	    const float swapTotal = 0,
-	    const float swapFree = 0,
-	    const float swapUsed = 0,
-	    const float swapAvailable = 0);
+	    const float& memTotal = 0,
+	    const float& memFree = 0,
+	    const float& buffers = 0,
+	    const float& cached = 0,
+	    const float& sreclaimable = 0,
+	    const float& swapTotal = 0,
+	    const float& swapFree = 0,
+	    const float& swapUsed = 0,
+	    const float& memAvailable = 0);
+
+  // member functions
+  const float convertkBToKiB(const float& val);
+  const float convertKiBToMiB();
+  const float getBuffCache() const { return m_buffers + m_cached + m_sreclaimable; }
+  const float getMemUsed() const { return m_memTotal - m_memFree -
+                                    m_buffers - m_cached - m_sreclaimable; }  
   
   // getters
-  const std::string& getMiB() { return m_MiB; }
-  const float& getMemTotal() { return m_memTotal; }
-  const float& getMemFree() { return m_memFree; }
-  const float getMemUsed() { return m_memUsed; }
-  const float& getBuffCache() { return m_buffCache; }
-  const float& getSwapTotal() { return m_swapTotal; }
-  const float& getSwapFree() { return m_swapFree; }
-  const float& getSwapUsed() { return m_swapUsed; }
-  const float& getSwapAvailable() { return m_swapAvailable; }  
+  const std::string& getMiB() const { return m_MiB; }
+  const std::string& getSwap() const { return m_swap; }  
+  const float& getMemTotal() const { return m_memTotal; }
+  const float& getMemFree() const { return m_memFree; }
+  const float& getBuffers() const { return m_buffers; }
+  const float& getCached() const { return m_cached; }
+  const float& getSwapTotal() const { return m_swapTotal; }
+  const float& getSwapFree() const { return m_swapFree; }
+  const float& getSwapUsed() const { return m_swapUsed; }
+  const float& getMemAvailable() const { return m_memAvailable; }
 
   // setters
-  void setMiB();
+  void setStringMiB();
+  void setStringSwap();  
   void setMemTotal(const int& memTotal) { m_memTotal = memTotal; }
   void setMemFree(const int& memFree) { m_memFree = memFree; }
-  void setMemUsed() { m_memUsed = m_memTotal - m_memFree; }
-  void setBuffCache(const int& buffCache) { m_buffCache = buffCache; }
+  void setBuffers(const int& buffers) { m_buffers = buffers; }
+  void setCached(const int& cached) { m_cached = cached; }
+  void setSReclaimable(const int& sreclaimable) { m_sreclaimable = sreclaimable; }
   void setSwapTotal(const int& swapTotal) { m_swapTotal = swapTotal; }
   void setSwapFree(const int& swapFree) { m_swapFree = swapFree; }
-  void setSwapUsed() { m_swapUsed = m_swapTotal - m_swapFree; }
-  void setSwapAvailable(const int& swapAvailable) { m_swapAvailable = swapAvailable; }
-  
+  void setSwapUsed(const int& swapTotal,
+		   const int& swapFree) { m_swapUsed = swapTotal - swapFree; }
+  void setMemAvailable(const int& memAvailable) { m_memAvailable = memAvailable; }
+
 private:
   std::string m_MiB;
   std::string m_swap;
   float m_memTotal;
   float m_memFree;
-  float m_memUsed;
-  float m_buffCache;
+  float m_buffers;
+  float m_cached;
+  float m_sreclaimable;
   float m_swapTotal;
   float m_swapFree;
   float m_swapUsed;
-  float m_swapAvailable;
+  float m_memAvailable;
 };
 
 #endif
