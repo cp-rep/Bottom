@@ -3,9 +3,6 @@
   Description:
 */
 #include "topWindow.hpp"
-#include <fstream>
-#include <cstdlib>
-#include <iostream>
 
 
 
@@ -49,82 +46,21 @@ TopWindow::TopWindow(std::string windowName,
 		     const short& currentY,
 		     const short& currentX,
 		     const short& previousY,
-		     const short& previousX,
-		     struct tm* timeinfo) : CursesWindow(windowName,
-							 numLines,
-							 numCols,
-							 maxWindowY,
-							 maxWindowX,
-							 minWindowY,
-							 minWindowX,
-							 centerY,
-							 centerX,
-							 startY,
-							 startX,
-							 currentY,
-							 currentX,
-							 previousY,
-							 previousX)
+		     const short& previousX) : CursesWindow(windowName,
+							    numLines,
+							    numCols,
+							    maxWindowY,
+							    maxWindowX,
+							    minWindowY,
+							    minWindowX,
+							    centerY,
+							    centerX,
+							    startY,
+							    startX,
+							    currentY,
+							    currentX,
+							    previousY,
+							    previousX)
 {
   m_uptime = "";
 } // end of "TopWindow Default Constructor"
-
-
-
-/*
-  Function:
-  getUptime
-
-  Description:
-
-  Input:
-  NONE
-  Output:
-  NONE
- */
-const std::string& TopWindow::getUptimeFromPipe()
-{
-  m_uptime.clear();
-  
-  FILE* usersFile;
-  char c = 0;
-
-  usersFile = popen("uptime", "r");
-
-
-  if(usersFile == nullptr)
-    {
-      perror("popen() failed to open users program.");
-      exit(EXIT_FAILURE);
-    }
-
-
-  m_uptime.append("top - ");
-
-  while(fread(&c, sizeof c, 1, usersFile))
-    {
-      m_uptime.push_back(c);
-    }
-
-  pclose(usersFile);
-
-  return m_uptime;
-
-} // end of "getUptime"
-
-
-
-/*
-  Function:
-  drawTop
-
-  Description:
-
-  Input:
-  NONE
-  Output:
-  NONE
- */
-void TopWindow::drawTop()
-{
-} // end of "getSeconds"

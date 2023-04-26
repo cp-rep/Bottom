@@ -22,15 +22,10 @@ class TopWindow : public CursesWindow {
 	    const short& currentY = 0,
 	    const short& currentX = 0,
 	    const short& previousY =  0,
-	    const short& previousX = 0,
-	    struct tm* timeinfo = nullptr);
-
-
+	    const short& previousX = 0);
   
   // member functions
   const std::string& getUptime() { return m_uptime; }  
-  const std::string& getUptimeFromPipe();
-  void drawTop();
 
  private:
   // member data
