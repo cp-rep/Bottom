@@ -83,6 +83,28 @@ const float MemInfo::calculateMemUsed() const
 
 /*
   Function:
+  calculateSwapUsed
+
+  Description:
+  Calculates the difference of the m_swapTotal and m_swapFree
+  member variables and returns it.
+
+  Input:
+  NONE
+
+  Output:
+  NONE
+*/
+const float MemInfo::calculateSwapUsed(const int& swapTotal,
+			  const int& swapFree) const
+{
+  return swapTotal - swapFree;
+} // end of "calculateSwapUsed"
+
+
+
+/*
+  Function:
   m_memTotal
   
   Description:
@@ -252,10 +274,10 @@ const float& MemInfo::getMemAvailable() const
 
 /*
   Function:
-  setMemAvailable
+  setMemTotal
 
   Description:
-  Sets the m_memAvailable member variable.
+  Sets the m_memTotal member variable.
 
   Input:
   NONE
@@ -265,16 +287,17 @@ const float& MemInfo::getMemAvailable() const
 */
 void MemInfo::setMemTotal(const int& memTotal)
 {
+  m_memTotal = memTotal;
 } // end of "setMemTotal"
 
 
 
 /*
   Function:
-  setMemAvailable
+  setMemFree
 
   Description:
-  Sets the m_memAvailable member variable.
+  Sets the m_memFree member variable.
 
   Input:
   NONE
@@ -284,16 +307,17 @@ void MemInfo::setMemTotal(const int& memTotal)
 */
 void MemInfo::setMemFree(const int& memFree)
 {
+  m_memFree = memFree;
 } // end of "setMemFree"
 
 
 
 /*
   Function:
-  setMemAvailable
+  setBuffers
 
   Description:
-  Sets the m_memAvailable member variable.
+  Sets the m_buffers member variable.
 
   Input:
   NONE
@@ -303,16 +327,17 @@ void MemInfo::setMemFree(const int& memFree)
 */
 void MemInfo::setBuffers(const int& buffers)
 {
-}// end of "setBuffers"
+  m_buffers = buffers;
+} // end of "setBuffers"
 
 
 
 /*
   Function:
-  setMemAvailable
+  setCached
 
   Description:
-  Sets the m_memAvailable member variable.
+  Sets the m_cached member variable.
 
   Input:
   NONE
@@ -322,16 +347,17 @@ void MemInfo::setBuffers(const int& buffers)
 */
 void MemInfo::setCached(const int& cached)
 {
-}// end of "setCached"
+  m_cached = cached;
+} // end of "setCached"
 
 
 
 /*
   Function:
-  setMemAvailable
+  setSReclaimable
 
   Description:
-  Sets the m_memAvailable member variable.
+  Sets the m_sreclaimable member variable.
 
   Input:
   NONE
@@ -341,16 +367,17 @@ void MemInfo::setCached(const int& cached)
 */
 void MemInfo::setSReclaimable(const int& sreclaimable)
 {
-}// end of "setSReclaimable"
+  m_sreclaimable = sreclaimable;
+} // end of "setSReclaimable"
 
 
 
 /*
   Function:
-  setMemAvailable
+  setSwapTotal
 
   Description:
-  Sets the m_memAvailable member variable.
+  Sets the m_swapTotal member variable.
 
   Input:
   NONE
@@ -360,16 +387,17 @@ void MemInfo::setSReclaimable(const int& sreclaimable)
 */
 void MemInfo::setSwapTotal(const int& swapTotal)
 {
-}// end of "setSwapTotal"
+  m_swapTotal = swapTotal;
+} // end of "setSwapTotal"
 
 
 
 /*
   Function:
-  setMemAvailable
+  setSwapFree
 
   Description:
-  Sets the m_memAvailable member variable.
+  Sets the m_swapFree member variable.
 
   Input:
   NONE
@@ -379,27 +407,8 @@ void MemInfo::setSwapTotal(const int& swapTotal)
 */
 void MemInfo::setSwapFree(const int& swapFree)
 {
-}// end of "setSwapFree"
-
-
-
-/*
-  Function:
-  setMemAvailable
-
-  Description:
-  Sets the m_memAvailable member variable.
-
-  Input:
-  NONE
-
-  Output:
-  NONE
-*/
-void MemInfo::setSwapUsed(const int& swapTotal,
-		 const int& swapFree)
-{
-}// end of "setSwapUsed"
+  m_swapFree = swapFree;
+} // end of "setSwapFree"
 
 
 
@@ -419,4 +428,5 @@ void MemInfo::setSwapUsed(const int& swapTotal,
 */
 void MemInfo::setMemAvailable(const int& memAvailable)
 {
-}// end of "setMemAvailable"
+  m_memAvailable = memAvailable;
+} // end of "setMemAvailable"
