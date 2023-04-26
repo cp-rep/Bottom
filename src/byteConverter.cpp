@@ -13,7 +13,7 @@
 
   Description:
  */
-const float ByteConverter::kBToKiB(const float& val)
+const float kBToKiB(const float& val)
 {
   return val * TO_KIBIBYTE;
 } // end of "kBToKiB"
@@ -25,7 +25,7 @@ const float ByteConverter::kBToKiB(const float& val)
 
   Description:
  */
-const float ByteConverter::_KiBToMiB(const float& val)
+const float _KiBToMiB(const float& val)
 {
   return 0;
 } // end of "_KiBToMiB"
