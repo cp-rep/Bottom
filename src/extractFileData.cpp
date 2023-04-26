@@ -27,8 +27,8 @@
   std::string                 - a const std::string containing the line which
                                 the phrase was found.
 */
-const std::string ExtractFileData::returnPhraseLine(const std::string& fileName,
-						    const std::string& phrase)
+const std::string returnPhraseLine(const std::string& fileName,
+				   const std::string& phrase)
 {
   std::string tempLine;
   std::string tempPhrase;
@@ -84,7 +84,7 @@ const std::string ExtractFileData::returnPhraseLine(const std::string& fileName,
   Output:
   NONE
 */
-const int ExtractFileData::returnFirstIntFromLine(const std::string& line)
+const int returnFirstIntFromLine(const std::string& line)
 {
   std::string temp;
   
