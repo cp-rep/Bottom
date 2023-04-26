@@ -51,14 +51,13 @@
 #include "TIMEWindow.hpp"
 #include "USERWindow.hpp"
 #include "extractFileData.hpp"
+#include <unistd.h>
+
+#define DEBUG 1
 
 // function prototypes
 void printWindowToLog(std::ofstream& log,
 		      const CursesWindow& win);
-void printTopWin(CursesWindow& topWin);
-
-#define DEBUG 1
-
 
 
 /*
@@ -217,8 +216,7 @@ int main()
 		   currentY,
 		   currentX,
 		   previousY,
-		   previousX,
-		   timeinfo);
+		   previousX);
 
   // define tasks window
   numLines = 1;
@@ -881,14 +879,18 @@ int main()
     // clear the windows
     erase();
 
+
     // get top window data and print to screen
+    /*
     topWin.getUptimeFromPipe();
     mvwaddstr(topWin.getWindow(),
 	      0,
 	      0,
 	      topWin.getUptime().c_str());
-    
-    // get mem window data and print it to screen
+    */
+
+    /*
+    // get memory window data and print it to screen
     getLineString = fileData.returnPhraseLine("/proc/meminfo", "MemTotal");
     memWin.setMemTotal(memWin.convertkBToKiB
 		       (fileData.returnFirstIntFromLine(getLineString)));
@@ -924,6 +926,7 @@ int main()
 	      1,
 	      0,
 	      memWin.getSwap().c_str());
+    */
 
     // refresh the windows
     wnoutrefresh(mainWin.getWindow()); 
@@ -944,6 +947,10 @@ int main()
     wnoutrefresh(TIMEWin.getWindow());
     wnoutrefresh(COMMANDWin.getWindow());
     doupdate();
+
+    //napms(3000);
+    //sleep(3);
+    //delay(3000);
     
   }while(getch() != 'q');
   
@@ -987,14 +994,3 @@ void printWindowToLog(std::ofstream& log, const CursesWindow& win)
   log << "m_previousY: " << win.getPreviousY() << std::endl;
   log << "m_previousX: " << win.getPreviousX() << std::endl;
 } // end of "printWindow"
-
-
-
-
-void printTopWin(CursesWindow& topWin)
-{
-} //
-
-
-
-
