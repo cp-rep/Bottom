@@ -113,7 +113,6 @@ int main()
 
   // local window variables
   CursesWindow processWin;
-  ExtractFileData fileData;
   std::string getLineString;  
   short numLines = 0;
   short numCols = 0;
