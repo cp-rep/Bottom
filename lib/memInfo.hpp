@@ -1,6 +1,9 @@
 /*
   File: memInfo.hpp
+  
   Description:
+  The MemInfo class is used to store data read from the
+  /proc/meminfo file.
  */
 #ifndef MEMINFO_HPP
 #define MEMINFO_HPP
@@ -19,31 +22,31 @@ public:
 	  const float& memAvailable = 0);
   
   // member functions
-  const float calculateBuffCache() const { return m_buffers + m_cached + m_sreclaimable; }
-  const float calculateMemUsed() const { return m_memTotal - m_memFree -
-      m_buffers - m_cached - m_sreclaimable; }  
+  const float calculateBuffCache() const;
+  const float calculateMemUsed() const;
   
   // getters
-  const float& getMemTotal() const { return m_memTotal; }
-  const float& getMemFree() const { return m_memFree; }
-  const float& getBuffers() const { return m_buffers; }
-  const float& getCached() const { return m_cached; }
-  const float& getSwapTotal() const { return m_swapTotal; }
-  const float& getSwapFree() const { return m_swapFree; }
-  const float& getSwapUsed() const { return m_swapUsed; }
-  const float& getMemAvailable() const { return m_memAvailable; }
+  const float& getMemTotal() const;
+  const float& getMemFree() const;
+  const float& getBuffers() const;
+  const float& getCached() const;
+  const float& getSwapTotal() const;
+  const float& getSwapFree() const;
+  const float& getSwapUsed() const;
+  const float& getMemAvailable() const;
 
   // setters
-  void setMemTotal(const int& memTotal) { m_memTotal = memTotal; }
-  void setMemFree(const int& memFree) { m_memFree = memFree; }
-  void setBuffers(const int& buffers) { m_buffers = buffers; }
-  void setCached(const int& cached) { m_cached = cached; }
-  void setSReclaimable(const int& sreclaimable) { m_sreclaimable = sreclaimable; }
-  void setSwapTotal(const int& swapTotal) { m_swapTotal = swapTotal; }
-  void setSwapFree(const int& swapFree) { m_swapFree = swapFree; }
+  void setMemTotal(const int& memTotal);
+  void setMemFree(const int& memFree);
+  void setBuffers(const int& buffers);
+  void setCached(const int& cached);
+  void setSReclaimable(const int& sreclaimable);
+  void setSwapTotal(const int& swapTotal);
+  void setSwapFree(const int& swapFree);
   void setSwapUsed(const int& swapTotal,
-		   const int& swapFree) { m_swapUsed = swapTotal - swapFree; }
-  void setMemAvailable(const int& memAvailable) { m_memAvailable = memAvailable; }
+		   const int& swapFree);
+  void setMemAvailable(const int& memAvailable);
+  
 private:
   // member variables
   float m_memTotal;
@@ -56,6 +59,5 @@ private:
   float m_swapUsed;
   float m_memAvailable;
 };
-
 
 #endif
