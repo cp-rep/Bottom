@@ -7,11 +7,9 @@
 #include <curses.h>
 #include <string>
 
-
-
 class CursesWindow {
 public:
-  // constructors and destructor
+  // constructors
   CursesWindow(std::string windowName = "",	      
 	       const short& numLines = 0,
 	       const short& numCols = 0,

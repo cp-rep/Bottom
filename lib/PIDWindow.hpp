@@ -6,6 +6,7 @@
 #define PIDWINDOW_HPP
 #include "cursesWindow.hpp"
 
+
 class PIDWindow : public CursesWindow {
 public:
 
@@ -25,7 +26,7 @@ public:
 	    const short& previousY =  0,
 	    const short& previousX = 0);  
 private:
+  
 };
-
 
 #endif
