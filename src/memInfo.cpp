@@ -3,7 +3,7 @@
   
   Description:
   The MemInfo class function implementations from the
-  memInfo.hppheader file.
+  memInfo.hpp header file.
  */
 #include "memInfo.hpp"
 
