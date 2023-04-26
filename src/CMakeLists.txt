@@ -7,10 +7,12 @@ target_sources(Gtest
   # program source files
   cursesWindow.cpp
   extractFileData.cpp
+  memInfo.cpp
   PUBLIC
   # program library files
   ../lib/cursesWindow.hpp
   ../lib/extractFileData.hpp
+  ../lib/memInfo.hpp
   )
 
 # direct the location of the files
