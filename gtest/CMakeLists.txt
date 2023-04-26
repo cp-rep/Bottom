@@ -17,6 +17,7 @@ add_executable(
     gtest_cursesWindow.cpp
     gtest_extractFileData.cpp
     gtest_memInfo.cpp
+    gtest_byteConverter.cpp
     )
 
 # link the test source files to application source files
