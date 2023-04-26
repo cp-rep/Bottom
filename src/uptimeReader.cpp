@@ -40,5 +40,4 @@ const std::string getUptimeFromPipe()
   pclose(usersFile);
 
   return uptime;
-
 } // end of "getUptime"
