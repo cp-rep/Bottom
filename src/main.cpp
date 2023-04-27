@@ -54,6 +54,7 @@
 #include "uptimeReader.hpp"
 #include "byteConverter.hpp"
 #include "memInfo.hpp"
+#include "processInfo.hpp"
 #include <unistd.h>
 
 // global constants
