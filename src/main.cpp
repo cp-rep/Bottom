@@ -32,6 +32,9 @@
 #include <climits>
 #include <limits>
 #include <iomanip>
+#include <unistd.h>
+#include <unordered_map>
+#include <sys/stat.h>
 #include "log.hpp"
 #include "cursesWindow.hpp"
 #include "topWindow.hpp"
@@ -55,7 +58,6 @@
 #include "byteConverter.hpp"
 #include "memInfo.hpp"
 #include "processInfo.hpp"
-#include <unistd.h>
 
 // global constants
 #define _DEBUG 1
@@ -72,6 +74,7 @@
 // function prototypes
 void printWindowToLog(std::ofstream& log,
 		      const CursesWindow& win);
+void findProcess();
 
 
 /*
@@ -128,6 +131,8 @@ int main()
   // local window variables
   CursesWindow processWin;
   MemInfo mInfo;
+  ProcessInfo* pInfo;
+  std::unordered_map<int, ProcessInfo*> processes;
   std::string lineString;  
   short numLines = 0;
   short numCols = 0;
@@ -887,6 +892,14 @@ int main()
       //init_color(COLOR_BLACK, 0, 0, 0);
       color_set(0, NULL);
     }
+
+  /*
+    struct stat myDir;
+    std::vector<std::string> myVector;
+    myVector = getFileNames("/proct");
+    log << std::endl << "Is it directory? " << myVector[0] << std::endl;
+  */
+
   
   // ## run the main program loop ##
   do{
@@ -941,6 +954,10 @@ int main()
 	      1,
 	      0,
 	      memWin.getSwap().c_str());
+
+    // find running processes and store their data
+    //    stat();
+    
 
     // refresh the windows
     wnoutrefresh(mainWin.getWindow()); 
@@ -1008,3 +1025,10 @@ void printWindowToLog(std::ofstream& log, const CursesWindow& win)
   log << "m_previousY: " << win.getPreviousY() << std::endl;
   log << "m_previousX: " << win.getPreviousX() << std::endl;
 } // end of "printWindow"
+
+
+
+
+void findProcess()
+{
+}

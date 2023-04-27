@@ -8,10 +8,20 @@
 #ifndef PROCESSWINDOW_HPP
 #define PROCESSWINDOW_HPP
 #include <string>
-#include <ctime>
 
 class ProcessInfo{
 public:
+  ProcessInfo(const unsigned int& pid = 0,
+	      const std::string& user = "",
+	      const unsigned short& m_pr = 0,
+	      const unsigned short& m_ni = 0,
+	      const unsigned int& m_virt = 0,
+	      const unsigned int& m_res = 0,
+	      const unsigned int& m_shr = 0,
+	      const char* s = nullptr,
+	      const float& cpuUsage = 0,
+	      const float& memUsage = 0,
+	      const std::string& command = "");
   
 private:
   unsigned int m_pid;
@@ -24,7 +34,6 @@ private:
   char m_s;
   float m_cpuUsage;
   float m_memUsage;
-  struct tm m_processUptime;
   std::string m_command;
 };
 
