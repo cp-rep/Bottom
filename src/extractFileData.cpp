@@ -105,3 +105,103 @@ const int returnFirstIntFromLine(const std::string& line)
       return stoi(temp);
     }
 } // end of "returnFirstIntFromLine"
+
+
+
+/*
+  Function:
+  getFilesPaths
+
+  Description:
+  Returns a vector of found existing file paths based on the path given
+  from the parameter dirPath.
+ */
+const std::vector<std::string> getFilePaths(const std::string& dirPath)
+{
+  std::vector<std::string> dirNames;
+  return dirNames;
+} // end of "getFileNames"
+
+
+
+/*
+  Function:
+  getFileNames
+   
+  Description:
+  Searches the file path given from the parameter dirPath for files.
+  If the path exists and files are found, the file names are stored in
+  vector<string> type and returned to the caller.
+  
+  Input:
+  dirPath                - a const string reference representing a file
+                           path to a directory.
+  
+  Output:
+  NONE
+*/
+const std::vector<std::string> getFileNames(const std::string& dirPath)
+{
+  std::vector<std::string> dirNames;
+  return dirNames;
+} // end of "getFileNames"
+
+
+
+/*
+  Function:
+  getFolderPaths
+   
+  Description:
+  Searches the file path given from the parameter dirPath for files.
+  If the path exists and directories represented by only numeric
+  characters are found, their file names are converted to integers
+  and returned as a vector<int> type to the caller.
+
+  
+  Input:
+  dirPath                - a const string reference representing a file
+                           path to a directory.  
+  Output:
+  NONE
+*/
+const std::vector<std::string> getFolderPaths(const std::string& dirPath)
+{
+  struct stat dir;
+  std::vector<std::string> dirNames;
+
+  if(stat(dirPath.c_str(), &dir) == 0 && S_ISDIR(dir.st_mode))
+    {
+      dirNames.push_back("Yes");
+    }
+  else
+    {
+      dirNames.push_back("No");      
+    }
+
+  return dirNames;
+} // end of "getNumberedFolders"
+
+
+/*
+  Function:
+  getFolderNames
+
+  Description:
+ */
+const std::vector<std::string> getFolderNames(const std::string& dirPath)
+{
+  struct stat dir;
+  std::vector<std::string> dirNames;
+
+  if(stat(dirPath.c_str(), &dir) == 0 && S_ISDIR(dir.st_mode))
+    {
+      dirNames.push_back("Yes");
+    }
+  else
+    {
+      dirNames.push_back("No");      
+    }
+
+  return dirNames;
+} // end of "getNumberedFolders"
