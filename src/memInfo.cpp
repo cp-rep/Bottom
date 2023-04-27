@@ -95,10 +95,9 @@ const float MemInfo::calculateMemUsed() const
   Output:
   NONE
 */
-const float MemInfo::calculateSwapUsed(const int& swapTotal,
-			  const int& swapFree) const
+const float MemInfo::calculateSwapUsed() const
 {
-  return swapTotal - swapFree;
+  return m_swapTotal - m_swapFree;
 } // end of "calculateSwapUsed"
 
 

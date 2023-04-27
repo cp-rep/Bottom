@@ -24,8 +24,8 @@ public:
   // member functions
   const float calculateBuffCache() const;
   const float calculateMemUsed() const;
-  const float calculateSwapUsed(const int& swapTotal,
-				const int& swapFree) const;  
+  const float calculateSwapUsed() const;
+				
   
   // getters
   const float& getMemTotal() const;
