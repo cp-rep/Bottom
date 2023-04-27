@@ -8,6 +8,7 @@
 
 class TopWindow : public CursesWindow {
  public:
+  // constructors
   TopWindow(std::string windowName = "",	      
 	    const short& numLines = 0,
 	    const short& numCols = 0,
@@ -23,9 +24,11 @@ class TopWindow : public CursesWindow {
 	    const short& currentX = 0,
 	    const short& previousY =  0,
 	    const short& previousX = 0);
+  // getters
+  const std::string& getUptime();
   
-  // member functions
-  const std::string& getUptime() { return m_uptime; }  
+  // setters
+  void setUptime(const std::string& uptime);
 
  private:
   // member data
