@@ -51,9 +51,22 @@
 #include "TIMEWindow.hpp"
 #include "USERWindow.hpp"
 #include "extractFileData.hpp"
+#include "uptimeReader.hpp"
+#include "byteConverter.hpp"
+#include "memInfo.hpp"
 #include <unistd.h>
 
-#define DEBUG 1
+// global constants
+#define _DEBUG 1
+#define _PROC_MEMINFO "/proc/meminfo"
+#define _MEMTOTAL "MemTotal"
+#define _MEMFREE "MemFree"
+#define _BUFFERS "Buffers"
+#define _CACHED "Cached"
+#define _SRECLAIMABLE "SReclaimable"
+#define _SWAPTOTAL "SwapTotal"
+#define _SWAPFREE "SwapFree"
+#define _MEMAVAILABLE "MemAvailable"
 
 // function prototypes
 void printWindowToLog(std::ofstream& log,
@@ -113,7 +126,8 @@ int main()
 
   // local window variables
   CursesWindow processWin;
-  std::string getLineString;  
+  MemInfo mInfo;
+  std::string lineString;  
   short numLines = 0;
   short numCols = 0;
   short maxWindowY = 0;
@@ -878,45 +892,46 @@ int main()
     // clear the windows
     erase();
 
-
     // get top window data and print to screen
-    /*
-    topWin.getUptimeFromPipe();
+    topWin.setUptime(getUptimeFromPipe());
     mvwaddstr(topWin.getWindow(),
 	      0,
 	      0,
 	      topWin.getUptime().c_str());
-    */
-
-    /*
+    
     // get memory window data and print it to screen
-    getLineString = fileData.returnPhraseLine("/proc/meminfo", "MemTotal");
-    memWin.setMemTotal(memWin.convertkBToKiB
-		       (fileData.returnFirstIntFromLine(getLineString)));
-    getLineString = fileData.returnPhraseLine("/proc/meminfo", "MemFree");
-    memWin.setMemFree(memWin.convertkBToKiB
-		      (fileData.returnFirstIntFromLine(getLineString)));
-    getLineString = fileData.returnPhraseLine("/proc/meminfo", "Buffers");
-    memWin.setBuffers(memWin.convertkBToKiB
-		      (fileData.returnFirstIntFromLine(getLineString)));
-    getLineString = fileData.returnPhraseLine("/proc/meminfo", "Cached");
-    memWin.setCached(memWin.convertkBToKiB
-		     (fileData.returnFirstIntFromLine(getLineString)));
-    getLineString = fileData.returnPhraseLine("/proc/meminfo", "SReclaimable");
-    memWin.setSReclaimable(memWin.convertkBToKiB
-			   (fileData.returnFirstIntFromLine(getLineString)));
-    getLineString = fileData.returnPhraseLine("/proc/meminfo", "SwapTotal");
-    memWin.setSwapTotal(memWin.convertkBToKiB
-			(fileData.returnFirstIntFromLine(getLineString)));
-    getLineString = fileData.returnPhraseLine("/proc/meminfo", "SwapFree");
-    memWin.setSwapFree(memWin.convertkBToKiB
-		       (fileData.returnFirstIntFromLine(getLineString)));
-    getLineString = fileData.returnPhraseLine("/proc/meminfo", "MemAvailable");
-    memWin.setMemAvailable(memWin.convertkBToKiB
-			   (fileData.returnFirstIntFromLine(getLineString))); 
-    memWin.setSwapUsed(memWin.getSwapTotal(), memWin.getSwapFree());
-    memWin.setStringMiB();
-    memWin.setStringSwap();
+    lineString = returnPhraseLine(_PROC_MEMINFO,
+				  _MEMTOTAL);
+    mInfo.setMemTotal(kBToKiB(returnFirstIntFromLine(lineString)));
+    lineString = returnPhraseLine(_PROC_MEMINFO,
+				  _MEMFREE);
+    mInfo.setMemFree(kBToKiB(returnFirstIntFromLine(lineString)));
+    lineString = returnPhraseLine(_PROC_MEMINFO,
+				  _BUFFERS);
+    mInfo.setBuffers(kBToKiB(returnFirstIntFromLine(lineString)));
+    lineString = returnPhraseLine(_PROC_MEMINFO,
+				  _CACHED);
+    mInfo.setCached(kBToKiB(returnFirstIntFromLine(lineString)));
+    lineString = returnPhraseLine(_PROC_MEMINFO,
+				  _SRECLAIMABLE);
+    mInfo.setSReclaimable(kBToKiB(returnFirstIntFromLine(lineString)));
+    lineString = returnPhraseLine(_PROC_MEMINFO,
+				  _SWAPTOTAL);
+    mInfo.setSwapTotal(kBToKiB(returnFirstIntFromLine(lineString)));
+    lineString = returnPhraseLine(_PROC_MEMINFO,
+				  _SWAPFREE);
+    mInfo.setSwapFree(kBToKiB(returnFirstIntFromLine(lineString)));
+    lineString = returnPhraseLine(_PROC_MEMINFO,
+				  _MEMAVAILABLE);
+    mInfo.setMemAvailable(kBToKiB(returnFirstIntFromLine(lineString)));
+    memWin.setStringMiB(std::to_string(mInfo.getMemTotal()),
+			std::to_string(mInfo.getMemFree()),
+			std::to_string(mInfo.calculateMemUsed()),
+			std::to_string(mInfo.calculateBuffCache()));
+    memWin.setStringSwap(std::to_string(mInfo.getSwapTotal()),
+			 std::to_string(mInfo.getSwapFree()),
+			 std::to_string(mInfo.calculateSwapUsed()),
+			 std::to_string(mInfo.getMemAvailable()));
     mvwaddstr(memWin.getWindow(),
 	      0,
 	      0,
@@ -925,21 +940,20 @@ int main()
 	      1,
 	      0,
 	      memWin.getSwap().c_str());
-    */
 
     // refresh the windows
     wnoutrefresh(mainWin.getWindow()); 
     wnoutrefresh(topWin.getWindow());
     wnoutrefresh(tasksWin.getWindow());
-    wnoutrefresh(cpuWin.getWindow()); 
+    wnoutrefresh(cpuWin.getWindow());
     wnoutrefresh(memWin.getWindow());
     wnoutrefresh(PIDWin.getWindow());   
     wnoutrefresh(USERWin.getWindow());
-    wnoutrefresh(PRWin.getWindow());  
+    wnoutrefresh(PRWin.getWindow());
     wnoutrefresh(NIWin.getWindow());
     wnoutrefresh(VIRTWin.getWindow());
     wnoutrefresh(RESWin.getWindow());
-    wnoutrefresh(SHRWin.getWindow());    
+    wnoutrefresh(SHRWin.getWindow());
     wnoutrefresh(SWin.getWindow());
     wnoutrefresh(PercentCPUWin.getWindow());
     wnoutrefresh(PercentMEMWin.getWindow());
