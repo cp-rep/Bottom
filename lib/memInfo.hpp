@@ -3,7 +3,7 @@
   
   Description:
   The MemInfo class is used to store data read from the
-  /proc/meminfo file.
+  "/proc/meminfo" file.
  */
 #ifndef MEMINFO_HPP
 #define MEMINFO_HPP
