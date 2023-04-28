@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include <fstream>
 
-
+#define NEWLINE '\n'
 
 /*
   Function:
@@ -75,7 +75,7 @@ const std::string returnPhraseLine(const std::string& fileName,
    
   Description:
   Finds the first ASCII numeric character(s) from the line parameter,
-  converts it to an int type, and then returns the value.
+  converts them to an int type, and then returns the value.
 
   Input:
   line                        - a const string that will be scanned
@@ -183,25 +183,176 @@ const std::vector<std::string> getFolderPaths(const std::string& dirPath)
 } // end of "getNumberedFolders"
 
 
+
 /*
   Function:
-  getFolderNames
+  testNumericDir
 
   Description:
  */
-const std::vector<std::string> getFolderNames(const std::string& dirPath)
+bool testNumericDir(const std::string& dirPath)
 {
   struct stat dir;
-  std::vector<std::string> dirNames;
+  bool isNumericDir = false;
 
   if(stat(dirPath.c_str(), &dir) == 0 && S_ISDIR(dir.st_mode))
     {
-      dirNames.push_back("Yes");
+      return true;
     }
   else
     {
-      dirNames.push_back("No");      
+      return false;
+    }
+} // end of "getNumberedFolders"
+
+
+
+/*
+  Function:
+  parseNewLineStrings
+
+  Description:
+ */
+std::vector<std::string> parseNewLineStrings(const std::string str)
+{
+  std::vector<std::string> parsedString;
+  std::string temp;
+  
+  for(int i = 0; i < str.length(); i++)
+    {
+      temp.push_back(str.at(i));
+      
+      if(str.at(i) == NEWLINE)
+	{
+	  parsedString.push_back(temp);
+	  temp.clear();
+	}
+      else
+	{
+	  temp.push_back(str.at(i));
+	}
     }
 
-  return dirNames;
-} // end of "getNumberedFolders"
+  return parsedString;
+} // end of "parseNewLineStrings"
+
+
+
+/*
+  Function:
+  getUptimeFromPipe
+
+  Description:
+
+  Input:
+  NONE
+  Output:
+  NONE
+ */
+const std::string getUptimeFromPipe()
+{
+  FILE* usersFile;
+  std::string uptime;
+  char c = 0;
+
+  usersFile = popen("uptime", "r");
+
+  if(usersFile == nullptr)
+    {
+      perror("popen() failed to open users program.");
+      exit(EXIT_FAILURE);
+    }
+
+  while(fread(&c, sizeof c, 1, usersFile))
+    {
+      uptime.push_back(c);
+    }
+
+  pclose(usersFile);
+
+  return uptime;
+} // end of "getUptime"
+
+
+
+/*
+  Function:
+  listDirContents
+
+  Description:
+ */
+const std::string listDirContents()
+{
+  FILE* listFile;
+  std::string dirContents;
+  char c = 0;
+
+  listFile = popen("ls", "r");
+
+  if(listFile == nullptr)
+    {
+      perror("popen() failed to open ls program.");
+      exit(EXIT_FAILURE);
+    }
+
+  while(fread(&c, sizeof c, 1, listFile))
+    {
+      dirContents.push_back(c);
+    }
+
+  pclose(listFile);
+
+  return dirContents;
+} // end of "getUptime"
+
+
+
+/*
+  Function:
+  listDirContents
+
+  Description:
+ */
+const std::vector<std::string> findNumericDirs(const std::string& dirPath)
+{
+  FILE* listFile;
+  std::vector<std::string> dirs;
+  std::string fullPath;
+  std::string numFolder;
+  std::string list;
+  char c = 0;
+
+  list.append("ls ");
+  list.append(dirPath);
+  listFile = popen(list.c_str(), "r");
+
+  if(listFile == nullptr)
+    {
+      perror("popen() failed to open ls program.");
+      exit(EXIT_FAILURE);
+    }
+
+  while(fread(&c, sizeof c, 1, listFile))
+    {
+      if(c >= '0' && c <= '9')
+	{
+	  numFolder.push_back(c);
+	}
+      else if(c == '\n')
+	{
+	  fullPath.clear();
+	  fullPath.append("/proc/");
+	  fullPath.append(numFolder);
+
+	  if(true == testNumericDir(fullPath))
+	    {
+	      dirs.push_back(numFolder);
+	    }
+	  numFolder.clear();
+	}
+    }
+
+  pclose(listFile);
+
+  return dirs;
+} // end of "getUptime"

@@ -13,6 +13,8 @@
 
   To Add:
   - Wrapper functions for the curse calls with error handling
+  - could use a counter for up/down left/right arrow clicks for starting point
+    in array.
  
   Potential Future Additions:
   - mouse functionality option which would then pop up a window with buttons
@@ -35,6 +37,7 @@
 #include <unistd.h>
 #include <unordered_map>
 #include <sys/stat.h>
+#include <algorithm>
 #include "log.hpp"
 #include "cursesWindow.hpp"
 #include "topWindow.hpp"
@@ -54,10 +57,10 @@
 #include "TIMEWindow.hpp"
 #include "USERWindow.hpp"
 #include "extractFileData.hpp"
-#include "uptimeReader.hpp"
 #include "byteConverter.hpp"
 #include "memInfo.hpp"
 #include "processInfo.hpp"
+
 
 // global constants
 #define _DEBUG 1
@@ -74,7 +77,7 @@
 // function prototypes
 void printWindowToLog(std::ofstream& log,
 		      const CursesWindow& win);
-void findProcess();
+
 
 
 /*
@@ -133,7 +136,9 @@ int main()
   MemInfo mInfo;
   ProcessInfo* pInfo;
   std::unordered_map<int, ProcessInfo*> processes;
-  std::string lineString;  
+  std::string lineString;
+  std::vector<std::string> parsedFileNames;
+  std::vector<std::string> fileList;  
   short numLines = 0;
   short numCols = 0;
   short maxWindowY = 0;
@@ -334,11 +339,14 @@ int main()
 		   previousX);
 
   // define PID window
+  /*
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
              cpuWin.getNumLines() -
              tasksWin.getNumLines() -
              topWin.getNumLines() - 1;
+  */
+  numLines = 1000;
   numCols = 7;
   maxWindowY = 0;
   maxWindowX = 0;
@@ -370,11 +378,14 @@ int main()
 		   previousX);
 
   // define USER window
+  /*
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
              cpuWin.getNumLines() -
              tasksWin.getNumLines() -
              topWin.getNumLines() - 1;
+  */
+  numLines = 1000;
   numCols = 8;
   maxWindowY = 0;
   maxWindowX = 0;
@@ -406,11 +417,14 @@ int main()
 		     previousX);
 
   // define PR window
+  /*
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
              cpuWin.getNumLines() -
              tasksWin.getNumLines() -
              topWin.getNumLines() - 1;
+  */
+  numLines = 1000;  
   numCols = 3;
   maxWindowY = 0;
   maxWindowX = 0;
@@ -442,11 +456,14 @@ int main()
 		 previousX);
 
   // define NI window
+  /*
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
              cpuWin.getNumLines() -
              tasksWin.getNumLines() -
              topWin.getNumLines() - 1;
+  */
+  numLines = 1000;
   numCols = 3;
   maxWindowY = 0;
   maxWindowX = 0;
@@ -478,11 +495,14 @@ int main()
 		 previousX);
 
   // define VIRT window
+  /*
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
              cpuWin.getNumLines() -
              tasksWin.getNumLines() -
              topWin.getNumLines() - 1;
+  */
+  numLines = 1000;
   numCols = 7;
   maxWindowY = 0;
   maxWindowX = 0;
@@ -517,11 +537,14 @@ int main()
 		     previousX);
 
   // define RES window
+  /*
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
              cpuWin.getNumLines() -
              tasksWin.getNumLines() -
              topWin.getNumLines() - 1;
+  */
+  numLines = 1000;
   numCols = 6;
   maxWindowY = 0;
   maxWindowX = 0;
@@ -557,11 +580,14 @@ int main()
 		   previousX);
 
   // define SHR window
+  /*
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
              cpuWin.getNumLines() -
              tasksWin.getNumLines() -
              topWin.getNumLines() - 1;
+  */
+  numLines = 1000;
   numCols = 6;
   maxWindowY = 0;
   maxWindowX = 0;
@@ -640,11 +666,14 @@ int main()
 	       previousX);
 
   // define PercentCPU window
+  /*
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
              cpuWin.getNumLines() -
              tasksWin.getNumLines() -
              topWin.getNumLines() - 1;
+  */
+  numLines = 1000;
   numCols = 5;
   maxWindowY = 0;
   maxWindowX = 0;
@@ -683,11 +712,14 @@ int main()
 				 previousX);
 
   // define PercentMEM window
+  /*
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
              cpuWin.getNumLines() -
              tasksWin.getNumLines() -
              topWin.getNumLines() - 1;
+  */
+  numLines = 1000;
   numCols = 5;
   maxWindowY = 0;
   maxWindowX = 0;
@@ -727,11 +759,14 @@ int main()
 				 previousX);
 
   // define TIME window
+  /*
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
              cpuWin.getNumLines() -
              tasksWin.getNumLines() -
              topWin.getNumLines() - 1;
+  */
+  numLines = 1000;
   numCols = 9;
   maxWindowY = 0;
   maxWindowX = 0;
@@ -772,12 +807,15 @@ int main()
 		     previousX);
 
   // define COMMAND window
+  /*
   numLines = mainWin.getNumLines() -
              memWin.getNumLines() -
              cpuWin.getNumLines() -
              tasksWin.getNumLines() -
              topWin.getNumLines() - 1;
-  numCols = SHRT_MAX;
+  */
+  numLines = 1000;
+  numCols = 1000;
   maxWindowY = 0;
   maxWindowX = 0;
   minWindowY = 0;
@@ -817,6 +855,9 @@ int main()
 			  currentX,
 			  previousY,
 			  previousX);
+
+
+
 
   // ## create windows ##
   topWin.setWindow(newwin(topWin.getNumLines(),
@@ -884,6 +925,25 @@ int main()
 			      COMMANDWin.getStartY(),
 			      COMMANDWin.getStartX()));
 
+  // draw window borders
+  box(topWin.getWindow(), 'A', 'A');
+  box(tasksWin.getWindow(), 'B', 'B');
+  box(cpuWin.getWindow(), 'C', 'C');
+  box(memWin.getWindow(), 'D', 'D');
+  box(PIDWin.getWindow(), 'P', 'P');
+  box(USERWin.getWindow(), 'E', 'E');
+  box(PRWin.getWindow(), 'F', 'F');
+  box(NIWin.getWindow(), 'G', 'G');
+  box(VIRTWin.getWindow(), 'H', 'H');
+  box(RESWin.getWindow(), 'I', 'I');
+  box(SHRWin.getWindow(), 'J', 'J');
+  box(SWin.getWindow(), 'K', 'K');
+  box(PercentCPUWin.getWindow(), 'L', 'L');
+  box(PercentMEMWin.getWindow(), 'M', 'M');
+  box(TIMEWin.getWindow(), 'N', 'N');
+  box(COMMANDWin.getWindow(), 'O', 'O');	
+  
+
   // ## for testing ##
   if(has_colors())
     {
@@ -893,19 +953,18 @@ int main()
       color_set(0, NULL);
     }
 
-  /*
-    struct stat myDir;
-    std::vector<std::string> myVector;
-    myVector = getFileNames("/proct");
-    log << std::endl << "Is it directory? " << myVector[0] << std::endl;
-  */
 
-  
+  fileList = findNumericDirs("/proc");
+  std::sort(fileList.begin(), fileList.end());
+  for(int i = 0; i < fileList.size(); i++)
+    {
+      log << "i: " << i << ", Dir: " << fileList.at(i) << std::endl;
+    }
+
   // ## run the main program loop ##
   do{
     // clear the windows
-    erase();
-
+    //    erase();
     // get top window data and print to screen
     topWin.setUptime(getUptimeFromPipe());
     mvwaddstr(topWin.getWindow(),
@@ -1025,10 +1084,3 @@ void printWindowToLog(std::ofstream& log, const CursesWindow& win)
   log << "m_previousY: " << win.getPreviousY() << std::endl;
   log << "m_previousX: " << win.getPreviousX() << std::endl;
 } // end of "printWindow"
-
-
-
-
-void findProcess()
-{
-}
