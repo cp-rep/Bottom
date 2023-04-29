@@ -5,6 +5,8 @@
 #include "extractFileData.hpp"
 #include <cstdlib>
 #include <fstream>
+#include <sstream>
+#include <unordered_map>
 
 #define NEWLINE '\n'
 
@@ -313,13 +315,14 @@ const std::string listDirContents()
 
   Description:
  */
-const std::vector<std::string> findNumericDirs(const std::string& dirPath)
+const std::vector<int> findNumericDirs(const std::string& dirPath)
 {
   FILE* listFile;
-  std::vector<std::string> dirs;
+  std::vector<int> dirs;
   std::string fullPath;
   std::string numFolder;
   std::string list;
+  std::unordered_map<int, int> pids;
   char c = 0;
 
   list.append("ls ");
@@ -341,18 +344,25 @@ const std::vector<std::string> findNumericDirs(const std::string& dirPath)
       else if(c == '\n')
 	{
 	  fullPath.clear();
-	  fullPath.append("/proc/");
+	  fullPath.append(dirPath);
 	  fullPath.append(numFolder);
 
 	  if(true == testNumericDir(fullPath))
 	    {
-	      dirs.push_back(numFolder);
+	      int val;
+	      std::stringstream container(numFolder);
+	      container >> val;
+
+	      if(pids[val] == 0)
+		{
+		  dirs.push_back(val);
+		  pids[val]++;
+		}
 	    }
 	  numFolder.clear();
 	}
     }
 
   pclose(listFile);
-
   return dirs;
 } // end of "getUptime"

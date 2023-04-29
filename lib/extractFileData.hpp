@@ -22,6 +22,6 @@ std::vector<std::string> parseNewLineStrings(const std::string str);
 // pipe command reader
 const std::string getUptimeFromPipe();
 const std::string listDirContents();
-const std::vector<std::string> findNumericDirs(const std::string& dirPath);
+const std::vector<int> findNumericDirs(const std::string& dirPath);
 
 #endif
