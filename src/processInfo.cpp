@@ -7,7 +7,7 @@
 
 
 
-ProcessInfo::ProcessInfo(const unsigned int& pid,
+ProcessInfo::ProcessInfo(const int& pid,
 			 const std::string& user,
 			 const unsigned short& m_pr,
 			 const unsigned short& m_ni,
