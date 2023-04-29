@@ -136,9 +136,10 @@ int main()
   MemInfo mInfo;
   ProcessInfo* pInfo;
   std::unordered_map<int, ProcessInfo*> processes;
+  std::unordered_map<int, ProcessInfo*>::iterator procIt;
   std::string lineString;
   std::vector<std::string> parsedFileNames;
-  std::vector<std::string> fileList;  
+  std::vector<int> pidList;  
   short numLines = 0;
   short numCols = 0;
   short maxWindowY = 0;
@@ -855,10 +856,7 @@ int main()
 			  currentX,
 			  previousY,
 			  previousX);
-
-
-
-
+  
   // ## create windows ##
   topWin.setWindow(newwin(topWin.getNumLines(),
 			  topWin.getNumCols(),
@@ -943,7 +941,6 @@ int main()
   box(TIMEWin.getWindow(), 'N', 'N');
   box(COMMANDWin.getWindow(), 'O', 'O');	
   
-
   // ## for testing ##
   if(has_colors())
     {
@@ -951,14 +948,6 @@ int main()
       //init_pair(-1);
       //init_color(COLOR_BLACK, 0, 0, 0);
       color_set(0, NULL);
-    }
-
-
-  fileList = findNumericDirs("/proc");
-  std::sort(fileList.begin(), fileList.end());
-  for(int i = 0; i < fileList.size(); i++)
-    {
-      log << "i: " << i << ", Dir: " << fileList.at(i) << std::endl;
     }
 
   // ## run the main program loop ##
@@ -1014,9 +1003,30 @@ int main()
 	      0,
 	      memWin.getSwap().c_str());
 
-    // find running processes and store their data
-    //    stat();
-    
+
+    // ## get processes ##
+    // clear old processes
+    pInfo = nullptr;
+
+
+    for(int i = 0; i < pidList.size(); i++)
+      {
+	delete(processes[pidList.at(i)]);
+      }
+
+    processes.clear();
+    pidList = (findNumericDirs("/proc/"));
+
+    // allocate new processes
+    for(int i = 0; i < pidList.size(); i++)
+      {
+	if(processes.count(pidList.at(i) == 0))
+	  {
+	    pInfo = new ProcessInfo();
+	    pInfo->setPID(pidList.at(i));
+	    processes.insert(std::make_pair(pidList.at(i), pInfo));
+	  }
+      }
 
     // refresh the windows
     wnoutrefresh(mainWin.getWindow()); 
@@ -1045,6 +1055,17 @@ int main()
   }while(getch() != 'q');
   
   endwin();
+
+  //  for(procIt = processes.begin(); procIt != processes.end(); procIt++)
+
+  /*
+  for(auto i : processes)
+    {
+      log << "PID: " << i.first << std::endl;
+      //    std::cout << "PID: " << i.second->setPID(5) << std::endl;
+    }
+  */
+  
   return 0;
 } // end of "main"
 
