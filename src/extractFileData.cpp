@@ -10,6 +10,8 @@
 
 #define NEWLINE '\n'
 
+
+
 /*
   Function:
   returnPhraseLine
@@ -158,7 +160,25 @@ const std::string getFileLineByNumber(const std::string& filePath,
 } // end of "getFileLineNumber"
 
 
+/*
+  Function:
+  returnValByWhitespaceCount
 
+  Description:
+  Traverses a whitespace delimited string and retruns a preceding numeric
+  value based upon how many whitespaces have been counted.
+
+  Input:
+  line                   - a const string reference containing a comma
+                           delimited string.
+
+  numWhiteSpaces         - a const int reference representing the number 
+                           of whitespaces to skip before reading a value;
+
+  Output:
+  const int              - a const int containing a value read from the
+                           parameter line.
+ */
 const int returnValByWhiteSpaceCount(const std::string& line,
 				     const int& numWhiteSpaces)
 {
@@ -179,7 +199,7 @@ const int returnValByWhiteSpaceCount(const std::string& line,
     } while(line.at(i) != ' ');
 
   return stoi(valString);
-} // end of "getFileLineNumber"
+} // end of "returnValByWhiteSpace"
 
 
 
