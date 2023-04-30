@@ -1054,9 +1054,16 @@ int main()
 	    userData = getpwuid(val);
 	    pInfo->setUser(userData->pw_name);
 	    log << "USER: " << pInfo->getUser() << std::endl;
-	    
+
 	    // get PR
 	    lineString.clear();
+	    lineString.append(_PROC);
+	    lineString.append(std::to_string(pidList.at(i)));
+	    lineString.append("/stat");
+	    lineString = getFileLineByNumber(lineString, 0);
+	    log << lineString << std::endl;	    
+	    val = returnValByWhiteSpaceCount(lineString, 17);
+	    log << "WhiteCount: 17, " << val << std::endl;
 
 	    // insert process to hash table with PID as key
 	    processes.insert(std::make_pair(pidList.at(i), pInfo));

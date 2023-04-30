@@ -22,6 +22,8 @@ bool testNumericDir(const std::string& dirPath);
 
 // parse from strings
 std::vector<std::string> parseNewLineStrings(const std::string str);
+const int returnValByWhiteSpaceCount(const std::string& line,
+				     const int& numWhiteSpaces);
 
 // read from popen outputs
 const std::string getUptimeFromPipe();
