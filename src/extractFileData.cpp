@@ -40,7 +40,7 @@ const std::string returnPhraseLine(const std::string& fileName,
   // test if the file opened successfully
   if(!inFile.is_open())
     {
-      return "N/A";
+      return "-1";
     }
 
   // read the file line by line looking for the matching phrase
@@ -84,20 +84,28 @@ const std::string returnPhraseLine(const std::string& fileName,
                                 for numeric characters.
   
   Output:
-  NONE
+  -1                          - a constant integer representing an error.
+
+  stoi(temp)                  - a string of numeric characters converted
+                                to a constant integer.
 */
 const int returnFirstIntFromLine(const std::string& line)
 {
   std::string temp;
-  
-  for(int i = 0; i < line.length(); i++)
-    {
-      if(line.at(i) >= '0' && line.at(i) <= '9')
-	{
-	  temp.push_back(line.at(i));
-	}	
-    }
+  int i = 0;
 
+  // loop until we reach a numeric character
+  do{
+    i++;
+  } while(line.at(i) < '0' || line.at(i) > '9');
+
+  // push back until we reach a non numeric character
+  while(line.at(i) >= '0' && line.at(i) <= '9')
+    {
+      temp.push_back(line.at(i));
+      i++;
+    }
+    
   if(temp.empty())
     {
       return -1;
@@ -112,21 +120,41 @@ const int returnFirstIntFromLine(const std::string& line)
 
 /*
   Function:
-  getFileLineNumber
+  getFileLineByNumber
    
   Description:
-  returns the specified line 
+  Returns a specified line from a file.
 
   Input:
-  
-  Output:
+  filePath               - a const reference to a string for a full file path.
 
+  lineNumber             - a zero based a const reference to an int for a
+                           specificline number we want to return.
+			   
+  Output:
+  const string           - a const string containing the desired line we are
+                           returning based upon the incoming line number.
 */
-const std::string getFileLineNumber(const std::string& dirPath,
-				    std::string& fileName,
-				    const int& lineNumber)
+const std::string getFileLineByNumber(const std::string& filePath,
+				      const int& lineNumber)
 {
+  struct stat file;  
+  std::string tempLine;
+  std::ifstream inFile(filePath, std::ifstream::in);   
   
+  if(stat(filePath.c_str(), &file) == 0 && S_ISREG(file.st_mode))
+    {
+      for(int i = 0; i <= lineNumber; i++)
+	{
+	  std::getline(inFile, tempLine);
+	}
+
+      return tempLine;
+    }
+  else
+    {
+      return "-1";
+    }    
 } // end of "getFileLineNumber"
 
 
@@ -188,21 +216,18 @@ const std::vector<std::string> getFileNames(const std::string& dirPath)
   Output:
   NONE
 */
-const std::vector<std::string> getFolderPaths(const std::string& dirPath)
+const std::string getFolderPaths(const std::string& dirPath)
 {
   struct stat dir;
-  std::vector<std::string> dirNames;
 
   if(stat(dirPath.c_str(), &dir) == 0 && S_ISDIR(dir.st_mode))
     {
-      dirNames.push_back("Yes");
+      return "Yes";
     }
   else
     {
-      dirNames.push_back("No");      
+      return "No";
     }
-
-  return dirNames;
 } // end of "getNumberedFolders"
 
 

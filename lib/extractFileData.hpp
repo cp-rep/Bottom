@@ -12,13 +12,12 @@
 const std::string returnPhraseLine(const std::string& fileName,
 				   const std::string& phrase);
 const int returnFirstIntFromLine(const std::string& line);
-const std::string getFileLineNumber(const std::string& dirPath,
-				    std::string& fileName,
-				    const int& lineNumber);
+const std::string getFileLineByNumber(const std::string& dirPath,
+				      const int& lineNumber);
 
 const std::vector<std::string> getFilePaths(const std::string& dirPath);
 const std::vector<std::string> getFileNames(const std::string& dirPath);
-const std::vector<std::string> getFolderPaths(const std::string& dirPath);
+const std::string getFolderPaths(const std::string& dirPath);
 bool testNumericDir(const std::string& dirPath);
 
 // parse from strings
