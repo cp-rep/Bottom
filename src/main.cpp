@@ -37,6 +37,7 @@
 #include <unistd.h>
 #include <unordered_map>
 #include <sys/stat.h>
+#include <pwd.h>
 #include <algorithm>
 #include "log.hpp"
 #include "cursesWindow.hpp"
@@ -65,7 +66,7 @@
 // global constants
 #define _DEBUG 1
 #define _PROC "/proc/"
-#define _COMM "comm"
+#define _COMM "/comm"
 #define _PROC_MEMINFO "/proc/meminfo"
 #define _MEMTOTAL "MemTotal"
 #define _MEMFREE "MemFree"
@@ -137,6 +138,7 @@ int main()
   CursesWindow processWin;
   MemInfo mInfo;
   ProcessInfo* pInfo;
+  struct passwd* userData;
   std::unordered_map<int, ProcessInfo*> processes;
   std::unordered_map<int, ProcessInfo*>::iterator procIt;
   std::string lineString;
@@ -957,6 +959,7 @@ int main()
     // clear the windows
     //    erase();
     // get top window data and print to screen
+    lineString.clear();
     topWin.setUptime(getUptimeFromPipe());
     mvwaddstr(topWin.getWindow(),
 	      0,
@@ -1014,28 +1017,57 @@ int main()
       }
 
     processes.clear();
-
+    pidList.clear();
     // get new process list
     pidList = (findNumericDirs(_PROC));
 
+    log << "pidList.size(): " << pidList.size() << std::endl;
+
     // allocate the new processes and their related data
-    for(int i = 0; i < pidList.size(); i++)
+    //    for(int i = 0; i < pidList.size(); i++)
+    for(int i = 0; i < 55; i++)    
       {
-	if(processes.count(pidList.at(i) == 0))
+	if(processes.count(pidList.at(i)) == 0)
 	  {
 	    pInfo = new ProcessInfo();
-
 	    // set pid
+	    log << "PID: " << pidList.at(i) << std::endl;
 	    pInfo->setPID(pidList.at(i));
 
 	    // get and set command
 	    std::string filePath = _PROC;
+	    lineString.clear();
 	    filePath.append(std::to_string(pidList.at(i)));
 	    filePath.append(_COMM);
+	    lineString = getFileLineByNumber(filePath, 0);
+	    pInfo->setCommand(lineString);
+	    log << "COMM: " << lineString << std::endl;	    
+
+	    // get user
+	    lineString.clear();
+	    lineString.append(_PROC);
+	    lineString.append(std::to_string(pidList.at(i)));
+	    lineString.append("/status");
+	    lineString = returnPhraseLine(lineString, "Gid");
+	    int val = returnFirstIntFromLine(lineString);
+	    log << "UID: " << val << std::endl;
+	    userData = getpwuid(val);
+	    pInfo->setUser(userData->pw_name);
+	    log << "USER: " << pInfo->getUser() << std::endl;
+	    
+	    // get PR
+	    lineString.clear();
+
+	    // insert process to hash table with PID as key
 	    processes.insert(std::make_pair(pidList.at(i), pInfo));
+	  }
+	else
+	  {
+	    log << "Process already exists." << std::endl;
 	  }
       }
     
+    break;
     pInfo = nullptr;
     
     // refresh the windows
