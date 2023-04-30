@@ -112,6 +112,27 @@ const int returnFirstIntFromLine(const std::string& line)
 
 /*
   Function:
+  getFileLineNumber
+   
+  Description:
+  returns the specified line 
+
+  Input:
+  
+  Output:
+
+*/
+const std::string getFileLineNumber(const std::string& dirPath,
+				    std::string& fileName,
+				    const int& lineNumber)
+{
+  
+} // end of "getFileLineNumber"
+
+
+
+/*
+  Function:
   getFilesPaths
 
   Description:
@@ -196,8 +217,8 @@ bool testNumericDir(const std::string& dirPath)
 {
   struct stat dir;
   bool isNumericDir = false;
-
-  if(stat(dirPath.c_str(), &dir) == 0 && S_ISDIR(dir.st_mode))
+ 
+ if(stat(dirPath.c_str(), &dir) == 0 && S_ISDIR(dir.st_mode))
     {
       return true;
     }

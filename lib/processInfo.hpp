@@ -63,5 +63,4 @@ private:
   std::string m_command;
 };
 
-
 #endif

@@ -64,6 +64,8 @@
 
 // global constants
 #define _DEBUG 1
+#define _PROC "/proc/"
+#define _COMM "comm"
 #define _PROC_MEMINFO "/proc/meminfo"
 #define _MEMTOTAL "MemTotal"
 #define _MEMFREE "MemFree"
@@ -1005,36 +1007,44 @@ int main()
 
 
     // ## get processes ##
-    // clear old processes
-    pInfo = nullptr;
-
-
+    // free old processes and clear the umap
     for(int i = 0; i < pidList.size(); i++)
       {
 	delete(processes[pidList.at(i)]);
       }
 
     processes.clear();
-    pidList = (findNumericDirs("/proc/"));
 
-    // allocate new processes
+    // get new process list
+    pidList = (findNumericDirs(_PROC));
+
+    // allocate the new processes and their related data
     for(int i = 0; i < pidList.size(); i++)
       {
 	if(processes.count(pidList.at(i) == 0))
 	  {
 	    pInfo = new ProcessInfo();
+
+	    // set pid
 	    pInfo->setPID(pidList.at(i));
+
+	    // get and set command
+	    std::string filePath = _PROC;
+	    filePath.append(std::to_string(pidList.at(i)));
+	    filePath.append(_COMM);
 	    processes.insert(std::make_pair(pidList.at(i), pInfo));
 	  }
       }
-
+    
+    pInfo = nullptr;
+    
     // refresh the windows
-    wnoutrefresh(mainWin.getWindow()); 
+    wnoutrefresh(mainWin.getWindow());
     wnoutrefresh(topWin.getWindow());
     wnoutrefresh(tasksWin.getWindow());
     wnoutrefresh(cpuWin.getWindow());
     wnoutrefresh(memWin.getWindow());
-    wnoutrefresh(PIDWin.getWindow());   
+    wnoutrefresh(PIDWin.getWindow());
     wnoutrefresh(USERWin.getWindow());
     wnoutrefresh(PRWin.getWindow());
     wnoutrefresh(NIWin.getWindow());

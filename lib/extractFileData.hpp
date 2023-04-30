@@ -8,20 +8,27 @@
 #include <vector>
 #include <sys/stat.h>
 
+// read from files
 const std::string returnPhraseLine(const std::string& fileName,
 				   const std::string& phrase);
 const int returnFirstIntFromLine(const std::string& line);
+const std::string getFileLineNumber(const std::string& dirPath,
+				    std::string& fileName,
+				    const int& lineNumber);
+
 const std::vector<std::string> getFilePaths(const std::string& dirPath);
 const std::vector<std::string> getFileNames(const std::string& dirPath);
 const std::vector<std::string> getFolderPaths(const std::string& dirPath);
 bool testNumericDir(const std::string& dirPath);
 
-// string parser
+// parse from strings
 std::vector<std::string> parseNewLineStrings(const std::string str);
 
-// pipe command reader
+// read from popen outputs
 const std::string getUptimeFromPipe();
 const std::string listDirContents();
 const std::vector<int> findNumericDirs(const std::string& dirPath);
+
+
 
 #endif
