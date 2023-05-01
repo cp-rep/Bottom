@@ -210,6 +210,41 @@ const int returnValByWhiteSpaceCount(const std::string& line,
 
 /*
   Function:
+
+  Description:
+
+  Input:
+
+  Output:
+
+ */
+const std::string returnStringByWhiteSpaceCount(const std::string& line,
+						 const int& numWhiteSpaces)
+{
+  std::string valString;
+  int i = 0;
+  int spaceCount = 0;
+  
+  for(; i < line.length() && spaceCount != numWhiteSpaces; i++)
+    {
+      if(line.at(i) == ' ')
+	{
+	  spaceCount++;
+	}
+    }
+
+  do{
+      valString.push_back(line.at(i));
+      i++;
+    } while(line.at(i) != ' ');
+
+  return valString;
+} // end of "returnValByWhiteSpace"
+
+
+
+/*
+  Function:
   getFilesPaths
 
   Description:

@@ -1052,10 +1052,8 @@ int main()
 	    lineString.append("/status");
 	    lineString = returnPhraseLine(lineString, "Gid");
 	    int val = returnFirstIntFromLine(lineString);
-
 	    userData = getpwuid(val);
 	    pInfo->setUser(userData->pw_name);
-
 
 	    // get PR
 	    lineString.clear();
@@ -1089,12 +1087,38 @@ int main()
 					  "VmRSS");
 	    pInfo->setRes(returnFirstIntFromLine(lineString));
 
-	    log << "PID: " << pInfo->getPID() << std::endl;	    
-	    log << "COMM: " << pInfo->getCommand() << std::endl;	    
+	    // get SHR
+	    lineString.clear();
+	    lineString.append(_PROC);
+	    lineString.append(std::to_string(pidList.at(i)));
+	    lineString.append("/status");
+	    lineString = returnPhraseLine(lineString,
+					  "RssFile");
+	    pInfo->setSHR(returnFirstIntFromLine(lineString));
+
+	    // S
+	    lineString.clear();
+	    lineString.append(_PROC);
+	    lineString.append(std::to_string(pidList.at(i)));
+	    lineString.append("/stat");
+	    lineString = getFileLineByNumber(lineString, 0);
+	    if(lineString == "-1")
+	      {
+		delete pInfo;
+		continue;
+	      }
+	    lineString = returnStringByWhiteSpaceCount(lineString,
+						       2);
+	    pInfo->setS((char)lineString.at(0));
+	    
+	    log << "PID: " << pInfo->getPID() << std::endl;
+	    log << "COMM: " << pInfo->getCommand() << std::endl;
 	    log << "USER: " << pInfo->getUser() << std::endl;
 	    log << "PR: " << pInfo->getPR() << std::endl;
-	    log << "VIRT: " << pInfo->getVirt() << std::endl;	    
-	    log << "RES: " << pInfo->getRes() << std::endl;	    
+	    log << "VIRT: " << pInfo->getVirt() << std::endl;
+	    log << "RES: " << pInfo->getRes() << std::endl;
+	    log << "SHR: " << pInfo->getSHR() << std::endl;
+	    log << "S: " << pInfo->getS() << std::endl;
 
 	    // insert process to hash table with PID as key
 	    processes.insert(std::make_pair(pidList.at(i), pInfo));
@@ -1106,7 +1130,7 @@ int main()
 	  }
       }
     
-    //    break;
+    break;
     pInfo = nullptr;
     
     // refresh the windows
