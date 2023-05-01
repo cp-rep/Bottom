@@ -96,6 +96,11 @@ const int returnFirstIntFromLine(const std::string& line)
   std::string temp;
   int i = 0;
 
+  if(line.empty())
+    {
+      return 0;
+    }
+  
   // loop until we reach a numeric character
   do{
     i++;

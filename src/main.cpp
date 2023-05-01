@@ -1020,18 +1020,15 @@ int main()
     pidList.clear();
     // get new process list
     pidList = (findNumericDirs(_PROC));
-
     log << "pidList.size(): " << pidList.size() << std::endl;
 
     // allocate the new processes and their related data
-    //    for(int i = 0; i < pidList.size(); i++)
-    for(int i = 0; i < 55; i++)    
+    for(int i = 0; i < pidList.size(); i++)
       {
 	if(processes.count(pidList.at(i)) == 0)
 	  {
 	    pInfo = new ProcessInfo();
 	    // set pid
-	    log << "PID: " << pidList.at(i) << std::endl;
 	    pInfo->setPID(pidList.at(i));
 
 	    // get and set command
@@ -1040,8 +1037,13 @@ int main()
 	    filePath.append(std::to_string(pidList.at(i)));
 	    filePath.append(_COMM);
 	    lineString = getFileLineByNumber(filePath, 0);
+	    if(lineString == "-1")
+	      {
+		delete pInfo;
+		continue;
+	      }
+	    
 	    pInfo->setCommand(lineString);
-	    log << "COMM: " << lineString << std::endl;	    
 
 	    // get user
 	    lineString.clear();
@@ -1050,10 +1052,10 @@ int main()
 	    lineString.append("/status");
 	    lineString = returnPhraseLine(lineString, "Gid");
 	    int val = returnFirstIntFromLine(lineString);
-	    log << "UID: " << val << std::endl;
+
 	    userData = getpwuid(val);
 	    pInfo->setUser(userData->pw_name);
-	    log << "USER: " << pInfo->getUser() << std::endl;
+
 
 	    // get PR
 	    lineString.clear();
@@ -1061,12 +1063,42 @@ int main()
 	    lineString.append(std::to_string(pidList.at(i)));
 	    lineString.append("/stat");
 	    lineString = getFileLineByNumber(lineString, 0);
-	    log << lineString << std::endl;	    
+	    if(lineString == "-1")
+	      {
+		delete pInfo;
+		continue;
+	      }
 	    val = returnValByWhiteSpaceCount(lineString, 17);
-	    log << "WhiteCount: 17, " << val << std::endl;
+	    pInfo->setPR(val);
+
+	    // get VIRT
+	    lineString.clear();
+	    lineString.append(_PROC);
+	    lineString.append(std::to_string(pidList.at(i)));
+	    lineString.append("/status");
+	    lineString = returnPhraseLine(lineString,
+					  "VmSize");
+	    pInfo->setVirt(returnFirstIntFromLine(lineString));
+
+	    // get RES
+	    lineString.clear();
+	    lineString.append(_PROC);
+	    lineString.append(std::to_string(pidList.at(i)));
+	    lineString.append("/status");
+	    lineString = returnPhraseLine(lineString,
+					  "VmRSS");
+	    pInfo->setRes(returnFirstIntFromLine(lineString));
+
+	    log << "PID: " << pInfo->getPID() << std::endl;	    
+	    log << "COMM: " << pInfo->getCommand() << std::endl;	    
+	    log << "USER: " << pInfo->getUser() << std::endl;
+	    log << "PR: " << pInfo->getPR() << std::endl;
+	    log << "VIRT: " << pInfo->getVirt() << std::endl;	    
+	    log << "RES: " << pInfo->getRes() << std::endl;	    
 
 	    // insert process to hash table with PID as key
 	    processes.insert(std::make_pair(pidList.at(i), pInfo));
+	    log << std::endl;
 	  }
 	else
 	  {
@@ -1074,7 +1106,7 @@ int main()
 	  }
       }
     
-    break;
+    //    break;
     pInfo = nullptr;
     
     // refresh the windows
