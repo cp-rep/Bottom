@@ -27,7 +27,7 @@ const int returnValByWhiteSpaceCount(const std::string& line,
 				     const int& numWhiteSpaces);
 const std::string returnStringByWhiteSpaceCount(const std::string& line,
 						 const int& numWhiteSpaces);
-const std::string phraseExists(const std::string& line, const std::string& phrase);
+bool phraseExists(const std::string& line, const std::string& phrase);
 
 // read from popen outputs
 const std::string getUptimeFromPipe();

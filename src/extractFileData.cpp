@@ -153,9 +153,9 @@ const std::string getFileLineByNumber(const std::string& filePath,
     {
       for(int i = 0; i <= lineNumber; i++)
 	{
-	  std::getline(inFile, tempLine);
+	  std::getline(inFile, tempLine, '\n');
 	}
-
+      
       return tempLine;
     }
   else
@@ -499,9 +499,10 @@ const std::vector<int> findNumericDirs(const std::string& dirPath)
 
 
 
-const std::string phraseExists(const std::string& line, const std::string& phrase)
+bool phraseExists(const std::string& line, const std::string& phrase)
 {
   std::string temp;
+  bool phraseExists = false;
 
   for(int i = 0; i < line.length(); i++)
     {
@@ -518,6 +519,7 @@ const std::string phraseExists(const std::string& line, const std::string& phras
 
       if(temp == phrase)
 	{
+	  phraseExists = true;
 	  break;
 	}
       else
@@ -525,5 +527,6 @@ const std::string phraseExists(const std::string& line, const std::string& phras
 	  temp.clear();
 	}
     }
-  return temp;
+
+  return phraseExists;
 }

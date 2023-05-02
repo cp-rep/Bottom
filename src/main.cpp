@@ -1116,19 +1116,26 @@ int main()
 	    lineString.append(_PROC);
 	    lineString.append(std::to_string(pidList.at(i)));
 	    lineString.append("/sched");
-	    lineString = getFileLineByNumber(lineString, 12);
+	    lineString = getFileLineByNumber(lineString, 13);
+	    //	    log << "Line: " << lineString << std::endl;
 	    if(lineString == "-1")
 	      {
 		delete pInfo;
 		continue;
 	      }
-	    lineString = phraseExists(lineString, "util_sam");
-	    int usage = returnFirstIntFromLine(lineString);
+	    bool exists = false;	    
+	    exists = phraseExists(lineString, "load_avg");
 
-	    // usage = usage/10;
-	    log << "usage: " << usage << std::endl;
-	    pInfo->setCpuUsage(usage);
-	    
+	    if(exists)
+	      {
+		int usage = 0;
+		log << "linestring: " << lineString << std::endl;
+		lineString.push_back(0);
+		usage = returnFirstIntFromLine(lineString);
+		//usage = usage/10;
+		log << "usage: " << usage << std::endl;
+		//		pInfo->setCpuUsage(usage);
+	      }
 	    
 	    // print extracted process data
 	    log << "PID: " << pInfo->getPID() << std::endl;
