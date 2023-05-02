@@ -496,3 +496,34 @@ const std::vector<int> findNumericDirs(const std::string& dirPath)
   pclose(listFile);
   return dirs;
 } // end of "getUptime"
+
+
+
+const std::string phraseExists(const std::string& line, const std::string& phrase)
+{
+  std::string temp;
+
+  for(int i = 0; i < line.length(); i++)
+    {
+      if(line.at(i) == phrase.at(0))
+	{
+	  for(int j = 0; j < phrase.length() && i + j < line.length(); j++)
+	    {
+	      if(line.at(i + j) == phrase.at(j))
+		{
+		  temp.push_back(phrase.at(j));
+		}
+	    }
+	}
+
+      if(temp == phrase)
+	{
+	  break;
+	}
+      else
+	{
+	  temp.clear();
+	}
+    }
+  return temp;
+}

@@ -20,12 +20,14 @@ const std::vector<std::string> getFileNames(const std::string& dirPath);
 const std::string getFolderPaths(const std::string& dirPath);
 bool testNumericDir(const std::string& dirPath);
 
+
 // parse from strings
 std::vector<std::string> parseNewLineStrings(const std::string str);
 const int returnValByWhiteSpaceCount(const std::string& line,
 				     const int& numWhiteSpaces);
 const std::string returnStringByWhiteSpaceCount(const std::string& line,
 						 const int& numWhiteSpaces);
+const std::string phraseExists(const std::string& line, const std::string& phrase);
 
 // read from popen outputs
 const std::string getUptimeFromPipe();

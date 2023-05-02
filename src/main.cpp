@@ -1110,15 +1110,38 @@ int main()
 	    lineString = returnStringByWhiteSpaceCount(lineString,
 						       2);
 	    pInfo->setS((char)lineString.at(0));
+
+	    // get %CPU
+	    lineString.clear();
+	    lineString.append(_PROC);
+	    lineString.append(std::to_string(pidList.at(i)));
+	    lineString.append("/sched");
+	    lineString = getFileLineByNumber(lineString, 12);
+	    if(lineString == "-1")
+	      {
+		delete pInfo;
+		continue;
+	      }
+	    lineString = phraseExists(lineString, "util_sam");
+	    int usage = returnFirstIntFromLine(lineString);
+
+	    // usage = usage/10;
+	    log << "usage: " << usage << std::endl;
+	    pInfo->setCpuUsage(usage);
 	    
+	    
+	    // print extracted process data
 	    log << "PID: " << pInfo->getPID() << std::endl;
 	    log << "COMM: " << pInfo->getCommand() << std::endl;
+	    /*
 	    log << "USER: " << pInfo->getUser() << std::endl;
 	    log << "PR: " << pInfo->getPR() << std::endl;
 	    log << "VIRT: " << pInfo->getVirt() << std::endl;
 	    log << "RES: " << pInfo->getRes() << std::endl;
 	    log << "SHR: " << pInfo->getSHR() << std::endl;
 	    log << "S: " << pInfo->getS() << std::endl;
+	    */
+	    //	    log << "%CPU: " << pInfo->getCpuUsage() << std::endl;	    
 
 	    // insert process to hash table with PID as key
 	    processes.insert(std::make_pair(pidList.at(i), pInfo));
