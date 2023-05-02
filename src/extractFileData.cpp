@@ -155,7 +155,7 @@ const std::string getFileLineByNumber(const std::string& filePath,
 	{
 	  std::getline(inFile, tempLine, '\n');
 	}
-      
+
       return tempLine;
     }
   else

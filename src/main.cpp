@@ -1123,7 +1123,7 @@ int main()
 		delete pInfo;
 		continue;
 	      }
-	    bool exists = false;	    
+	    bool exists = false;
 	    exists = phraseExists(lineString, "load_avg");
 
 	    if(exists)
@@ -1160,7 +1160,7 @@ int main()
 	  }
       }
     
-    break;
+    //    break;
     pInfo = nullptr;
     
     // refresh the windows
