@@ -1066,8 +1066,22 @@ int main()
 		delete pInfo;
 		continue;
 	      }
-	    val = returnValByWhiteSpaceCount(lineString, 17);
+	    val = returnValByWhiteSpaceCount(lineString, 16);
 	    pInfo->setPR(val);
+
+	    // get NI
+	    lineString.clear();
+	    lineString.append(_PROC);
+	    lineString.append(std::to_string(pidList.at(i)));
+	    lineString.append("/stat");
+	    lineString = getFileLineByNumber(lineString, 0);
+	    if(lineString == "-1")
+	      {
+		delete pInfo;
+		continue;
+	      }
+	    val = returnValByWhiteSpaceCount(lineString, 17);
+	    pInfo->setNI(val);
 
 	    // get VIRT
 	    lineString.clear();
@@ -1110,19 +1124,36 @@ int main()
 	    lineString = returnStringByWhiteSpaceCount(lineString,
 						       2);
 	    pInfo->setS((char)lineString.at(0));
-	    
+
+	    // %cpu
+	    lineString.clear();
+	    lineString.append(_PROC);
+	    lineString.append(std::to_string(pidList.at(i)));
+	    lineString.append("/sched");
+	    lineString = returnPhraseLine(lineString,
+					  "load_avg");
+	    /*
+	    float floatVal;
+	    floatVal = returnFirstIntFromLine(lineString);
+
+	    floatVal = floatVal/10;
+	    pInfo->setCpuUsage(floatVal);
+	    */
+	    // display current retrieved process data
 	    log << "PID: " << pInfo->getPID() << std::endl;
 	    log << "COMM: " << pInfo->getCommand() << std::endl;
 	    log << "USER: " << pInfo->getUser() << std::endl;
 	    log << "PR: " << pInfo->getPR() << std::endl;
+	    log << "NI: " << pInfo->getNI() << std::endl;	    
 	    log << "VIRT: " << pInfo->getVirt() << std::endl;
 	    log << "RES: " << pInfo->getRes() << std::endl;
 	    log << "SHR: " << pInfo->getSHR() << std::endl;
 	    log << "S: " << pInfo->getS() << std::endl;
+	    //	    log << "%CPU: " << pInfo->getCpuUsage() << std::endl;	    
+	    log << std::endl;	    
 
-	    // insert process to hash table with PID as key
+	    // insert current process to hash table with PID as key
 	    processes.insert(std::make_pair(pidList.at(i), pInfo));
-	    log << std::endl;
 	  }
 	else
 	  {
@@ -1130,7 +1161,7 @@ int main()
 	  }
       }
     
-    break;
+    //    break;
     pInfo = nullptr;
     
     // refresh the windows

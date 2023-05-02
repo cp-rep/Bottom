@@ -190,6 +190,11 @@ const int returnValByWhiteSpaceCount(const std::string& line,
   std::string valString;
   int i = 0;
   int spaceCount = 0;
+
+  do{
+    i++;
+  } while(line.at(i) != ')');
+
   for(; i < line.length() && spaceCount != numWhiteSpaces; i++)
     {
       if(line.at(i) == ' ')
