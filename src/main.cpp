@@ -158,7 +158,7 @@ int main()
   short currentX = 0;
   short previousY = 0;
   short previousX = 0;
-    
+
   // ## setup the main window ##
   CursesWindow mainWin;
 
@@ -943,7 +943,7 @@ int main()
   box(PercentCPUWin.getWindow(), 'L', 'L');
   box(PercentMEMWin.getWindow(), 'M', 'M');
   box(TIMEWin.getWindow(), 'N', 'N');
-  box(COMMANDWin.getWindow(), 'O', 'O');	
+  box(COMMANDWin.getWindow(), 'O', 'O');
   
   // ## for testing ##
   if(has_colors())
@@ -960,45 +960,16 @@ int main()
     //    erase();
     // get top window data and print to screen
     lineString.clear();
-    topWin.setUptime(getUptimeFromPipe());
+    topWin.setUptime(findUptimeFromPipe());
     mvwaddstr(topWin.getWindow(),
 	      0,
 	      0,
 	      topWin.getUptime().c_str());
     
     // get memory window data and print it to screen
-    lineString = returnPhraseLine(_PROC_MEMINFO,
-				  _MEMTOTAL);
-    mInfo.setMemTotal(kBToKiB(returnFirstIntFromLine(lineString)));
-    lineString = returnPhraseLine(_PROC_MEMINFO,
-				  _MEMFREE);
-    mInfo.setMemFree(kBToKiB(returnFirstIntFromLine(lineString)));
-    lineString = returnPhraseLine(_PROC_MEMINFO,
-				  _BUFFERS);
-    mInfo.setBuffers(kBToKiB(returnFirstIntFromLine(lineString)));
-    lineString = returnPhraseLine(_PROC_MEMINFO,
-				  _CACHED);
-    mInfo.setCached(kBToKiB(returnFirstIntFromLine(lineString)));
-    lineString = returnPhraseLine(_PROC_MEMINFO,
-				  _SRECLAIMABLE);
-    mInfo.setSReclaimable(kBToKiB(returnFirstIntFromLine(lineString)));
-    lineString = returnPhraseLine(_PROC_MEMINFO,
-				  _SWAPTOTAL);
-    mInfo.setSwapTotal(kBToKiB(returnFirstIntFromLine(lineString)));
-    lineString = returnPhraseLine(_PROC_MEMINFO,
-				  _SWAPFREE);
-    mInfo.setSwapFree(kBToKiB(returnFirstIntFromLine(lineString)));
-    lineString = returnPhraseLine(_PROC_MEMINFO,
-				  _MEMAVAILABLE);
-    mInfo.setMemAvailable(kBToKiB(returnFirstIntFromLine(lineString)));
-    memWin.setStringMiB(std::to_string(mInfo.getMemTotal()),
-			std::to_string(mInfo.getMemFree()),
-			std::to_string(mInfo.calculateMemUsed()),
-			std::to_string(mInfo.calculateBuffCache()));
-    memWin.setStringSwap(std::to_string(mInfo.getSwapTotal()),
-			 std::to_string(mInfo.getSwapFree()),
-			 std::to_string(mInfo.calculateSwapUsed()),
-			 std::to_string(mInfo.getMemAvailable()));
+    
+    
+    /*
     mvwaddstr(memWin.getWindow(),
 	      0,
 	      0,
@@ -1008,15 +979,15 @@ int main()
 	      0,
 	      memWin.getSwap().c_str());
 
-
+    */
     // ## get processes ##
     // free old processes and clear the umap
     for(int i = 0; i < pidList.size(); i++)
       {
-	delete(processes[pidList.at(i)]);
+	delete(processesMap[pidList.at(i)]);
       }
 
-    processes.clear();
+    processesMap.clear();
     pidList.clear();
     // get new process list
     pidList = (findNumericDirs(_PROC));
@@ -1025,134 +996,46 @@ int main()
     // allocate the new processes and their related data
     for(int i = 0; i < pidList.size(); i++)
       {
-	if(processes.count(pidList.at(i)) == 0)
+	if(processesMap.count(pidList.at(i)) == 0)
 	  {
+	    // create new process data object
 	    pInfo = new ProcessInfo();
+	    
 	    // set pid
 	    pInfo->setPID(pidList.at(i));
 
 	    // get and set command
-	    std::string filePath = _PROC;
-	    lineString.clear();
-	    filePath.append(std::to_string(pidList.at(i)));
-	    filePath.append(_COMM);
-	    lineString = getFileLineByNumber(filePath, 0);
-	    if(lineString == "-1")
-	      {
-		delete pInfo;
-		continue;
-	      }
-	    
-	    pInfo->setCommand(lineString);
 
 	    // get user
-	    lineString.clear();
-	    lineString.append(_PROC);
-	    lineString.append(std::to_string(pidList.at(i)));
-	    lineString.append("/status");
-	    lineString = returnPhraseLine(lineString, "Gid");
-	    int val = returnFirstIntFromLine(lineString);
-	    userData = getpwuid(val);
-	    pInfo->setUser(userData->pw_name);
 
 	    // get PR
-	    lineString.clear();
-	    lineString.append(_PROC);
-	    lineString.append(std::to_string(pidList.at(i)));
-	    lineString.append("/stat");
-	    lineString = getFileLineByNumber(lineString, 0);
-	    if(lineString == "-1")
-	      {
-		delete pInfo;
-		continue;
-	      }
-	    val = returnValByWhiteSpaceCount(lineString, 17);
-	    pInfo->setPR(val);
 
 	    // get VIRT
-	    lineString.clear();
-	    lineString.append(_PROC);
-	    lineString.append(std::to_string(pidList.at(i)));
-	    lineString.append("/status");
-	    lineString = returnPhraseLine(lineString,
-					  "VmSize");
-	    pInfo->setVirt(returnFirstIntFromLine(lineString));
 
 	    // get RES
-	    lineString.clear();
-	    lineString.append(_PROC);
-	    lineString.append(std::to_string(pidList.at(i)));
-	    lineString.append("/status");
-	    lineString = returnPhraseLine(lineString,
-					  "VmRSS");
-	    pInfo->setRes(returnFirstIntFromLine(lineString));
 
 	    // get SHR
-	    lineString.clear();
-	    lineString.append(_PROC);
-	    lineString.append(std::to_string(pidList.at(i)));
-	    lineString.append("/status");
-	    lineString = returnPhraseLine(lineString,
-					  "RssFile");
-	    pInfo->setSHR(returnFirstIntFromLine(lineString));
-
+	    
 	    // S
-	    lineString.clear();
-	    lineString.append(_PROC);
-	    lineString.append(std::to_string(pidList.at(i)));
-	    lineString.append("/stat");
-	    lineString = getFileLineByNumber(lineString, 0);
-	    if(lineString == "-1")
-	      {
-		delete pInfo;
-		continue;
-	      }
-	    lineString = returnStringByWhiteSpaceCount(lineString,
-						       2);
-	    pInfo->setS((char)lineString.at(0));
-
+	    
 	    // get %CPU
-	    lineString.clear();
-	    lineString.append(_PROC);
-	    lineString.append(std::to_string(pidList.at(i)));
-	    lineString.append("/sched");
-	    lineString = getFileLineByNumber(lineString, 13);
-	    //	    log << "Line: " << lineString << std::endl;
-	    if(lineString == "-1")
-	      {
-		delete pInfo;
-		continue;
-	      }
-	    bool exists = false;
-	    exists = phraseExists(lineString, "load_avg");
-
-	    if(exists)
-	      {
-		int usage = 0;
-		log << "linestring: " << lineString << std::endl;
-		lineString.push_back(0);
-		usage = returnFirstIntFromLine(lineString);
-		//usage = usage/10;
-		log << "usage: " << usage << std::endl;
-		//		pInfo->setCpuUsage(usage);
-	      }
 	    
 	    // print extracted process data
-	    log << "PID: " << pInfo->getPID() << std::endl;
-	    log << "COMM: " << pInfo->getCommand() << std::endl;
 	    /*
-	    log << "USER: " << pInfo->getUser() << std::endl;
-	    log << "PR: " << pInfo->getPR() << std::endl;
-	    log << "VIRT: " << pInfo->getVirt() << std::endl;
-	    log << "RES: " << pInfo->getRes() << std::endl;
-	    log << "SHR: " << pInfo->getSHR() << std::endl;
-	    log << "S: " << pInfo->getS() << std::endl;
+	    log << "PID: " << pInfo->getPID() << std::endl
+	    << "COMM: " << pInfo->getCommand() << std::endl
+	    << "USER: " << pInfo->getUser() << std::endl
+	    << "PR: " << pInfo->getPR() << std::endl
+	    << "VIRT: " << pInfo->getVirt() << std::endl
+	    << "RES: " << pInfo->getRes() << std::endl
+	    << "SHR: " << pInfo->getSHR() << std::endl
+	    << "S: " << pInfo->getS() << std::endl
+	    << "%CPU: " << pInfo->getCpuUsage() << std::endl
+	    << std::endl;	    
 	    */
-	    //	    log << "%CPU: " << pInfo->getCpuUsage() << std::endl;	    
 
 	    // insert process to hash table with PID as key
 	    processes.insert(std::make_pair(pidList.at(i), pInfo));
-	    log << std::endl;
 	  }
 	else
 	  {

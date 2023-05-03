@@ -372,7 +372,7 @@ std::vector<std::string> parseNewLineStrings(const std::string str)
 
 /*
   Function:
-  getUptimeFromPipe
+  findMemInfoFromPipe
 
   Description:
 
@@ -381,29 +381,66 @@ std::vector<std::string> parseNewLineStrings(const std::string str)
   Output:
   NONE
  */
-const std::string getUptimeFromPipe()
+const std::string findUptimeFromPipe()
 {
-  FILE* usersFile;
+  FILE* pipe;
   std::string uptime;
   char c = 0;
 
-  usersFile = popen("uptime", "r");
+  pipe = popen("uptime", "r");
 
-  if(usersFile == nullptr)
+  if(pipe == nullptr)
     {
       perror("popen() failed to open users program.");
       exit(EXIT_FAILURE);
     }
 
-  while(fread(&c, sizeof c, 1, usersFile))
+  while(fread(&c, sizeof c, 1, pipe))
     {
       uptime.push_back(c);
     }
 
-  pclose(usersFile);
+  pclose(pipe);
 
   return uptime;
-} // end of "getUptime"
+} // end of "findUptimeFromPipe"
+
+
+
+/*
+  Function:
+  findMemInfoFromPipe
+  
+  Description:
+  
+  Input:
+  
+  Output:
+
+ */
+const std::string findMemInfoFromPipe()
+{
+  FILE* pipe;
+  std::string uptime;
+  char c = 0;
+
+  pipe = popen("free", "r");
+
+  if(pipe == nullptr)
+    {
+      perror("popen() failed to open users program.");
+      exit(EXIT_FAILURE);
+    }
+  
+  while(fread(&c, sizeof c, 1, pipe))
+    {
+      
+    }
+
+  pclose(pipe);
+
+  return uptime;
+} // end of "findMemInfoFromPipe"
 
 
 
@@ -435,37 +472,36 @@ const std::string listDirContents()
   pclose(listFile);
 
   return dirContents;
-} // end of "getUptime"
+} // end of "listDirContents"
 
 
 
 /*
   Function:
-  listDirContents
+  findNumericDirs
 
   Description:
  */
 const std::vector<int> findNumericDirs(const std::string& dirPath)
 {
-  FILE* listFile;
+  FILE* pipe;
+  std::string command = "ls ";
   std::vector<int> dirs;
   std::string fullPath;
   std::string numFolder;
-  std::string list;
   std::unordered_map<int, int> pids;
   char c = 0;
 
-  list.append("ls ");
-  list.append(dirPath);
-  listFile = popen(list.c_str(), "r");
+  command.append(dirPath);
+  pipe = popen(command.c_str(), "r");
 
-  if(listFile == nullptr)
+  if(pipe == nullptr)
     {
       perror("popen() failed to open ls program.");
       exit(EXIT_FAILURE);
     }
 
-  while(fread(&c, sizeof c, 1, listFile))
+  while(fread(&c, sizeof c, 1, pipe))
     {
       if(c >= '0' && c <= '9')
 	{
@@ -493,12 +529,16 @@ const std::vector<int> findNumericDirs(const std::string& dirPath)
 	}
     }
 
-  pclose(listFile);
+  pclose(pipe);
+  
   return dirs;
-} // end of "getUptime"
+} // end of "findNumericDirs"
 
 
 
+/*
+  
+ */
 bool phraseExists(const std::string& line, const std::string& phrase)
 {
   std::string temp;

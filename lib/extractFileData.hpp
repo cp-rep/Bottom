@@ -30,7 +30,8 @@ const std::string returnStringByWhiteSpaceCount(const std::string& line,
 bool phraseExists(const std::string& line, const std::string& phrase);
 
 // read from popen outputs
-const std::string getUptimeFromPipe();
+const std::string findUptimeFromPipe();
+const std::string findMemInfoFromPipe();
 const std::string listDirContents();
 const std::vector<int> findNumericDirs(const std::string& dirPath);
 
