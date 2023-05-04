@@ -1082,13 +1082,14 @@ int main()
 	    log << "USER: " << pInfo->getUser() << std::endl;
 
 
+	    /*
 	    // get VIRT
 	    lineString = returnPhraseLine(filePath, "VmSize");
 	    parsedLine = parseLine(lineString);
 	    value = convertToInt(parsedLine.at(1));
 	    pInfo->setVirt(value);
 	    
-	    /*
+
 	    // get RES
 	    lineString = returnPhraseLine(filePath, "VmRSS");
 	    parsedLine = parseLine(lineString);
@@ -1136,8 +1137,8 @@ int main()
 		<< "RES: " << pInfo->getRes() << std::endl
 		<< "SHR: " << pInfo->getSHR() << std::endl
 		<< "S: " << pInfo->getS() << std::endl;
-	    */
-		 /*
+	  
+
 	    << "%CPU: " << pInfo->getCpuUsage() << std::endl
 	    << std::endl;	    
 	    */
@@ -1151,6 +1152,7 @@ int main()
 	    log << "Process already exists." << std::endl;
 	  }
       }
+    break;
     pInfo = nullptr;
     
     // refresh the windows
