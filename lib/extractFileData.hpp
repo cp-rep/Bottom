@@ -39,5 +39,6 @@ const std::vector<int> findNumericDirs(const std::string& dirPath);
 
 // create strings
 const std::string catParams();
+const std::string fixStatLine(const std::string& line);
 
 #endif

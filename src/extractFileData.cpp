@@ -574,3 +574,30 @@ bool phraseExists(const std::string& line, const std::string& phrase)
 
   return phraseExists;
 }
+
+
+
+
+const std::string fixStatLine(const std::string& line)
+{
+  std::string temp;
+  int i;
+
+  for(i = 0; line.at(i) != ')' && i < line.size(); i++);
+
+  i += 2;
+
+  for(int j = i; j < line.size(); j++)
+    {
+      temp.push_back(line.at(j));
+    }
+  
+  if(temp.empty())
+    {
+      return "-1";
+    }
+  else
+    {
+      return temp;
+    }
+}

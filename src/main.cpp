@@ -1048,6 +1048,7 @@ int main()
 	  {
 	    std::string filePath;
 	    std::string lineString;
+	    const std::string currProc = _PROC + std::to_string(pidList.at(i));
 	    int value = 0;
 	    
 	    // create new process data object
@@ -1055,10 +1056,10 @@ int main()
 	    
 	    // set pid
 	    pInfo->setPID(pidList.at(i));
+	    log << "PID: " << pidList.at(i) << std::endl;
 
 	    // get command
-	    filePath = _PROC;
-	    filePath.append(std::to_string(pidList.at(i)));
+	    filePath = currProc;
 	    filePath.append(_COMM);
 	    lineString = returnFileLineByNumber(filePath, 1);
 	    if(lineString == "-1")
@@ -1068,64 +1069,79 @@ int main()
 	      }
 	    pInfo->setCommand(lineString);
 
+	    log << "COMM: " << pInfo->getCommand() << std::endl;
 
  	    // get USER
-	    filePath = _PROC;
-	    filePath.append(std::to_string(pidList.at(i)));
+	    filePath = currProc;
 	    filePath.append(_STATUS);
 	    lineString = returnPhraseLine(filePath, "Gid");
             parsedLine = parseLine(lineString);
+	    value = convertToInt(parsedLine.at(1));
+	    userData = getpwuid(value);
+	    pInfo->setUser(userData->pw_name);
+	    log << "USER: " << pInfo->getUser() << std::endl;
 
-	    for(int i = 0; i < parsedLine.size(); i++)
-	      {
-		log << i << ": " << parsedLine.at(i) << std::endl;
-	      }
-	    break;
+
+	    // get VIRT
+	    lineString = returnPhraseLine(filePath, "VmSize");
+	    parsedLine = parseLine(lineString);
+	    value = convertToInt(parsedLine.at(1));
+	    pInfo->setVirt(value);
+	    /*
+
+	    // get RES
+	    lineString = returnPhraseLine(filePath, "VmRSS");
+	    parsedLine = parseLine(lineString);
+	    value = convertToInt(parsedLine.at(1));
+	    pInfo->setRes(value);	    
+
+	    // get SHR
+	    lineString = returnPhraseLine(filePath, "RssFile");
+	    parsedLine = parseLine(lineString);
+	    value = convertToInt(parsedLine.at(1));
+	    pInfo->setSHR(value);	    	    
 	    
  	    // get PR
-	    /*
-	    filePath = _PROC;
-	    filePath.append(std::to_string(pidList.at(i)));
+	    filePath = currProc;
 	    filePath.append(_STAT);
 	    lineString = returnFileLineByNumber(filePath, 1);
-	    log << "lineString: " << lineString << std::endl;
-	    
 	    if(lineString.empty())
 	      {
 		delete pInfo;
 		continue;
 	      }
-	      
-	    */
-
-	    // get PR
-
-	    // get VIRT
-
-	    // get RES
-
-	    // get SHR
+	    lineString = fixStatLine(lineString);
+            parsedLine = parseLine(lineString);
+	    value = convertToInt(parsedLine.at(15));
+	    pInfo->setPR(value);
 	    
-	    // S
+	    // get NI
+	    value = convertToInt(parsedLine.at(16));
+	    pInfo->setNI(value);
+
+	    // get S
+	    pInfo->setS(lineString.at(0));
 	    
 	    // get %CPU
 	    
 	    // print extracted process data
 
-	    /*
-	    log << "PID: " << pInfo->getPID() << std::endl
+
+	    log << std::endl << "PID: " << pInfo->getPID() << std::endl
 		<< "COMM: " << pInfo->getCommand() << std::endl
-		<< "USER: " << pInfo->getUser() << std::endl;
+		<< "USER: " << pInfo->getUser() << std::endl
+		<< "PR: " << pInfo->getPR() << std::endl
+		<< "NI: " << pInfo->getNI() << std::endl
+		<< "VIRT: " << pInfo->getVirt() << std::endl
+		<< "RES: " << pInfo->getRes() << std::endl
+		<< "SHR: " << pInfo->getSHR() << std::endl
+		<< "S: " << pInfo->getS() << std::endl;
 	    */
-	    /*
-	    << "PR: " << pInfo->getPR() << std::endl
-	    << "VIRT: " << pInfo->getVirt() << std::endl
-	    << "RES: " << pInfo->getRes() << std::endl
-	    << "SHR: " << pInfo->getSHR() << std::endl
-	    << "S: " << pInfo->getS() << std::endl
+		 /*
 	    << "%CPU: " << pInfo->getCpuUsage() << std::endl
 	    << std::endl;	    
 	    */
+
 
 	    // insert process to hash table with PID as key
 	    processesMap.insert(std::make_pair(pidList.at(i), pInfo));
