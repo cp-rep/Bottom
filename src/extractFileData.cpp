@@ -521,6 +521,20 @@ const std::vector<int> findNumericDirs(const std::string& dirPath)
 } // end of "findNumericDirs"
 
 
+/*
+  
+ */
+const int convertToInt(const std::string& str)
+{
+  int val = 0;
+  if(!str.empty())
+    {
+      std::stringstream container(str);
+      container >> val;
+    }
+  return val;
+} // end of "convertToInt"
+
 
 /*
   

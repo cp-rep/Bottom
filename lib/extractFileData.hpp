@@ -28,6 +28,7 @@ const int returnValByWhiteSpaceCount(const std::string& line,
 const std::string returnStringByWhiteSpaceCount(const std::string& line,
 						 const int& numWhiteSpaces);
 bool phraseExists(const std::string& line, const std::string& phrase);
+const int convertToInt(const std::string& str);
 
 // read from popen outputs
 const std::string returnLineFromPipe(const std::string& comm,

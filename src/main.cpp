@@ -76,6 +76,7 @@
 #define _SWAPTOTAL "SwapTotal"
 #define _SWAPFREE "SwapFree"
 #define _MEMAVAILABLE "MemAvailable"
+#define _MODE 'r'
 
 // function prototypes
 void printWindowToLog(std::ofstream& log,
@@ -955,9 +956,10 @@ int main()
 
   // ## run the main program loop ##
   do{
-    const char mode = 'r';        
+    const char mode = _MODE;
     std::string tempLine;
     std::vector<std::string> parsedLine;
+    int val = 0;
     
     // clear the windows
     // erase();
@@ -971,14 +973,36 @@ int main()
     // get memWindow data and print it to screen
     tempLine = returnLineFromPipe("free", &mode, 2);
     parsedLine = parseLine(tempLine);
+    val = convertToInt(parsedLine.at(1));
+    mInfo.setMemTotal(val);
+    val = convertToInt(parsedLine.at(2));
+    mInfo.setMemUsed(val);
+    val = convertToInt(parsedLine.at(3));
+    mInfo.setMemFree(val);
+    val = convertToInt(parsedLine.at(5));
+    mInfo.setMemFree(val);
+    val = convertToInt(parsedLine.at(6));
+    mInfo.setMemAvailable(val);
+    parsedLine.clear();
+    tempLine.clear();
+    tempLine = returnLineFromPipe("free", &mode, 3);
+    parsedLine = parseLine(tempLine);
+    val = convertToInt(parsedLine.at(1));
+    mInfo.setSwapTotal(val);
+    val = convertToInt(parsedLine.at(2));
+    mInfo.setSwapFree(val);
+    val = convertToInt(parsedLine.at(3));
+    mInfo.setSwapUsed(val);
 
-    log << "size: " << parsedLine.size() << std::endl;
-    for(int i = 0; i < parsedLine.size(); i ++)
-      {
-	log << i << ": " << parsedLine.at(i) << std::endl;
-      }
-    
-    
+    // display mem to log
+    log << "Mem Total: " << mInfo.getMemTotal() << std::endl;
+    log << "Mem Used: " << mInfo.getMemUsed() << std::endl;
+    log << "Mem Free: " << mInfo.getMemFree() << std::endl;
+    log << "Mem BuffCache: " << mInfo.getBuffCache() << std::endl;
+    log << "Swap TotaL: " << mInfo.getSwapTotal() << std::endl;    
+    log << "Swap Used: " << mInfo.getSwapUsed() << std::endl;
+    log << "Swap Free: " << mInfo.getSwapFree() << std::endl;
+
     
     /*
     mvwaddstr(memWin.getWindow(),

@@ -14,20 +14,24 @@
 
   Description:
 */
-MemInfo::MemInfo(const float& memTotal,
-		 const float& memFree,
-		 const float& buffers,
-		 const float& cached,
-		 const float& sreclaimable,
-		 const float& swapTotal,
-		 const float& swapFree,
-		 const float& swapUsed,
-		 const float& memAvailable)
+MemInfo::MemInfo(const int& memTotal,
+		 const int& memFree,
+		 const int& memUsed,
+		 const int& buffers,
+		 const int& cached,
+		 const int& buffCache,
+		 const int& sreclaimable,
+		 const int& swapTotal,
+		 const int& swapFree,
+		 const int& swapUsed,
+		 const int& memAvailable)
 {
   m_memTotal = memTotal;
   m_memFree = memFree;
+  m_memUsed = memUsed;
   m_buffers = buffers;
   m_cached = cached;
+  m_buffCache = buffCache;
   m_sreclaimable = sreclaimable;
   m_swapTotal = swapTotal;
   m_swapFree = swapFree;
@@ -49,10 +53,10 @@ MemInfo::MemInfo(const float& memTotal,
   NONE
 
   Output:
-  const float           - an rvalue that is the result of the
+  const int           - an rvalue that is the result of the
                           buff/cache calculation.
 */
-const float MemInfo::calculateBuffCache() const
+const int MemInfo::calculateBuffCache() const
 {
   return m_buffers + m_cached + m_sreclaimable;
 } // end of "calculateBuffCache"
@@ -71,10 +75,10 @@ const float MemInfo::calculateBuffCache() const
   NONE
 
   Output:
-  const float            - an rvalue that is the result of the memory
+  const int            - an rvalue that is the result of the memory
                            "used" calculation.
 */
-const float MemInfo::calculateMemUsed() const
+const int MemInfo::calculateMemUsed() const
 {
   return m_memTotal - m_memFree - m_buffers - m_cached - m_sreclaimable;
 } // end of "calculateMemUsed"
@@ -95,7 +99,7 @@ const float MemInfo::calculateMemUsed() const
   Output:
   NONE
 */
-const float MemInfo::calculateSwapUsed() const
+const int MemInfo::calculateSwapUsed() const
 {
   return m_swapTotal - m_swapFree;
 } // end of "calculateSwapUsed"
@@ -116,7 +120,7 @@ const float MemInfo::calculateSwapUsed() const
   m_memTotal             - a const reference to the m_memTotal
                            member variable
 */
-const float& MemInfo::getMemTotal() const
+const int& MemInfo::getMemTotal() const
 {
   return m_memTotal;
 } // end of "getMemTotal"
@@ -137,7 +141,7 @@ const float& MemInfo::getMemTotal() const
   m_memFree              - a const reference to the m_memFree
                            member variable.
 */
-const float& MemInfo::getMemFree() const
+const int& MemInfo::getMemFree() const
 {
   return m_memFree;
 } // end of "getMemFree"
@@ -159,7 +163,7 @@ const float& MemInfo::getMemFree() const
   m_buffers              - a const reference to the m_buffers
                            member variable.  
 */
-const float& MemInfo::getBuffers() const
+const int& MemInfo::getBuffers() const
 {
   return m_buffers;
 } // end of "getBuffers"
@@ -180,10 +184,31 @@ const float& MemInfo::getBuffers() const
   m_cached               - a const reference to the m_cached
                            member variable.  
 */
-const float& MemInfo::getCached() const
+const int& MemInfo::getCached() const
 {
   return m_cached;
 } // end of "getCached"
+
+
+
+/*
+  Function:
+  getBuffCache
+
+  Description:
+  Returns the m_cached member variable.
+
+  Input:
+  NONE
+
+  Output:  
+  m_cached               - a const reference to the m_cached
+                           member variable.  
+*/
+const int& MemInfo::getBuffCache() const
+{
+  return m_buffCache;
+} // end of "getBuffCache"
 
 
 
@@ -201,7 +226,7 @@ const float& MemInfo::getCached() const
   m_swapTotal            - a const reference to the m_swapTotal
                            member variable.  
 */
-const float& MemInfo::getSwapTotal() const
+const int& MemInfo::getSwapTotal() const
 {
   return m_swapTotal;
 } // end of "getSwapTotal"
@@ -222,7 +247,7 @@ const float& MemInfo::getSwapTotal() const
   m_swapFree             - a const reference to the m_swapFree
                            member variable.  
 */
-const float& MemInfo::getSwapFree() const
+const int& MemInfo::getSwapFree() const
 {
   return m_swapFree;
 } // end of "getSwapFree"
@@ -243,7 +268,7 @@ const float& MemInfo::getSwapFree() const
   m_swapUsed             - a const reference to the m_swapUsed
                            member variable.  
 */
-const float& MemInfo::getSwapUsed() const
+const int& MemInfo::getSwapUsed() const
 {
   return m_swapUsed;
 } // end of "getSwapUsed"
@@ -264,7 +289,7 @@ const float& MemInfo::getSwapUsed() const
   m_memAvailable         - a const reference to the m_memAvailable
                            member variable.  
 */
-const float& MemInfo::getMemAvailable() const
+const int& MemInfo::getMemAvailable() const
 {
   return m_memAvailable;
 } // end of "getMemAvailable"
@@ -349,6 +374,26 @@ void MemInfo::setCached(const int& cached)
   m_cached = cached;
 } // end of "setCached"
 
+
+
+
+/*
+  Function:
+  setBuffCache
+
+  Description:
+  Sets the m_cached member variable.
+
+  Input:
+  NONE
+
+  Output:
+  NONE
+*/
+void MemInfo::setBuffCache(const int& buffCache)
+{
+  m_buffCache = buffCache;
+} // end of "setBuffCache"
 
 
 /*
