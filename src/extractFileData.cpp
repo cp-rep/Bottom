@@ -50,6 +50,8 @@ const std::string returnPhraseLine(const std::string& fileName,
     {
       tempPhrase.clear();
       std::getline(inFile, tempLine);
+
+      // check if EoF was read
       if(tempLine == "")
 	break;
       
@@ -127,33 +129,33 @@ const int returnFirstIntFromLine(const std::string& line)
 
 /*
   Function:
-  getFileLineByNumber
+  returnFileLineByNumber
    
   Description:
-  Returns a specified line from a file.
+  Returns a specified line from a file of a corresponding line number.
 
   Input:
   filePath               - a const reference to a string for a full file path.
 
-  lineNumber             - a zero based a const reference to an int for a
-                           specificline number we want to return.
+  lineNumber             - a const reference to an int for a specific line number
+                           we want to return.
 			   
   Output:
   const string           - a const string containing the desired line we are
                            returning based upon the incoming line number.
 */
-const std::string getFileLineByNumber(const std::string& filePath,
-				      const int& lineNumber)
+const std::string returnFileLineByNumber(const std::string& filePath,
+					 const int& lineNumber)
 {
-  struct stat file;  
+  struct stat file;
   std::string tempLine;
-  std::ifstream inFile(filePath, std::ifstream::in);   
+  std::ifstream inFile(filePath, std::ifstream::in);
   
   if(stat(filePath.c_str(), &file) == 0 && S_ISREG(file.st_mode))
     {
-      for(int i = 0; i <= lineNumber; i++)
+      for(int i = 0; i < lineNumber; i++)
 	{
-	  std::getline(inFile, tempLine);
+	  std::getline(inFile, tempLine, '\n');
 	}
 
       return tempLine;
@@ -162,7 +164,8 @@ const std::string getFileLineByNumber(const std::string& filePath,
     {
       return "-1";
     }    
-} // end of "getFileLineNumber"
+} // end of "returnFileLineByNumber"
+
 
 
 /*
@@ -346,69 +349,91 @@ bool testNumericDir(const std::string& dirPath)
 
 /*
   Function:
-  parseNewLineStrings
+  parseLine
 
   Description:
  */
-std::vector<std::string> parseNewLineStrings(const std::string str)
+std::vector<std::string> parseLine(const std::string& str)
 {
   std::vector<std::string> parsedString;
   std::string temp;
   
   for(int i = 0; i < str.length(); i++)
     {
+      while((str.at(i) == '\t' || str.at(i) == ' ') && i < str.length())
+	{
+	  if(!temp.empty())
+	    {
+	      parsedString.push_back(temp);
+	      temp.clear();
+	    }
+	  i++;
+	}
       temp.push_back(str.at(i));
-      
-      if(str.at(i) == NEWLINE)
-	{
-	  parsedString.push_back(temp);
-	  temp.clear();
-	}
-      else
-	{
-	  temp.push_back(str.at(i));
-	}
+    }
+
+  if(!temp.empty())
+    {
+      parsedString.push_back(temp);
     }
 
   return parsedString;
-} // end of "parseNewLineStrings"
+} // end of "parseLine"
 
 
 
 /*
   Function:
-  getUptimeFromPipe
-
+  findMemInfoFromPipe
+  
   Description:
-
+  
   Input:
-  NONE
+  
   Output:
-  NONE
+
  */
-const std::string getUptimeFromPipe()
+const std::string returnLineFromPipe(const std::string& comm,
+				     const char* mode,
+				     const int& lineNum)
 {
-  FILE* usersFile;
-  std::string uptime;
+  FILE* pipe;
+  std::string line;;
   char c = 0;
 
-  usersFile = popen("uptime", "r");
+  pipe = popen(comm.c_str(), mode);
 
-  if(usersFile == nullptr)
+  if(pipe == nullptr)
     {
       perror("popen() failed to open users program.");
       exit(EXIT_FAILURE);
     }
 
-  while(fread(&c, sizeof c, 1, usersFile))
+  for(int i = 0; i < lineNum - 1; i++)
     {
-      uptime.push_back(c);
+      while(fread(&c, sizeof c, 1, pipe))
+	{
+	  if(c == '\n')
+	    break;
+	}
     }
 
-  pclose(usersFile);
+  while(fread(&c, sizeof c, 1, pipe))
+    {
+      if(c == '\n')
+	{
+	  break;
+	}
+      else
+	{
+	  line.push_back(c);
+	}
+    }
 
-  return uptime;
-} // end of "getUptime"
+  pclose(pipe);
+
+  return line;
+} // end of "findMemInfoFromPipe"
 
 
 
@@ -440,37 +465,36 @@ const std::string listDirContents()
   pclose(listFile);
 
   return dirContents;
-} // end of "getUptime"
+} // end of "listDirContents"
 
 
 
 /*
   Function:
-  listDirContents
+  findNumericDirs
 
   Description:
  */
 const std::vector<int> findNumericDirs(const std::string& dirPath)
 {
-  FILE* listFile;
+  FILE* pipe;
+  std::string command = "ls ";
   std::vector<int> dirs;
   std::string fullPath;
   std::string numFolder;
-  std::string list;
   std::unordered_map<int, int> pids;
   char c = 0;
 
-  list.append("ls ");
-  list.append(dirPath);
-  listFile = popen(list.c_str(), "r");
+  command.append(dirPath);
+  pipe = popen(command.c_str(), "r");
 
-  if(listFile == nullptr)
+  if(pipe == nullptr)
     {
       perror("popen() failed to open ls program.");
       exit(EXIT_FAILURE);
     }
 
-  while(fread(&c, sizeof c, 1, listFile))
+  while(fread(&c, sizeof c, 1, pipe))
     {
       if(c >= '0' && c <= '9')
 	{
@@ -498,6 +522,87 @@ const std::vector<int> findNumericDirs(const std::string& dirPath)
 	}
     }
 
-  pclose(listFile);
+  pclose(pipe);
+  
   return dirs;
-} // end of "getUptime"
+} // end of "findNumericDirs"
+
+
+
+/*
+  
+ */
+const int convertToInt(const std::string& str)
+{
+  int val = 0;
+  if(!str.empty())
+    {
+      std::stringstream container(str);
+      container >> val;
+    }
+  return val;
+} // end of "convertToInt"
+
+
+
+/*
+  
+ */
+bool phraseExists(const std::string& line, const std::string& phrase)
+{
+  std::string temp;
+  bool phraseExists = false;
+
+  for(int i = 0; i < line.length(); i++)
+    {
+      if(line.at(i) == phrase.at(0))
+	{
+	  for(int j = 0; j < phrase.length() && i + j < line.length(); j++)
+	    {
+	      if(line.at(i + j) == phrase.at(j))
+		{
+		  temp.push_back(phrase.at(j));
+		}
+	    }
+	}
+
+      if(temp == phrase)
+	{
+	  phraseExists = true;
+	  break;
+	}
+      else
+	{
+	  temp.clear();
+	}
+    }
+
+  return phraseExists;
+}
+
+
+
+
+const std::string fixStatLine(const std::string& line)
+{
+  std::string temp;
+  int i;
+
+  for(i = 0; line.at(i) != ')' && i < line.size(); i++);
+
+  i += 2;
+
+  for(int j = i; j < line.size(); j++)
+    {
+      temp.push_back(line.at(j));
+    }
+  
+  if(temp.empty())
+    {
+      return "-1";
+    }
+  else
+    {
+      return temp;
+    }
+}

@@ -4,28 +4,24 @@
  */
 #include "byteConverter.hpp"
 
-#define TO_KIBIBYTE 0.9765625
+#define TO_MIB 0.9765625
 
 
 
 /*
   Function:
+  KiBToMiB
 
   Description:
+  Converts incoming parameter KiB units to MiB units and returns the result.
+
+  
  */
-const float kBToKiB(const float& val)
+const int KiBToMiB(const float& val)
 {
-  return val * TO_KIBIBYTE;
+  float temp = val;
+  temp = temp * TO_MIB;
+  temp = temp/1000;
+    
+  return (int)temp;
 } // end of "kBToKiB"
-
-
-
-/*
-  Function:
-
-  Description:
- */
-const float _KiBToMiB(const float& val)
-{
-  return 0;
-} // end of "_KiBToMiB"
