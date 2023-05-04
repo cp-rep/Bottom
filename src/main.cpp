@@ -139,11 +139,10 @@ int main()
   MemInfo mInfo;
   ProcessInfo* pInfo;
   struct passwd* userData;
-  std::unordered_map<int, ProcessInfo*> processes;
+  std::unordered_map<int, ProcessInfo*> processesMap;
   std::unordered_map<int, ProcessInfo*>::iterator procIt;
-  std::string lineString;
   std::vector<std::string> parsedFileNames;
-  std::vector<int> pidList;  
+  std::vector<int> pidList;
   short numLines = 0;
   short numCols = 0;
   short maxWindowY = 0;
@@ -956,17 +955,29 @@ int main()
 
   // ## run the main program loop ##
   do{
+    const char mode = 'r';        
+    std::string tempLine;
+    std::vector<std::string> parsedLine;
+    
     // clear the windows
-    //    erase();
-    // get top window data and print to screen
-    lineString.clear();
-    topWin.setUptime(findUptimeFromPipe());
+    // erase();
+    // get topWin data and print to screen
+    topWin.setUptime(returnLineFromPipe("uptime", &mode, 1));
     mvwaddstr(topWin.getWindow(),
 	      0,
 	      0,
 	      topWin.getUptime().c_str());
     
-    // get memory window data and print it to screen
+    // get memWindow data and print it to screen
+    tempLine = returnLineFromPipe("free", &mode, 2);
+    parsedLine = parseLine(tempLine);
+
+    log << "size: " << parsedLine.size() << std::endl;
+    for(int i = 0; i < parsedLine.size(); i ++)
+      {
+	log << i << ": " << parsedLine.at(i) << std::endl;
+      }
+    
     
     
     /*
@@ -978,8 +989,8 @@ int main()
 	      1,
 	      0,
 	      memWin.getSwap().c_str());
-
     */
+    
     // ## get processes ##
     // free old processes and clear the umap
     for(int i = 0; i < pidList.size(); i++)
@@ -1035,7 +1046,7 @@ int main()
 	    */
 
 	    // insert process to hash table with PID as key
-	    processes.insert(std::make_pair(pidList.at(i), pInfo));
+	    processesMap.insert(std::make_pair(pidList.at(i), pInfo));
 	  }
 	else
 	  {
@@ -1043,7 +1054,7 @@ int main()
 	  }
       }
     
-    //    break;
+    break;
     pInfo = nullptr;
     
     // refresh the windows

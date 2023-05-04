@@ -345,24 +345,29 @@ bool testNumericDir(const std::string& dirPath)
 
   Description:
  */
-std::vector<std::string> parseNewLineStrings(const std::string str)
+std::vector<std::string> parseLine(const std::string str)
 {
   std::vector<std::string> parsedString;
   std::string temp;
+  bool whitespace = false;
   
   for(int i = 0; i < str.length(); i++)
     {
+      while(str.at(i) == ' ' && i < str.length())
+	{
+	  if(!temp.empty())
+	    {
+	      parsedString.push_back(temp);
+	      temp.clear();
+	    }
+	  i++;
+	}
       temp.push_back(str.at(i));
-      
-      if(str.at(i) == NEWLINE)
-	{
-	  parsedString.push_back(temp);
-	  temp.clear();
-	}
-      else
-	{
-	  temp.push_back(str.at(i));
-	}
+    }
+
+  if(!temp.empty())
+    {
+      parsedString.push_back(temp);
     }
 
   return parsedString;
@@ -373,43 +378,6 @@ std::vector<std::string> parseNewLineStrings(const std::string str)
 /*
   Function:
   findMemInfoFromPipe
-
-  Description:
-
-  Input:
-  NONE
-  Output:
-  NONE
- */
-const std::string findUptimeFromPipe()
-{
-  FILE* pipe;
-  std::string uptime;
-  char c = 0;
-
-  pipe = popen("uptime", "r");
-
-  if(pipe == nullptr)
-    {
-      perror("popen() failed to open users program.");
-      exit(EXIT_FAILURE);
-    }
-
-  while(fread(&c, sizeof c, 1, pipe))
-    {
-      uptime.push_back(c);
-    }
-
-  pclose(pipe);
-
-  return uptime;
-} // end of "findUptimeFromPipe"
-
-
-
-/*
-  Function:
-  findMemInfoFromPipe
   
   Description:
   
@@ -418,28 +386,46 @@ const std::string findUptimeFromPipe()
   Output:
 
  */
-const std::string findMemInfoFromPipe()
+const std::string returnLineFromPipe(const std::string& comm,
+				     const char* mode,
+				     const int& lineNum)
 {
   FILE* pipe;
-  std::string uptime;
+  std::string line;;
   char c = 0;
 
-  pipe = popen("free", "r");
+  pipe = popen(comm.c_str(), mode);
 
   if(pipe == nullptr)
     {
       perror("popen() failed to open users program.");
       exit(EXIT_FAILURE);
     }
-  
+
+  for(int i = 0; i < lineNum - 1; i++)
+    {
+      while(fread(&c, sizeof c, 1, pipe))
+	{
+	  if(c == '\n')
+	    break;
+	}
+    }
+
   while(fread(&c, sizeof c, 1, pipe))
     {
-      
+      if(c == '\n')
+	{
+	  break;
+	}
+      else
+	{
+	  line.push_back(c);
+	}
     }
 
   pclose(pipe);
 
-  return uptime;
+  return line;
 } // end of "findMemInfoFromPipe"
 
 
