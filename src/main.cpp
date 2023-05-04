@@ -67,7 +67,9 @@
 #define _DEBUG 1
 #define _PROC "/proc/"
 #define _COMM "/comm"
-#define _PROC_MEMINFO "/proc/meminfo"
+#define _STAT "/stat"
+#define _STATUS "/status"
+#define _MEMINFO "/meminfo"
 #define _MEMTOTAL "MemTotal"
 #define _MEMFREE "MemFree"
 #define _BUFFERS "Buffers"
@@ -957,7 +959,7 @@ int main()
   // ## run the main program loop ##
   do{
     const char mode = _MODE;
-    std::string tempLine;
+    std::string fileLine;
     std::vector<std::string> parsedLine;
     int val = 0;
     
@@ -969,42 +971,54 @@ int main()
 	      0,
 	      0,
 	      topWin.getUptime().c_str());
-    
-    // get memWindow data and print it to screen
-    tempLine = returnLineFromPipe("free", &mode, 2);
-    parsedLine = parseLine(tempLine);
-    val = convertToInt(parsedLine.at(1));
-    mInfo.setMemTotal(val);
-    val = convertToInt(parsedLine.at(2));
-    mInfo.setMemUsed(val);
-    val = convertToInt(parsedLine.at(3));
-    mInfo.setMemFree(val);
-    val = convertToInt(parsedLine.at(5));
-    mInfo.setMemFree(val);
-    val = convertToInt(parsedLine.at(6));
-    mInfo.setMemAvailable(val);
-    parsedLine.clear();
-    tempLine.clear();
-    tempLine = returnLineFromPipe("free", &mode, 3);
-    parsedLine = parseLine(tempLine);
-    val = convertToInt(parsedLine.at(1));
-    mInfo.setSwapTotal(val);
-    val = convertToInt(parsedLine.at(2));
-    mInfo.setSwapFree(val);
-    val = convertToInt(parsedLine.at(3));
-    mInfo.setSwapUsed(val);
 
-    // display mem to log
-    log << "Mem Total: " << mInfo.getMemTotal() << std::endl;
-    log << "Mem Used: " << mInfo.getMemUsed() << std::endl;
-    log << "Mem Free: " << mInfo.getMemFree() << std::endl;
-    log << "Mem BuffCache: " << mInfo.getBuffCache() << std::endl;
-    log << "Swap TotaL: " << mInfo.getSwapTotal() << std::endl;    
-    log << "Swap Used: " << mInfo.getSwapUsed() << std::endl;
-    log << "Swap Free: " << mInfo.getSwapFree() << std::endl;
+    fileLine = returnFileLineByNumber("/proc/meminfo", 1);
+    parsedLine = parseLine(fileLine);
+    mInfo.setMemTotal(convertToInt(parsedLine.at(1)));
 
+    fileLine = returnFileLineByNumber("/proc/meminfo", 2);
+    parsedLine = parseLine(fileLine);
+    mInfo.setMemFree(convertToInt(parsedLine.at(1)));
+
+    fileLine = returnFileLineByNumber("/proc/meminfo", 3);
+    parsedLine = parseLine(fileLine);
+    mInfo.setMemAvailable(convertToInt(parsedLine.at(1)));
+
+    fileLine = returnFileLineByNumber("/proc/meminfo", 4);
+    parsedLine = parseLine(fileLine);
+    mInfo.setBuffers(convertToInt(parsedLine.at(1)));
+
+    fileLine = returnFileLineByNumber("/proc/meminfo", 5);
+    parsedLine = parseLine(fileLine);
+    mInfo.setCached(convertToInt(parsedLine.at(1)));
+
+    fileLine = returnFileLineByNumber("/proc/meminfo", 15);
+    parsedLine = parseLine(fileLine);
+    mInfo.setSwapTotal(convertToInt(parsedLine.at(1)));
+
+    fileLine = returnFileLineByNumber("/proc/meminfo", 16);
+    parsedLine = parseLine(fileLine);
+    mInfo.setSwapFree(convertToInt(parsedLine.at(1)));
+
+    fileLine = returnFileLineByNumber("/proc/meminfo", 26);
+    parsedLine = parseLine(fileLine);
+    mInfo.setSReclaimable(convertToInt(parsedLine.at(1)));
+
+    mInfo.setMemUsed(mInfo.calculateMemUsed());
+    mInfo.setSwapUsed(mInfo.calculateSwapUsed());
+    mInfo.setBuffCache(mInfo.calculateBuffCache());
     
-    /*
+    // set mem window data
+    memWin.setStringMiB(std::to_string(mInfo.getMemTotal()),
+			std::to_string(mInfo.getMemFree()),
+			std::to_string(mInfo.getMemUsed()),
+			std::to_string(mInfo.getBuffCache()));
+    memWin.setStringSwap(std::to_string(mInfo.getSwapTotal()),
+			 std::to_string(mInfo.getSwapFree()),
+			 std::to_string(mInfo.getSwapUsed()),
+			 std::to_string(mInfo.getMemAvailable()));
+    
+    // output the mem windows to curses
     mvwaddstr(memWin.getWindow(),
 	      0,
 	      0,
@@ -1013,10 +1027,9 @@ int main()
 	      1,
 	      0,
 	      memWin.getSwap().c_str());
-    */
-    
+
     // ## get processes ##
-    // free old processes and clear the umap
+    // free old processes and clear map
     for(int i = 0; i < pidList.size(); i++)
       {
 	delete(processesMap[pidList.at(i)]);
@@ -1024,24 +1037,66 @@ int main()
 
     processesMap.clear();
     pidList.clear();
+    
     // get new process list
     pidList = (findNumericDirs(_PROC));
-    log << "pidList.size(): " << pidList.size() << std::endl;
 
     // allocate the new processes and their related data
     for(int i = 0; i < pidList.size(); i++)
       {
 	if(processesMap.count(pidList.at(i)) == 0)
 	  {
+	    std::string filePath;
+	    std::string lineString;
+	    int value = 0;
+	    
 	    // create new process data object
 	    pInfo = new ProcessInfo();
 	    
 	    // set pid
 	    pInfo->setPID(pidList.at(i));
 
-	    // get and set command
+	    // get command
+	    filePath = _PROC;
+	    filePath.append(std::to_string(pidList.at(i)));
+	    filePath.append(_COMM);
+	    lineString = returnFileLineByNumber(filePath, 1);
+	    if(lineString == "-1")
+	      {
+		delete pInfo;
+		continue;
+	      }
+	    pInfo->setCommand(lineString);
 
-	    // get user
+
+ 	    // get USER
+	    filePath = _PROC;
+	    filePath.append(std::to_string(pidList.at(i)));
+	    filePath.append(_STATUS);
+	    lineString = returnPhraseLine(filePath, "Gid");
+            parsedLine = parseLine(lineString);
+
+	    for(int i = 0; i < parsedLine.size(); i++)
+	      {
+		log << i << ": " << parsedLine.at(i) << std::endl;
+	      }
+	    break;
+	    
+ 	    // get PR
+	    /*
+	    filePath = _PROC;
+	    filePath.append(std::to_string(pidList.at(i)));
+	    filePath.append(_STAT);
+	    lineString = returnFileLineByNumber(filePath, 1);
+	    log << "lineString: " << lineString << std::endl;
+	    
+	    if(lineString.empty())
+	      {
+		delete pInfo;
+		continue;
+	      }
+	      
+	    */
 
 	    // get PR
 
@@ -1056,10 +1111,13 @@ int main()
 	    // get %CPU
 	    
 	    // print extracted process data
+
 	    /*
 	    log << "PID: " << pInfo->getPID() << std::endl
-	    << "COMM: " << pInfo->getCommand() << std::endl
-	    << "USER: " << pInfo->getUser() << std::endl
+		<< "COMM: " << pInfo->getCommand() << std::endl
+		<< "USER: " << pInfo->getUser() << std::endl;
+	    */
+	    /*
 	    << "PR: " << pInfo->getPR() << std::endl
 	    << "VIRT: " << pInfo->getVirt() << std::endl
 	    << "RES: " << pInfo->getRes() << std::endl
@@ -1077,7 +1135,7 @@ int main()
 	    log << "Process already exists." << std::endl;
 	  }
       }
-    
+
     break;
     pInfo = nullptr;
     

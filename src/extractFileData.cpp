@@ -50,6 +50,8 @@ const std::string returnPhraseLine(const std::string& fileName,
     {
       tempPhrase.clear();
       std::getline(inFile, tempLine);
+
+      // check if EoF was read
       if(tempLine == "")
 	break;
       
@@ -127,31 +129,31 @@ const int returnFirstIntFromLine(const std::string& line)
 
 /*
   Function:
-  getFileLineByNumber
+  returnFileLineByNumber
    
   Description:
-  Returns a specified line from a file.
+  Returns a specified line from a file of a corresponding line number.
 
   Input:
   filePath               - a const reference to a string for a full file path.
 
-  lineNumber             - a zero based a const reference to an int for a
-                           specificline number we want to return.
+  lineNumber             - a const reference to an int for a specific line number
+                           we want to return.
 			   
   Output:
   const string           - a const string containing the desired line we are
                            returning based upon the incoming line number.
 */
-const std::string getFileLineByNumber(const std::string& filePath,
-				      const int& lineNumber)
+const std::string returnFileLineByNumber(const std::string& filePath,
+					 const int& lineNumber)
 {
-  struct stat file;  
+  struct stat file;
   std::string tempLine;
-  std::ifstream inFile(filePath, std::ifstream::in);   
+  std::ifstream inFile(filePath, std::ifstream::in);
   
   if(stat(filePath.c_str(), &file) == 0 && S_ISREG(file.st_mode))
     {
-      for(int i = 0; i <= lineNumber; i++)
+      for(int i = 0; i < lineNumber; i++)
 	{
 	  std::getline(inFile, tempLine, '\n');
 	}
@@ -162,7 +164,8 @@ const std::string getFileLineByNumber(const std::string& filePath,
     {
       return "-1";
     }    
-} // end of "getFileLineNumber"
+} // end of "returnFileLineByNumber"
+
 
 
 /*
@@ -341,19 +344,18 @@ bool testNumericDir(const std::string& dirPath)
 
 /*
   Function:
-  parseNewLineStrings
+  parseLine
 
   Description:
  */
-std::vector<std::string> parseLine(const std::string str)
+std::vector<std::string> parseLine(const std::string& str)
 {
   std::vector<std::string> parsedString;
   std::string temp;
-  bool whitespace = false;
   
   for(int i = 0; i < str.length(); i++)
     {
-      while(str.at(i) == ' ' && i < str.length())
+      while((str.at(i) == '\t' || str.at(i) == ' ') && i < str.length())
 	{
 	  if(!temp.empty())
 	    {
@@ -371,7 +373,7 @@ std::vector<std::string> parseLine(const std::string str)
     }
 
   return parsedString;
-} // end of "parseNewLineStrings"
+} // end of "parseLine"
 
 
 
@@ -521,6 +523,7 @@ const std::vector<int> findNumericDirs(const std::string& dirPath)
 } // end of "findNumericDirs"
 
 
+
 /*
   
  */
@@ -534,6 +537,7 @@ const int convertToInt(const std::string& str)
     }
   return val;
 } // end of "convertToInt"
+
 
 
 /*
