@@ -19,6 +19,8 @@ const std::vector<std::string> getFilePaths(const std::string& dirPath);
 const std::vector<std::string> getFileNames(const std::string& dirPath);
 const std::string getFolderPaths(const std::string& dirPath);
 bool testNumericDir(const std::string& dirPath);
+const std::string returnFileLineByPhrase(const std::string& filePath,
+					 const std::string& phrase);
 
 
 // parse from strings

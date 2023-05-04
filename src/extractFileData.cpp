@@ -149,15 +149,18 @@ const std::string returnFileLineByNumber(const std::string& filePath,
 {
   struct stat file;
   std::string tempLine;
-  std::ifstream inFile(filePath, std::ifstream::in);
   
   if(stat(filePath.c_str(), &file) == 0 && S_ISREG(file.st_mode))
     {
+      std::ifstream inFile(filePath, std::ifstream::in);
+      
       for(int i = 0; i < lineNumber; i++)
 	{
 	  std::getline(inFile, tempLine, '\n');
 	}
 
+      inFile.close();
+      
       return tempLine;
     }
   else
@@ -218,7 +221,7 @@ const int returnValByWhiteSpaceCount(const std::string& line,
 
 /*
   Function:
-
+  returnStringByWhiteSpaceCount
   Description:
 
   Input:
@@ -247,7 +250,7 @@ const std::string returnStringByWhiteSpaceCount(const std::string& line,
     } while(line.at(i) != ' ');
 
   return valString;
-} // end of "returnValByWhiteSpace"
+} // end of "returnStringByWhiteSpace"
 
 
 
@@ -258,12 +261,16 @@ const std::string returnStringByWhiteSpaceCount(const std::string& line,
   Description:
   Returns a vector of found existing file paths based on the path given
   from the parameter dirPath.
+
+  Input:
+
+  Output:
  */
 const std::vector<std::string> getFilePaths(const std::string& dirPath)
 {
   std::vector<std::string> dirNames;
   return dirNames;
-} // end of "getFileNames"
+} // end of "getFilePaths"
 
 
 
@@ -329,6 +336,10 @@ const std::string getFolderPaths(const std::string& dirPath)
   testNumericDir
 
   Description:
+
+  Input:
+
+  Output:
  */
 bool testNumericDir(const std::string& dirPath)
 {
@@ -352,6 +363,10 @@ bool testNumericDir(const std::string& dirPath)
   parseLine
 
   Description:
+
+  Input:
+
+  Output:
  */
 std::vector<std::string> parseLine(const std::string& str)
 {
@@ -442,6 +457,10 @@ const std::string returnLineFromPipe(const std::string& comm,
   listDirContents
 
   Description:
+
+  Input:
+
+  Output:
  */
 const std::string listDirContents()
 {
@@ -474,6 +493,10 @@ const std::string listDirContents()
   findNumericDirs
 
   Description:
+
+  Input:
+
+  Output:
  */
 const std::vector<int> findNumericDirs(const std::string& dirPath)
 {
@@ -530,6 +553,14 @@ const std::vector<int> findNumericDirs(const std::string& dirPath)
 
 
 /*
+  Function:
+  convertToInt
+
+  Description:
+
+  Input:
+
+  Output:
   
  */
 const int convertToInt(const std::string& str)
@@ -545,7 +576,65 @@ const int convertToInt(const std::string& str)
 
 
 
+
+
 /*
+  Function:
+  returnFileLineByPhrase
+
+  Description:
+
+
+  Input:
+
+  Output:
+
+ */
+const std::string returnFileLineByPhrase(const std::string& filePath,
+					 const std::string& phrase)
+				     
+{
+  struct stat file;
+  std::string tempLine;
+  bool exists = false;
+  
+  if(stat(filePath.c_str(), &file) == 0 && S_ISREG(file.st_mode))
+    {
+      std::ifstream inFile(filePath, std::ifstream::in);
+      
+      while(std::getline(inFile, tempLine, '\n'))
+	{
+	  if(phraseExists(tempLine, phrase))
+	    {
+	      exists = true;
+	      break;
+	    }
+	}
+      inFile.close();      
+    }
+
+  if(exists)
+    {
+      return tempLine;
+    }
+  else
+    {
+      return "-1";
+    }
+     
+} // end of "returnFileLineByNumber"
+
+
+
+/*
+  Function:
+  phraseExists
+
+  Description:
+
+  Input:
+
+  Output:
   
  */
 bool phraseExists(const std::string& line, const std::string& phrase)
@@ -582,15 +671,29 @@ bool phraseExists(const std::string& line, const std::string& phrase)
 
 
 
+/*
+  Function:
+  fixStatLine
 
+  Description:
+
+  Input:
+
+  Output:
+ */
 const std::string fixStatLine(const std::string& line)
 {
   std::string temp;
   int i;
 
-  for(i = 0; line.at(i) != ')' && i < line.size(); i++);
+  for(i = 0; line.at(i) != ')'; i++);
+  
+  while(line.at(i) == ')')
+    {
+      i++;
+    }
 
-  i += 2;
+  i++;
 
   for(int j = i; j < line.size(); j++)
     {
@@ -605,4 +708,4 @@ const std::string fixStatLine(const std::string& line)
     {
       return temp;
     }
-}
+} // end of "fixStatLine"

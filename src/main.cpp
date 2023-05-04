@@ -1056,7 +1056,7 @@ int main()
 	    
 	    // set pid
 	    pInfo->setPID(pidList.at(i));
-	    log << "PID: " << pidList.at(i) << std::endl;
+	    // log << std::endl << "PID: " << pidList.at(i) << std::endl;
 
 	    // get command
 	    filePath = currProc;
@@ -1069,7 +1069,7 @@ int main()
 	      }
 	    pInfo->setCommand(lineString);
 
-	    log << "COMM: " << pInfo->getCommand() << std::endl;
+	    // log << "COMM: " << pInfo->getCommand() << std::endl;
 
  	    // get USER
 	    filePath = currProc;
@@ -1079,29 +1079,40 @@ int main()
 	    value = convertToInt(parsedLine.at(1));
 	    userData = getpwuid(value);
 	    pInfo->setUser(userData->pw_name);
-	    log << "USER: " << pInfo->getUser() << std::endl;
+	    // log << "USER: " << pInfo->getUser() << std::endl;
 
-
-	    /*
 	    // get VIRT
-	    lineString = returnPhraseLine(filePath, "VmSize");
-	    parsedLine = parseLine(lineString);
-	    value = convertToInt(parsedLine.at(1));
-	    pInfo->setVirt(value);
-	    
+	    lineString = returnFileLineByPhrase(filePath, "VmSize");
+	    if(lineString != "-1")
+	      {
+		parsedLine = parseLine(lineString);
+		value = convertToInt(parsedLine.at(1));
+		pInfo->setVirt(value);
+		//	log << "VIRT: " << pInfo->getVirt() << std::endl;
+	      }
 
 	    // get RES
-	    lineString = returnPhraseLine(filePath, "VmRSS");
-	    parsedLine = parseLine(lineString);
-	    value = convertToInt(parsedLine.at(1));
-	    pInfo->setRes(value);	    
+	    lineString = returnFileLineByPhrase(filePath, "VmRSS");
+	    if(lineString != "-1")
+	      {
+		parsedLine = parseLine(lineString);
+		value = convertToInt(parsedLine.at(1));
+		pInfo->setRes(value);
+		//	log << "RES: " << pInfo->getRes() << std::endl;		
+	      }
 
 	    // get SHR
-	    lineString = returnPhraseLine(filePath, "RssFile");
-	    parsedLine = parseLine(lineString);
-	    value = convertToInt(parsedLine.at(1));
-	    pInfo->setSHR(value);	    	    
+	    lineString = returnFileLineByPhrase(filePath, "RssFile");
+	    if(lineString != "-1")
+	      {
+		parsedLine = parseLine(lineString);
+		value = convertToInt(parsedLine.at(1));
+		pInfo->setSHR(value);
+		//	log << "SHR: " << pInfo->getSHR() << std::endl;
+	      }
+
 	    
+
  	    // get PR
 	    filePath = currProc;
 	    filePath.append(_STAT);
@@ -1115,7 +1126,8 @@ int main()
             parsedLine = parseLine(lineString);
 	    value = convertToInt(parsedLine.at(15));
 	    pInfo->setPR(value);
-	    
+
+
 	    // get NI
 	    value = convertToInt(parsedLine.at(16));
 	    pInfo->setNI(value);
@@ -1137,7 +1149,8 @@ int main()
 		<< "RES: " << pInfo->getRes() << std::endl
 		<< "SHR: " << pInfo->getSHR() << std::endl
 		<< "S: " << pInfo->getS() << std::endl;
-	  
+
+	    /*
 
 	    << "%CPU: " << pInfo->getCpuUsage() << std::endl
 	    << std::endl;	    
