@@ -399,7 +399,7 @@ std::vector<std::string> parseLine(const std::string& str)
 
 /*
   Function:
-  findMemInfoFromPipe
+  returnLineFromPipe
   
   Description:
   
@@ -448,7 +448,7 @@ const std::string returnLineFromPipe(const std::string& comm,
   pclose(pipe);
 
   return line;
-} // end of "findMemInfoFromPipe"
+} // end of "returnLineFromPipe"
 
 
 
@@ -610,6 +610,7 @@ const std::string returnFileLineByPhrase(const std::string& filePath,
 	      break;
 	    }
 	}
+
       inFile.close();      
     }
 
@@ -621,6 +622,7 @@ const std::string returnFileLineByPhrase(const std::string& filePath,
     {
       return "-1";
     }
+
      
 } // end of "returnFileLineByNumber"
 

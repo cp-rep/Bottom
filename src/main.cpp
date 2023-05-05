@@ -63,13 +63,18 @@
 #include "processInfo.hpp"
 
 
-// global constants
+// debug constants
 #define _DEBUG 1
+#define _CURSES 0
+#define _NOLOG 0
+
+// other constants
 #define _PROC "/proc/"
 #define _COMM "/comm"
 #define _STAT "/stat"
 #define _STATUS "/status"
 #define _MEMINFO "/meminfo"
+#define _PROC_MEMINFO "/proc/meminfo"
 #define _MEMTOTAL "MemTotal"
 #define _MEMFREE "MemFree"
 #define _BUFFERS "Buffers"
@@ -78,7 +83,7 @@
 #define _SWAPTOTAL "SwapTotal"
 #define _SWAPFREE "SwapFree"
 #define _MEMAVAILABLE "MemAvailable"
-#define _MODE 'r'
+#define _MODE "r"
 
 // function prototypes
 void printWindowToLog(std::ofstream& log,
@@ -137,7 +142,7 @@ int main()
       log << "Time and Date: " << asctime(timeinfo) << std::endl;      
     }
 
-  // local window variables
+  // variables
   CursesWindow processWin;
   MemInfo mInfo;
   ProcessInfo* pInfo;
@@ -164,6 +169,9 @@ int main()
   // ## setup the main window ##
   CursesWindow mainWin;
 
+
+  #if _CURSES
+  
   // init curses to main window
   mainWin.setWindow(initscr());
 
@@ -355,7 +363,7 @@ int main()
   */
   numLines = 1000;
   numCols = 7;
-  maxWindowY = 0;
+  maxWindowY = 0; 
   maxWindowX = 0;
   minWindowY = 0;
   minWindowX = 0;
@@ -955,10 +963,10 @@ int main()
       //init_color(COLOR_BLACK, 0, 0, 0);
       color_set(0, NULL);
     }
-
+#endif
+  
   // ## run the main program loop ##
   do{
-    const char mode = _MODE;
     std::string fileLine;
     std::vector<std::string> parsedLine;
     int val = 0;
@@ -966,48 +974,53 @@ int main()
     // clear the windows
     // erase();
     // get topWin data and print to screen
-    topWin.setUptime(returnLineFromPipe("uptime", &mode, 1));
+
+
+#if _CURSES    
+    topWin.setUptime(returnLineFromPipe("uptime", _MODE, 1));
     mvwaddstr(topWin.getWindow(),
 	      0,
 	      0,
 	      topWin.getUptime().c_str());
+#endif
 
-    fileLine = returnFileLineByNumber("/proc/meminfo", 1);
+    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
     parsedLine = parseLine(fileLine);
     mInfo.setMemTotal(convertToInt(parsedLine.at(1)));
 
-    fileLine = returnFileLineByNumber("/proc/meminfo", 2);
+    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 2);
     parsedLine = parseLine(fileLine);
     mInfo.setMemFree(convertToInt(parsedLine.at(1)));
 
-    fileLine = returnFileLineByNumber("/proc/meminfo", 3);
+    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 3);
     parsedLine = parseLine(fileLine);
     mInfo.setMemAvailable(convertToInt(parsedLine.at(1)));
 
-    fileLine = returnFileLineByNumber("/proc/meminfo", 4);
+    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 4);
     parsedLine = parseLine(fileLine);
     mInfo.setBuffers(convertToInt(parsedLine.at(1)));
 
-    fileLine = returnFileLineByNumber("/proc/meminfo", 5);
+    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 5);
     parsedLine = parseLine(fileLine);
     mInfo.setCached(convertToInt(parsedLine.at(1)));
 
-    fileLine = returnFileLineByNumber("/proc/meminfo", 15);
+    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 15);
     parsedLine = parseLine(fileLine);
     mInfo.setSwapTotal(convertToInt(parsedLine.at(1)));
 
-    fileLine = returnFileLineByNumber("/proc/meminfo", 16);
+    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 16);
     parsedLine = parseLine(fileLine);
     mInfo.setSwapFree(convertToInt(parsedLine.at(1)));
 
-    fileLine = returnFileLineByNumber("/proc/meminfo", 26);
+    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 26);
     parsedLine = parseLine(fileLine);
     mInfo.setSReclaimable(convertToInt(parsedLine.at(1)));
 
     mInfo.setMemUsed(mInfo.calculateMemUsed());
     mInfo.setSwapUsed(mInfo.calculateSwapUsed());
     mInfo.setBuffCache(mInfo.calculateBuffCache());
-    
+
+#if _CURSES    
     // set mem window data
     memWin.setStringMiB(std::to_string(mInfo.getMemTotal()),
 			std::to_string(mInfo.getMemFree()),
@@ -1027,59 +1040,96 @@ int main()
 	      1,
 	      0,
 	      memWin.getSwap().c_str());
+#endif    
 
     // ## get processes ##
-    // free old processes and clear map
-    for(int i = 0; i < pidList.size(); i++)
+    // store old process list
+    std::vector<int> pidListTemp(pidList);
+    std::vector<int> notInNewPidList;
+
+    // get new process list
+    pidList.clear();
+    pidList = (findNumericDirs(_PROC));
+    std::sort(pidList.begin(), pidList.end());
+    
+    // check if any running processes have changed
+    for(int i = 0; i < pidListTemp.size(); i++)
       {
-	delete(processesMap[pidList.at(i)]);
+	bool exists = false;
+	
+	for(int j = 0; j < pidList.size(); j++)
+	  {
+	    if(pidListTemp.at(i) == pidList.at(j))
+	      {
+		exists = true;
+		break;
+	      }
+	  }
+
+	if(exists == false)
+	  {
+	    notInNewPidList.push_back(pidListTemp.at(i));
+	  }
       }
 
-    processesMap.clear();
-    pidList.clear();
-    
-    // get new process list
-    pidList = (findNumericDirs(_PROC));
+    // remove any processes that are no longer running
+    for(int i = 0; i < notInNewPidList.size(); i++)
+      {
+	if(processesMap.count(notInNewPidList.at(i)) > 0)
+	  {
+	    delete(processesMap[notInNewPidList.at(i)]);
+	    log << "Deleted Process With PID: " << notInNewPidList.at(i) << std::endl;
+	    processesMap.erase(notInNewPidList.at(i));
+	  }
+      }
 
-    // allocate the new processes and their related data
+    // allocate any new processes and update process data
     for(int i = 0; i < pidList.size(); i++)
       {
 	if(processesMap.count(pidList.at(i)) == 0)
 	  {
+	    // create new process data object
+	    pInfo = new ProcessInfo();
+	    processesMap.insert(std::make_pair(pidList.at(i), pInfo));	    
+	  }
+
 	    std::string filePath;
 	    std::string lineString;
 	    const std::string currProc = _PROC + std::to_string(pidList.at(i));
 	    int value = 0;
-	    
-	    // create new process data object
-	    pInfo = new ProcessInfo();
+	
 	    
 	    // set pid
-	    pInfo->setPID(pidList.at(i));
-	    // log << std::endl << "PID: " << pidList.at(i) << std::endl;
+	    processesMap[pidList.at(i)]->setPID(pidList.at(i));
+	    log << std::endl << "PID: " << pidList.at(i) << std::endl;
 
 	    // get command
 	    filePath = currProc;
 	    filePath.append(_COMM);
 	    lineString = returnFileLineByNumber(filePath, 1);
-	    if(lineString == "-1")
-	      {
-		delete pInfo;
-		continue;
-	      }
-	    pInfo->setCommand(lineString);
+	    processesMap[pidList.at(i)]->setCommand(lineString);
 
-	    // log << "COMM: " << pInfo->getCommand() << std::endl;
+	    // log << "COMM: " << processesMap[pidList.at(i)]->getCommand() << std::endl;
+
 
  	    // get USER
 	    filePath = currProc;
 	    filePath.append(_STATUS);
 	    lineString = returnPhraseLine(filePath, "Gid");
-            parsedLine = parseLine(lineString);
+	    log << "LineString: " << lineString << std::endl;
+	    
+	    /*
+	    parsedLine = parseLine(lineString);
 	    value = convertToInt(parsedLine.at(1));
 	    userData = getpwuid(value);
-	    pInfo->setUser(userData->pw_name);
-	    // log << "USER: " << pInfo->getUser() << std::endl;
+	    processesMap[pidList.at(i)]->setUser(userData->pw_name);
+	    log << "USER: " << processesMap[pidList.at(i)]->getUser() << std::endl;
+	    */
+
+
+
+		    
+	    /*
 
 	    // get VIRT
 	    lineString = returnFileLineByPhrase(filePath, "VmSize");
@@ -1087,8 +1137,8 @@ int main()
 	      {
 		parsedLine = parseLine(lineString);
 		value = convertToInt(parsedLine.at(1));
-		pInfo->setVirt(value);
-		//	log << "VIRT: " << pInfo->getVirt() << std::endl;
+		processesMap[pidList.at(i)]->setVirt(value);
+		//	log << "VIRT: " << processesMap[pidList.at(i)]->getVirt() << std::endl;
 	      }
 
 	    // get RES
@@ -1097,8 +1147,8 @@ int main()
 	      {
 		parsedLine = parseLine(lineString);
 		value = convertToInt(parsedLine.at(1));
-		pInfo->setRes(value);
-		//	log << "RES: " << pInfo->getRes() << std::endl;		
+		processesMap[pidList.at(i)]->setRes(value);
+		//	log << "RES: " << processesMap[pidList.at(i)]->getRes() << std::endl;
 	      }
 
 	    // get SHR
@@ -1107,67 +1157,64 @@ int main()
 	      {
 		parsedLine = parseLine(lineString);
 		value = convertToInt(parsedLine.at(1));
-		pInfo->setSHR(value);
-		//	log << "SHR: " << pInfo->getSHR() << std::endl;
+		processesMap[pidList.at(i)]->setSHR(value);
+		//	log << "SHR: " << processesMap[pidList.at(i)]->getSHR() << std::endl;
 	      }
-
-	    
 
  	    // get PR
 	    filePath = currProc;
 	    filePath.append(_STAT);
 	    lineString = returnFileLineByNumber(filePath, 1);
+	    /*
 	    if(lineString.empty())
 	      {
-		delete pInfo;
+		delete processesMap[pidList.at(i)];
 		continue;
 	      }
+
 	    lineString = fixStatLine(lineString);
             parsedLine = parseLine(lineString);
 	    value = convertToInt(parsedLine.at(15));
-	    pInfo->setPR(value);
+	    processesMap[pidList.at(i)]->setPR(value);
 
 
 	    // get NI
 	    value = convertToInt(parsedLine.at(16));
-	    pInfo->setNI(value);
+	    processesMap[pidList.at(i)]->setNI(value);
 
 	    // get S
-	    pInfo->setS(lineString.at(0));
-	    
+	    processesMap[pidList.at(i)]->setS(lineString.at(0));
+	    */
 	    // get %CPU
 	    
 	    // print extracted process data
 
 
-	    log << std::endl << "PID: " << pInfo->getPID() << std::endl
-		<< "COMM: " << pInfo->getCommand() << std::endl
-		<< "USER: " << pInfo->getUser() << std::endl
-		<< "PR: " << pInfo->getPR() << std::endl
-		<< "NI: " << pInfo->getNI() << std::endl
-		<< "VIRT: " << pInfo->getVirt() << std::endl
-		<< "RES: " << pInfo->getRes() << std::endl
-		<< "SHR: " << pInfo->getSHR() << std::endl
-		<< "S: " << pInfo->getS() << std::endl;
 
 	    /*
+	    log << std::endl << "PID: " << processesMap[pidList.at(i)]->getPID() << std::endl
+		<< "COMM: " << processesMap[pidList.at(i)]->getCommand() << std::endl
+		<< "USER: " << processesMap[pidList.at(i)]->getUser() << std::endl
+		<< "PR: " << processesMap[pidList.at(i)]->getPR() << std::endl
+		<< "NI: " << processesMap[pidList.at(i)]->getNI() << std::endl
+		<< "VIRT: " << processesMap[pidList.at(i)]->getVirt() << std::endl
+		<< "RES: " << processesMap[pidList.at(i)]->getRes() << std::endl
+		<< "SHR: " << processesMap[pidList.at(i)]->getSHR() << std::endl
+		<< "S: " << processesMap[pidList.at(i)]->getS() << std::endl;
+	    
 
-	    << "%CPU: " << pInfo->getCpuUsage() << std::endl
+
+	    << "%CPU: " << processesMap[pidList.at(i)]->getCpuUsage() << std::endl
 	    << std::endl;	    
 	    */
 
 
 	    // insert process to hash table with PID as key
-	    processesMap.insert(std::make_pair(pidList.at(i), pInfo));
-	  }
-	else
-	  {
-	    log << "Process already exists." << std::endl;
-	  }
       }
-    break;
+
     pInfo = nullptr;
-    
+
+#if _CURSES
     // refresh the windows
     wnoutrefresh(mainWin.getWindow());
     wnoutrefresh(topWin.getWindow());
@@ -1191,10 +1238,15 @@ int main()
     //napms(3000);
     //sleep(3);
     //delay(3000);
+#endif
     
-  }while(getch() != 'q');
-  
+  }while(true);
+  //  }while(getch() != 'q');  
+
+#if _CURSES
   endwin();
+#endif
+
 
   //  for(procIt = processes.begin(); procIt != processes.end(); procIt++)
 
