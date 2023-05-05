@@ -13,15 +13,15 @@ class ProcessInfo{
 public:
   ProcessInfo(const int& pid = 0,
 	      const std::string& user = "",
-	      const unsigned short& m_pr = 0,
-	      const unsigned short& m_ni = 0,
-	      const unsigned int& m_virt = 0,
-	      const unsigned int& m_res = 0,
-	      const unsigned int& m_shr = 0,
-	      const char* s = nullptr,
+	      const unsigned short& pr = 0,
+	      const unsigned short& ni = 0,
+	      const unsigned int& virt = 0,
+	      const unsigned int& res = 0,
+	      const unsigned int& shr = 0,
 	      const float& cpuUsage = 0,
 	      const float& memUsage = 0,
-	      const std::string& command = "");
+	      const std::string& command = "",
+	      const char s = ' ');
 
   // getters
   const int& getPID() { return m_pid; }
