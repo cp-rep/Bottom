@@ -61,6 +61,7 @@
 #include "byteConverter.hpp"
 #include "memInfo.hpp"
 #include "processInfo.hpp"
+#include "secondsToTime.hpp"
 
 
 // debug constants
@@ -899,7 +900,7 @@ int main()
 			   USERWin.getStartY(),
 			   USERWin.getStartX()));
   PRWin.setWindow(newwin(PRWin.getNumLines(),
-p			 PRWin.getNumCols(),
+			 PRWin.getNumCols(),
 			 PRWin.getStartY(),
 			 PRWin.getStartX()));
   NIWin.setWindow(newwin(NIWin.getNumLines(),
@@ -977,13 +978,18 @@ p			 PRWin.getNumCols(),
     // clear the windows
     // erase();
     // get topWin data and print to screen
+    /*
     topWin.setUptime(returnLineFromPipe("uptime", _MODE, 1));
     mvwaddstr(topWin.getWindow(),
 	      0,
 	      0,
 	      topWin.getUptime().c_str());
+    */
 #endif
 
+    // find uptime
+    
+    
     // get memory data from /proc/meminfo
     fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
     parsedLine = parseLine(fileLine);
@@ -1044,7 +1050,7 @@ p			 PRWin.getNumCols(),
 	      memWin.getSwap().c_str());
 #endif    
 
-    // ## get processes ##
+    // ## handle processes ##
     // store old process list
     std::vector<int> pidListTemp(pidList);
 
@@ -1085,7 +1091,7 @@ p			 PRWin.getNumCols(),
 	  }
       }
 
-    // allocate any new processes and update process data
+    // allocate processes and/or update process data
     for(int i = 0; i < pidList.size(); i++)
       {
 	if(processesMap.count(pidList.at(i)) == 0)
