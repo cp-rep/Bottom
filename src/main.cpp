@@ -85,6 +85,7 @@
 #define _SWAPFREE "SwapFree"
 #define _MEMAVAILABLE "MemAvailable"
 #define _MODE "r"
+#define _UPTIME "/proc/uptime"
 
 // function prototypes
 void printWindowToLog(std::ofstream& log,
@@ -152,6 +153,7 @@ int main()
   std::unordered_map<int, ProcessInfo*>::iterator procIt;
   std::vector<std::string> parsedFileNames;
   std::vector<int> pidList;
+  SecondsToTime uptime;
   short numLines = 0;
   short numCols = 0;
   short maxWindowY = 0;
@@ -987,9 +989,14 @@ int main()
     */
 #endif
 
-    // find uptime
-    
-    
+    // get uptime from /proc/uptime
+    fileLine = returnFileLineByNumber(_UPTIME, 1);
+    parsedLine = parseLine(fileLine);
+    val = convertToInt(parsedLine.at(0));
+    uptime.setHours(uptime.convertToHours(val));
+    uptime.setMinutes(uptime.convertToMinutes(val));
+    uptime.setSeconds(uptime.findRemainingSeconds(val));
+
     // get memory data from /proc/meminfo
     fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
     parsedLine = parseLine(fileLine);
