@@ -23,6 +23,7 @@ const std::string returnFileLineByPhrase(const std::string& filePath,
 					 const std::string& phrase);
 
 
+
 // parse from strings
 std::vector<std::string> parseLine(const std::string& str);
 const int returnValByWhiteSpaceCount(const std::string& line,

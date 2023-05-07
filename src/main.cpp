@@ -24,6 +24,7 @@
   * pull our processes and check if any are considered melicious
   against a database.
   - could prompt chapGPT
+  - scan /var/log/wtmp  /var/run/utmp /var/log/btmp  for intrusions
   *same as above
   */
 #include <iostream>
@@ -64,18 +65,23 @@
 #include "secondsToTime.hpp"
 
 
-// debug constants
+//constants
+// debug
 #define _DEBUG 1
-#define _CURSES 0
+#define _CURSES 1
 #define _NOLOG 0
 
-// other constants
+// directories and files
 #define _PROC "/proc/"
 #define _COMM "/comm"
 #define _STAT "/stat"
 #define _STATUS "/status"
 #define _MEMINFO "/meminfo"
 #define _PROC_MEMINFO "/proc/meminfo"
+#define _UPTIME "/proc/uptime"
+#define _UTMP "/var/run/utmp"
+
+// in-file phrases
 #define _MEMTOTAL "MemTotal"
 #define _MEMFREE "MemFree"
 #define _BUFFERS "Buffers"
@@ -84,8 +90,11 @@
 #define _SWAPTOTAL "SwapTotal"
 #define _SWAPFREE "SwapFree"
 #define _MEMAVAILABLE "MemAvailable"
-#define _MODE "r"
-#define _UPTIME "/proc/uptime"
+
+// commands and options/modes
+#define _UTMPDUMP "utmpdump"
+#define _READ "r"
+
 
 // function prototypes
 void printWindowToLog(std::ofstream& log,
@@ -171,8 +180,6 @@ int main()
 
   // ## setup the main window ##
   CursesWindow mainWin;
-
-
   
   // init curses to main window
   mainWin.setWindow(initscr());
@@ -971,31 +978,58 @@ int main()
 #endif
 
   // ## run the main program loop ##
+
   do{
+    std::string outLine;
+    std::string tempLine;
     std::string fileLine;
     std::vector<std::string> parsedLine;
     int val = 0;
 
-#if _CURSES            
+#if _CURSES
     // clear the windows
     // erase();
     // get topWin data and print to screen
     /*
-    topWin.setUptime(returnLineFromPipe("uptime", _MODE, 1));
+    topWin.setUptime(returnLineFromPipe("uptime", _READ, 1));
     mvwaddstr(topWin.getWindow(),
 	      0,
 	      0,
 	      topWin.getUptime().c_str());
     */
-#endif
-
-    // get uptime from /proc/uptime
     fileLine = returnFileLineByNumber(_UPTIME, 1);
     parsedLine = parseLine(fileLine);
     val = convertToInt(parsedLine.at(0));
     uptime.setHours(uptime.convertToHours(val));
     uptime.setMinutes(uptime.convertToMinutes(val));
     uptime.setSeconds(uptime.findRemainingSeconds(val));
+    outLine = uptime.returnHHMMSS(timeinfo->tm_hour,
+				  timeinfo->tm_min,
+				  timeinfo->tm_sec);
+    outLine.append(" up ");
+    outLine.append(std::to_string(uptime.getHours()));
+    outLine.append(":");
+    outLine.append(std::to_string(uptime.getMinutes()));
+    outLine.append(", ");
+
+    fileLine = returnLineFromPipe("users", _READ, 1);
+    parsedLine = parseLine(fileLine);
+    outLine.append(std::to_string(parsedLine.size()));
+    outLine.append(" users, load average: ");
+    fileLine = returnFileLineByNumber("/proc/loadavg", 1);
+    parsedLine = parseLine(fileLine);
+    outLine.append(parsedLine.at(0));
+    outLine.append(" ");
+    outLine.append(parsedLine.at(1));
+    outLine.append(" ");    
+    outLine.append(parsedLine.at(2));
+
+    log << outLine << std::endl;
+    
+    break;
+    
+    
+#endif
 
     // get memory data from /proc/meminfo
     fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
@@ -1059,22 +1093,22 @@ int main()
 
     // ## handle processes ##
     // store old process list
-    std::vector<int> pidListTemp(pidList);
+    std::vector<int> pidListOld(pidList);
+    std::vector<int> pidListDead;
 
     // get new process list
-    std::vector<int> notInNewPidList;    
     pidList.clear();
     pidList = (findNumericDirs(_PROC));
     std::sort(pidList.begin(), pidList.end());
     
-    // check if any running processes have changed
-    for(int i = 0; i < pidListTemp.size(); i++)
+    // find any dead processes
+    for(int i = 0; i < pidListOld.size(); i++)
       {
 	bool exists = false;
 	
 	for(int j = 0; j < pidList.size(); j++)
 	  {
-	    if(pidListTemp.at(i) == pidList.at(j))
+	    if(pidListOld.at(i) == pidList.at(j))
 	      {
 		exists = true;
 		break;
@@ -1083,36 +1117,34 @@ int main()
 
 	if(exists == false)
 	  {
-	    notInNewPidList.push_back(pidListTemp.at(i));
+	    pidListDead.push_back(pidListOld.at(i));
 	  }
       }
 
-    // remove any processes that are no longer running
-    for(int i = 0; i < notInNewPidList.size(); i++)
+    // remove dead processes from the process umap
+    for(int i = 0; i < pidListDead.size(); i++)
       {
-	if(processesMap.count(notInNewPidList.at(i)) > 0)
+	if(processesMap.count(pidListDead.at(i)) > 0)
 	  {
-	    delete(processesMap[notInNewPidList.at(i)]);
-	    log << "Deleted Process With PID: " << notInNewPidList.at(i) << std::endl;
-	    processesMap.erase(notInNewPidList.at(i));
+	    delete(processesMap[pidListDead.at(i)]);
+	    log << "Deleted Process With PID: " << pidListDead.at(i) << std::endl;
+	    processesMap.erase(pidListDead.at(i));
 	  }
       }
 
-    // allocate processes and/or update process data
+    // update processes data
     for(int i = 0; i < pidList.size(); i++)
       {
+	// if process is new, allocate it
 	if(processesMap.count(pidList.at(i)) == 0)
 	  {
-	    // create new process data object
 	    pInfo = new ProcessInfo();
-	    processesMap.insert(std::make_pair(pidList.at(i), pInfo));	    
+	    processesMap.insert(std::make_pair(pidList.at(i), pInfo));
 	  }
-
 	    std::string filePath;
 	    std::string lineString;
 	    const std::string currProc = _PROC + std::to_string(pidList.at(i));
 	    int value = 0;
-	
 	    
 	    // set pid
 	    processesMap[pidList.at(i)]->setPID(pidList.at(i));
@@ -1124,7 +1156,6 @@ int main()
 	    lineString = returnFileLineByNumber(filePath, 1);
 	    processesMap[pidList.at(i)]->setCommand(lineString);
 	    //	     log << "COMM: " << processesMap[pidList.at(i)]->getCommand() << std::endl;
-
 
  	    // get USER
 	    filePath = currProc;
@@ -1182,17 +1213,13 @@ int main()
 		processesMap[pidList.at(i)]->setNI(value);
 
 		// get S
-		processesMap[pidList.at(i)]->setS(lineString.at(0));		
+		processesMap[pidList.at(i)]->setS(lineString.at(0));
 	      }
-
 
 	    // get %CPU
 	    
 	    // print extracted process data
-
-
-
-
+	    /*
 	    log << std::endl << "PID: " << processesMap[pidList.at(i)]->getPID() << std::endl
 		<< "COMM: " << processesMap[pidList.at(i)]->getCommand() << std::endl
 		<< "USER: " << processesMap[pidList.at(i)]->getUser() << std::endl
@@ -1202,14 +1229,12 @@ int main()
 		<< "RES: " << processesMap[pidList.at(i)]->getRes() << std::endl
 		<< "SHR: " << processesMap[pidList.at(i)]->getSHR() << std::endl
 		<< "S: " << processesMap[pidList.at(i)]->getS() << std::endl;
+	    */
 	    
 	    /*
-
 	    << "%CPU: " << processesMap[pidList.at(i)]->getCpuUsage() << std::endl
 	    << std::endl;	    
 	    */
-
-
 	    // insert process to hash table with PID as key
 
       }
