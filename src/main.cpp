@@ -21,11 +21,12 @@
     to click
   - make the help menu more user friendly
   - could leverage internet connectivity.
-  * pull our processes and check if any are considered melicious
+  * pull our processes and check if any are considered malicious
   against a database.
   - could prompt chapGPT
   - scan /var/log/wtmp  /var/run/utmp /var/log/btmp  for intrusions
-  *same as above
+  - adding hardware statistics to a database that we can compare to over time
+    and get a "dynamic" look at how a PC performs compared to it's past.
   */
 #include <iostream>
 #include <ctime>
@@ -158,7 +159,7 @@ int main()
   MemInfo mInfo;
   ProcessInfo* pInfo;
   struct passwd* userData;
-  std::unordered_map<int, ProcessInfo*> processesMap;
+  std::unordered_map<int, ProcessInfo*> processMap;
   std::unordered_map<int, ProcessInfo*>::iterator procIt;
   std::vector<std::string> parsedFileNames;
   std::vector<int> pidList;
@@ -1003,9 +1004,10 @@ int main()
     uptime.setHours(uptime.convertToHours(val));
     uptime.setMinutes(uptime.convertToMinutes(val));
     uptime.setSeconds(uptime.findRemainingSeconds(val));
-    outLine = uptime.returnHHMMSS(timeinfo->tm_hour,
-				  timeinfo->tm_min,
-				  timeinfo->tm_sec);
+    outLine = "top - ";
+    outLine.append(uptime.returnHHMMSS(timeinfo->tm_hour,
+				       timeinfo->tm_min,
+				       timeinfo->tm_sec));
     outLine.append(" up ");
     outLine.append(std::to_string(uptime.getHours()));
     outLine.append(":");
@@ -1024,10 +1026,10 @@ int main()
     outLine.append(" ");    
     outLine.append(parsedLine.at(2));
 
-    log << outLine << std::endl;
-    
-    break;
-    
+    mvwaddstr(topWin.getWindow(),
+	      0,
+	      0,
+	      outLine.c_str());
     
 #endif
 
@@ -1124,11 +1126,11 @@ int main()
     // remove dead processes from the process umap
     for(int i = 0; i < pidListDead.size(); i++)
       {
-	if(processesMap.count(pidListDead.at(i)) > 0)
+	if(processMap.count(pidListDead.at(i)) > 0)
 	  {
-	    delete(processesMap[pidListDead.at(i)]);
+	    delete(processMap[pidListDead.at(i)]);
 	    log << "Deleted Process With PID: " << pidListDead.at(i) << std::endl;
-	    processesMap.erase(pidListDead.at(i));
+	    processMap.erase(pidListDead.at(i));
 	  }
       }
 
@@ -1136,10 +1138,10 @@ int main()
     for(int i = 0; i < pidList.size(); i++)
       {
 	// if process is new, allocate it
-	if(processesMap.count(pidList.at(i)) == 0)
+	if(processMap.count(pidList.at(i)) == 0)
 	  {
 	    pInfo = new ProcessInfo();
-	    processesMap.insert(std::make_pair(pidList.at(i), pInfo));
+	    processMap.insert(std::make_pair(pidList.at(i), pInfo));
 	  }
 	    std::string filePath;
 	    std::string lineString;
@@ -1147,15 +1149,15 @@ int main()
 	    int value = 0;
 	    
 	    // set pid
-	    processesMap[pidList.at(i)]->setPID(pidList.at(i));
+	    processMap[pidList.at(i)]->setPID(pidList.at(i));
 	    //	    log << std::endl << "PID: " << pidList.at(i) << std::endl;
 
 	    // get command
 	    filePath = currProc;
 	    filePath.append(_COMM);
 	    lineString = returnFileLineByNumber(filePath, 1);
-	    processesMap[pidList.at(i)]->setCommand(lineString);
-	    //	     log << "COMM: " << processesMap[pidList.at(i)]->getCommand() << std::endl;
+	    processMap[pidList.at(i)]->setCommand(lineString);
+	    //	     log << "COMM: " << processMap[pidList.at(i)]->getCommand() << std::endl;
 
  	    // get USER
 	    filePath = currProc;
@@ -1166,7 +1168,7 @@ int main()
 		parsedLine = parseLine(lineString);
 		value = convertToInt(parsedLine.at(1));
 		userData = getpwuid(value);
-		processesMap[pidList.at(i)]->setUser(userData->pw_name);
+		processMap[pidList.at(i)]->setUser(userData->pw_name);
 	      }
 
 	    // get VIRT
@@ -1175,7 +1177,7 @@ int main()
 	      {
 		parsedLine = parseLine(lineString);
 		value = convertToInt(parsedLine.at(1));
-		processesMap[pidList.at(i)]->setVirt(value);
+		processMap[pidList.at(i)]->setVirt(value);
 	      }
 
 	    // get RES
@@ -1184,7 +1186,7 @@ int main()
 	      {
 		parsedLine = parseLine(lineString);
 		value = convertToInt(parsedLine.at(1));
-		processesMap[pidList.at(i)]->setRes(value);
+		processMap[pidList.at(i)]->setRes(value);
 	      }
 
 	    // get SHR
@@ -1193,7 +1195,7 @@ int main()
 	      {
 		parsedLine = parseLine(lineString);
 		value = convertToInt(parsedLine.at(1));
-		processesMap[pidList.at(i)]->setSHR(value);
+		processMap[pidList.at(i)]->setSHR(value);
 	      }
 
 
@@ -1206,33 +1208,90 @@ int main()
 		lineString = fixStatLine(lineString);
 		parsedLine = parseLine(lineString);
 		value = convertToInt(parsedLine.at(15));
-		processesMap[pidList.at(i)]->setPR(value);
+		processMap[pidList.at(i)]->setPR(value);
 
 		// get NI
 		value = convertToInt(parsedLine.at(16));
-		processesMap[pidList.at(i)]->setNI(value);
+		processMap[pidList.at(i)]->setNI(value);
 
 		// get S
-		processesMap[pidList.at(i)]->setS(lineString.at(0));
+		processMap[pidList.at(i)]->setS(lineString.at(0));
 	      }
 
 	    // get %CPU
 	    
+	    // get process state count
+	    unsigned int running = 0;
+	    unsigned int unSleep = 0;
+	    unsigned int inSleep = 0;
+	    unsigned int sleeping = 0;
+	    unsigned int stopped = 0;
+	    unsigned int zombie = 0;
+	    unsigned int idle = 0;
+	    unsigned int total = 0;
+ 	    for(std::unordered_map<int, ProcessInfo*>::iterator it = processMap.begin();
+		it != processMap.end(); it++)
+	      {
+		switch(it->second->getS())
+		  {
+		  case 'S':
+		    inSleep++;
+		    break;
+		  case 'I':
+		    idle++;
+		    break;
+		  case 'T':
+		    stopped++;
+		    break;
+		  case 'D':
+		    unSleep++;
+		    break;
+		  case 'R':
+		    running++;
+		    break;
+		  case 'Z':
+		    zombie++;
+		    break;
+		  default:
+		    break;
+		}
+	      }
+
+	    sleeping = inSleep + unSleep + idle;
+	    total = running + sleeping;
+	    outLine = "Tasks: ";
+	    outLine.append(std::to_string(total));
+	    outLine.append(" total, ");
+	    outLine.append(std::to_string(running));
+	    outLine.append(" running, ");
+	    outLine.append(std::to_string(sleeping));
+	    outLine.append(" sleeping, ");
+	    outLine.append(std::to_string(stopped));
+	    outLine.append(" stopped, ");
+	    outLine.append(std::to_string(zombie));
+	    outLine.append(" zombie");	    
+	    
+	    mvwaddstr(tasksWin.getWindow(),
+		      0,
+		      0,
+		      outLine.c_str());
+	    
+	    
 	    // print extracted process data
 	    /*
-	    log << std::endl << "PID: " << processesMap[pidList.at(i)]->getPID() << std::endl
-		<< "COMM: " << processesMap[pidList.at(i)]->getCommand() << std::endl
-		<< "USER: " << processesMap[pidList.at(i)]->getUser() << std::endl
-		<< "PR: " << processesMap[pidList.at(i)]->getPR() << std::endl
-		<< "NI: " << processesMap[pidList.at(i)]->getNI() << std::endl
-		<< "VIRT: " << processesMap[pidList.at(i)]->getVirt() << std::endl
-		<< "RES: " << processesMap[pidList.at(i)]->getRes() << std::endl
-		<< "SHR: " << processesMap[pidList.at(i)]->getSHR() << std::endl
-		<< "S: " << processesMap[pidList.at(i)]->getS() << std::endl;
+	    log << std::endl << "PID: " << processMap[pidList.at(i)]->getPID() << std::endl
+		<< "COMM: " << processMap[pidList.at(i)]->getCommand() << std::endl
+		<< "USER: " << processMap[pidList.at(i)]->getUser() << std::endl
+		<< "PR: " << processMap[pidList.at(i)]->getPR() << std::endl
+		<< "NI: " << processMap[pidList.at(i)]->getNI() << std::endl
+		<< "VIRT: " << processMap[pidList.at(i)]->getVirt() << std::endl
+		<< "RES: " << processMap[pidList.at(i)]->getRes() << std::endl
+		<< "SHR: " << processMap[pidList.at(i)]->getSHR() << std::endl
+		<< "S: " << processMap[pidList.at(i)]->getS() << std::endl;
 	    */
 	    
 	    /*
-	    << "%CPU: " << processesMap[pidList.at(i)]->getCpuUsage() << std::endl
+	    << "%CPU: " << processMap[pidList.at(i)]->getCpuUsage() << std::endl
 	    << std::endl;	    
 	    */
 	    // insert process to hash table with PID as key
