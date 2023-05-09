@@ -953,10 +953,6 @@ int main()
 			      COMMANDWin.getStartX()));
 
   // draw window borders
-  box(topWin.getWindow(), 'A', 'A');
-  box(tasksWin.getWindow(), 'B', 'B');
-  box(cpuWin.getWindow(), 'C', 'C');
-  box(memWin.getWindow(), 'D', 'D');
   box(PIDWin.getWindow(), 'P', 'P');
   box(USERWin.getWindow(), 'E', 'E');
   box(PRWin.getWindow(), 'F', 'F');
@@ -1002,11 +998,17 @@ int main()
     uptime.setMinutes(uptime.convertToMinutes(val));
     uptime.setSeconds(uptime.findRemainingSeconds(val));
     outLine = "top - ";
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);    
     outLine.append(uptime.returnHHMMSS(timeinfo->tm_hour,
 				       timeinfo->tm_min,
 				       timeinfo->tm_sec));
+
+    val = uptime.getHours()/24;    
     outLine.append(" up ");
-    outLine.append(std::to_string(uptime.getHours()));
+    outLine.append(std::to_string(uptime.getHours()/24));
+    outLine.append(" days, ");    
+    outLine.append(std::to_string(uptime.getHours() % 24));
     outLine.append(":");
     outLine.append(std::to_string(uptime.getMinutes()));
     outLine.append(", ");
@@ -1251,12 +1253,13 @@ int main()
 	    gu = convertToInt(parsedLine.at(9));
 	    gun = convertToInt(parsedLine.at(10));
 	    totalJiffs = us + ni + sy + id + wa + irq + sirq + st + gu + gun;
-	    avgUs = (100 * us)/totalJiffs;
-	    avgSy = (100 * sy)/totalJiffs;
-	    avgNi = (100 * ni)/totalJiffs;
-	    avgId = (100 * id)/totalJiffs;
-	    avgWa = (100 * wa)/totalJiffs;
-	    avgSt = (100 * st)/totalJiffs;
+	    //	    avgUs = (ticks * us)/totalJiffs;
+	    avgSy = (ticks * sy)/totalJiffs;
+	    avgNi = (ticks * ni)/totalJiffs;
+	    avgId = (ticks * id)/totalJiffs;
+	    avgWa = (ticks * wa)/totalJiffs;
+	    avgSt = (ticks * st)/totalJiffs;
+	    avgUs = 100 - (avgId);
 	    // avgHi = (100 * hi)/totalJiffs;
     
 	    outLine = "%CPU(s): ";
@@ -1335,7 +1338,6 @@ int main()
 		      0,
 		      0,
 		      outLine.c_str());
-	    
 
 	    // print extracted process data
 	    /*
@@ -1355,8 +1357,6 @@ int main()
 	    << std::endl;	    
 	    */
 	    // insert process to hash table with PID as key
-
-
       }
 
     pInfo = nullptr;
