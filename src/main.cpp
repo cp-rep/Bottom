@@ -39,6 +39,8 @@
 #include <unistd.h>
 #include <unordered_map>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/param.h>
 #include <pwd.h>
 #include <algorithm>
 #include "log.hpp"
@@ -990,14 +992,9 @@ int main()
 #if _CURSES
     // clear the windows
     // erase();
+#endif
+    
     // get topWin data and print to screen
-    /*
-    topWin.setUptime(returnLineFromPipe("uptime", _READ, 1));
-    mvwaddstr(topWin.getWindow(),
-	      0,
-	      0,
-	      topWin.getUptime().c_str());
-    */
     fileLine = returnFileLineByNumber(_UPTIME, 1);
     parsedLine = parseLine(fileLine);
     val = convertToInt(parsedLine.at(0));
@@ -1013,7 +1010,6 @@ int main()
     outLine.append(":");
     outLine.append(std::to_string(uptime.getMinutes()));
     outLine.append(", ");
-
     fileLine = returnLineFromPipe("users", _READ, 1);
     parsedLine = parseLine(fileLine);
     outLine.append(std::to_string(parsedLine.size()));
@@ -1023,16 +1019,16 @@ int main()
     outLine.append(parsedLine.at(0));
     outLine.append(" ");
     outLine.append(parsedLine.at(1));
-    outLine.append(" ");    
+    outLine.append(" ");
     outLine.append(parsedLine.at(2));
-
+    
+#if _CURSES
     mvwaddstr(topWin.getWindow(),
 	      0,
 	      0,
 	      outLine.c_str());
-    
 #endif
-
+    
     // get memory data from /proc/meminfo
     fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
     parsedLine = parseLine(fileLine);
@@ -1219,6 +1215,70 @@ int main()
 	      }
 
 	    // get %CPU
+	    const double ticks = (double)sysconf(_SC_CLK_TCK);
+	    float avgUs = 0;
+	    float avgSy = 0;	    
+	    float avgNi = 0;
+	    float avgId = 0;
+	    float avgWa = 0;
+	    float avgHi = 0;
+	    float avgSi = 0;
+	    float avgSt = 0;
+	    float totalJiffs = 0;
+	    float us = 0;
+	    float ni = 0;
+	    float sy = 0;
+	    float id = 0;
+	    float wa = 0;
+	    float irq = 0;
+	    float sirq = 0;
+	    float hi = 0;
+	    float si = 0;
+	    float st = 0;
+	    float gu = 0;
+	    float gun = 0;
+	    filePath = "/proc/stat";
+	    lineString = returnFileLineByNumber(filePath, 1);
+	    parsedLine = parseLine(lineString);
+	    us = convertToInt(parsedLine.at(1));
+	    ni = convertToInt(parsedLine.at(2));
+	    sy = convertToInt(parsedLine.at(3));
+	    id = convertToInt(parsedLine.at(4));
+	    wa = convertToInt(parsedLine.at(5));
+	    irq = convertToInt(parsedLine.at(6));
+	    sirq = convertToInt(parsedLine.at(7));
+	    st = convertToInt(parsedLine.at(8));
+	    gu = convertToInt(parsedLine.at(9));
+	    gun = convertToInt(parsedLine.at(10));
+	    totalJiffs = us + ni + sy + id + wa + irq + sirq + st + gu + gun;
+	    avgUs = (100 * us)/totalJiffs;
+	    avgSy = (100 * sy)/totalJiffs;
+	    avgNi = (100 * ni)/totalJiffs;
+	    avgId = (100 * id)/totalJiffs;
+	    avgWa = (100 * wa)/totalJiffs;
+	    avgSt = (100 * st)/totalJiffs;
+	    // avgHi = (100 * hi)/totalJiffs;
+    
+	    outLine = "%CPU(s): ";
+	    outLine.append(std::to_string(avgUs));
+	    outLine.append(" us, ");
+	    outLine.append(std::to_string(avgSy));
+	    outLine.append(" sy, ");
+	    outLine.append(std::to_string(avgNi));
+	    outLine.append(" ni, ");
+	    outLine.append(std::to_string(avgId));
+	    outLine.append(" id, ");
+	    outLine.append(std::to_string(avgWa));
+	    outLine.append(" wa, ");
+	    outLine.append("N/A");
+	    outLine.append(" si, ");
+	    outLine.append(std::to_string(avgSt));
+	    outLine.append(" st, ");
+
+	    mvwaddstr(cpuWin.getWindow(),
+		      0,
+		      0,
+		      outLine.c_str());
 	    
 	    // get process state count
 	    unsigned int running = 0;
@@ -1276,7 +1336,7 @@ int main()
 		      0,
 		      outLine.c_str());
 	    
-	    
+
 	    // print extracted process data
 	    /*
 	    log << std::endl << "PID: " << processMap[pidList.at(i)]->getPID() << std::endl
@@ -1295,6 +1355,7 @@ int main()
 	    << std::endl;	    
 	    */
 	    // insert process to hash table with PID as key
+
 
       }
 
