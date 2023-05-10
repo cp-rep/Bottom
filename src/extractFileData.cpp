@@ -575,7 +575,16 @@ const int convertToInt(const std::string& str)
 } // end of "convertToInt"
 
 
-
+const float convertToFloat(const std::string& str)
+{
+  float val = 0;
+  if(!str.empty())
+    {
+      std::stringstream container(str);
+      container >> val;
+    }
+  return val;  
+}
 
 
 /*
