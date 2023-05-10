@@ -10,9 +10,7 @@
 class SecondsToTime{
 public:
   // constructors
-  SecondsToTime(const unsigned int hours = 0,
-		const unsigned int minutes = 0,
-		const unsigned int seconds = 0);
+  SecondsToTime(const float seconds = 0);
 
   // member functions
   const int convertToHours(const int& secs) const;
@@ -25,18 +23,21 @@ public:
   // getters
   const unsigned int& getHours() const;
   const unsigned int& getMinutes() const;
-  const unsigned int& getSeconds() const; 
+  const unsigned int& getSeconds() const;
+  const float& getTotalSecs() const { return m_totalSecs; }
   
   // setters
   void setHours(const unsigned int& hours);
   void setMinutes(const unsigned int& minutes);
   void setSeconds(const unsigned int& seconds);
+  void setTotalSecs(const float totalSecs) { m_totalSecs = totalSecs; }
   
 private:
   // member variables
   unsigned int m_hours;
   unsigned int m_minutes;
   unsigned int m_seconds;
+  float m_totalSecs;
 };
 
 

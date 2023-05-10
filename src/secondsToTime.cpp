@@ -10,13 +10,12 @@
   Function:
   Default Constructor
 */
-SecondsToTime::SecondsToTime(const unsigned int hours,
-			     const unsigned int minutes,
-			     const unsigned int seconds)
+SecondsToTime::SecondsToTime(const float seconds)
 {
-  m_hours = hours;
-  m_minutes = minutes;
-  m_seconds = seconds;
+  m_hours = convertToHours(seconds);
+  m_minutes = convertToMinutes(seconds);
+  m_seconds = findRemainingSeconds(seconds);
+  m_totalSecs = seconds;
 } // end of "Default Constructor"
 
 
