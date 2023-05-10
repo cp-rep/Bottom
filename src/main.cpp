@@ -161,11 +161,15 @@ int main()
   MemInfo mInfo;
   ProcessInfo* pInfo;
   struct passwd* userData;
-  std::unordered_map<int, ProcessInfo*> processMap;
-  std::unordered_map<int, ProcessInfo*>::iterator procIt;
-  std::vector<std::string> parsedFileNames;
-  std::vector<int> pidList;
-  SecondsToTime uptime;
+  std::vector<int> pidList;  
+  std::unordered_map<int, ProcessInfo*> pUmap;
+  std::unordered_map<int, ProcessInfo*>::iterator pUmapIt;
+  char switchChar = 'p';
+  /*
+  std::map<int, ProcessInfo*> pMap;
+  std::map<int, ProcessInfo*>::iterator pMapIt;
+  */
+  //  bool firstIteration = true;
   short numLines = 0;
   short numCols = 0;
   short maxWindowY = 0;
@@ -977,7 +981,6 @@ int main()
 #endif
 
   // ## run the main program loop ##
-
   do{
     std::string outLine;
     std::string tempLine;
@@ -994,20 +997,24 @@ int main()
     fileLine = returnFileLineByNumber(_UPTIME, 1);
     parsedLine = parseLine(fileLine);
     val = convertToInt(parsedLine.at(0));
-    uptime.setHours(uptime.convertToHours(val));
-    uptime.setMinutes(uptime.convertToMinutes(val));
-    uptime.setSeconds(uptime.findRemainingSeconds(val));
+    SecondsToTime uptime(val);       
     outLine = "top - ";
     time(&rawtime);
     timeinfo = localtime(&rawtime);    
     outLine.append(uptime.returnHHMMSS(timeinfo->tm_hour,
 				       timeinfo->tm_min,
 				       timeinfo->tm_sec));
-
-    val = uptime.getHours()/24;    
     outLine.append(" up ");
-    outLine.append(std::to_string(uptime.getHours()/24));
-    outLine.append(" days, ");    
+    val = uptime.getHours()/24;
+    outLine.append(std::to_string(val));    
+    if(val == 1)
+      {
+	outLine.append(" day, ");
+      }
+    else
+      {
+	outLine.append(" days, ");
+      }
     outLine.append(std::to_string(uptime.getHours() % 24));
     outLine.append(":");
     outLine.append(std::to_string(uptime.getMinutes()));
@@ -1099,7 +1106,6 @@ int main()
     // get new process list
     pidList.clear();
     pidList = (findNumericDirs(_PROC));
-    std::sort(pidList.begin(), pidList.end());
     
     // find any dead processes
     for(int i = 0; i < pidListOld.size(); i++)
@@ -1124,11 +1130,11 @@ int main()
     // remove dead processes from the process umap
     for(int i = 0; i < pidListDead.size(); i++)
       {
-	if(processMap.count(pidListDead.at(i)) > 0)
+	if(pUmap.count(pidListDead.at(i)) > 0)
 	  {
-	    delete(processMap[pidListDead.at(i)]);
-	    log << "Deleted Process With PID: " << pidListDead.at(i) << std::endl;
-	    processMap.erase(pidListDead.at(i));
+	    delete(pUmap[pidListDead.at(i)]);
+	    //	    log << "Deleted Process With PID: " << pidListDead.at(i) << std::endl;
+	    pUmap.erase(pidListDead.at(i));
 	  }
       }
 
@@ -1136,10 +1142,10 @@ int main()
     for(int i = 0; i < pidList.size(); i++)
       {
 	// if process is new, allocate it
-	if(processMap.count(pidList.at(i)) == 0)
+	if(pUmap.count(pidList.at(i)) == 0)
 	  {
 	    pInfo = new ProcessInfo();
-	    processMap.insert(std::make_pair(pidList.at(i), pInfo));
+	    pUmap.insert(std::make_pair(pidList.at(i), pInfo));
 	  }
 	    std::string filePath;
 	    std::string lineString;
@@ -1147,15 +1153,15 @@ int main()
 	    int value = 0;
 	    
 	    // set pid
-	    processMap[pidList.at(i)]->setPID(pidList.at(i));
+	    pUmap[pidList.at(i)]->setPID(pidList.at(i));
 	    //	    log << std::endl << "PID: " << pidList.at(i) << std::endl;
 
 	    // get command
 	    filePath = currProc;
 	    filePath.append(_COMM);
 	    lineString = returnFileLineByNumber(filePath, 1);
-	    processMap[pidList.at(i)]->setCommand(lineString);
-	    //	     log << "COMM: " << processMap[pidList.at(i)]->getCommand() << std::endl;
+	    pUmap[pidList.at(i)]->setCommand(lineString);
+	    //	     log << "COMM: " << pUmap[pidList.at(i)]->getCommand() << std::endl;
 
  	    // get USER
 	    filePath = currProc;
@@ -1166,7 +1172,7 @@ int main()
 		parsedLine = parseLine(lineString);
 		value = convertToInt(parsedLine.at(1));
 		userData = getpwuid(value);
-		processMap[pidList.at(i)]->setUser(userData->pw_name);
+		pUmap[pidList.at(i)]->setUser(userData->pw_name);
 	      }
 
 	    // get VIRT
@@ -1175,7 +1181,7 @@ int main()
 	      {
 		parsedLine = parseLine(lineString);
 		value = convertToInt(parsedLine.at(1));
-		processMap[pidList.at(i)]->setVirt(value);
+		pUmap[pidList.at(i)]->setVirt(value);
 	      }
 
 	    // get RES
@@ -1184,7 +1190,7 @@ int main()
 	      {
 		parsedLine = parseLine(lineString);
 		value = convertToInt(parsedLine.at(1));
-		processMap[pidList.at(i)]->setRes(value);
+		pUmap[pidList.at(i)]->setRes(value);
 	      }
 
 	    // get SHR
@@ -1193,9 +1199,8 @@ int main()
 	      {
 		parsedLine = parseLine(lineString);
 		value = convertToInt(parsedLine.at(1));
-		processMap[pidList.at(i)]->setSHR(value);
+		pUmap[pidList.at(i)]->setSHR(value);
 	      }
-
 
  	    // get PR
 	    filePath = currProc;
@@ -1203,23 +1208,46 @@ int main()
 	    lineString = returnFileLineByNumber(filePath, 1);
 	    if(lineString != "-1")
 	      {
+		float utime = 0;
+		float cutime = 0;
+		float pstart = 0;
+		float newVal = 0;
+		// get uptime
+		fileLine = returnFileLineByNumber(_UPTIME, 1);
+		parsedLine = parseLine(fileLine);
+		newVal = convertToFloat(parsedLine.at(0));
+		uptime.setTotalSecs(newVal);
+		pUmap[pidList.at(i)]->setCpuUsage(newVal);
+
+		// get priority
 		lineString = fixStatLine(lineString);
 		parsedLine = parseLine(lineString);
 		value = convertToInt(parsedLine.at(15));
-		processMap[pidList.at(i)]->setPR(value);
+		pUmap[pidList.at(i)]->setPR(value);
 
 		// get NI
 		value = convertToInt(parsedLine.at(16));
-		processMap[pidList.at(i)]->setNI(value);
+		pUmap[pidList.at(i)]->setNI(value);
 
 		// get S
-		processMap[pidList.at(i)]->setS(lineString.at(0));
-	      }
+		pUmap[pidList.at(i)]->setS(lineString.at(0));
 
+		// get process %cpu
+		/*
+		  (utime - stime)/(system uptime - process start time)
+		  (col(14) - col(15))/(/proc/uptime(0) - col(22)
+		 */
+ 		utime = convertToInt(parsedLine.at(11));
+		cutime = convertToInt(parsedLine.at(12));
+		pstart = convertToInt(parsedLine.at(19));
+		newVal = (utime + cutime)/(uptime.getTotalSecs() - (pstart/100));
+		pUmap[pidList.at(i)]->setCpuUsage(newVal);
+	      }
+	    
 	    // get %CPU
 	    const double ticks = (double)sysconf(_SC_CLK_TCK);
 	    float avgUs = 0;
-	    float avgSy = 0;	    
+	    float avgSy = 0;
 	    float avgNi = 0;
 	    float avgId = 0;
 	    float avgWa = 0;
@@ -1278,11 +1306,12 @@ int main()
 	    outLine.append(std::to_string(avgSt));
 	    outLine.append(" st, ");
 
+#if _CURSES
 	    mvwaddstr(cpuWin.getWindow(),
 		      0,
 		      0,
 		      outLine.c_str());
-	    
+#endif	    
 	    // get process state count
 	    unsigned int running = 0;
 	    unsigned int unSleep = 0;
@@ -1292,8 +1321,9 @@ int main()
 	    unsigned int zombie = 0;
 	    unsigned int idle = 0;
 	    unsigned int total = 0;
- 	    for(std::unordered_map<int, ProcessInfo*>::iterator it = processMap.begin();
-		it != processMap.end(); it++)
+
+ 	    for(std::unordered_map<int, ProcessInfo*>::iterator it = pUmap.begin();
+		it != pUmap.end(); it++)
 	      {
 		switch(it->second->getS())
 		  {
@@ -1320,6 +1350,7 @@ int main()
 		}
 	      }
 
+	    // output the "tasks" line
 	    sleeping = inSleep + unSleep + idle;
 	    total = running + sleeping;
 	    outLine = "Tasks: ";
@@ -1332,34 +1363,68 @@ int main()
 	    outLine.append(std::to_string(stopped));
 	    outLine.append(" stopped, ");
 	    outLine.append(std::to_string(zombie));
-	    outLine.append(" zombie");	    
-	    
+	    outLine.append(" zombie");
+#if _CURSES
 	    mvwaddstr(tasksWin.getWindow(),
 		      0,
 		      0,
 		      outLine.c_str());
+#endif
 
 	    // print extracted process data
-	    /*
-	    log << std::endl << "PID: " << processMap[pidList.at(i)]->getPID() << std::endl
-		<< "COMM: " << processMap[pidList.at(i)]->getCommand() << std::endl
-		<< "USER: " << processMap[pidList.at(i)]->getUser() << std::endl
-		<< "PR: " << processMap[pidList.at(i)]->getPR() << std::endl
-		<< "NI: " << processMap[pidList.at(i)]->getNI() << std::endl
-		<< "VIRT: " << processMap[pidList.at(i)]->getVirt() << std::endl
-		<< "RES: " << processMap[pidList.at(i)]->getRes() << std::endl
-		<< "SHR: " << processMap[pidList.at(i)]->getSHR() << std::endl
-		<< "S: " << processMap[pidList.at(i)]->getS() << std::endl;
-	    */
+	    log << std::endl << "PID: " << pUmap[pidList.at(i)]->getPID() << std::endl
+		<< "COMM: " << pUmap[pidList.at(i)]->getCommand() << std::endl
+		<< "USER: " << pUmap[pidList.at(i)]->getUser() << std::endl
+		<< "PR: " << pUmap[pidList.at(i)]->getPR() << std::endl
+		<< "NI: " << pUmap[pidList.at(i)]->getNI() << std::endl
+		<< "VIRT: " << pUmap[pidList.at(i)]->getVirt() << std::endl
+		<< "RES: " << pUmap[pidList.at(i)]->getRes() << std::endl
+		<< "SHR: " << pUmap[pidList.at(i)]->getSHR() << std::endl
+		<< "S: " << pUmap[pidList.at(i)]->getS() << std::endl
+		<< "%CPU: " << pUmap[pidList.at(i)]->getCpuUsage() << std::endl
+		<< std::endl;
+
+	    // get character from user
+	    switchChar = getch();
+
+	    // operate on the character
+	    switch(switchChar)
+	      {
+	      case 'p':
+		
+		break;
+	      case 'q':
+		break;
+	      default:
+		break;
+	      }
+
+
+
 	    
 	    /*
-	    << "%CPU: " << processMap[pidList.at(i)]->getCpuUsage() << std::endl
-	    << std::endl;	    
+	    if(firstIteration)
+	      {
+		std::sort(pidList.begin(), pidList.end());
+		switchChar = 'p';
+	      }
 	    */
-	    // insert process to hash table with PID as key
-      }
 
-    pInfo = nullptr;
+		  /*
+	    for(pUmapIt = pUmap.begin(); pUmapIt != pUmap.end(); pUmapIt++)
+	      {
+		pInfos.push_back(pUmapIt->second);
+	      }
+	    log << "pUmap size: " << pUmap.size() << std::endl;
+	    for(std::vector<ProcessInfo*>::iterator pMap = pInfos.begin();
+		pMap != pInfos.end(); pMap++)
+	      {
+		log << (*pMap)->getPID() << std::endl;
+	      }
+		*/
+      }
+    pInfo = nullptr;    
+    break;
 
 #if _CURSES
     // refresh the windows
@@ -1386,19 +1451,10 @@ int main()
     //sleep(3);
     //delay(3000);
 #endif
-  }while(getch() != 'q');  
+    }while(switchChar != 'q');
+    //  }while(true);
 
-  
   endwin();
-  //  for(procIt = processes.begin(); procIt != processes.end(); procIt++)
-
-  /*
-  for(auto i : processes)
-    {
-      log << "PID: " << i.first << std::endl;
-      //    std::cout << "PID: " << i.second->setPID(5) << std::endl;
-    }
-  */
   
   return 0;
 } // end of "main"
