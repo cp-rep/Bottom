@@ -18,7 +18,7 @@
  
   Potential Future Additions:
   - mouse functionality option which would then pop up a window with buttons
-    to click
+    to click. all* keyboard options should be possible with a mouse
   - make the help menu more user friendly
   - could leverage internet connectivity.
   * pull our processes and check if any are considered malicious
@@ -70,7 +70,7 @@
 
 //constants
 // debug
-#define _DEBUG 1
+#define _DEBUG 0
 #define _CURSES 1
 #define _NOLOG 0
 
@@ -109,6 +109,15 @@ void printSortedProcs(const std::vector<int>& pidList,
 		      const std::vector<std::pair<float, int>>& sortedOut,
 		      const std::unordered_map<int, ProcessInfo*>& pUmap,
 		      const std::vector<CursesWindow*>& wins);
+void printProcs(const int& shiftY,
+		const std::vector<int>& pidList,
+		const std::unordered_map<int, ProcessInfo*>& pUmap,
+		const std::vector<CursesWindow*>& wins);
+void mergePidLists(const std::vector<std::pair<float, int>>& frontList,
+		   const std::vector<int>& backList,
+		   std::vector<int>& newList,
+		   const std::unordered_map<int, ProcessInfo*>& pUmap);
+void copyList(std::vector<int>& lhs, const std::vector<int>& rhs);
 /*
   Function:
   main
@@ -160,21 +169,18 @@ int main()
       log << "Time and Date: " << asctime(timeinfo) << std::endl;      
     }
 
-  // variables
-  CursesWindow processWin;
-  std::vector<CursesWindow*> allWins;  
+  // vars
+  std::vector<CursesWindow*> topWins;
+  std::vector<CursesWindow*> bottomWins;
   MemInfo mInfo;
   ProcessInfo* pInfo;
   struct passwd* userData;
   std::vector<int> pidList;  
   std::unordered_map<int, ProcessInfo*> pUmap;
   std::unordered_map<int, ProcessInfo*>::iterator pUmapIt;
-  char switchStateChar = 'P';
-  /*
-  std::map<int, ProcessInfo*> pMap;
-  std::map<int, ProcessInfo*>::iterator pMapIt;
-  */
-  //  bool firstIteration = true;
+
+  // window data vars
+  CursesWindow processWin;  
   short numLines = 0;
   short numCols = 0;
   short maxWindowY = 0;
@@ -190,12 +196,44 @@ int main()
   short previousY = 0;
   short previousX = 0;
 
+  // swtich vars
+  int stateVal = 'P';
+  bool quit = false;
+  int shiftY = 0;
+  int shiftX = 0;
+  
   // ## setup the main window ##
   CursesWindow mainWin;
   
   // init curses to main window
   mainWin.setWindow(initscr());
+
 #if _CURSES
+  if(has_colors())
+    {
+      use_default_colors();
+      //init_pair(-1);
+      //init_color(COLOR_BLACK, 0, 0, 0);
+      color_set(0, NULL);
+    }
+
+  // disable echoing characters to the window from getch();
+  noecho();
+  
+  // make typed characters immediately available to program
+  // (override part of the tty driver protocol)
+  cbreak();
+
+  // disable keyboard cursor visibility
+  curs_set(false);
+
+  // disable curses defined key values for getch() to mainWin
+  keypad(mainWin.getWindow(), true);
+
+  //
+  nodelay(mainWin.getWindow(), true);
+
+  
   // get main window dimensions
   getmaxyx(mainWin.getWindow(), numLines, numCols);
 
@@ -228,26 +266,7 @@ int main()
 		       currentX,
 		       previousY,
 		       previousX);
-#endif
-  
-  // disable echoing characters to the window from getch();
-  noecho();
-  
-  // make typed characters immediately available to program
-  // (override part of the tty driver protocol)
-  cbreak();
 
-  // disable keyboard cursor visibility
-  curs_set(false);
-
-  // disable curses defined key values for getch() to mainWin
-  keypad(mainWin.getWindow(), false);
-
-  //
-  nodelay(mainWin.getWindow(), true);
-
-
-#if _CURSES
   // ## define windows ##
   // define top window
   numLines = 1;
@@ -962,21 +981,27 @@ int main()
 			      COMMANDWin.getStartX()));
   
   // store all windows in vector for polymorphic calls
-  allWins.push_back(&COMMANDWin); // 0
-  allWins.push_back(&TIMEWin); // 1
-  allWins.push_back(&PercentMEMWin); // 2
-  allWins.push_back(&PercentCPUWin); // 3
-  allWins.push_back(&SWin); // 4
-  allWins.push_back(&SHRWin); // 5 
-  allWins.push_back(&RESWin); // 6
-  allWins.push_back(&VIRTWin); // 7
-  allWins.push_back(&NIWin); // 8
-  allWins.push_back(&PRWin); // 9 
-  allWins.push_back(&USERWin); // 10
-  allWins.push_back(&PIDWin); // 11
+  // process windows
+  bottomWins.push_back(&COMMANDWin); // 0
+  bottomWins.push_back(&TIMEWin); // 1
+  bottomWins.push_back(&PercentMEMWin); // 2
+  bottomWins.push_back(&PercentCPUWin); // 3
+  bottomWins.push_back(&SWin); // 4
+  bottomWins.push_back(&SHRWin); // 5 
+  bottomWins.push_back(&RESWin); // 6
+  bottomWins.push_back(&VIRTWin); // 7
+  bottomWins.push_back(&NIWin); // 8
+  bottomWins.push_back(&PRWin); // 9 
+  bottomWins.push_back(&USERWin); // 10
+  bottomWins.push_back(&PIDWin); // 11
+
+  // hardware windows
+  topWins.push_back(&memWin); // 0 
+  topWins.push_back(&cpuWin); // 1
+  topWins.push_back(&tasksWin); // 2
+  topWins.push_back(&topWin); // 3
 
   // draw window borders
-
   // box(PIDWin.getWindow(), 'P', 'P');
   // box(USERWin.getWindow(), 'E', 'E');
   // box(PRWin.getWindow(), 'F', 'F');
@@ -989,7 +1014,6 @@ int main()
   // box(PercentMEMWin.getWindow(), 'M', 'M');
   // box(TIMEWin.getWindow(), 'N', 'N');
   // box(COMMANDWin.getWindow(), 'O', 'O');
-
   
   // ## for testing ##
   if(has_colors())
@@ -1162,7 +1186,8 @@ int main()
     mInfo.setMemUsed(mInfo.calculateMemUsed());
     mInfo.setSwapUsed(mInfo.calculateSwapUsed());
     mInfo.setBuffCache(mInfo.calculateBuffCache());
-    
+
+#if _CURSES    
     // set mem window data
     memWin.setStringMiB(std::to_string(mInfo.getMemTotal()),
 			std::to_string(mInfo.getMemFree()),
@@ -1173,7 +1198,6 @@ int main()
 			 std::to_string(mInfo.getSwapUsed()),
 			 std::to_string(mInfo.getMemAvailable()));
 
-#if _CURSES    
     // output the mem windows to curses
     mvwaddstr(memWin.getWindow(),
 	      0,
@@ -1263,6 +1287,11 @@ int main()
 		userData = getpwuid(value);
 		pUmap[pidList.at(i)]->setUser(userData->pw_name);
 	      }
+	    else
+	      {
+		pUmap[pidList.at(i)]->setUser("-1");
+	      }
+
 
 	    // get VIRT
 	    lineString = returnFileLineByPhrase(filePath, "VmSize");
@@ -1459,7 +1488,7 @@ int main()
 		      outLine.c_str());
 #endif
 	    /*
-	    log << std::endl << "PID: " << pUmap[pidList.at(i)]->getPID() << std::endl
+	      log << std::endl << "PID: " << pUmap[pidList.at(i)]->getPID() << std::endl
 		<< "COMM: " << pUmap[pidList.at(i)]->getCommand() << std::endl
 		<< "USER: " << pUmap[pidList.at(i)]->getUser() << std::endl
 		<< "PR: " << pUmap[pidList.at(i)]->getPR() << std::endl
@@ -1472,59 +1501,94 @@ int main()
 		<< std::endl;
 	    */
       }
-
+    
     pInfo = nullptr;
     pidListOld.clear();
     
     // ## get user input and operate on it ##
-    char input;
+    int input;
     std::vector<std::pair<float, int>> sortedOut;
     float floatPercentage = 0;
-    int intPercentage = 0;    
+    int intPercentage = 0;
+    int oldSwitchVal;
+    int moveVal = 0;
     
-    input = getch();
+    moveVal = input = getch();
 
     if(input != -1)
       {
-	switchStateChar = toupper(input);
+	if(input >= 'a' && input <= 'z')
+	  {
+	    stateVal = toupper(input);
+	  }
       }
 
-    switch(switchStateChar)
+    std::vector<int> newList;
+    
+    // change process state
+    switch(stateVal)
       {
       case 'C':
-	  for(int i = 0; i < pidList.size(); i++)
-	    {
-	      floatPercentage = pUmap.at(pidList.at(i))->getCPUUsage();
-	      floatPercentage *= 10;
-	      intPercentage = floatPercentage;
+	for(int i = 0; i < pidList.size(); i++)
+	  {
+	    floatPercentage = pUmap.at(pidList.at(i))->getCPUUsage();
+	    floatPercentage *= 10;
+	    intPercentage = floatPercentage;
+	      
+	    if(intPercentage != 0)
+	      {
+		floatPercentage = intPercentage;
+		floatPercentage = floatPercentage/10;
+		sortedOut.push_back(std::make_pair(floatPercentage, pidList.at(i)));
+	      }
+	  }
+	
+#if _CURSES
 
-	      if(intPercentage != 0)
-		{
-		  floatPercentage = intPercentage;
-		  floatPercentage = floatPercentage/10;
-		  sortedOut.push_back(std::make_pair(floatPercentage, pidList.at(i)));
-		}
-	    }
-	  printSortedProcsReverse(1,
-				  sortedOut,
-				  pUmap,
-				  allWins);
-
-	  printSortedProcs(pidList,
-			   sortedOut,
-			   pUmap,
-			   allWins);	  
+	mergePidLists(sortedOut,
+		      pidList,
+		      newList,
+		      pUmap);
+#endif
 	break;
       case 'P':
-	  printSortedProcs(pidList,
-			   sortedOut,
-			   pUmap,
-			   allWins);	
+#if _CURSES
+	copyList(newList, pidList);
+#endif
 	break;
       case 'M':
 	break;
       case 'U':
 	break;
+      case 'Q':
+	quit = true;
+	break;
+      default:
+	break;
+      }
+
+    if(quit)
+      break;
+
+    printProcs(shiftY,
+	       newList,
+	       pUmap,
+	       bottomWins);
+    
+    // shift windows
+    switch(moveVal)
+      {
+      case KEY_UP:
+	shiftY++;	
+	log << "KEY UP!" << std::endl;
+	break;
+      case KEY_DOWN:
+	shiftY--;	
+	log << "KEY UP!" << std::endl;
+      case KEY_LEFT:
+	log << "KEY UP!" << std::endl;
+      case KEY_RIGHT:
+	log << "KEY UP!" << std::endl;	
       default:
 	break;
       }
@@ -1554,7 +1618,7 @@ int main()
     //sleep(3);
     //delay(3000);
 #endif
-  } while(switchStateChar != 'Q');
+  } while(true);
 
   endwin();
   
@@ -1668,67 +1732,103 @@ void printSortedProcsReverse(const int& startLine,
 
 
 
-void printSortedProcs(const std::vector<int>& pidList,
-		      const std::vector<std::pair<float, int>>& sortedOut,
-		      const std::unordered_map<int, ProcessInfo*>& pUmap,
-		      const std::vector<CursesWindow*>& wins)
+void printProcs(const int& shiftY,
+		const std::vector<int>& pidList,
+		const std::unordered_map<int, ProcessInfo*>& pUmap,
+		const std::vector<CursesWindow*>& wins)
+{
+    for(int i = 0; i < pUmap.size(); i++)
+    {
+      int posY = i + 1 + shiftY;
+      if(posY == 0)
+	{
+	  posY =  1;
+	}
+
+      if(pUmap.at(pidList.at(i))->getUser() == "-1")
+	continue;
+      
+      mvwaddstr(wins.at(11)->getWindow(),
+		posY,
+		0,
+		std::to_string(pUmap.at(pidList.at(i))->getPID()).c_str());
+      mvwaddstr(wins.at(10)->getWindow(),
+		posY,
+		0,
+		pUmap.at(pidList.at(i))->getUser().c_str());
+      mvwaddstr(wins.at(9)->getWindow(),
+		posY,
+		0,
+		std::to_string(pUmap.at(pidList.at(i))->getPR()).c_str());
+      mvwaddstr(wins.at(8)->getWindow(),
+		posY,
+		0,
+		std::to_string(pUmap.at(pidList.at(i))->getNI()).c_str());
+      mvwaddstr(wins.at(7)->getWindow(),
+		posY,
+		0,
+		std::to_string(pUmap.at(pidList.at(i))->getVirt()).c_str());
+      mvwaddstr(wins.at(6)->getWindow(),
+		posY,
+		0,
+		std::to_string(pUmap.at(pidList.at(i))->getRes()).c_str());
+      mvwaddstr(wins.at(5)->getWindow(),
+		posY,
+		0,
+		std::to_string(pUmap.at(pidList.at(i))->getSHR()).c_str());
+      mvwaddch(wins.at(4)->getWindow(),
+	       posY,
+	       0,
+	       pUmap.at(pidList.at(i))->getS());
+      mvwaddstr(wins.at(3)->getWindow(),
+		posY,
+		0,
+		std::to_string(pUmap.at(pidList.at(i))->getCPUUsage()).c_str());
+      mvwaddstr(wins.at(0)->getWindow(),
+		posY,
+		0,
+		pUmap.at(pidList.at(i))->getCommand().c_str());
+    }
+}
+
+
+
+
+void mergePidLists(const std::vector<std::pair<float, int>>& frontList,
+		   const std::vector<int>& backList,
+		   std::vector<int>& newList,
+		   const std::unordered_map<int, ProcessInfo*>& pUmap)
 {
   // output the rest of the processes by PID in ascending order
+  for(int i = 0; i < frontList.size(); i++)
+    {
+      newList.push_back(frontList.at(i).second);
+    }
+  
   for(int i = 0; i < pUmap.size(); i++)
     {
       bool isInArray = false;
 
-      for(int j = 0; j < sortedOut.size(); j++)
+      for(int j = 0; j < frontList.size(); j++)
 	{
-	  if(sortedOut.at(j).second == pUmap.at(pidList.at(i))->getPID())
+	  if(frontList.at(j).second == pUmap.at(backList.at(i))->getPID())
 	    {
 	      isInArray = true;
 	    }
 	}
-
       if(isInArray == false)
 	{
-	  mvwaddstr(wins.at(11)->getWindow(),
-		    i + 1 + sortedOut.size(),
-		    0,
-		    std::to_string(pUmap.at(pidList.at(i))->getPID()).c_str());
-	  mvwaddstr(wins.at(10)->getWindow(),
-		    i + 1 + sortedOut.size(),
-		    0,
-		    pUmap.at(pidList.at(i))->getUser().c_str());
-	  mvwaddstr(wins.at(9)->getWindow(),
-		    i + 1 + sortedOut.size(),
-		    0,
-		    std::to_string(pUmap.at(pidList.at(i))->getPR()).c_str());
-	  mvwaddstr(wins.at(8)->getWindow(),
-		    i + 1 + sortedOut.size(),
-		    0,
-		    std::to_string(pUmap.at(pidList.at(i))->getNI()).c_str());
-	  mvwaddstr(wins.at(7)->getWindow(),
-		    i + 1 + sortedOut.size(),
-		    0,
-		    std::to_string(pUmap.at(pidList.at(i))->getVirt()).c_str());
-	  mvwaddstr(wins.at(6)->getWindow(),
-		    i + 1 + sortedOut.size(),
-		    0,
-		    std::to_string(pUmap.at(pidList.at(i))->getRes()).c_str());
-	  mvwaddstr(wins.at(5)->getWindow(),
-		    i + 1 + sortedOut.size(),
-		    0,
-		    std::to_string(pUmap.at(pidList.at(i))->getSHR()).c_str());
-	  mvwaddch(wins.at(4)->getWindow(),
-		   i + 1 + sortedOut.size(),
-		   0,
-		   pUmap.at(pidList.at(i))->getS());
-	  mvwaddstr(wins.at(3)->getWindow(),
-		    i + 1 + sortedOut.size(),
-		    0,
-		    std::to_string(pUmap.at(pidList.at(i))->getCPUUsage()).c_str());
-	  mvwaddstr(wins.at(0)->getWindow(),
-		    i + 1 + sortedOut.size(),
-		    0,
-		    pUmap.at(pidList.at(i))->getCommand().c_str());
+	  newList.push_back(backList.at(i));
 	}
     }
 }
 
+
+
+void copyList(std::vector<int>& lhs, const std::vector<int>& rhs)
+{
+  for(int i = 0; i < rhs.size(); i++)
+    {
+      lhs.push_back(rhs.at(i));
+    }
+}
