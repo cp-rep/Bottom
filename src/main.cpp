@@ -991,14 +991,73 @@ int main()
 
 #if _CURSES
     // clear the windows
-    // erase()
+    werase(topWin.getWindow());
+    werase(tasksWin.getWindow());
+    werase(cpuWin.getWindow());
+    werase(memWin.getWindow());
     werase(PIDWin.getWindow());
     werase(USERWin.getWindow());
     werase(PRWin.getWindow());
     werase(SWin.getWindow());
     werase(VIRTWin.getWindow());
+    werase(RESWin.getWindow());    
+    werase(SHRWin.getWindow());
+    werase(SWin.getWindow());
     werase(PercentCPUWin.getWindow());
+    werase(PercentMEMWin.getWindow());
+    werase(TIMEWin.getWindow());
+    werase(COMMANDWin.getWindow());
 #endif
+
+    // print window names
+    mvwaddstr(PIDWin.getWindow(),
+	      0,
+	      0,
+	      PIDWin.getWindowName().c_str());
+    mvwaddstr(VIRTWin.getWindow(),
+	      0,
+	      0,
+	      VIRTWin.getWindowName().c_str());
+    mvwaddstr(USERWin.getWindow(),
+	      0,
+	      0,
+	      USERWin.getWindowName().c_str());
+    mvwaddstr(PRWin.getWindow(),
+	      0,
+	      0,
+	      PRWin.getWindowName().c_str());
+    mvwaddstr(NIWin.getWindow(),
+	      0,
+	      0,
+	      NIWin.getWindowName().c_str());
+    mvwaddstr(RESWin.getWindow(),
+	      0,
+	      0,
+	      RESWin.getWindowName().c_str());
+    mvwaddstr(SHRWin.getWindow(),
+	      0,
+	      0,
+	      SHRWin.getWindowName().c_str());
+    mvwaddstr(SWin.getWindow(),
+	      0,
+	      0,
+	      SWin.getWindowName().c_str());
+    mvwaddstr(PercentCPUWin.getWindow(),
+	      0,
+	      0,
+	      PercentCPUWin.getWindowName().c_str());
+    mvwaddstr(PercentMEMWin.getWindow(),
+	      0,
+	      0,
+	      PercentMEMWin.getWindowName().c_str());
+    mvwaddstr(TIMEWin.getWindow(),
+	      0,
+	      0,
+	      TIMEWin.getWindowName().c_str());
+    mvwaddstr(COMMANDWin.getWindow(),
+	      0,
+	      0,
+	      COMMANDWin.getWindowName().c_str());
     
     // get topWin data and print to screen
     fileLine = returnFileLineByNumber(_UPTIME, 1);
@@ -1323,7 +1382,6 @@ int main()
 	    avgSt = (ticks * st)/totalJiffs;
 	    avgUs = 100 - (avgId);
 	    // avgHi = (100 * hi)/totalJiffs;
-    
 	    outLine = "%CPU(s): ";
 	    outLine.append(std::to_string(avgUs));
 	    outLine.append(" us, ");
@@ -1429,7 +1487,7 @@ int main()
     log << "SwitchChar: " << switchChar << std::endl;
     pidListOld.clear();
     
-    // operate on the character
+    // operate on the user input character
     switch(switchChar)
       {
       case 'C':
@@ -1480,8 +1538,7 @@ int main()
     std::sort(sortedOut.begin(), sortedOut.end());
 
     int k, g;
-    //    for(k = 0; k < sortedOut.size(); k++)
-      for(k = sortedOut.size() - 1, g = 0; k >=0; k--, g++)
+    for(k = sortedOut.size() - 1, g = 0; k >=0; k--, g++)
       {
 	mvwaddstr(PIDWin.getWindow(),
 		  g+1,
