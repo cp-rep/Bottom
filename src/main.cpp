@@ -957,18 +957,18 @@ int main()
 
   // draw window borders
 
-  box(PIDWin.getWindow(), 'P', 'P');
-  box(USERWin.getWindow(), 'E', 'E');
-  box(PRWin.getWindow(), 'F', 'F');
-  box(NIWin.getWindow(), 'G', 'G');
-  box(VIRTWin.getWindow(), 'H', 'H');
-  box(RESWin.getWindow(), 'I', 'I');
-  box(SHRWin.getWindow(), 'J', 'J');
-  box(SWin.getWindow(), 'K', 'K');
-  box(PercentCPUWin.getWindow(), 'L', 'L');
-  box(PercentMEMWin.getWindow(), 'M', 'M');
-  box(TIMEWin.getWindow(), 'N', 'N');
-  box(COMMANDWin.getWindow(), 'O', 'O');
+  // box(PIDWin.getWindow(), 'P', 'P');
+  // box(USERWin.getWindow(), 'E', 'E');
+  // box(PRWin.getWindow(), 'F', 'F');
+  // box(NIWin.getWindow(), 'G', 'G');
+  // box(VIRTWin.getWindow(), 'H', 'H');
+  // box(RESWin.getWindow(), 'I', 'I');
+  // box(SHRWin.getWindow(), 'J', 'J');
+  // box(SWin.getWindow(), 'K', 'K');
+  // box(PercentCPUWin.getWindow(), 'L', 'L');
+  // box(PercentMEMWin.getWindow(), 'M', 'M');
+  // box(TIMEWin.getWindow(), 'N', 'N');
+  // box(COMMANDWin.getWindow(), 'O', 'O');
 
   
   // ## for testing ##
@@ -991,7 +991,13 @@ int main()
 
 #if _CURSES
     // clear the windows
-    //    erase();
+    // erase()
+    werase(PIDWin.getWindow());
+    werase(USERWin.getWindow());
+    werase(PRWin.getWindow());
+    werase(SWin.getWindow());
+    werase(VIRTWin.getWindow());
+    werase(PercentCPUWin.getWindow());
 #endif
     
     // get topWin data and print to screen
@@ -1400,28 +1406,27 @@ int main()
 #endif
 
 	    // print extracted process data
-
-	    /*
-	    log << std::endl << "PID: " << pUmap[pidList.at(i)]->getPID() << std::endl
-		<< "COMM: " << pUmap[pidList.at(i)]->getCommand() << std::endl
-		<< "USER: " << pUmap[pidList.at(i)]->getUser() << std::endl
-		<< "PR: " << pUmap[pidList.at(i)]->getPR() << std::endl
-		<< "NI: " << pUmap[pidList.at(i)]->getNI() << std::endl
-		<< "VIRT: " << pUmap[pidList.at(i)]->getVirt() << std::endl
-		<< "RES: " << pUmap[pidList.at(i)]->getRes() << std::endl
-		<< "SHR: " << pUmap[pidList.at(i)]->getSHR() << std::endl
-		<< "S: " << pUmap[pidList.at(i)]->getS() << std::endl
-		<< "%CPU: " << pUmap[pidList.at(i)]->getCPUUsage() << std::endl
-		<< std::endl;
-	    */
-
-
+	    if(pUmap[pidList.at(i)]->getCommand() == "program" ||
+	       pUmap[pidList.at(i)]->getCommand() == "top")
+	      {
+		log << std::endl << "PID: " << pUmap[pidList.at(i)]->getPID() << std::endl
+		    << "COMM: " << pUmap[pidList.at(i)]->getCommand() << std::endl
+		    << "USER: " << pUmap[pidList.at(i)]->getUser() << std::endl
+		    << "PR: " << pUmap[pidList.at(i)]->getPR() << std::endl
+		    << "NI: " << pUmap[pidList.at(i)]->getNI() << std::endl
+		    << "VIRT: " << pUmap[pidList.at(i)]->getVirt() << std::endl
+		    << "RES: " << pUmap[pidList.at(i)]->getRes() << std::endl
+		    << "SHR: " << pUmap[pidList.at(i)]->getSHR() << std::endl
+		    << "S: " << pUmap[pidList.at(i)]->getS() << std::endl
+		    << "%CPU: " << pUmap[pidList.at(i)]->getCPUUsage() << std::endl
+		    << std::endl;
+	      }
       }
-    
+
     pInfo = nullptr;
     switchChar = getch();
     switchChar = toupper(switchChar);
-    log << "SwitchChar: " << switchChar << std::endl;    
+    log << "SwitchChar: " << switchChar << std::endl;
     pidListOld.clear();
     
     // operate on the character
@@ -1429,7 +1434,6 @@ int main()
       {
       case 'C':
 	// find highest process use and put them first
-	
 	/*
 	for(int i = 0; i < pUmap.size(); i++)
 	{
@@ -1448,10 +1452,11 @@ int main()
 	  }
 	*/
 	break;
+      case 'M':
+	break;
       default:
 	break;
       }
-
 
     // find the highest values and turn them into 1 point of precision
     std::vector<std::pair<float, int>> sortedOut;
@@ -1474,12 +1479,6 @@ int main()
 
     std::sort(sortedOut.begin(), sortedOut.end());
 
-    for(int i = 0; i < sortedOut.size(); i++)
-      {
-	log << "i: " << i << ", " << sortedOut.at(i).first << ", "
-	    << sortedOut.at(i).second << std::endl;
-      }
-
     int k, g;
     //    for(k = 0; k < sortedOut.size(); k++)
       for(k = sortedOut.size() - 1, g = 0; k >=0; k--, g++)
@@ -1488,15 +1487,48 @@ int main()
 		  g+1,
 		  0,
 		  std::to_string(pUmap.at(sortedOut.at(k).second)->getPID()).c_str());
-
+	mvwaddstr(USERWin.getWindow(),
+		  g+1,
+		  0,
+		  pUmap.at(sortedOut.at(k).second)->getUser().c_str());
+	mvwaddstr(PRWin.getWindow(),
+		  g+1,
+		  0,
+		  std::to_string(pUmap.at(sortedOut.at(k).second)->getPR()).c_str());
+	mvwaddstr(NIWin.getWindow(),
+		  g+1,
+		  0,
+		  std::to_string(pUmap.at(sortedOut.at(k).second)->getNI()).c_str());	
+	mvwaddstr(VIRTWin.getWindow(),
+		  g+1,
+		  0,
+		  std::to_string(pUmap.at(sortedOut.at(k).second)->getVirt()).c_str());
+	mvwaddstr(RESWin.getWindow(),
+		  g+1,
+		  0,
+		  std::to_string(pUmap.at(sortedOut.at(k).second)->getRes()).c_str());
+	mvwaddstr(SHRWin.getWindow(),
+		  g+1,
+		  0,
+		  std::to_string(pUmap.at(sortedOut.at(k).second)->getSHR()).c_str());
+	char m = pUmap.at(sortedOut.at(k).second)->getS();
+	std::string z;
+	z.push_back(m);
+	mvwaddstr(SWin.getWindow(),
+		  g+1,
+		  0,
+		  z.c_str());
 	mvwaddstr(PercentCPUWin.getWindow(),
 		  g+1,
 		  0,
 		  std::to_string(pUmap.at(sortedOut.at(k).second)->getCPUUsage()).c_str());
+	mvwaddstr(COMMANDWin.getWindow(),
+		  g+1,
+		  0,
+		  pUmap.at(sortedOut.at(k).second)->getCommand().c_str());		
       }
 
     // output rest of pids
-
     for(int i = sortedOut.size(); i < pUmap.size(); i++)
       {
 	bool isInArray = false;
@@ -1508,24 +1540,53 @@ int main()
 	      }
 	  }
 
-
 	if(isInArray == false)
 	  {
 	    mvwaddstr(PIDWin.getWindow(),
 		      i + 1,
 		      0,
 		      std::to_string(pUmap.at(pidList.at(i))->getPID()).c_str());
-
-
+	    mvwaddstr(USERWin.getWindow(),
+		      i + 1,
+		      0,
+		      pUmap.at(pidList.at(i))->getUser().c_str());
+	    mvwaddstr(PRWin.getWindow(),
+		      i + 1,
+		      0,
+		      std::to_string(pUmap.at(pidList.at(i))->getPR()).c_str());
+	    mvwaddstr(NIWin.getWindow(),
+		      i + 1,
+		      0,
+		      std::to_string(pUmap.at(pidList.at(i))->getNI()).c_str());
+	    mvwaddstr(VIRTWin.getWindow(),
+		      i + 1,
+		      0,
+		      std::to_string(pUmap.at(pidList.at(i))->getVirt()).c_str());
+	    mvwaddstr(RESWin.getWindow(),
+		      i + 1,
+		      0,
+		      std::to_string(pUmap.at(pidList.at(i))->getRes()).c_str());
+	    mvwaddstr(SHRWin.getWindow(),
+		      i + 1,
+		      0,
+		      std::to_string(pUmap.at(pidList.at(i))->getSHR()).c_str());
+	    char m = pUmap.at(pidList.at(i))->getS();
+	    std::string z;
+	    z.push_back(m);
+	    mvwaddstr(SWin.getWindow(),
+		      i + 1,
+		      0,
+		      z.c_str());
 	    mvwaddstr(PercentCPUWin.getWindow(),
 		      i + 1,
 		      0,
-		      std::to_string(pUmap.at(pidList.at(i))->
-				     getCPUUsage()).c_str());
+		      std::to_string(pUmap.at(pidList.at(i))->getCPUUsage()).c_str());
+	    mvwaddstr(COMMANDWin.getWindow(),
+		      i + 1,
+		      0,
+		      pUmap.at(pidList.at(i))->getCommand().c_str());
 	  }
-
       }
-
     
 #if _CURSES
     // refresh the windows
@@ -1595,12 +1656,3 @@ void printWindowToLog(std::ofstream& log, const CursesWindow& win)
   log << "m_previousY: " << win.getPreviousY() << std::endl;
   log << "m_previousX: " << win.getPreviousX() << std::endl;
 } // end of "printWindow"
-
-
-
-
-
-
-
-
-// sortProcByParam(ProcessInfo* pUmap, 
