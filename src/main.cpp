@@ -169,7 +169,7 @@ int main()
   std::vector<int> pidList;  
   std::unordered_map<int, ProcessInfo*> pUmap;
   std::unordered_map<int, ProcessInfo*>::iterator pUmapIt;
-  char switchChar = 'P';
+  char switchStateChar = 'P';
   /*
   std::map<int, ProcessInfo*> pMap;
   std::map<int, ProcessInfo*>::iterator pMapIt;
@@ -1475,19 +1475,23 @@ int main()
 
     pInfo = nullptr;
     pidListOld.clear();
-
+    
     // ## get user input and operate on it ##
-    switchChar = getch();
-    switchChar = toupper(switchChar);
-    log << "SwitchChar: " << switchChar << std::endl;
+    char input;
     std::vector<std::pair<float, int>> sortedOut;
     float floatPercentage = 0;
-    int intPercentage = 0;
+    int intPercentage = 0;    
     
-    switch(switchChar)
+    input = getch();
+
+    if(input != -1)
+      {
+	switchStateChar = toupper(input);
+      }
+
+    switch(switchStateChar)
       {
       case 'C':
-	while(true){
 	  for(int i = 0; i < pidList.size(); i++)
 	    {
 	      floatPercentage = pUmap.at(pidList.at(i))->getCPUUsage();
@@ -1501,9 +1505,21 @@ int main()
 		  sortedOut.push_back(std::make_pair(floatPercentage, pidList.at(i)));
 		}
 	    }
-	}
+	  printSortedProcsReverse(1,
+				  sortedOut,
+				  pUmap,
+				  allWins);
+
+	  printSortedProcs(pidList,
+			   sortedOut,
+			   pUmap,
+			   allWins);	  
 	break;
       case 'P':
+	  printSortedProcs(pidList,
+			   sortedOut,
+			   pUmap,
+			   allWins);	
 	break;
       case 'M':
 	break;
@@ -1513,15 +1529,6 @@ int main()
 	break;
       }
 
-    printSortedProcsReverse(1,
-			    sortedOut,
-			    pUmap,
-			    allWins);
-
-    printSortedProcs(pidList,
-		     sortedOut,
-		     pUmap,
-		     allWins);    
 #if _CURSES
     // refresh the windows
     wnoutrefresh(mainWin.getWindow());
@@ -1547,7 +1554,7 @@ int main()
     //sleep(3);
     //delay(3000);
 #endif
-  }while(switchChar != 'Q');
+  } while(switchStateChar != 'Q');
 
   endwin();
   
