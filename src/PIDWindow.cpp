@@ -36,5 +36,6 @@ PIDWindow::PIDWindow(std::string windowName,
 							    previousY,
 							    previousX)
 {
+  
 }
 

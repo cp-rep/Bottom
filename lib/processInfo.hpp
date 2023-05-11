@@ -32,7 +32,7 @@ public:
   const unsigned int& getRes() { return m_res; }
   const unsigned int& getSHR() { return m_shr; }
   const char& getS() { return m_s; }
-  const float& getCpuUsage() { return m_cpuUsage; }
+  const float& getCPUUsage() { return m_cpuUsage; }
   const float& getMemUsage() { return m_memUsage; }
   const std::string& getCommand() { return m_command; }
   
@@ -45,7 +45,7 @@ public:
   void setRes(const unsigned int& res) { m_res = res; }
   void setSHR(const unsigned int& shr) { m_shr = shr; }
   void setS(const char& s) { m_s = s; }
-  void setCpuUsage(const float& cpuUsage) { m_cpuUsage = cpuUsage; }
+  void setCPUUsage(const float& cpuUsage) { m_cpuUsage = cpuUsage; }
   void setMemUsage(const float& memUsage) { m_memUsage = memUsage; }
   void setCommand(const std::string& command) { m_command = command; }
   
