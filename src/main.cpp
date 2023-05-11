@@ -175,7 +175,7 @@ int main()
   MemInfo mInfo;
   ProcessInfo* pInfo;
   struct passwd* userData;
-  std::vector<int> pidList;  
+  std::vector<int> pidList;
   std::unordered_map<int, ProcessInfo*> pUmap;
   std::unordered_map<int, ProcessInfo*>::iterator pUmapIt;
 
@@ -1508,6 +1508,7 @@ int main()
     // ## get user input and operate on it ##
     int input;
     std::vector<std::pair<float, int>> sortedOut;
+    std::vector<int> newList;
     float floatPercentage = 0;
     int intPercentage = 0;
     int oldSwitchVal;
@@ -1523,8 +1524,6 @@ int main()
 	  }
       }
 
-    std::vector<int> newList;
-    
     // change process state
     switch(stateVal)
       {
@@ -1544,7 +1543,6 @@ int main()
 	  }
 	
 #if _CURSES
-
 	mergePidLists(sortedOut,
 		      pidList,
 		      newList,
@@ -1564,6 +1562,7 @@ int main()
 	quit = true;
 	break;
       default:
+	copyList(newList, pidList);	
 	break;
       }
 
@@ -1574,7 +1573,7 @@ int main()
 	       newList,
 	       pUmap,
 	       bottomWins);
-    
+
     // shift windows
     switch(moveVal)
       {
@@ -1592,7 +1591,7 @@ int main()
       default:
 	break;
       }
-
+    
 #if _CURSES
     // refresh the windows
     wnoutrefresh(mainWin.getWindow());
@@ -1666,15 +1665,10 @@ void printWindowToLog(std::ofstream& log, const CursesWindow& win)
 
 
 
-
-
-
-
 void printSortedProcsReverse(const int& startLine,
 			     const std::vector<std::pair<float, int>>& sortedOut,
 			     const std::unordered_map<int, ProcessInfo*>& pUmap,
 			     const std::vector<CursesWindow*>& wins)
-  
 {
   for(int k = sortedOut.size() - 1, g = startLine; k >= 0; k--, g++)
     {
@@ -1792,17 +1786,15 @@ void printProcs(const int& shiftY,
 }
 
 
-
-
 void mergePidLists(const std::vector<std::pair<float, int>>& frontList,
 		   const std::vector<int>& backList,
 		   std::vector<int>& newList,
 		   const std::unordered_map<int, ProcessInfo*>& pUmap)
 {
   // output the rest of the processes by PID in ascending order
-  for(int i = 0; i < frontList.size(); i++)
+  for(int i = 0, j = frontList.size() - 1; i < frontList.size(); i++, j--)
     {
-      newList.push_back(frontList.at(i).second);
+      newList.push_back(frontList.at(j).second);
     }
   
   for(int i = 0; i < pUmap.size(); i++)
