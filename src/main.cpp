@@ -118,6 +118,12 @@ void mergePidLists(const std::vector<std::pair<float, int>>& frontList,
 		   std::vector<int>& newList,
 		   const std::unordered_map<int, ProcessInfo*>& pUmap);
 void copyList(std::vector<int>& lhs, const std::vector<int>& rhs);
+void clearBottomWins(const std::vector<CursesWindow*>& wins);
+void printWindowNames(const std::vector<CursesWindow*>& wins);
+
+
+
+
 /*
   Function:
   main
@@ -982,18 +988,35 @@ int main()
   
   // store all windows in vector for polymorphic calls
   // process windows
-  bottomWins.push_back(&COMMANDWin); // 0
-  bottomWins.push_back(&TIMEWin); // 1
-  bottomWins.push_back(&PercentMEMWin); // 2
-  bottomWins.push_back(&PercentCPUWin); // 3
-  bottomWins.push_back(&SWin); // 4
-  bottomWins.push_back(&SHRWin); // 5 
-  bottomWins.push_back(&RESWin); // 6
-  bottomWins.push_back(&VIRTWin); // 7
+  bottomWins.push_back(&COMMANDWin); // 0     werase(COMMANDWin.getWindow());
+  bottomWins.push_back(&TIMEWin); // 1       werase(TIMEWin.getWindow());
+  bottomWins.push_back(&PercentMEMWin); // 2      werase(PercentMEMWin.getWindow());
+  bottomWins.push_back(&PercentCPUWin); // 3       werase(PercentCPUWin.getWindow());
+  bottomWins.push_back(&SWin); // 4               werase(SWin.getWindow());
+  bottomWins.push_back(&SHRWin); // 5       werase(SHRWin.getWindow());
+  bottomWins.push_back(&RESWin); // 6     werase(RESWin.getWindow());    
+  bottomWins.push_back(&VIRTWin); // 7       werase(VIRTWin.getWindow());
   bottomWins.push_back(&NIWin); // 8
   bottomWins.push_back(&PRWin); // 9 
   bottomWins.push_back(&USERWin); // 10
   bottomWins.push_back(&PIDWin); // 11
+
+
+
+    werase(PIDWin.getWindow());
+    werase(USERWin.getWindow());
+    werase(PRWin.getWindow());
+    werase(NIWin.getWindow());
+    werase(SWin.getWindow());
+
+
+
+
+
+
+
+
+  
 
   // hardware windows
   topWins.push_back(&memWin); // 0 
@@ -1039,70 +1062,6 @@ int main()
     werase(tasksWin.getWindow());
     werase(cpuWin.getWindow());
     werase(memWin.getWindow());
-    werase(PIDWin.getWindow());
-    werase(USERWin.getWindow());
-    werase(PRWin.getWindow());
-    werase(NIWin.getWindow());
-    werase(SWin.getWindow());
-    werase(VIRTWin.getWindow());
-    werase(RESWin.getWindow());    
-    werase(SHRWin.getWindow());
-    werase(SWin.getWindow());
-    werase(PercentCPUWin.getWindow());
-    werase(PercentMEMWin.getWindow());
-    werase(TIMEWin.getWindow());
-    werase(COMMANDWin.getWindow());
-
-
-    // print window names
-    mvwaddstr(PIDWin.getWindow(),
-	      0,
-	      0,
-	      PIDWin.getWindowName().c_str());
-    mvwaddstr(VIRTWin.getWindow(),
-	      0,
-	      0,
-	      VIRTWin.getWindowName().c_str());
-    mvwaddstr(USERWin.getWindow(),
-	      0,
-	      0,
-	      USERWin.getWindowName().c_str());
-    mvwaddstr(PRWin.getWindow(),
-	      0,
-	      0,
-	      PRWin.getWindowName().c_str());
-    mvwaddstr(NIWin.getWindow(),
-	      0,
-	      0,
-	      NIWin.getWindowName().c_str());
-    mvwaddstr(RESWin.getWindow(),
-	      0,
-	      0,
-	      RESWin.getWindowName().c_str());
-    mvwaddstr(SHRWin.getWindow(),
-	      0,
-	      0,
-	      SHRWin.getWindowName().c_str());
-    mvwaddstr(SWin.getWindow(),
-	      0,
-	      0,
-	      SWin.getWindowName().c_str());
-    mvwaddstr(PercentCPUWin.getWindow(),
-	      0,
-	      0,
-	      PercentCPUWin.getWindowName().c_str());
-    mvwaddstr(PercentMEMWin.getWindow(),
-	      0,
-	      0,
-	      PercentMEMWin.getWindowName().c_str());
-    mvwaddstr(TIMEWin.getWindow(),
-	      0,
-	      0,
-	      TIMEWin.getWindowName().c_str());
-    mvwaddstr(COMMANDWin.getWindow(),
-	      0,
-	      0,
-	      COMMANDWin.getWindowName().c_str());
 #endif
     
     // get topWin data and print to screen
@@ -1513,12 +1472,14 @@ int main()
     int intPercentage = 0;
     int oldSwitchVal;
     int moveVal = 0;
-    
-    moveVal = input = getch();
 
+    moveVal = input = getch();
+    
     if(input != -1)
       {
-	if(input >= 'a' && input <= 'z')
+	if(input == 'p' ||
+	   input == 'c' ||
+	   input == 'q')
 	  {
 	    stateVal = toupper(input);
 	  }
@@ -1547,11 +1508,22 @@ int main()
 		      pidList,
 		      newList,
 		      pUmap);
+	clearBottomWins(bottomWins);
+	printWindowNames(bottomWins);	
+	printProcs(shiftY,
+		   newList,
+		   pUmap,
+		   bottomWins);		
 #endif
 	break;
       case 'P':
 #if _CURSES
-	copyList(newList, pidList);
+	clearBottomWins(bottomWins);
+	printWindowNames(bottomWins);
+	printProcs(shiftY,
+		   pidList,
+		   pUmap,
+		   bottomWins);	
 #endif
 	break;
       case 'M':
@@ -1562,23 +1534,20 @@ int main()
 	quit = true;
 	break;
       default:
-	copyList(newList, pidList);	
+	break;
+      }
+    
+    if(quit)
+      {
 	break;
       }
 
-    if(quit)
-      break;
-
-    printProcs(shiftY,
-	       newList,
-	       pUmap,
-	       bottomWins);
 
     // shift windows
     switch(moveVal)
       {
       case KEY_UP:
-	shiftY++;	
+	shiftY++;
 	log << "KEY UP!" << std::endl;
 	break;
       case KEY_DOWN:
@@ -1823,4 +1792,78 @@ void copyList(std::vector<int>& lhs, const std::vector<int>& rhs)
     {
       lhs.push_back(rhs.at(i));
     }
+}
+
+
+
+
+void printWindowNames(const std::vector<CursesWindow*>& wins)
+{
+  mvwaddstr(wins.at(11)->getWindow(),
+	      0,
+	      0,
+	      wins.at(11)->getWindowName().c_str());
+    mvwaddstr(wins.at(10)->getWindow(),
+	      0,
+	      0,
+	      wins.at(10)->getWindowName().c_str());
+    mvwaddstr(wins.at(9)->getWindow(),
+	      0,
+	      0,
+	      wins.at(9)->getWindowName().c_str());
+    mvwaddstr(wins.at(8)->getWindow(),
+	      0,
+	      0,
+	      wins.at(8)->getWindowName().c_str());
+    mvwaddstr(wins.at(7)->getWindow(),
+	      0,
+	      0,
+	      wins.at(7)->getWindowName().c_str());
+    mvwaddstr(wins.at(6)->getWindow(),
+	      0,
+	      0,
+	      wins.at(6)->getWindowName().c_str());
+    mvwaddstr(wins.at(5)->getWindow(),
+	      0,
+	      0,
+	      wins.at(5)->getWindowName().c_str());
+    mvwaddstr(wins.at(4)->getWindow(),
+	      0,
+	      0,
+	      wins.at(4)->getWindowName().c_str());
+    mvwaddstr(wins.at(3)->getWindow(),
+	      0,
+	      0,
+	      wins.at(3)->getWindowName().c_str());
+    mvwaddstr(wins.at(2)->getWindow(),
+	      0,
+	      0,
+	      wins.at(2)->getWindowName().c_str());
+    mvwaddstr(wins.at(1)->getWindow(),
+	      0,
+	      0,
+	      wins.at(1)->getWindowName().c_str());
+    mvwaddstr(wins.at(0)->getWindow(),
+	      0,
+	      0,
+	      wins.at(0)->getWindowName().c_str());  
+}
+
+
+
+
+void clearBottomWins(const std::vector<CursesWindow*>& wins)
+{
+    werase(wins.at(11)->getWindow());
+    werase(wins.at(10)->getWindow());
+    werase(wins.at(9)->getWindow());
+    werase(wins.at(8)->getWindow());
+    werase(wins.at(7)->getWindow());
+    werase(wins.at(6)->getWindow());    
+    werase(wins.at(5)->getWindow());
+    werase(wins.at(4)->getWindow());
+    werase(wins.at(3)->getWindow());
+    werase(wins.at(2)->getWindow());
+    werase(wins.at(1)->getWindow());
+    werase(wins.at(0)->getWindow());  
 }
