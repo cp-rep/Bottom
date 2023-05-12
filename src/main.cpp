@@ -98,6 +98,10 @@
 #define _UTMPDUMP "utmpdump"
 #define _READ "r"
 
+// curses macros
+#define _WHITE_TEXT 1
+#define _BLACK_TEXT 2
+
 // function prototypes
 void printWindowToLog(std::ofstream& log,
 		      const CursesWindow& win);
@@ -217,10 +221,10 @@ int main()
 #if _CURSES
   if(has_colors())
     {
-      use_default_colors();
-      //init_pair(-1);
-      //init_color(COLOR_BLACK, 0, 0, 0);
-      color_set(0, NULL);
+      start_color();
+      init_pair(_WHITE_TEXT, COLOR_WHITE, COLOR_BLACK);
+      init_pair(_BLACK_TEXT, COLOR_BLACK, COLOR_WHITE);      
+      //      color_set(1, NULL);
     }
 
   // disable echoing characters to the window from getch();
@@ -1001,12 +1005,6 @@ int main()
   bottomWins.push_back(&USERWin); // 10
   bottomWins.push_back(&PIDWin); // 11
 
-  werase(PIDWin.getWindow());
-  werase(USERWin.getWindow());
-  werase(PRWin.getWindow());
-  werase(NIWin.getWindow());
-  werase(SWin.getWindow()); 
-
   // hardware windows
   topWins.push_back(&memWin); // 0 
   topWins.push_back(&cpuWin); // 1
@@ -1026,15 +1024,7 @@ int main()
   // box(PercentMEMWin.getWindow(), 'M', 'M');
   // box(TIMEWin.getWindow(), 'N', 'N');
   // box(COMMANDWin.getWindow(), 'O', 'O');
-  
-  // ## for testing ##
-  if(has_colors())
-    {
-      use_default_colors();
-      //init_pair(-1);
-      //init_color(COLOR_BLACK, 0, 0, 0);
-      color_set(0, NULL);
-    }
+
 #endif
 
   // ## run the main program loop ##
@@ -1502,7 +1492,9 @@ int main()
 		      newList,
 		      pUmap);
 	clearBottomWins(bottomWins);
-	printWindowNames(bottomWins);	
+	attron(COLOR_PAIR(_WHITE_TEXT));		
+	printWindowNames(bottomWins);
+	attroff(COLOR_PAIR(_WHITE_TEXT));	
 	printProcs(shiftY,
 		   newList,
 		   pUmap,
@@ -1712,7 +1704,7 @@ void printProcs(const int& shiftY,
 {
   std::string outString;
   
-    for(int i = 0; i < pUmap.size(); i++)
+  for(int i = 0; i < pUmap.size(); i++)
     {
       int posY = i + 1 + shiftY;
       if(posY == 0)
@@ -1775,7 +1767,7 @@ void printProcs(const int& shiftY,
 		posY,
 		wins.at(3)->getNumCols() - outString.length(),
 		outString.c_str());
-       // %MEM
+      // %MEM
       outString = doubleToStr(pUmap.at(pidList.at(i))->getMemUsage(), 1);
       mvwaddstr(wins.at(2)->getWindow(),
 		posY,
