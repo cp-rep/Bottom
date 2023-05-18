@@ -102,25 +102,25 @@
 void printWindowToLog(std::ofstream& log,
 		      const CursesWindow& win);
 void printSortedProcsReverse(const int& startLine,
-			     const std::vector<std::pair<float, int>>& sortedOut,
+			     const std::vector<std::pair<double, int>>& sortedOut,
 			     const std::unordered_map<int, ProcessInfo*>& pUmap,
 			     const std::vector<CursesWindow*>& wins);
 void printSortedProcs(const std::vector<int>& pidList,
-		      const std::vector<std::pair<float, int>>& sortedOut,
+		      const std::vector<std::pair<double, int>>& sortedOut,
 		      const std::unordered_map<int, ProcessInfo*>& pUmap,
 		      const std::vector<CursesWindow*>& wins);
 void printProcs(const int& shiftY,
 		const std::vector<int>& pidList,
 		const std::unordered_map<int, ProcessInfo*>& pUmap,
 		const std::vector<CursesWindow*>& wins);
-void mergePidLists(const std::vector<std::pair<float, int>>& frontList,
+void mergePidLists(const std::vector<std::pair<double, int>>& frontList,
 		   const std::vector<int>& backList,
 		   std::vector<int>& newList,
 		   const std::unordered_map<int, ProcessInfo*>& pUmap);
 void copyList(std::vector<int>& lhs, const std::vector<int>& rhs);
 void clearBottomWins(const std::vector<CursesWindow*>& wins);
 void printWindowNames(const std::vector<CursesWindow*>& wins);
-const std::string floatToStr(const float& val, const int& precision);
+const std::string doubleToStr(const double& val, const int& precision);
 
 
 
@@ -988,35 +988,24 @@ int main()
   
   // store all windows in vector for polymorphic calls
   // process windows
-  bottomWins.push_back(&COMMANDWin); // 0     werase(COMMANDWin.getWindow());
-  bottomWins.push_back(&TIMEWin); // 1       werase(TIMEWin.getWindow());
-  bottomWins.push_back(&PercentMEMWin); // 2      werase(PercentMEMWin.getWindow());
-  bottomWins.push_back(&PercentCPUWin); // 3       werase(PercentCPUWin.getWindow());
-  bottomWins.push_back(&SWin); // 4               werase(SWin.getWindow());
-  bottomWins.push_back(&SHRWin); // 5       werase(SHRWin.getWindow());
-  bottomWins.push_back(&RESWin); // 6     werase(RESWin.getWindow());    
-  bottomWins.push_back(&VIRTWin); // 7       werase(VIRTWin.getWindow());
+  bottomWins.push_back(&COMMANDWin); // 0
+  bottomWins.push_back(&TIMEWin); // 1
+  bottomWins.push_back(&PercentMEMWin); // 2
+  bottomWins.push_back(&PercentCPUWin); // 3
+  bottomWins.push_back(&SWin); // 4
+  bottomWins.push_back(&SHRWin); // 5
+  bottomWins.push_back(&RESWin); // 6
+  bottomWins.push_back(&VIRTWin); // 7
   bottomWins.push_back(&NIWin); // 8
   bottomWins.push_back(&PRWin); // 9 
   bottomWins.push_back(&USERWin); // 10
   bottomWins.push_back(&PIDWin); // 11
 
-
-
-    werase(PIDWin.getWindow());
-    werase(USERWin.getWindow());
-    werase(PRWin.getWindow());
-    werase(NIWin.getWindow());
-    werase(SWin.getWindow());
-
-
-
-
-
-
-
-
-  
+  werase(PIDWin.getWindow());
+  werase(USERWin.getWindow());
+  werase(PRWin.getWindow());
+  werase(NIWin.getWindow());
+  werase(SWin.getWindow()); 
 
   // hardware windows
   topWins.push_back(&memWin); // 0 
@@ -1285,14 +1274,14 @@ int main()
 	    lineString = returnFileLineByNumber(filePath, 1);
 	    if(lineString != "-1")
 	      {
-		float utime = 0;
-		float cutime = 0;
-		float pstart = 0;
-		float newVal = 0;
+		double utime = 0;
+		double cutime = 0;
+		double pstart = 0;
+		double newVal = 0;
 		// get uptime
 		fileLine = returnFileLineByNumber(_UPTIME, 1);
 		parsedLine = parseLine(fileLine);
-		newVal = convertToFloat(parsedLine.at(0));
+		newVal = stringToDouble(parsedLine.at(0));
 		uptime.setTotalSecs(newVal);
 		pUmap[pidList.at(i)]->setCPUUsage(newVal);
 
@@ -1323,27 +1312,27 @@ int main()
 	    
 	    // get %CPU
 	    const double ticks = (double)sysconf(_SC_CLK_TCK);
-	    float avgUs = 0;
-	    float avgSy = 0;
-	    float avgNi = 0;
-	    float avgId = 0;
-	    float avgWa = 0;
-	    float avgHi = 0;
-	    float avgSi = 0;
-	    float avgSt = 0;
-	    float totalJiffs = 0;
-	    float us = 0;
-	    float ni = 0;
-	    float sy = 0;
-	    float id = 0;
-	    float wa = 0;
-	    float irq = 0;
-	    float sirq = 0;
-	    float hi = 0;
-	    float si = 0;
-	    float st = 0;
-	    float gu = 0;
-	    float gun = 0;
+	    double avgUs = 0;
+	    double avgSy = 0;
+	    double avgNi = 0;
+	    double avgId = 0;
+	    double avgWa = 0;
+	    double avgHi = 0;
+	    double avgSi = 0;
+	    double avgSt = 0;
+	    double totalJiffs = 0;
+	    double us = 0;
+	    double ni = 0;
+	    double sy = 0;
+	    double id = 0;
+	    double wa = 0;
+	    double irq = 0;
+	    double sirq = 0;
+	    double hi = 0;
+	    double si = 0;
+	    double st = 0;
+	    double gu = 0;
+	    double gun = 0;
 	    filePath = "/proc/stat";
 	    lineString = returnFileLineByNumber(filePath, 1);
 	    parsedLine = parseLine(lineString);
@@ -1367,19 +1356,19 @@ int main()
 	    avgUs = 100 - (avgId);
 	    // avgHi = (100 * hi)/totalJiffs;
 	    outLine = "%CPU(s): ";
-	    outLine.append(std::to_string(avgUs));
+	    outLine.append(doubleToStr(avgUs, 1));
 	    outLine.append(" us, ");
-	    outLine.append(std::to_string(avgSy));
+	    outLine.append(doubleToStr(avgSy, 1));
 	    outLine.append(" sy, ");
-	    outLine.append(std::to_string(avgNi));
+	    outLine.append(doubleToStr(avgNi, 1));
 	    outLine.append(" ni, ");
-	    outLine.append(std::to_string(avgId));
+	    outLine.append(doubleToStr(avgId, 1));
 	    outLine.append(" id, ");
-	    outLine.append(std::to_string(avgWa));
+	    outLine.append(doubleToStr(avgWa, 1));
 	    outLine.append(" wa, ");
 	    outLine.append("N/A");
 	    outLine.append(" si, ");
-	    outLine.append(std::to_string(avgSt));
+	    outLine.append(doubleToStr(avgSt, 1));
 	    outLine.append(" st, ");
 
 #if _CURSES
@@ -1466,9 +1455,9 @@ int main()
     
     // ## get user input and operate on it ##
     int input;
-    std::vector<std::pair<float, int>> sortedOut;
+    std::vector<std::pair<double, int>> sortedOut;
     std::vector<int> newList;
-    float floatPercentage = 0;
+    double doublePercentage = 0;
     int intPercentage = 0;
     int oldSwitchVal;
     int moveVal = 0;
@@ -1491,19 +1480,22 @@ int main()
       case 'C':
 	for(int i = 0; i < pidList.size(); i++)
 	  {
-	    floatPercentage = pUmap.at(pidList.at(i))->getCPUUsage();
-	    floatPercentage *= 10;
-	    intPercentage = floatPercentage;
-	      
+	    // fix and zero out the process cpu double values decimal part after
+	    // 1 point of precision
+	    doublePercentage = pUmap.at(pidList.at(i))->getCPUUsage();
+	    doublePercentage *= 10;
+	    intPercentage = doublePercentage;
+
 	    if(intPercentage != 0)
 	      {
-		floatPercentage = intPercentage;
-		floatPercentage = floatPercentage/10;
-		sortedOut.push_back(std::make_pair(floatPercentage, pidList.at(i)));
+		doublePercentage = intPercentage;
+		doublePercentage = doublePercentage/10;
+		sortedOut.push_back(std::make_pair(doublePercentage, pidList.at(i)));
 	      }
 	  }
 	
 #if _CURSES
+	std::sort(sortedOut.begin(), sortedOut.end());	
 	mergePidLists(sortedOut,
 		      pidList,
 		      newList,
@@ -1552,11 +1544,11 @@ int main()
 	break;
       case KEY_DOWN:
 	shiftY--;	
-	log << "KEY UP!" << std::endl;
+	log << "KEY DOWN!" << std::endl;
       case KEY_LEFT:
-	log << "KEY UP!" << std::endl;
+	log << "KEY LEFT!" << std::endl;
       case KEY_RIGHT:
-	log << "KEY UP!" << std::endl;	
+	log << "KEY RIGHT!" << std::endl;	
       default:
 	break;
       }
@@ -1643,7 +1635,7 @@ void printWindowToLog(std::ofstream& log, const CursesWindow& win)
   Output:
  */
 void printSortedProcsReverse(const int& startLine,
-			     const std::vector<std::pair<float, int>>& sortedOut,
+			     const std::vector<std::pair<double, int>>& sortedOut,
 			     const std::unordered_map<int, ProcessInfo*>& pUmap,
 			     const std::vector<CursesWindow*>& wins)
 {
@@ -1684,7 +1676,7 @@ void printSortedProcsReverse(const int& startLine,
       mvwaddstr(wins.at(3)->getWindow(), // PercentCPUWin
 		g,
 		0,
-		floatToStr(pUmap.at(sortedOut.at(k).second)->getCPUUsage(), 2).c_str());
+		doubleToStr(pUmap.at(sortedOut.at(k).second)->getCPUUsage(), 1).c_str());
       mvwaddstr(wins.at(2)->getWindow(), // PercentMEMWin
 		g,
 		0,
@@ -1717,6 +1709,8 @@ void printProcs(const int& shiftY,
 		const std::unordered_map<int, ProcessInfo*>& pUmap,
 		const std::vector<CursesWindow*>& wins)
 {
+  std::string outString;
+  
     for(int i = 0; i < pUmap.size(); i++)
     {
       int posY = i + 1 + shiftY;
@@ -1727,43 +1721,68 @@ void printProcs(const int& shiftY,
 
       if(pUmap.at(pidList.at(i))->getUser() == "-1")
 	continue;
-      
+
+      // PID
+      outString = std::to_string(pUmap.at(pidList.at(i))->getPID());
       mvwaddstr(wins.at(11)->getWindow(),
 		posY,
-		0,
-		std::to_string(pUmap.at(pidList.at(i))->getPID()).c_str());
+		wins.at(11)->getNumCols() - outString.length(),
+		outString.c_str());
+      // USER
       mvwaddstr(wins.at(10)->getWindow(),
 		posY,
 		0,
 		pUmap.at(pidList.at(i))->getUser().c_str());
+
+      // PR
+      outString = std::to_string(pUmap.at(pidList.at(i))->getPR());
       mvwaddstr(wins.at(9)->getWindow(),
 		posY,
-		0,
-		std::to_string(pUmap.at(pidList.at(i))->getPR()).c_str());
+		wins.at(9)->getNumCols() - outString.length(),
+		outString.c_str());
+      
+      // NI
+      outString = std::to_string(pUmap.at(pidList.at(i))->getNI());
       mvwaddstr(wins.at(8)->getWindow(),
 		posY,
-		0,
-		std::to_string(pUmap.at(pidList.at(i))->getNI()).c_str());
+		wins.at(8)->getNumCols() - outString.length(),
+		outString.c_str());
+
+      // VIRT
+      outString = std::to_string(pUmap.at(pidList.at(i))->getVirt());
       mvwaddstr(wins.at(7)->getWindow(),
 		posY,
-		0,
-		std::to_string(pUmap.at(pidList.at(i))->getVirt()).c_str());
+		wins.at(7)->getNumCols() - outString.length(),
+		outString.c_str());
+
+      // RES
+      outString = std::to_string(pUmap.at(pidList.at(i))->getRes());
       mvwaddstr(wins.at(6)->getWindow(),
 		posY,
-		0,
-		std::to_string(pUmap.at(pidList.at(i))->getRes()).c_str());
+		wins.at(6)->getNumCols() - outString.length(),
+		outString.c_str());
+
+      // SHR
+      outString = std::to_string(pUmap.at(pidList.at(i))->getSHR());
       mvwaddstr(wins.at(5)->getWindow(),
 		posY,
-		0,
-		std::to_string(pUmap.at(pidList.at(i))->getSHR()).c_str());
+		wins.at(5)->getNumCols() - outString.length(),
+		outString.c_str());
+
+      // S
       mvwaddch(wins.at(4)->getWindow(),
 	       posY,
 	       0,
 	       pUmap.at(pidList.at(i))->getS());
+
+      // %CPU
+      outString = doubleToStr(pUmap.at(pidList.at(i))->getCPUUsage(), 1);
       mvwaddstr(wins.at(3)->getWindow(),
 		posY,
-		0,
-		floatToStr(pUmap.at(pidList.at(i))->getCPUUsage(), 2).c_str());
+		wins.at(3)->getNumCols() - outString.length(),
+		outString.c_str());
+
+      // COMM
       mvwaddstr(wins.at(0)->getWindow(),
 		posY,
 		0,
@@ -1784,7 +1803,7 @@ void printProcs(const int& shiftY,
 
   Output:
  */
-void mergePidLists(const std::vector<std::pair<float, int>>& frontList,
+void mergePidLists(const std::vector<std::pair<double, int>>& frontList,
 		   const std::vector<int>& backList,
 		   std::vector<int>& newList,
 		   const std::unordered_map<int, ProcessInfo*>& pUmap)
@@ -1929,7 +1948,7 @@ void clearBottomWins(const std::vector<CursesWindow*>& wins)
 
 /*
   Function:
-  floatToStr
+  doubleToStr
 
   Description:
 
@@ -1937,7 +1956,7 @@ void clearBottomWins(const std::vector<CursesWindow*>& wins)
 
   Output:
  */
-const std::string floatToStr(const float& val, const int& precision)
+const std::string doubleToStr(const double& val, const int& precision)
 {
   std::string valString = std::to_string(val);
   std::string temp;
@@ -1959,4 +1978,7 @@ const std::string floatToStr(const float& val, const int& precision)
     }
 
   return temp;
-} // end of "floatToStr"
+} // end of "doubleToStr"
+
+
+
