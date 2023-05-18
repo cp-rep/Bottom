@@ -120,7 +120,7 @@ void mergePidLists(const std::vector<std::pair<float, int>>& frontList,
 void copyList(std::vector<int>& lhs, const std::vector<int>& rhs);
 void clearBottomWins(const std::vector<CursesWindow*>& wins);
 void printWindowNames(const std::vector<CursesWindow*>& wins);
-
+const std::string floatToStr(const float& val, const int& precision);
 
 
 
@@ -1632,8 +1632,16 @@ void printWindowToLog(std::ofstream& log, const CursesWindow& win)
 
 
 
+/*
+  Function:
+  printSortedProcsReverse
 
+  Description:
 
+  Input:
+
+  Output:
+ */
 void printSortedProcsReverse(const int& startLine,
 			     const std::vector<std::pair<float, int>>& sortedOut,
 			     const std::unordered_map<int, ProcessInfo*>& pUmap,
@@ -1676,8 +1684,7 @@ void printSortedProcsReverse(const int& startLine,
       mvwaddstr(wins.at(3)->getWindow(), // PercentCPUWin
 		g,
 		0,
-		std::to_string(pUmap.at(sortedOut.at(k).second)->getCPUUsage()).c_str());
-
+		floatToStr(pUmap.at(sortedOut.at(k).second)->getCPUUsage(), 2).c_str());
       mvwaddstr(wins.at(2)->getWindow(), // PercentMEMWin
 		g,
 		0,
@@ -1691,10 +1698,20 @@ void printSortedProcsReverse(const int& startLine,
 		0,
 		pUmap.at(sortedOut.at(k).second)->getCommand().c_str());
     }
-}
+} // end of "printSortedProcsReverse"
 
 
 
+/*
+  Function:
+  printProcs
+
+  Description:
+
+  Input:
+
+  Output:
+ */
 void printProcs(const int& shiftY,
 		const std::vector<int>& pidList,
 		const std::unordered_map<int, ProcessInfo*>& pUmap,
@@ -1746,7 +1763,7 @@ void printProcs(const int& shiftY,
       mvwaddstr(wins.at(3)->getWindow(),
 		posY,
 		0,
-		std::to_string(pUmap.at(pidList.at(i))->getCPUUsage()).c_str());
+		floatToStr(pUmap.at(pidList.at(i))->getCPUUsage(), 2).c_str());
       mvwaddstr(wins.at(0)->getWindow(),
 		posY,
 		0,
@@ -1755,6 +1772,18 @@ void printProcs(const int& shiftY,
 }
 
 
+
+
+/*
+  Function:
+  mergePidLists
+
+  Description:
+
+  Input:
+
+  Output:
+ */
 void mergePidLists(const std::vector<std::pair<float, int>>& frontList,
 		   const std::vector<int>& backList,
 		   std::vector<int>& newList,
@@ -1782,21 +1811,40 @@ void mergePidLists(const std::vector<std::pair<float, int>>& frontList,
 	  newList.push_back(backList.at(i));
 	}
     }
-}
+} // end of "mergePidLists"
 
 
 
+/*
+  Function:
+  copyList
+
+  Description:
+
+  Input:
+
+  Output:
+ */
 void copyList(std::vector<int>& lhs, const std::vector<int>& rhs)
 {
   for(int i = 0; i < rhs.size(); i++)
     {
       lhs.push_back(rhs.at(i));
     }
-}
+} // end of "copyList"
 
 
 
+/*
+  Function:
+  printWindowNames
 
+  Description:
+
+  Input:
+
+  Output:
+ */
 void printWindowNames(const std::vector<CursesWindow*>& wins)
 {
   mvwaddstr(wins.at(11)->getWindow(),
@@ -1847,11 +1895,20 @@ void printWindowNames(const std::vector<CursesWindow*>& wins)
 	      0,
 	      0,
 	      wins.at(0)->getWindowName().c_str());  
-}
+} // end of "printWindowNames"
 
 
 
+/*
+  Function:
+  clearBottomWins
 
+  Description:
+
+  Input:
+
+  Output:
+ */
 void clearBottomWins(const std::vector<CursesWindow*>& wins)
 {
     werase(wins.at(11)->getWindow());
@@ -1866,4 +1923,40 @@ void clearBottomWins(const std::vector<CursesWindow*>& wins)
     werase(wins.at(2)->getWindow());
     werase(wins.at(1)->getWindow());
     werase(wins.at(0)->getWindow());  
-}
+} // end of "clearBottomWins"
+
+
+
+/*
+  Function:
+  floatToStr
+
+  Description:
+
+  Input:
+
+  Output:
+ */
+const std::string floatToStr(const float& val, const int& precision)
+{
+  std::string valString = std::to_string(val);
+  std::string temp;
+
+  int i;
+  for(i = 0; i < valString.length() && valString.at(i) != '.'; i++)
+    {
+      temp.push_back(valString.at(i));
+    }
+
+  if(valString.at(i) == '.')
+    {
+      temp.push_back(valString.at(i));
+      i++;
+      for(int j = 0; j < precision && i < valString.length(); j++, i++)
+	{
+	  temp.push_back(valString.at(i)); 
+	}
+    }
+
+  return temp;
+} // end of "floatToStr"
