@@ -22,8 +22,6 @@ bool testNumericDir(const std::string& dirPath);
 const std::string returnFileLineByPhrase(const std::string& filePath,
 					 const std::string& phrase);
 
-
-
 // parse from strings
 std::vector<std::string> parseLine(const std::string& str);
 const int returnValByWhiteSpaceCount(const std::string& line,
@@ -32,7 +30,7 @@ const std::string returnStringByWhiteSpaceCount(const std::string& line,
 						 const int& numWhiteSpaces);
 bool phraseExists(const std::string& line, const std::string& phrase);
 const int convertToInt(const std::string& str);
-const float convertToFloat(const std::string& str);
+const double stringToDouble(const std::string& str);
 
 // read from popen outputs
 const std::string returnLineFromPipe(const std::string& comm,
@@ -42,7 +40,6 @@ const std::string listDirContents();
 const std::vector<int> findNumericDirs(const std::string& dirPath);
 
 // create strings
-const std::string catParams();
 const std::string fixStatLine(const std::string& line);
 
 #endif
