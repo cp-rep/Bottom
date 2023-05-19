@@ -17,11 +17,11 @@
 
   
  */
-const int KiBToMiB(const float& val)
+const double KiBToMiB(const double& val)
 {
-  float temp = val;
+  double temp = val;
   temp = temp * TO_MIB;
   temp = temp/1000;
     
-  return (int)temp;
+  return temp;
 } // end of "kBToKiB"

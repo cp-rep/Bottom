@@ -7,6 +7,6 @@
 #ifndef BYTECONVERTER_HPP
 #define BYTECONVERTER_HPP
 
-const int KiBToMiB(const float& val);
+const double KiBToMiB(const double& val);
 
 #endif
