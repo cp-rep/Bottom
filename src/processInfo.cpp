@@ -17,6 +17,7 @@ ProcessInfo::ProcessInfo(const int& pid,
 			 const float& cpuUsage,
 			 const float& memUsage,
 			 const std::string& command,
+			 const std::string& processCPUTime,
 			 const char s)			 
 {
   m_pid = pid;
@@ -29,5 +30,6 @@ ProcessInfo::ProcessInfo(const int& pid,
   m_cpuUsage = cpuUsage;
   m_memUsage = memUsage;
   m_command = command;
+  m_processCPUTime = processCPUTime;
   m_s = 0;  
 } // end of "ProcessInfo Default Constructor"

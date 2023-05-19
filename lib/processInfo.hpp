@@ -21,6 +21,7 @@ public:
 	      const float& cpuUsage = 0,
 	      const float& memUsage = 0,
 	      const std::string& command = "",
+	      const std::string& processCPUTime = "N/A",
 	      const char s = ' ');
 
   // getters
@@ -34,6 +35,7 @@ public:
   const char& getS() { return m_s; }
   const float& getCPUUsage() { return m_cpuUsage; }
   const float& getMemUsage() { return m_memUsage; }
+  const std::string getProcessCPUTime() { return m_processCPUTime; }
   const std::string& getCommand() { return m_command; }
   
   // setters
@@ -47,6 +49,8 @@ public:
   void setS(const char& s) { m_s = s; }
   void setCPUUsage(const float& cpuUsage) { m_cpuUsage = cpuUsage; }
   void setMemUsage(const float& memUsage) { m_memUsage = memUsage; }
+  void setProcessCPUTime(const std::string processCPUTime)
+  { m_processCPUTime = processCPUTime; }
   void setCommand(const std::string& command) { m_command = command; }
   
 private:
@@ -60,6 +64,7 @@ private:
   char m_s;
   float m_cpuUsage;
   float m_memUsage;
+  std::string m_processCPUTime;
   std::string m_command;
 };
 
