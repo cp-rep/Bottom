@@ -1053,7 +1053,7 @@ int main()
     werase(memWin.getWindow());
 #endif
     
-    // get topWin data and print to screen
+    // get topWin data
     fileLine = returnFileLineByNumber(_UPTIME, 1);
     parsedLine = parseLine(fileLine);
     val = convertToInt(parsedLine.at(0));
@@ -1066,13 +1066,15 @@ int main()
 				       timeinfo->tm_sec));
     outLine.append(" up ");
     val = uptime.getHours()/24;
-    outLine.append(std::to_string(val));    
     if(val == 1)
       {
+	outLine.append(std::to_string(val));
 	outLine.append(" day, ");
       }
-    else
+    else if (val > 1)
       {
+	val = uptime.getHours()/24;
+	outLine.append(std::to_string(val));
 	outLine.append(" days, ");
       }
     outLine.append(std::to_string(uptime.getHours() % 24));
@@ -1090,7 +1092,8 @@ int main()
     outLine.append(parsedLine.at(1));
     outLine.append(" ");
     outLine.append(parsedLine.at(2));
-    
+
+    // print topWin data window
 #if _CURSES
     mvwaddstr(topWin.getWindow(),
 	      0,
@@ -1098,7 +1101,7 @@ int main()
 	      outLine.c_str());
 #endif
     
-    // get memory data from /proc/meminfo
+    // get memWin data
     fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
     parsedLine = parseLine(fileLine);
     mInfo.setMemTotal(convertToInt(parsedLine.at(1)));
@@ -1135,18 +1138,17 @@ int main()
     mInfo.setSwapUsed(mInfo.calculateSwapUsed());
     mInfo.setBuffCache(mInfo.calculateBuffCache());
 
-#if _CURSES    
-    // set mem window data
-    memWin.setStringMiB(std::to_string(mInfo.getMemTotal()),
-			std::to_string(mInfo.getMemFree()),
-			std::to_string(mInfo.getMemUsed()),
-			std::to_string(mInfo.getBuffCache()));
-    memWin.setStringSwap(std::to_string(mInfo.getSwapTotal()),
-			 std::to_string(mInfo.getSwapFree()),
-			 std::to_string(mInfo.getSwapUsed()),
-			 std::to_string(mInfo.getMemAvailable()));
-
-    // output the mem windows to curses
+    // set memWin data
+    memWin.setStringMiB(doubleToStr(KiBToMiB(mInfo.getMemTotal()), 1),
+			doubleToStr(KiBToMiB(mInfo.getMemFree()), 1),
+			doubleToStr(KiBToMiB(mInfo.getMemUsed()), 1),
+			doubleToStr(KiBToMiB(mInfo.getBuffCache()), 1));
+    memWin.setStringSwap(doubleToStr(KiBToMiB(mInfo.getSwapTotal()), 1),
+			 doubleToStr(KiBToMiB(mInfo.getSwapFree()), 1),
+			 doubleToStr(KiBToMiB(mInfo.getSwapUsed()), 1),
+			 doubleToStr(KiBToMiB(mInfo.getMemAvailable()), 1));
+#if _CURSES
+    // print memWin data to window
     mvwaddstr(memWin.getWindow(),
 	      0,
 	      0,
@@ -1240,7 +1242,6 @@ int main()
 		pUmap[pidList.at(i)]->setUser("-1");
 	      }
 
-
 	    // get VIRT
 	    lineString = returnFileLineByPhrase(filePath, "VmSize");
 	    if(lineString != "-1")
@@ -1310,7 +1311,7 @@ int main()
 		pUmap[pidList.at(i)]->setCPUUsage(newVal);
 	      }
 	    
-	    // get %CPU
+	    // ## get %CPU ##
 	    const double ticks = (double)sysconf(_SC_CLK_TCK);
 	    double avgUs = 0;
 	    double avgSy = 0;
@@ -1377,7 +1378,7 @@ int main()
 		      0,
 		      outLine.c_str());
 #endif	    
-	    // get process state count
+	    // ## get process state count ##
 	    unsigned int running = 0;
 	    unsigned int unSleep = 0;
 	    unsigned int inSleep = 0;
@@ -1733,56 +1734,60 @@ void printProcs(const int& shiftY,
 		posY,
 		0,
 		pUmap.at(pidList.at(i))->getUser().c_str());
-
       // PR
       outString = std::to_string(pUmap.at(pidList.at(i))->getPR());
       mvwaddstr(wins.at(9)->getWindow(),
 		posY,
 		wins.at(9)->getNumCols() - outString.length(),
 		outString.c_str());
-      
       // NI
       outString = std::to_string(pUmap.at(pidList.at(i))->getNI());
       mvwaddstr(wins.at(8)->getWindow(),
 		posY,
 		wins.at(8)->getNumCols() - outString.length(),
 		outString.c_str());
-
       // VIRT
       outString = std::to_string(pUmap.at(pidList.at(i))->getVirt());
       mvwaddstr(wins.at(7)->getWindow(),
 		posY,
 		wins.at(7)->getNumCols() - outString.length(),
 		outString.c_str());
-
       // RES
       outString = std::to_string(pUmap.at(pidList.at(i))->getRes());
       mvwaddstr(wins.at(6)->getWindow(),
 		posY,
 		wins.at(6)->getNumCols() - outString.length(),
 		outString.c_str());
-
       // SHR
       outString = std::to_string(pUmap.at(pidList.at(i))->getSHR());
       mvwaddstr(wins.at(5)->getWindow(),
 		posY,
 		wins.at(5)->getNumCols() - outString.length(),
 		outString.c_str());
-
       // S
       mvwaddch(wins.at(4)->getWindow(),
 	       posY,
 	       0,
 	       pUmap.at(pidList.at(i))->getS());
-
       // %CPU
       outString = doubleToStr(pUmap.at(pidList.at(i))->getCPUUsage(), 1);
       mvwaddstr(wins.at(3)->getWindow(),
 		posY,
 		wins.at(3)->getNumCols() - outString.length(),
 		outString.c_str());
-
-      // COMM
+       // %MEM
+      outString = doubleToStr(pUmap.at(pidList.at(i))->getMemUsage(), 1);
+      mvwaddstr(wins.at(2)->getWindow(),
+		posY,
+		wins.at(2)->getNumCols() - outString.length(),
+		outString.c_str());
+      // TIME+
+      outString = pUmap.at(pidList.at(i))->getProcessCPUTime();
+      mvwaddstr(wins.at(1)->getWindow(),
+		posY,
+		wins.at(1)->getNumCols() - outString.length(),
+		outString.c_str());
+      // COMMAND
       mvwaddstr(wins.at(0)->getWindow(),
 		posY,
 		0,
@@ -1866,54 +1871,80 @@ void copyList(std::vector<int>& lhs, const std::vector<int>& rhs)
  */
 void printWindowNames(const std::vector<CursesWindow*>& wins)
 {
+  std::string outString;
+
+  // PID
+  outString = wins.at(11)->getWindowName();
   mvwaddstr(wins.at(11)->getWindow(),
-	      0,
-	      0,
-	      wins.at(11)->getWindowName().c_str());
-    mvwaddstr(wins.at(10)->getWindow(),
-	      0,
-	      0,
-	      wins.at(10)->getWindowName().c_str());
-    mvwaddstr(wins.at(9)->getWindow(),
-	      0,
-	      0,
-	      wins.at(9)->getWindowName().c_str());
-    mvwaddstr(wins.at(8)->getWindow(),
-	      0,
-	      0,
-	      wins.at(8)->getWindowName().c_str());
-    mvwaddstr(wins.at(7)->getWindow(),
-	      0,
-	      0,
-	      wins.at(7)->getWindowName().c_str());
-    mvwaddstr(wins.at(6)->getWindow(),
-	      0,
-	      0,
-	      wins.at(6)->getWindowName().c_str());
-    mvwaddstr(wins.at(5)->getWindow(),
-	      0,
-	      0,
-	      wins.at(5)->getWindowName().c_str());
-    mvwaddstr(wins.at(4)->getWindow(),
-	      0,
-	      0,
-	      wins.at(4)->getWindowName().c_str());
-    mvwaddstr(wins.at(3)->getWindow(),
-	      0,
-	      0,
-	      wins.at(3)->getWindowName().c_str());
-    mvwaddstr(wins.at(2)->getWindow(),
-	      0,
-	      0,
-	      wins.at(2)->getWindowName().c_str());
-    mvwaddstr(wins.at(1)->getWindow(),
-	      0,
-	      0,
-	      wins.at(1)->getWindowName().c_str());
-    mvwaddstr(wins.at(0)->getWindow(),
-	      0,
-	      0,
-	      wins.at(0)->getWindowName().c_str());  
+	    0,
+	    wins.at(11)->getNumCols() - outString.length(),
+	    outString.c_str());
+  // USER
+  outString = wins.at(10)->getWindowName();
+  mvwaddstr(wins.at(10)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+  // PR
+  outString = wins.at(9)->getWindowName();
+  mvwaddstr(wins.at(9)->getWindow(),
+	    0,
+	    wins.at(9)->getNumCols() - outString.length(),
+	    outString.c_str());
+  // NI
+  outString = wins.at(8)->getWindowName();
+  mvwaddstr(wins.at(8)->getWindow(),
+	    0,
+	    wins.at(8)->getNumCols() - outString.length(),
+	    outString.c_str());
+  // VIRT
+  outString = wins.at(7)->getWindowName();
+  mvwaddstr(wins.at(7)->getWindow(),
+	    0,
+	    wins.at(7)->getNumCols() - outString.length(),
+	    outString.c_str());
+  // RES
+  outString = wins.at(6)->getWindowName();
+  mvwaddstr(wins.at(6)->getWindow(),
+	    0,
+	    wins.at(6)->getNumCols() - outString.length(),
+	    outString.c_str());
+  // SHR
+  outString = wins.at(5)->getWindowName();
+  mvwaddstr(wins.at(5)->getWindow(),
+	    0,
+	    wins.at(5)->getNumCols() - outString.length(),
+	    outString.c_str());
+  // S
+  outString = wins.at(4)->getWindowName();
+  mvwaddstr(wins.at(4)->getWindow(),
+	    0,
+	    wins.at(4)->getNumCols() - outString.length(),
+	    outString.c_str());
+  // %CPU
+  outString = wins.at(3)->getWindowName();
+  mvwaddstr(wins.at(3)->getWindow(),
+	    0,
+	    wins.at(3)->getNumCols() - outString.length(),
+	    outString.c_str());
+  // %MEM
+  outString = wins.at(2)->getWindowName();
+  mvwaddstr(wins.at(2)->getWindow(),
+	    0,
+	    wins.at(2)->getNumCols() - outString.length(),
+	    outString.c_str());
+  // TIME+
+  outString = wins.at(1)->getWindowName();
+  mvwaddstr(wins.at(1)->getWindow(),
+	    0,
+	    wins.at(1)->getNumCols() - outString.length(),
+	    outString.c_str());
+  // COMMAND
+  outString = wins.at(0)->getWindowName();
+  mvwaddstr(wins.at(0)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
 } // end of "printWindowNames"
 
 
