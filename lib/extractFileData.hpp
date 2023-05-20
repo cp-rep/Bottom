@@ -31,6 +31,7 @@ const std::string returnStringByWhiteSpaceCount(const std::string& line,
 bool phraseExists(const std::string& line, const std::string& phrase);
 const int convertToInt(const std::string& str);
 const double stringToDouble(const std::string& str);
+const std::string doubleToStr(const double& val, const int& precision);
 
 // read from popen outputs
 const std::string returnLineFromPipe(const std::string& comm,

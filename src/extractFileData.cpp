@@ -587,6 +587,7 @@ const double stringToDouble(const std::string& str)
 }
 
 
+
 /*
   Function:
   returnFileLineByPhrase
@@ -678,7 +679,7 @@ bool phraseExists(const std::string& line, const std::string& phrase)
     }
 
   return phraseExists;
-}
+} // end of "phraseExists"
 
 
 
@@ -720,3 +721,39 @@ const std::string fixStatLine(const std::string& line)
       return temp;
     }
 } // end of "fixStatLine"
+
+
+
+/*
+  Function:
+  doubleToStr
+
+  Description:
+
+  Input:
+
+  Output:
+ */
+const std::string doubleToStr(const double& val, const int& precision)
+{
+  std::string valString = std::to_string(val);
+  std::string temp;
+
+  int i;
+  for(i = 0; i < valString.length() && valString.at(i) != '.'; i++)
+    {
+      temp.push_back(valString.at(i));
+    }
+
+  if(valString.at(i) == '.')
+    {
+      temp.push_back(valString.at(i));
+      i++;
+      for(int j = 0; j < precision && i < valString.length(); j++, i++)
+	{
+	  temp.push_back(valString.at(i)); 
+	}
+    }
+
+  return temp;
+} // end of "doubleToStr"
