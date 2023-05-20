@@ -102,25 +102,11 @@
 // function prototypes
 void printWindowToLog(std::ofstream& log,
 		      const CursesWindow& win);
-void printSortedProcsReverse(const int& startLine,
-			     const std::vector<std::pair<double, int>>& sortedOut,
-			     const std::unordered_map<int, ProcessInfo*>& pUmap,
-			     const std::vector<CursesWindow*>& wins);
-void printSortedProcs(const std::vector<int>& pidList,
-		      const std::vector<std::pair<double, int>>& sortedOut,
-		      const std::unordered_map<int, ProcessInfo*>& pUmap,
-		      const std::vector<CursesWindow*>& wins);
-void printProcs(const int& shiftY,
-		const std::vector<int>& pidList,
-		const std::unordered_map<int, ProcessInfo*>& pUmap,
-		const std::vector<CursesWindow*>& wins);
 void mergePidLists(const std::vector<std::pair<double, int>>& frontList,
 		   const std::vector<int>& backList,
 		   std::vector<int>& newList,
 		   const std::unordered_map<int, ProcessInfo*>& pUmap);
 void copyList(std::vector<int>& lhs, const std::vector<int>& rhs);
-void clearBottomWins(const std::vector<CursesWindow*>& wins);
-void printWindowNames(const std::vector<CursesWindow*>& wins);
 
 
 
@@ -176,8 +162,7 @@ int main()
     }
 
   // vars
-  std::vector<CursesWindow*> topWins;
-  std::vector<CursesWindow*> bottomWins;
+  std::vector<CursesWindow*> allWins;
   MemInfo mInfo;
   ProcessInfo* pInfo;
   struct passwd* userData;
@@ -987,38 +972,29 @@ int main()
   
   // store all windows in vector for polymorphic calls
   // process windows
-  bottomWins.push_back(&COMMANDWin); // 0
-  bottomWins.push_back(&TIMEWin); // 1
-  bottomWins.push_back(&PercentMEMWin); // 2
-  bottomWins.push_back(&PercentCPUWin); // 3
-  bottomWins.push_back(&SWin); // 4
-  bottomWins.push_back(&SHRWin); // 5
-  bottomWins.push_back(&RESWin); // 6
-  bottomWins.push_back(&VIRTWin); // 7
-  bottomWins.push_back(&NIWin); // 8
-  bottomWins.push_back(&PRWin); // 9 
-  bottomWins.push_back(&USERWin); // 10
-  bottomWins.push_back(&PIDWin); // 11
-
   // hardware windows
-  topWins.push_back(&memWin); // 0 
-  topWins.push_back(&cpuWin); // 1
-  topWins.push_back(&tasksWin); // 2
-  topWins.push_back(&topWin); // 3
+  allWins.push_back(&mainWin); // 0
+  allWins.push_back(&memWin); //  1
+  allWins.push_back(&cpuWin); // 2
+  allWins.push_back(&tasksWin); // 3
+  allWins.push_back(&topWin); // 4
+  allWins.push_back(&COMMANDWin); // 5
+  allWins.push_back(&TIMEWin); // 6
+  allWins.push_back(&PercentMEMWin); // 7
+  allWins.push_back(&PercentCPUWin); // 8
+  allWins.push_back(&SWin); // 9
+  allWins.push_back(&SHRWin); // 10
+  allWins.push_back(&RESWin); // 11
+  allWins.push_back(&VIRTWin); // 12
+  allWins.push_back(&NIWin); // 13
+  allWins.push_back(&PRWin); // 14
+  allWins.push_back(&USERWin); // 15
+  allWins.push_back(&PIDWin); // 16
 
-  // draw window borders
-  // box(PIDWin.getWindow(), 'P', 'P');
-  // box(USERWin.getWindow(), 'E', 'E');
-  // box(PRWin.getWindow(), 'F', 'F');
-  // box(NIWin.getWindow(), 'G', 'G');
-  // box(VIRTWin.getWindow(), 'H', 'H');
-  // box(RESWin.getWindow(), 'I', 'I');
-  // box(SHRWin.getWindow(), 'J', 'J');
-  // box(SWin.getWindow(), 'K', 'K');
-  // box(PercentCPUWin.getWindow(), 'L', 'L');
-  // box(PercentMEMWin.getWindow(), 'M', 'M');
-  // box(TIMEWin.getWindow(), 'N', 'N');
-  // box(COMMANDWin.getWindow(), 'O', 'O');
+  // ## create and print the proc color line ##
+  std::string colorLine;
+  colorLine = createColorLine(  mainWin.getNumCols());
+  //printColorLine(mainWin, _BLACK_TEXT, memWin.getStartY() + 3, colorLine);
 
 #endif
 
@@ -1486,24 +1462,24 @@ int main()
 		      pidList,
 		      newList,
 		      pUmap);
-	clearBottomWins(bottomWins);
-	attronBottomWins(bottomWins, _BLACK_TEXT);
-	printWindowNames(bottomWins);
-	attroffBottomWins(bottomWins, _BLACK_TEXT);	
+	clearBottomWins(allWins);
+	attronBottomWins(allWins, _BLACK_TEXT);
+	printWindowNames(allWins);
+	attroffBottomWins(allWins, _BLACK_TEXT);	
 	printProcs(shiftY,
 		   newList,
 		   pUmap,
-		   bottomWins);		
+		   allWins);		
 #endif
 	break;
       case 'P':
 #if _CURSES
-	clearBottomWins(bottomWins);
-	printWindowNames(bottomWins);
+	clearBottomWins(allWins);
+	printWindowNames(allWins);
 	printProcs(shiftY,
 		   pidList,
 		   pUmap,
-		   bottomWins);	
+		   allWins);	
 #endif
 	break;
       case 'M':
