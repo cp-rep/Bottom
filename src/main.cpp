@@ -409,7 +409,7 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  PIDWindow PIDWin("PID",
+  PIDWindow PIDWin("    PID",
 		   numLines,
 		   numCols,
 		   maxWindowY,
@@ -448,7 +448,7 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  USERWindow USERWin("USER",
+  USERWindow USERWin("USER    ",
 		     numLines,
 		     numCols,
 		     maxWindowY,
@@ -487,7 +487,7 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  PRWindow PRWin("PR",
+  PRWindow PRWin(" PR",
 		 numLines,
 		 numCols,
 		 maxWindowY,
@@ -526,7 +526,7 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  NIWindow NIWin("NI",
+  NIWindow NIWin(" NI",
 		 numLines,
 		 numCols,
 		 maxWindowY,
@@ -568,7 +568,7 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  VIRTWindow VIRTWin("VIRT",
+  VIRTWindow VIRTWin("   VIRT",
 		     numLines,
 		     numCols,
 		     maxWindowY,
@@ -611,7 +611,7 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  RESWindow RESWin("RES",
+  RESWindow RESWin("   RES",
 		   numLines,
 		   numCols,
 		   maxWindowY,
@@ -655,7 +655,7 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  SHRWindow SHRWin("SHR",
+  SHRWindow SHRWin("   SHR",
 		   numLines,
 		   numCols,
 		   maxWindowY,
@@ -743,7 +743,7 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  PercentCPUWindow PercentCPUWin("%CPU",
+  PercentCPUWindow PercentCPUWin(" %CPU",
 				 numLines,
 				 numCols,
 				 maxWindowY,
@@ -790,7 +790,7 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  PercentMEMWindow PercentMEMWin("%MEM",
+  PercentMEMWindow PercentMEMWin(" %MEM",
 				 numLines,
 				 numCols,
 				 maxWindowY,
@@ -838,7 +838,7 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  TIMEWindow TIMEWin("TIME+",
+  TIMEWindow TIMEWin("    TIME+",
 		     numLines,
 		     numCols,
 		     maxWindowY,
@@ -888,21 +888,22 @@ int main()
   previousY = 0;
   previousX = 0;
 
-  CursesWindow COMMANDWin("COMMAND",
-			  numLines,
-			  numCols,
-			  maxWindowY,
-			  maxWindowX,
-			  minWindowY,
-			  minWindowX,
-			  centerY,
-			  centerX,
-			  startY,
-			  startX,
-			  currentY,
-			  currentX,
-			  previousY,
-			  previousX);
+  COMMANDWindow COMMANDWin("COMMAND",
+			   numLines,
+			   numCols,
+			   maxWindowY,
+			   maxWindowX,
+			   minWindowY,
+			   minWindowX,
+			   centerY,
+			   centerX,
+			   startY,
+			   startX,
+			   currentY,
+			   currentX,
+			   previousY,
+			   previousX);
+  COMMANDWin.fixCOMMANDWinName();
   
   // ## create windows ##
   topWin.setWindow(newwin(topWin.getNumLines(),
@@ -991,10 +992,13 @@ int main()
   allWins.push_back(&USERWin); // 15
   allWins.push_back(&PIDWin); // 16
 
-  // ## create and print the proc color line ##
+  // ## create and print white proc name color line ##
   std::string colorLine;
-  colorLine = createColorLine(  mainWin.getNumCols());
-  //printColorLine(mainWin, _BLACK_TEXT, memWin.getStartY() + 3, colorLine);
+  std::vector<int> winNums;
+  winNums.push_back(0);
+  colorLine = createColorLine(mainWin.getNumCols());
+  printColorLine(allWins, winNums, colorLine, PIDWin.getStartY(), _BLACK_TEXT);
+
 
 #endif
 
@@ -1463,23 +1467,19 @@ int main()
 		      newList,
 		      pUmap);
 	clearBottomWins(allWins);
-	attronBottomWins(allWins, _BLACK_TEXT);
-	printWindowNames(allWins);
-	attroffBottomWins(allWins, _BLACK_TEXT);	
 	printProcs(shiftY,
 		   newList,
 		   pUmap,
-		   allWins);		
+		   allWins);
 #endif
 	break;
       case 'P':
 #if _CURSES
 	clearBottomWins(allWins);
-	printWindowNames(allWins);
 	printProcs(shiftY,
 		   pidList,
 		   pUmap,
-		   allWins);	
+		   allWins);
 #endif
 	break;
       case 'M':
@@ -1492,6 +1492,11 @@ int main()
       default:
 	break;
       }
+
+    // print the window names
+    attronBottomWins(allWins, _BLACK_TEXT);
+    printWindowNames(allWins);
+    attroffBottomWins(allWins, _BLACK_TEXT);
     
     if(quit)
       {
