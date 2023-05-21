@@ -32,7 +32,7 @@ void printSortedProcsReverse(const int& startLine,
 const std::string createColorLine(const int& len);
 void printColorLine(const std::vector<CursesWindow*>& wins,
 		    const std::vector<int>& winNums,
-		    const std::string& line,
+		    const std::string& colorLine,
 		    const int& row,
 		    const int& attrs);
 #endif

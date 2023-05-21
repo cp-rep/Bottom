@@ -398,24 +398,18 @@ const std::string createColorLine(const int& len)
  */
 void printColorLine(const std::vector<CursesWindow*>& wins,
 		    const std::vector<int>& winNums,
-		    const std::string& line,
+		    const std::string& colorLine,
 		    const int& row,
 		    const int& attrs)
 {
-  /*
-  wattron(win.getWindow(), COLOR_PAIR(attrs));
-
   for(int i = 0; i < winNums.size(); i++)
   {
-
-    mvwaddstr(win.getWindow(),
+    wattron(wins.at(winNums.at(i))->getWindow(), COLOR_PAIR(attrs));
+    mvwaddstr(wins.at(winNums.at(i))->getWindow(),
 	      row,
 	      0,
-	      line.c_str());
-
+	      colorLine.c_str());
+    wattroff(wins.at(winNums.at(i))->getWindow(), COLOR_PAIR(attrs));    
   }
-  
-  wattroff(win.getWindow(), COLOR_PAIR(attrs));
-  */
 } // end of "printColorLine"
 
