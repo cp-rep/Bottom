@@ -36,5 +36,32 @@ COMMANDWindow::COMMANDWindow(std::string windowName,
 								    previousY,
 								    previousX)
 {
+  fixCOMMANDWinName();
 }
 
+
+
+/*
+  Function:
+  fixCommandWinName
+
+  Description:
+
+  Input:
+
+  Output:
+ 
+ */
+void COMMANDWindow::fixCOMMANDWinName()
+{
+  std::string temp;
+  int len = getNumCols() - getWindowName().length();
+  temp = getWindowName();
+  
+  for(int i = getWindowName().length(); i < len; i++)
+    {
+      temp.push_back(' ');
+    }
+  
+  setWindowName(temp);
+} // end of "fixCOMMANDWinName"
