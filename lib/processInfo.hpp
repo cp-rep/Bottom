@@ -18,8 +18,8 @@ public:
 	      const unsigned int& virt = 0,
 	      const unsigned int& res = 0,
 	      const unsigned int& shr = 0,
-	      const float& cpuUsage = 0,
-	      const float& memUsage = 0,
+	      const double& cpuUsage = 0,
+	      const double& memUsage = 0,
 	      const std::string& command = "",
 	      const std::string& processCPUTime = "N/A",
 	      const char s = ' ',
@@ -34,8 +34,8 @@ public:
   const unsigned int& getRes() { return m_res; }
   const unsigned int& getSHR() { return m_shr; }
   const char& getS() { return m_s; }
-  const float& getCPUUsage() { return m_cpuUsage; }
-  const float& getMemUsage() { return m_memUsage; }
+  const double& getCPUUsage() { return m_cpuUsage; }
+  const double& getMemUsage() { return m_memUsage; }
   const std::string getProcessCPUTime() { return m_processCPUTime; }
   const std::string& getCommand() { return m_command; }
   
@@ -48,8 +48,8 @@ public:
   void setRes(const unsigned int& res) { m_res = res; }
   void setSHR(const unsigned int& shr) { m_shr = shr; }
   void setS(const char& s) { m_s = s; }
-  void setCPUUsage(const float& cpuUsage) { m_cpuUsage = cpuUsage; }
-  void setMemUsage(const float& memUsage) { m_memUsage = memUsage; }
+  void setCPUUsage(const double& cpuUsage) { m_cpuUsage = cpuUsage; }
+  void setMemUsage(const double& memUsage) { m_memUsage = memUsage; }
   void setProcessCPUTime(const std::string processCPUTime)
   { m_processCPUTime = processCPUTime; }
   void setCommand(const std::string& command) { m_command = command; }
@@ -63,8 +63,8 @@ private:
   unsigned int m_res;
   unsigned int m_shr;
   char m_s;
-  float m_cpuUsage;
-  float m_memUsage;
+  double m_cpuUsage;
+  double m_memUsage;
   std::string m_processCPUTime;
   std::string m_command;
   bool m_changed;
