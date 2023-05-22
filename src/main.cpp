@@ -189,7 +189,7 @@ int main()
   short previousX = 0;
 
   // state related vars
-  int stateVal = 'p';
+  int stateVal = 'c';
   bool quit = false;
   int shiftY = 0;
   int shiftX = 0;
@@ -1000,11 +1000,26 @@ int main()
   colorLine = createColorLine(mainWin.getNumCols());
   printColorLine(allWins, winNums, colorLine, PIDWin.getStartY(), _BLACK_TEXT);
 
-  // ## set process states ###
+  // ## define program states ##
   progState.insert(std::make_pair('q', 1)); // quit
   progState.insert(std::make_pair('x', 1)); // highlight column
   progState.insert(std::make_pair('c', 1)); // sort by cpu
   progState.insert(std::make_pair('p', 1)); // sort by pid
+  progState.insert(std::make_pair('h', 1));
+  
+
+  // ## define sort states ##
+  sortState.insert(std::make_pair("PID", 1));
+  sortState.insert(std::make_pair("USER", 1));
+  sortState.insert(std::make_pair("PR", 1));
+  sortState.insert(std::make_pair("NI", 1));
+  sortState.insert(std::make_pair("RES", 1));
+  sortState.insert(std::make_pair("SHR", 1));
+  sortState.insert(std::make_pair("S", 1));
+  sortState.insert(std::make_pair("%CPU", 1));
+  sortState.insert(std::make_pair("%MEM", 1));
+  sortState.insert(std::make_pair("TIME+", 1));
+  sortState.insert(std::make_pair("COMMAND", 1));
 
 #endif
 
@@ -1250,6 +1265,7 @@ int main()
 		double cutime = 0;
 		double pstart = 0;
 		double newVal = 0;
+		
 		// get uptime
 		fileLine = returnFileLineByNumber(_UPTIME, 1);
 		parsedLine = parseLine(fileLine);
@@ -1434,41 +1450,33 @@ int main()
     int oldSwitchVal;
     int moveVal = 0;
 
-    /*
-      can make an unordered_map with character values that represent the program state
-      for faster check instead of the || operations
-    */
-
     moveVal = input = getch();
     
     if(input != -1)
       {
-	if(progState.at(input) == 1)
+	if(progState[input])
 	  {
 	    stateVal = input;
 	  }
       }
 
-    // change process state
-    switch(stateVal)
+    // defualt sort state
+    for(int i = 0; i < pidList.size(); i++)
       {
-      case 'c':
-	for(int i = 0; i < pidList.size(); i++)
-	  {
-	    // fix and zero out the process cpu double values decimal part after
-	    // 1 point of precision
-	    doublePercentage = pUmap.at(pidList.at(i))->getCPUUsage();
-	    doublePercentage *= 10;
-	    intPercentage = doublePercentage;
+	// fix and zero out the process cpu double values decimal part after
+	// 1 point of precision
+	doublePercentage = pUmap.at(pidList.at(i))->getCPUUsage();
+	doublePercentage *= 10;
+	intPercentage = doublePercentage;
 
-	    if(intPercentage != 0)
-	      {
-		doublePercentage = intPercentage;
-		doublePercentage = doublePercentage/10;
-		sortedOut.push_back(std::make_pair(doublePercentage, pidList.at(i)));
-	      }
+	if(intPercentage != 0)
+	  {
+	    doublePercentage = intPercentage;
+	    doublePercentage = doublePercentage/10;
+	    sortedOut.push_back(std::make_pair(doublePercentage, pidList.at(i)));
 	  }
-	
+      }
+
 #if _CURSES
 	std::sort(sortedOut.begin(), sortedOut.end());	
 	mergePidLists(sortedOut,
@@ -1481,15 +1489,13 @@ int main()
 		   pUmap,
 		   allWins);
 #endif
-	break;
-      case 'p':
-#if _CURSES
-	clearBottomWins(allWins);
-	printProcs(shiftY,
-		   pidList,
-		   pUmap,
-		   allWins);
-#endif
+
+    
+    
+    // change process state
+    switch(stateVal)
+      {
+      case 'c':
 	break;
       case 'M':
 	break;
@@ -1511,7 +1517,6 @@ int main()
       {
 	break;
       }
-
 
     // shift windows
     switch(moveVal)
