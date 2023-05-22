@@ -161,8 +161,7 @@ int main()
       log << "Time and Date: " << asctime(timeinfo) << std::endl;      
     }
 
-  // vars
-  std::vector<CursesWindow*> allWins;
+  // process related vars
   MemInfo mInfo;
   ProcessInfo* pInfo;
   struct passwd* userData;
@@ -170,7 +169,9 @@ int main()
   std::unordered_map<int, ProcessInfo*> pUmap;
   std::unordered_map<int, ProcessInfo*>::iterator pUmapIt;
 
-  // window data vars
+  // window related vars
+  CursesWindow mainWin;  
+  std::vector<CursesWindow*> allWins;  
   CursesWindow processWin;  
   short numLines = 0;
   short numCols = 0;
@@ -187,15 +188,15 @@ int main()
   short previousY = 0;
   short previousX = 0;
 
-  // swtich vars
-  int stateVal = 'P';
+  // state related vars
+  int stateVal = 'p';
   bool quit = false;
   int shiftY = 0;
   int shiftX = 0;
+  std::unordered_map<std::string, int> sortState;
+  std::unordered_map<char, int> progState;
   
   // ## setup the main window ##
-  CursesWindow mainWin;
-  
   // init curses to main window
   mainWin.setWindow(initscr());
 
@@ -999,6 +1000,11 @@ int main()
   colorLine = createColorLine(mainWin.getNumCols());
   printColorLine(allWins, winNums, colorLine, PIDWin.getStartY(), _BLACK_TEXT);
 
+  // ## set process states ###
+  progState.insert(std::make_pair('q', 1)); // quit
+  progState.insert(std::make_pair('x', 1)); // highlight column
+  progState.insert(std::make_pair('c', 1)); // sort by cpu
+  progState.insert(std::make_pair('p', 1)); // sort by pid
 
 #endif
 
@@ -1428,22 +1434,25 @@ int main()
     int oldSwitchVal;
     int moveVal = 0;
 
+    /*
+      can make an unordered_map with character values that represent the program state
+      for faster check instead of the || operations
+    */
+
     moveVal = input = getch();
     
     if(input != -1)
       {
-	if(input == 'p' ||
-	   input == 'c' ||
-	   input == 'q')
+	if(progState.at(input) == 1)
 	  {
-	    stateVal = toupper(input);
+	    stateVal = input;
 	  }
       }
 
     // change process state
     switch(stateVal)
       {
-      case 'C':
+      case 'c':
 	for(int i = 0; i < pidList.size(); i++)
 	  {
 	    // fix and zero out the process cpu double values decimal part after
@@ -1473,7 +1482,7 @@ int main()
 		   allWins);
 #endif
 	break;
-      case 'P':
+      case 'p':
 #if _CURSES
 	clearBottomWins(allWins);
 	printProcs(shiftY,
@@ -1486,7 +1495,7 @@ int main()
 	break;
       case 'U':
 	break;
-      case 'Q':
+      case 'q':
 	quit = true;
 	break;
       default:
