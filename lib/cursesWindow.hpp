@@ -63,6 +63,7 @@ public:
 
   // setters
   void setWindow(WINDOW* window);
+  void setWindowName(const std::string winName);
   void setNumLines(const short& numLines);
   void setNumCols(const short& numCols);
   void setMaxWindowY(const short& maxWindowY);

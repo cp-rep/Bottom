@@ -339,6 +339,18 @@ void CursesWindow::setWindow(WINDOW* window)
 
   Description:
 */
+void CursesWindow::setWindowName(const std::string winName)
+{
+  m_windowName = winName;
+}
+
+
+
+/*
+  Function:
+
+  Description:
+*/
 void CursesWindow::setNumLines(const short& numLines)
 {
   m_numLines = numLines;
