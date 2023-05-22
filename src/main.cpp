@@ -189,12 +189,13 @@ int main()
   short previousX = 0;
 
   // state related vars
-  int stateVal = 'c';
+  int progState = 0;
+  int sortState = 8;
   bool quit = false;
   int shiftY = 0;
   int shiftX = 0;
-  std::unordered_map<std::string, int> sortState;
-  std::unordered_map<char, int> progState;
+  std::unordered_map<char, int> progStates;
+  std::unordered_map<int, int> sortStates;  
   
   // ## setup the main window ##
   // init curses to main window
@@ -1001,25 +1002,23 @@ int main()
   printColorLine(allWins, winNums, colorLine, PIDWin.getStartY(), _BLACK_TEXT);
 
   // ## define program states ##
-  progState.insert(std::make_pair('q', 1)); // quit
-  progState.insert(std::make_pair('x', 1)); // highlight column
-  progState.insert(std::make_pair('c', 1)); // sort by cpu
-  progState.insert(std::make_pair('p', 1)); // sort by pid
-  progState.insert(std::make_pair('h', 1));
+  progStates.insert(std::make_pair('q', 1)); // quit
+  progStates.insert(std::make_pair('x', 1)); // highlight column
+  progStates.insert(std::make_pair('h', 1)); // open help menu
   
 
   // ## define sort states ##
-  sortState.insert(std::make_pair("PID", 1));
-  sortState.insert(std::make_pair("USER", 1));
-  sortState.insert(std::make_pair("PR", 1));
-  sortState.insert(std::make_pair("NI", 1));
-  sortState.insert(std::make_pair("RES", 1));
-  sortState.insert(std::make_pair("SHR", 1));
-  sortState.insert(std::make_pair("S", 1));
-  sortState.insert(std::make_pair("%CPU", 1));
-  sortState.insert(std::make_pair("%MEM", 1));
-  sortState.insert(std::make_pair("TIME+", 1));
-  sortState.insert(std::make_pair("COMMAND", 1));
+  sortStates.insert(std::make_pair(0, 1)); // PID
+  sortStates.insert(std::make_pair(1, 1)); // USER
+  sortStates.insert(std::make_pair(2, 1)); // PR
+  sortStates.insert(std::make_pair(3, 1)); // NI
+  sortStates.insert(std::make_pair(4, 1)); // RES
+  sortStates.insert(std::make_pair(5, 1)); // SHR
+  sortStates.insert(std::make_pair(6, 1));  // S
+  sortStates.insert(std::make_pair(7, 1)); // %CPU
+  sortStates.insert(std::make_pair(8, 1)); // %MEM
+  sortStates.insert(std::make_pair(9, 1)); // TIME+
+  sortStates.insert(std::make_pair(10, 1)); // COMMAND
 
 #endif
 
@@ -1265,6 +1264,7 @@ int main()
 		double cutime = 0;
 		double pstart = 0;
 		double newVal = 0;
+		int intPercentage = 0;		
 		
 		// get uptime
 		fileLine = returnFileLineByNumber(_UPTIME, 1);
@@ -1286,7 +1286,7 @@ int main()
 		// get S
 		pUmap[pidList.at(i)]->setS(lineString.at(0));
 
-		// get process %cpu
+		// get %cpu for processes
 		/*
 		  (utime - stime)/(system uptime - process start time)
 		  (col(14) - col(15))/(/proc/uptime(0) - col(22)
@@ -1295,7 +1295,21 @@ int main()
 		cutime = convertToInt(parsedLine.at(12));
 		pstart = convertToInt(parsedLine.at(19));
 		newVal = (utime + cutime)/(uptime.getTotalSecs() - (pstart/100));
-		pUmap[pidList.at(i)]->setCPUUsage(newVal);
+
+		// modify cpu% to xx.x
+		newVal *= 10;
+		intPercentage = newVal;
+		
+		if(intPercentage != 0)
+		  {
+		    newVal = intPercentage;
+		    newVal = newVal/10;
+		    pUmap[pidList.at(i)]->setCPUUsage(newVal);
+		  }
+		else
+		  {
+		    pUmap[pidList.at(i)]->setCPUUsage(0);
+		  }
 	      }
 	    
 	    // ## get %CPU ##
@@ -1441,12 +1455,10 @@ int main()
     pInfo = nullptr;
     pidListOld.clear();
     
-    // ## get user input and operate on it ##
+    // ## get user input ##
     int input;
     std::vector<std::pair<double, int>> sortedOut;
     std::vector<int> newList;
-    double doublePercentage = 0;
-    int intPercentage = 0;
     int oldSwitchVal;
     int moveVal = 0;
 
@@ -1454,46 +1466,29 @@ int main()
     
     if(input != -1)
       {
-	if(progState[input])
+	if(progStates[input])
 	  {
-	    stateVal = input;
-	  }
-      }
-
-    // defualt sort state
-    for(int i = 0; i < pidList.size(); i++)
-      {
-	// fix and zero out the process cpu double values decimal part after
-	// 1 point of precision
-	doublePercentage = pUmap.at(pidList.at(i))->getCPUUsage();
-	doublePercentage *= 10;
-	intPercentage = doublePercentage;
-
-	if(intPercentage != 0)
-	  {
-	    doublePercentage = intPercentage;
-	    doublePercentage = doublePercentage/10;
-	    sortedOut.push_back(std::make_pair(doublePercentage, pidList.at(i)));
+	    progState = input;
 	  }
       }
 
 #if _CURSES
-	std::sort(sortedOut.begin(), sortedOut.end());	
-	mergePidLists(sortedOut,
-		      pidList,
-		      newList,
-		      pUmap);
-	clearBottomWins(allWins);
-	printProcs(shiftY,
-		   newList,
-		   pUmap,
-		   allWins);
+    std::sort(sortedOut.begin(), sortedOut.end());	
+    mergePidLists(sortedOut,
+		  pidList,
+		  newList,
+		  pUmap);
+    clearBottomWins(allWins);
+    printProcs(shiftY,
+	       newList,
+	       pUmap,
+	       allWins);
 #endif
 
-    
-    
+
+    // ## update states ##
     // change process state
-    switch(stateVal)
+    switch(progState)
       {
       case 'c':
 	break;
@@ -1507,14 +1502,39 @@ int main()
       default:
 	break;
       }
-
-    // print the window names
-    attronBottomWins(allWins, _BLACK_TEXT);
-    printWindowNames(allWins);
-    attroffBottomWins(allWins, _BLACK_TEXT);
     
-    if(quit)
+    // change sort state
+    switch(sortState)
       {
+      case 0: // PID
+	break;
+      case 1: // USER
+	break;
+      case 2: // PR
+	break;
+      case 3: // NI
+	break;
+      case 4: // VIRT
+	break;
+      case 5: // RES
+	break;
+      case 6: // SHR
+	break;
+      case 7: // S
+	break;
+      case 8: // %CPU
+	for(int i = 0; i < pUmap.size(); i++)
+	  {
+	    // if(pUmap.at(i)->getCPUUSAGE
+	  }	
+	break;
+      case 9: // %MEM
+	break;
+      case 10: // TIME+
+	break;
+      case 11: // COMMAND
+	break;
+      default:
 	break;
       }
 
@@ -1535,6 +1555,12 @@ int main()
       default:
 	break;
       }
+
+    // ## print updated windows ##
+    attronBottomWins(allWins, _BLACK_TEXT);
+    printWindowNames(allWins);
+    attroffBottomWins(allWins, _BLACK_TEXT);
+    
     
 #if _CURSES
     // refresh the windows
@@ -1560,6 +1586,12 @@ int main()
     //napms(3000);
     //sleep(3);
     //delay(3000);
+    
+    if(quit)
+      {
+	break;
+      }
+    
 #endif
   } while(true);
 
