@@ -1455,19 +1455,26 @@ int main()
     pidListOld.clear();
     
     // ## get user input ##
-    int input;
     std::vector<std::pair<double, int>> sortedOut;
     std::vector<int> newList;
-    int oldSwitchVal;
+    int input = 0;
     int moveVal = 0;
 
     moveVal = input = getch();
-    
+
     if(input != -1)
       {
 	if(progStates[input])
 	  {
 	    progState = input;
+	  }
+	else if(input == '<' && sortState > 0)
+	  {
+	    sortState--;
+	  }
+	else if(input == '>' && sortState < 11)
+	  {
+	    sortState++;
 	  }
       }
 
@@ -1516,12 +1523,6 @@ int main()
 		sortedOut.push_back(std::make_pair(temp, pidList.at(i)));
 	      }
 	  }
-
-	std::sort(sortedOut.begin(), sortedOut.end());	
-	mergePidLists(sortedOut,
-		      pidList,
-		      newList,
-		      pUmap);
 	break;
       case 9: // %MEM
 	break;
@@ -1532,6 +1533,12 @@ int main()
       default:
 	break;
       }
+    std::sort(sortedOut.begin(), sortedOut.end());    
+    mergePidLists(sortedOut,
+		  pidList,
+		  newList,
+		  pUmap);
+    
 
     // shift windows
     switch(moveVal)
