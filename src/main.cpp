@@ -1002,10 +1002,9 @@ int main()
   printColorLine(allWins, winNums, colorLine, PIDWin.getStartY(), _BLACK_TEXT);
 
   // ## define program states ##
+  progStates.insert(std::make_pair('h', 1)); // open help menu  
   progStates.insert(std::make_pair('q', 1)); // quit
   progStates.insert(std::make_pair('x', 1)); // highlight column
-  progStates.insert(std::make_pair('h', 1)); // open help menu
-  
 
   // ## define sort states ##
   sortStates.insert(std::make_pair(0, 1)); // PID
@@ -1472,32 +1471,16 @@ int main()
 	  }
       }
 
-#if _CURSES
-    std::sort(sortedOut.begin(), sortedOut.end());	
-    mergePidLists(sortedOut,
-		  pidList,
-		  newList,
-		  pUmap);
-    clearBottomWins(allWins);
-    printProcs(shiftY,
-	       newList,
-	       pUmap,
-	       allWins);
-#endif
-
-
     // ## update states ##
     // change process state
     switch(progState)
       {
-      case 'c':
+      case 'h': // help
 	break;
-      case 'M':
-	break;
-      case 'U':
-	break;
-      case 'q':
+      case 'q': // quit
 	quit = true;
+	break;
+      case 'x': // highlight sorted column
 	break;
       default:
 	break;
@@ -1525,8 +1508,20 @@ int main()
       case 8: // %CPU
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
-	    // if(pUmap.at(i)->getCPUUSAGE
-	  }	
+
+	    const double temp = pUmap[pidList.at(i)]->getCPUUsage();
+
+	    if(temp != 0)
+	      {
+		sortedOut.push_back(std::make_pair(temp, pidList.at(i)));
+	      }
+	  }
+
+	std::sort(sortedOut.begin(), sortedOut.end());	
+	mergePidLists(sortedOut,
+		      pidList,
+		      newList,
+		      pUmap);
 	break;
       case 9: // %MEM
 	break;
@@ -1557,6 +1552,11 @@ int main()
       }
 
     // ## print updated windows ##
+    clearBottomWins(allWins);
+    printProcs(shiftY,
+	       newList,
+	       pUmap,
+	       allWins);
     attronBottomWins(allWins, _BLACK_TEXT);
     printWindowNames(allWins);
     attroffBottomWins(allWins, _BLACK_TEXT);
