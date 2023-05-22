@@ -22,7 +22,8 @@ public:
 	      const float& memUsage = 0,
 	      const std::string& command = "",
 	      const std::string& processCPUTime = "N/A",
-	      const char s = ' ');
+	      const char s = ' ',
+	      const bool changed = false);
 
   // getters
   const int& getPID() { return m_pid; }
@@ -66,6 +67,7 @@ private:
   float m_memUsage;
   std::string m_processCPUTime;
   std::string m_command;
+  bool m_changed;
 };
 
 #endif
