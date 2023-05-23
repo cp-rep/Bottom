@@ -10,18 +10,23 @@
 #define _PROCSTATEQUIT 'q'
 #define _PROCSTATEHL 'x'
 
-// process specific index constants
-#define _PID 5
-#define _USER 6
-#define _PR 7
-#define _NI 8
-#define _VIRT 9
-#define _RES 10
-#define _SHR 11
-#define _S 12
-#define _PROCCPU 13
-#define _PROCMEM 14
-#define _PROCTIME 15
-#define _COMMAND 16
+// window index constants for main cursesWindow.hpp object
+#define _MAINWIN 0
+#define _TOPWIN 1
+#define _TASKSWIN 2
+#define _CPUWIN 3
+#define _MEMWIN 4
+#define _PIDWIN 5
+#define _USERWIN 6
+#define _PRWIN 7
+#define _NIWIN 8
+#define _VIRTWIN 9
+#define _RESWIN 10
+#define _SHRWIN 11
+#define _SWIN 12
+#define _PROCCPUWIN 13
+#define _PROCMEMWIN 14
+#define _PROCTIMEWIN 15
+#define _COMMANDWIN 16
 
 #endif
