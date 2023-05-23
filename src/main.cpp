@@ -1707,12 +1707,18 @@ int main()
 
     // print updated windows
     clearBottomWins(allWins);
+    if(highlight == true)
+      {
+	wattron(allWins.at(highlightIndex)->getWindow(), A_BOLD);
+      }
     printProcs(shiftY,
 	       outList,
 	       pUmap,
-	       allWins,
-	       highlight,
-	       highlightIndex);
+	       allWins);
+    if(highlight == true)
+      {
+	wattroff(allWins.at(highlightIndex)->getWindow(), A_BOLD);
+      }
     attronBottomWins(allWins, _BLACK_TEXT);
     printWindowNames(allWins);
     attroffBottomWins(allWins, _BLACK_TEXT);
