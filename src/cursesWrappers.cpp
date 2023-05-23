@@ -205,7 +205,7 @@ void printSortedProcsReverse(const int& startLine,
       mvwaddstr(wins.at(15)->getWindow(),
 		g,
 		0,
-		pUmap.at(sortedOut.at(k).second)->getUser().c_str());
+		pUmap.at(sortedOut.at(k).second)->getUSER().c_str());
       // PR
       mvwaddstr(wins.at(14)->getWindow(),
 		g,
@@ -220,12 +220,12 @@ void printSortedProcsReverse(const int& startLine,
       mvwaddstr(wins.at(12)->getWindow(),
 		g,
 		0,
-		std::to_string(pUmap.at(sortedOut.at(k).second)->getVirt()).c_str());
+		std::to_string(pUmap.at(sortedOut.at(k).second)->getVIRT()).c_str());
       // RES
       mvwaddstr(wins.at(11)->getWindow(),
 		g,
 		0,
-		std::to_string(pUmap.at(sortedOut.at(k).second)->getRes()).c_str());
+		std::to_string(pUmap.at(sortedOut.at(k).second)->getRES()).c_str());
       // SHR
       mvwaddstr(wins.at(10)->getWindow(),
 		g,
@@ -255,7 +255,7 @@ void printSortedProcsReverse(const int& startLine,
       mvwaddstr(wins.at(5)->getWindow(),
 		g,
 		0,
-		pUmap.at(sortedOut.at(k).second)->getCommand().c_str());
+		pUmap.at(sortedOut.at(k).second)->getCOMMAND().c_str());
     }
 } // end of "printSortedProcsReverse"
 
@@ -286,7 +286,7 @@ void printProcs(const int& shiftY,
 	  posY =  1;
 	}
 
-      if(pUmap.at(pidList.at(i))->getUser() == "-1")
+      if(pUmap.at(pidList.at(i))->getUSER() == "-1")
 	continue;
 
       // PID
@@ -299,7 +299,7 @@ void printProcs(const int& shiftY,
       mvwaddstr(wins.at(15)->getWindow(),
 		posY,
 		0,
-		pUmap.at(pidList.at(i))->getUser().c_str());
+		pUmap.at(pidList.at(i))->getUSER().c_str());
       // PR
       outString = std::to_string(pUmap.at(pidList.at(i))->getPR());
       mvwaddstr(wins.at(14)->getWindow(),
@@ -313,13 +313,13 @@ void printProcs(const int& shiftY,
 		wins.at(13)->getNumCols() - outString.length(),
 		outString.c_str());
       // VIRT
-      outString = std::to_string(pUmap.at(pidList.at(i))->getVirt());
+      outString = std::to_string(pUmap.at(pidList.at(i))->getVIRT());
       mvwaddstr(wins.at(12)->getWindow(),
 		posY,
 		wins.at(12)->getNumCols() - outString.length(),
 		outString.c_str());
       // RES
-      outString = std::to_string(pUmap.at(pidList.at(i))->getRes());
+      outString = std::to_string(pUmap.at(pidList.at(i))->getRES());
       mvwaddstr(wins.at(11)->getWindow(),
 		posY,
 		wins.at(11)->getNumCols() - outString.length(),
@@ -342,7 +342,7 @@ void printProcs(const int& shiftY,
 		wins.at(8)->getNumCols() - outString.length(),
 		outString.c_str());
       // %MEM
-      outString = doubleToStr(pUmap.at(pidList.at(i))->getMemUsage(), 1);
+      outString = doubleToStr(pUmap.at(pidList.at(i))->getMEMUsage(), 1);
       mvwaddstr(wins.at(7)->getWindow(),
 		posY,
 		wins.at(7)->getNumCols() - outString.length(),
@@ -357,7 +357,7 @@ void printProcs(const int& shiftY,
       mvwaddstr(wins.at(5)->getWindow(),
 		posY,
 		0,
-		pUmap.at(pidList.at(i))->getCommand().c_str());
+		pUmap.at(pidList.at(i))->getCOMMAND().c_str());
     }
 } // end of "printProcs"
 
