@@ -17,18 +17,18 @@
  */
 void clearBottomWins(const std::vector<CursesWindow*>& wins)
 {
-    werase(wins.at(16)->getWindow());
-    werase(wins.at(15)->getWindow());
-    werase(wins.at(14)->getWindow());
-    werase(wins.at(13)->getWindow());
-    werase(wins.at(12)->getWindow());
-    werase(wins.at(11)->getWindow());    
-    werase(wins.at(10)->getWindow());
-    werase(wins.at(9)->getWindow());
-    werase(wins.at(8)->getWindow());
-    werase(wins.at(7)->getWindow());
-    werase(wins.at(6)->getWindow());
-    werase(wins.at(5)->getWindow());
+    werase(wins.at(_COMMAND)->getWindow());
+    werase(wins.at(_PROCTIME)->getWindow());
+    werase(wins.at(_PROCMEM)->getWindow());
+    werase(wins.at(_PROCCPU)->getWindow());
+    werase(wins.at(_S)->getWindow());
+    werase(wins.at(_SHR)->getWindow());    
+    werase(wins.at(_RES)->getWindow());
+    werase(wins.at(_VIRT)->getWindow());
+    werase(wins.at(_NI)->getWindow());
+    werase(wins.at(_PR)->getWindow());
+    werase(wins.at(_USER)->getWindow());
+    werase(wins.at(_PID)->getWindow());
 } // end of "clearBottomWins"
 
 
@@ -45,18 +45,18 @@ void clearBottomWins(const std::vector<CursesWindow*>& wins)
  */
 void attronBottomWins(const std::vector<CursesWindow*>& wins, int attrs)
 {  
-  wattron(wins.at(16)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(15)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(14)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(13)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(12)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(11)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(10)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(9)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(8)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(7)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(6)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(5)->getWindow(), COLOR_PAIR(attrs));
+  wattron(wins.at(_COMMAND)->getWindow(), COLOR_PAIR(attrs));
+  wattron(wins.at(_PROCTIME)->getWindow(), COLOR_PAIR(attrs));
+  wattron(wins.at(_PROCMEM)->getWindow(), COLOR_PAIR(attrs));
+  wattron(wins.at(_PROCCPU)->getWindow(), COLOR_PAIR(attrs));
+  wattron(wins.at(_S)->getWindow(), COLOR_PAIR(attrs));
+  wattron(wins.at(_SHR)->getWindow(), COLOR_PAIR(attrs));
+  wattron(wins.at(_RES)->getWindow(), COLOR_PAIR(attrs));
+  wattron(wins.at(_VIRT)->getWindow(), COLOR_PAIR(attrs));
+  wattron(wins.at(_NI)->getWindow(), COLOR_PAIR(attrs));
+  wattron(wins.at(_PR)->getWindow(), COLOR_PAIR(attrs));
+  wattron(wins.at(_USER)->getWindow(), COLOR_PAIR(attrs));
+  wattron(wins.at(_PID)->getWindow(), COLOR_PAIR(attrs));
 }
 
 
@@ -73,18 +73,18 @@ void attronBottomWins(const std::vector<CursesWindow*>& wins, int attrs)
  */
 void attroffBottomWins(const std::vector<CursesWindow*>& wins, int attrs)
 {
-  wattroff(wins.at(16)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(15)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(14)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(13)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(12)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(11)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(10)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(9)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(8)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(7)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(6)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(5)->getWindow(), COLOR_PAIR(attrs));
+  wattroff(wins.at(_COMMAND)->getWindow(), COLOR_PAIR(attrs));
+  wattroff(wins.at(_PROCTIME)->getWindow(), COLOR_PAIR(attrs));
+  wattroff(wins.at(_PROCMEM)->getWindow(), COLOR_PAIR(attrs));
+  wattroff(wins.at(_PROCCPU)->getWindow(), COLOR_PAIR(attrs));
+  wattroff(wins.at(_S)->getWindow(), COLOR_PAIR(attrs));
+  wattroff(wins.at(_SHR)->getWindow(), COLOR_PAIR(attrs));
+  wattroff(wins.at(_RES)->getWindow(), COLOR_PAIR(attrs));
+  wattroff(wins.at(_VIRT)->getWindow(), COLOR_PAIR(attrs));
+  wattroff(wins.at(_NI)->getWindow(), COLOR_PAIR(attrs));
+  wattroff(wins.at(_PR)->getWindow(), COLOR_PAIR(attrs));
+  wattroff(wins.at(_USER)->getWindow(), COLOR_PAIR(attrs));
+  wattroff(wins.at(_PID)->getWindow(), COLOR_PAIR(attrs));
 }
 
 
@@ -104,74 +104,74 @@ void printWindowNames(const std::vector<CursesWindow*>& wins)
   std::string outString;
 
   // PID
-  outString = wins.at(16)->getWindowName();
-  mvwaddstr(wins.at(16)->getWindow(),
+  outString = wins.at(_PID)->getWindowName();
+  mvwaddstr(wins.at(_PID)->getWindow(),
 	    0,
-	    wins.at(16)->getNumCols() - outString.length(),
+	    wins.at(_PID)->getNumCols() - outString.length(),
 	    outString.c_str());
   // USER
-  outString = wins.at(15)->getWindowName();
-  mvwaddstr(wins.at(15)->getWindow(),
+  outString = wins.at(_USER)->getWindowName();
+  mvwaddstr(wins.at(_USER)->getWindow(),
 	    0,
 	    0,
 	    outString.c_str());
   // PR
-  outString = wins.at(14)->getWindowName();
-  mvwaddstr(wins.at(14)->getWindow(),
+  outString = wins.at(_PR)->getWindowName();
+  mvwaddstr(wins.at(_PR)->getWindow(),
 	    0,
-	    wins.at(14)->getNumCols() - outString.length(),
+	    wins.at(_PR)->getNumCols() - outString.length(),
 	    outString.c_str());
   // NI
-  outString = wins.at(13)->getWindowName();
-  mvwaddstr(wins.at(13)->getWindow(),
+  outString = wins.at(_NI)->getWindowName();
+  mvwaddstr(wins.at(_NI)->getWindow(),
 	    0,
-	    wins.at(13)->getNumCols() - outString.length(),
+	    wins.at(_NI)->getNumCols() - outString.length(),
 	    outString.c_str());
   // VIRT
-  outString = wins.at(12)->getWindowName();
-  mvwaddstr(wins.at(12)->getWindow(),
+  outString = wins.at(_VIRT)->getWindowName();
+  mvwaddstr(wins.at(_VIRT)->getWindow(),
 	    0,
-	    wins.at(12)->getNumCols() - outString.length(),
+	    wins.at(_VIRT)->getNumCols() - outString.length(),
 	    outString.c_str());
   // RES
-  outString = wins.at(11)->getWindowName();
-  mvwaddstr(wins.at(11)->getWindow(),
+  outString = wins.at(_RES)->getWindowName();
+  mvwaddstr(wins.at(_RES)->getWindow(),
 	    0,
-	    wins.at(11)->getNumCols() - outString.length(),
+	    wins.at(_RES)->getNumCols() - outString.length(),
 	    outString.c_str());
   // SHR
-  outString = wins.at(10)->getWindowName();
-  mvwaddstr(wins.at(10)->getWindow(),
+  outString = wins.at(_SHR)->getWindowName();
+  mvwaddstr(wins.at(_SHR)->getWindow(),
 	    0,
-	    wins.at(10)->getNumCols() - outString.length(),
+	    wins.at(_SHR)->getNumCols() - outString.length(),
 	    outString.c_str());
   // S
-  outString = wins.at(9)->getWindowName();
-  mvwaddstr(wins.at(9)->getWindow(),
+  outString = wins.at(_S)->getWindowName();
+  mvwaddstr(wins.at(_S)->getWindow(),
 	    0,
-	    wins.at(9)->getNumCols() - outString.length(),
+	    wins.at(_S)->getNumCols() - outString.length(),
 	    outString.c_str());
   // %CPU
-  outString = wins.at(8)->getWindowName();
-  mvwaddstr(wins.at(8)->getWindow(),
+  outString = wins.at(_PROCCPU)->getWindowName();
+  mvwaddstr(wins.at(_PROCCPU)->getWindow(),
 	    0,
-	    wins.at(8)->getNumCols() - outString.length(),
+	    wins.at(_PROCCPU)->getNumCols() - outString.length(),
 	    outString.c_str());
   // %MEM
-  outString = wins.at(7)->getWindowName();
-  mvwaddstr(wins.at(7)->getWindow(),
+  outString = wins.at(_PROCMEM)->getWindowName();
+  mvwaddstr(wins.at(_PROCMEM)->getWindow(),
 	    0,
-	    wins.at(7)->getNumCols() - outString.length(),
+	    wins.at(_PROCMEM)->getNumCols() - outString.length(),
 	    outString.c_str());
   // TIME+
-  outString = wins.at(6)->getWindowName();
-  mvwaddstr(wins.at(6)->getWindow(),
+  outString = wins.at(_PROCTIME)->getWindowName();
+  mvwaddstr(wins.at(_PROCTIME)->getWindow(),
 	    0,
-	    wins.at(6)->getNumCols() - outString.length(),
+	    wins.at(_PROCTIME)->getNumCols() - outString.length(),
 	    outString.c_str());
   // COMMAND
-  outString = wins.at(5)->getWindowName();
-  mvwaddstr(wins.at(5)->getWindow(),
+  outString = wins.at(_COMMAND)->getWindowName();
+  mvwaddstr(wins.at(_COMMAND)->getWindow(),
 	    0,
 	    0,
 	    outString.c_str());
@@ -197,62 +197,62 @@ void printSortedProcsReverse(const int& startLine,
   for(int k = sortedOut.size() - 1, g = startLine; k >= 0; k--, g++)
     {
       // PID
-      mvwaddstr(wins.at(16)->getWindow(),
+      mvwaddstr(wins.at(_PID)->getWindow(),
 		g,
 		0,
 		std::to_string(pUmap.at(sortedOut.at(k).second)->getPID()).c_str());
       // USER
-      mvwaddstr(wins.at(15)->getWindow(),
+      mvwaddstr(wins.at(_USER)->getWindow(),
 		g,
 		0,
 		pUmap.at(sortedOut.at(k).second)->getUSER().c_str());
       // PR
-      mvwaddstr(wins.at(14)->getWindow(),
+      mvwaddstr(wins.at(_PR)->getWindow(),
 		g,
 		0,
 		std::to_string(pUmap.at(sortedOut.at(k).second)->getPR()).c_str());
       // NI
-      mvwaddstr(wins.at(13)->getWindow(),
+      mvwaddstr(wins.at(_NI)->getWindow(),
 		g,
 		0,
 		std::to_string(pUmap.at(sortedOut.at(k).second)->getNI()).c_str());
       // VIRT
-      mvwaddstr(wins.at(12)->getWindow(),
+      mvwaddstr(wins.at(_VIRT)->getWindow(),
 		g,
 		0,
 		std::to_string(pUmap.at(sortedOut.at(k).second)->getVIRT()).c_str());
       // RES
-      mvwaddstr(wins.at(11)->getWindow(),
+      mvwaddstr(wins.at(_RES)->getWindow(),
 		g,
 		0,
 		std::to_string(pUmap.at(sortedOut.at(k).second)->getRES()).c_str());
       // SHR
-      mvwaddstr(wins.at(10)->getWindow(),
+      mvwaddstr(wins.at(_SHR)->getWindow(),
 		g,
 		0,
 		std::to_string(pUmap.at(sortedOut.at(k).second)->getSHR()).c_str());
       // S
-      mvwaddch(wins.at(9)->getWindow(), 
+      mvwaddch(wins.at(_S)->getWindow(), 
 	       g,
 	       0,
 	       pUmap.at(sortedOut.at(k).second)->getS());
       // %CPU
-      mvwaddstr(wins.at(8)->getWindow(),
+      mvwaddstr(wins.at(_PROCCPU)->getWindow(),
 		g,
 		0,
 		doubleToStr(pUmap.at(sortedOut.at(k).second)->getCPUUsage(), 1).c_str());
       // %MEM
-      mvwaddstr(wins.at(7)->getWindow(),
+      mvwaddstr(wins.at(_PROCMEM)->getWindow(),
 		g,
 		0,
 		"N/A");
       // TIME+
-      mvwaddstr(wins.at(6)->getWindow(),
+      mvwaddstr(wins.at(_PROCTIME)->getWindow(),
 		g,
 		0,
 		"N/A");
       // COMMAND
-      mvwaddstr(wins.at(5)->getWindow(),
+      mvwaddstr(wins.at(_COMMAND)->getWindow(),
 		g,
 		0,
 		pUmap.at(sortedOut.at(k).second)->getCOMMAND().c_str());
@@ -274,7 +274,8 @@ void printSortedProcsReverse(const int& startLine,
 void printProcs(const int& shiftY,
 		const std::vector<int>& pidList,
 		const std::unordered_map<int, ProcessInfo*>& pUmap,
-		const std::vector<CursesWindow*>& wins)
+		const std::vector<CursesWindow*>& wins,
+		const bool& highlight)
 {
   std::string outString;
   
@@ -291,70 +292,70 @@ void printProcs(const int& shiftY,
 
       // PID
       outString = std::to_string(pUmap.at(pidList.at(i))->getPID());
-      mvwaddstr(wins.at(16)->getWindow(),
+      mvwaddstr(wins.at(_PID)->getWindow(),
 		posY,
-		wins.at(16)->getNumCols() - outString.length(),
+		wins.at(_PID)->getNumCols() - outString.length(),
 		outString.c_str());
       // USER
-      mvwaddstr(wins.at(15)->getWindow(),
+      mvwaddstr(wins.at(_USER)->getWindow(),
 		posY,
 		0,
 		pUmap.at(pidList.at(i))->getUSER().c_str());
       // PR
       outString = std::to_string(pUmap.at(pidList.at(i))->getPR());
-      mvwaddstr(wins.at(14)->getWindow(),
+      mvwaddstr(wins.at(_PR)->getWindow(),
 		posY,
-		wins.at(14)->getNumCols() - outString.length(),
+		wins.at(_PR)->getNumCols() - outString.length(),
 		outString.c_str());
       // NI
       outString = std::to_string(pUmap.at(pidList.at(i))->getNI());
-      mvwaddstr(wins.at(13)->getWindow(),
+      mvwaddstr(wins.at(_NI)->getWindow(),
 		posY,
-		wins.at(13)->getNumCols() - outString.length(),
+		wins.at(_NI)->getNumCols() - outString.length(),
 		outString.c_str());
       // VIRT
       outString = std::to_string(pUmap.at(pidList.at(i))->getVIRT());
-      mvwaddstr(wins.at(12)->getWindow(),
+      mvwaddstr(wins.at(_VIRT)->getWindow(),
 		posY,
-		wins.at(12)->getNumCols() - outString.length(),
+		wins.at(_VIRT)->getNumCols() - outString.length(),
 		outString.c_str());
       // RES
       outString = std::to_string(pUmap.at(pidList.at(i))->getRES());
-      mvwaddstr(wins.at(11)->getWindow(),
+      mvwaddstr(wins.at(_RES)->getWindow(),
 		posY,
-		wins.at(11)->getNumCols() - outString.length(),
+		wins.at(_RES)->getNumCols() - outString.length(),
 		outString.c_str());
       // SHR
       outString = std::to_string(pUmap.at(pidList.at(i))->getSHR());
-      mvwaddstr(wins.at(10)->getWindow(),
+      mvwaddstr(wins.at(_SHR)->getWindow(),
 		posY,
-		wins.at(10)->getNumCols() - outString.length(),
+		wins.at(_SHR)->getNumCols() - outString.length(),
 		outString.c_str());
       // S
-      mvwaddch(wins.at(9)->getWindow(),
+      mvwaddch(wins.at(_S)->getWindow(),
 	       posY,
 	       0,
 	       pUmap.at(pidList.at(i))->getS());
       // %CPU
       outString = doubleToStr(pUmap.at(pidList.at(i))->getCPUUsage(), 1);
-      mvwaddstr(wins.at(8)->getWindow(),
+      mvwaddstr(wins.at(_PROCCPU)->getWindow(),
 		posY,
-		wins.at(8)->getNumCols() - outString.length(),
+		wins.at(_PROCCPU)->getNumCols() - outString.length(),
 		outString.c_str());
       // %MEM
       outString = doubleToStr(pUmap.at(pidList.at(i))->getMEMUsage(), 1);
-      mvwaddstr(wins.at(7)->getWindow(),
+      mvwaddstr(wins.at(_PROCMEM)->getWindow(),
 		posY,
-		wins.at(7)->getNumCols() - outString.length(),
+		wins.at(_PROCMEM)->getNumCols() - outString.length(),
 		outString.c_str());
       // TIME+
       outString = pUmap.at(pidList.at(i))->getProcessCPUTime();
-      mvwaddstr(wins.at(6)->getWindow(),
+      mvwaddstr(wins.at(_PROCTIME)->getWindow(),
 		posY,
-		wins.at(6)->getNumCols() - outString.length(),
+		wins.at(_PROCTIME)->getNumCols() - outString.length(),
 		outString.c_str());
       // COMMAND
-      mvwaddstr(wins.at(5)->getWindow(),
+      mvwaddstr(wins.at(_COMMAND)->getWindow(),
 		posY,
 		0,
 		pUmap.at(pidList.at(i))->getCOMMAND().c_str());
