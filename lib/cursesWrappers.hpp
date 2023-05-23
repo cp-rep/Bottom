@@ -22,7 +22,8 @@ void printProcs(const int& shiftY,
 		const std::vector<int>& pidList,
 		const std::unordered_map<int, ProcessInfo*>& pUmap,
 		const std::vector<CursesWindow*>& wins,
-		const bool& highlight);
+		const bool& highlight,
+		const int& highlightIndex);
 void printSortedProcs(const std::vector<int>& pidList,
 		      const std::vector<std::pair<double, int>>& sortedOut,
 		      const std::unordered_map<int, ProcessInfo*>& pUmap,
