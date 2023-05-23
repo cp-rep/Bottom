@@ -199,7 +199,7 @@ int main()
 
   // state related vars
   int progState = 0;
-  int sortState = 13;
+  int sortState = _PROCCPUWIN;
   bool highlight = false;
   bool quit = false;
   int shiftY = 0;
@@ -1017,18 +1017,18 @@ int main()
   progStates.insert(std::make_pair(_PROCSTATEHL, 1)); // highlight column
 
   // ## define sort states ##
-  sortStates.insert(std::make_pair(_PID, 1)); // PID
-  sortStates.insert(std::make_pair(_USER, 1)); // USER
-  sortStates.insert(std::make_pair(_PR, 1)); // PR
-  sortStates.insert(std::make_pair(_NI, 1)); // NI
-  sortStates.insert(std::make_pair(_VIRT, 1)); // VIRT  
-  sortStates.insert(std::make_pair(_RES, 1)); // RES
-  sortStates.insert(std::make_pair(_SHR, 1)); // SHR
-  sortStates.insert(std::make_pair(_S, 1));  // S
-  sortStates.insert(std::make_pair(_PROCCPU, 1)); // %CPU
-  sortStates.insert(std::make_pair(_PROCMEM, 1)); // %MEM
-  sortStates.insert(std::make_pair(_PROCTIME, 1)); // TIME+
-  sortStates.insert(std::make_pair(_COMMAND, 1)); // COMMAND
+  sortStates.insert(std::make_pair(_PIDWIN, 1)); // PID
+  sortStates.insert(std::make_pair(_USERWIN, 1)); // USER
+  sortStates.insert(std::make_pair(_PRWIN, 1)); // PR
+  sortStates.insert(std::make_pair(_NIWIN, 1)); // NI
+  sortStates.insert(std::make_pair(_VIRTWIN, 1)); // VIRT  
+  sortStates.insert(std::make_pair(_RESWIN, 1)); // RES
+  sortStates.insert(std::make_pair(_SHRWIN, 1)); // SHR
+  sortStates.insert(std::make_pair(_SWIN, 1));  // S
+  sortStates.insert(std::make_pair(_PROCCPUWIN, 1)); // %CPU
+  sortStates.insert(std::make_pair(_PROCMEMWIN, 1)); // %MEM
+  sortStates.insert(std::make_pair(_PROCTIMEWIN, 1)); // TIME+
+  sortStates.insert(std::make_pair(_COMMANDWIN, 1)); // COMMAND
 
 #endif
 
@@ -1470,6 +1470,7 @@ int main()
     std::vector<std::pair<std::string, int>> sortedByString;
     std::vector<std::pair<int, int>> sortedByInt;
     std::vector<int> outList;
+    int highlightIndex = 0;
     int input = 0;
     int moveVal = 0;
 
@@ -1481,11 +1482,11 @@ int main()
 	  {
 	    progState = input;
 	  }
-	else if(input == '<' && sortState > _PID)
+	else if(input == '<' && sortState > _PIDWIN)
 	  {
 	    sortState--;
 	  }
-	else if(input == '>' && sortState < _COMMAND)
+	else if(input == '>' && sortState < _COMMANDWIN)
 	  {
 	    sortState++;
 	  }
@@ -1511,14 +1512,17 @@ int main()
     // *** creating funciton with pointer to funciton parameter should reduce DRY ***
     switch(sortState)
       {
-      case _PID: // PID
+      case _PIDWIN: // PID
+	highlightIndex = _PIDWIN;
 	std::reverse(pidList.begin(),pidList.end());
 	outList = pidList;
 	break;
-      case _USER: // USER
+      case _USERWIN: // USER
+	highlightIndex = _USERWIN;
 	outList = pidList;
 	break;
-      case _PR: // PR
+      case _PRWIN: // PR
+	highlightIndex = _PRWIN;
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
 
@@ -1535,7 +1539,8 @@ int main()
 		     outList,
 		     pUmap);
 	break;
-      case _NI: // NI
+      case _NIWIN: // NI
+	highlightIndex = _NIWIN;
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
 	    const int temp = pUmap[pidList.at(i)]->getNI();
@@ -1551,7 +1556,8 @@ int main()
 		     outList,
 		     pUmap);
 	break;
-      case _VIRT: // VIRT
+      case _VIRTWIN: // VIRT
+	highlightIndex = _VIRTWIN;
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
 
@@ -1568,7 +1574,8 @@ int main()
 		     outList,
 		     pUmap);
 	break;
-      case _RES: // RES
+      case _RESWIN: // RES
+	highlightIndex = _RESWIN;
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
 
@@ -1585,7 +1592,8 @@ int main()
 		     outList,
 		     pUmap);
 	break;
-      case _SHR: // SHR
+      case _SHRWIN: // SHR
+	highlightIndex = _SHRWIN;
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
 
@@ -1602,7 +1610,8 @@ int main()
 		     outList,
 		     pUmap);
 	break;	
-      case _S: // S
+      case _SWIN: // S
+	highlightIndex = _SWIN;
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
 	    const int temp = pUmap[pidList.at(i)]->getS();
@@ -1618,7 +1627,8 @@ int main()
 			outList,
 			pUmap);
 	break;
-      case _PROCCPU: // %CPU
+      case _PROCCPUWIN: // %CPU
+	highlightIndex = _PROCCPUWIN;
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
 	    const double temp = pUmap[pidList.at(i)]->getCPUUsage();
@@ -1634,7 +1644,8 @@ int main()
 			outList,
 			pUmap);
 	break;
-      case _PROCMEM: // %MEM
+      case _PROCMEMWIN: // %MEM
+	highlightIndex = _PROCMEMWIN;
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
 	    const double temp = pUmap[pidList.at(i)]->getMEMUsage();
@@ -1650,10 +1661,12 @@ int main()
 			outList,
 			pUmap);
 	break;	
-      case _PROCTIME: // TIME+
+      case _PROCTIMEWIN: // TIME+
+	highlightIndex = _PROCTIMEWIN;
 	outList = pidList;
 	break;
-      case _COMMAND: // COMMAND
+      case _COMMANDWIN: // COMMAND
+	highlightIndex = _COMMANDWIN;
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
 	    const std::string temp = pUmap[pidList.at(i)]->getCOMMAND();
@@ -1698,13 +1711,15 @@ int main()
 	       outList,
 	       pUmap,
 	       allWins,
-	       highlight);
+	       highlight,
+	       highlightIndex);
     attronBottomWins(allWins, _BLACK_TEXT);
     printWindowNames(allWins);
     attroffBottomWins(allWins, _BLACK_TEXT);
     
 #if _CURSES
     // refresh the windows
+    // *** can make function to refresh all windows ***
     wnoutrefresh(mainWin.getWindow());
     wnoutrefresh(topWin.getWindow());
     wnoutrefresh(tasksWin.getWindow());
