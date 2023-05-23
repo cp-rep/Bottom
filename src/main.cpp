@@ -68,6 +68,7 @@
 #include "secondsToTime.hpp"
 #include "cursesWrappers.hpp"
 #include "cursesColors.hpp"
+#include "procStates.hpp"
 
 //constants
 // debug
@@ -198,12 +199,13 @@ int main()
 
   // state related vars
   int progState = 0;
-  int sortState = 8;
+  int sortState = 13;
+  bool highlight = false;
   bool quit = false;
   int shiftY = 0;
   int shiftX = 0;
   std::unordered_map<char, int> progStates;
-  std::unordered_map<int, int> sortStates;  
+  std::unordered_map<int, int> sortStates;
   
   // ## setup the main window ##
   // init curses to main window
@@ -985,22 +987,22 @@ int main()
   // process windows
   // hardware windows
   allWins.push_back(&mainWin); // 0
-  allWins.push_back(&memWin); //  1
-  allWins.push_back(&cpuWin); // 2
-  allWins.push_back(&tasksWin); // 3
-  allWins.push_back(&topWin); // 4
-  allWins.push_back(&COMMANDWin); // 5
-  allWins.push_back(&TIMEWin); // 6
-  allWins.push_back(&PercentMEMWin); // 7
-  allWins.push_back(&PercentCPUWin); // 8
-  allWins.push_back(&SWin); // 9
-  allWins.push_back(&SHRWin); // 10
-  allWins.push_back(&RESWin); // 11
-  allWins.push_back(&VIRTWin); // 12
-  allWins.push_back(&NIWin); // 13
-  allWins.push_back(&PRWin); // 14
-  allWins.push_back(&USERWin); // 15
-  allWins.push_back(&PIDWin); // 16
+  allWins.push_back(&topWin); // 1
+  allWins.push_back(&tasksWin); // 2
+  allWins.push_back(&cpuWin); // 3
+  allWins.push_back(&memWin); //  4
+  allWins.push_back(&PIDWin); // 5
+  allWins.push_back(&USERWin); // 6
+  allWins.push_back(&PRWin); // 7
+  allWins.push_back(&NIWin); // 8
+  allWins.push_back(&VIRTWin); // 9
+  allWins.push_back(&RESWin); // 10
+  allWins.push_back(&SHRWin); // 11
+  allWins.push_back(&SWin); // 12
+  allWins.push_back(&PercentCPUWin); // 13
+  allWins.push_back(&PercentMEMWin); // 14
+  allWins.push_back(&TIMEWin); // 15
+  allWins.push_back(&COMMANDWin); // 16
 
   // ## create and print white proc name color line ##
   std::string colorLine;
@@ -1010,22 +1012,23 @@ int main()
   printColorLine(allWins, winNums, colorLine, PIDWin.getStartY(), _BLACK_TEXT);
 
   // ## define program states ##
-  progStates.insert(std::make_pair('h', 1)); // open help menu  
-  progStates.insert(std::make_pair('q', 1)); // quit
-  progStates.insert(std::make_pair('x', 1)); // highlight column
+  progStates.insert(std::make_pair(_PROCSTATEHELP, 1)); // open help menu  
+  progStates.insert(std::make_pair(_PROCSTATEQUIT, 1)); // quit
+  progStates.insert(std::make_pair(_PROCSTATEHL, 1)); // highlight column
 
   // ## define sort states ##
-  sortStates.insert(std::make_pair(0, 1)); // PID
-  sortStates.insert(std::make_pair(1, 1)); // USER
-  sortStates.insert(std::make_pair(2, 1)); // PR
-  sortStates.insert(std::make_pair(3, 1)); // NI
-  sortStates.insert(std::make_pair(4, 1)); // RES
-  sortStates.insert(std::make_pair(5, 1)); // SHR
-  sortStates.insert(std::make_pair(6, 1));  // S
-  sortStates.insert(std::make_pair(7, 1)); // %CPU
-  sortStates.insert(std::make_pair(8, 1)); // %MEM
-  sortStates.insert(std::make_pair(9, 1)); // TIME+
-  sortStates.insert(std::make_pair(10, 1)); // COMMAND
+  sortStates.insert(std::make_pair(_PID, 1)); // PID
+  sortStates.insert(std::make_pair(_USER, 1)); // USER
+  sortStates.insert(std::make_pair(_PR, 1)); // PR
+  sortStates.insert(std::make_pair(_NI, 1)); // NI
+  sortStates.insert(std::make_pair(_VIRT, 1)); // VIRT  
+  sortStates.insert(std::make_pair(_RES, 1)); // RES
+  sortStates.insert(std::make_pair(_SHR, 1)); // SHR
+  sortStates.insert(std::make_pair(_S, 1));  // S
+  sortStates.insert(std::make_pair(_PROCCPU, 1)); // %CPU
+  sortStates.insert(std::make_pair(_PROCMEM, 1)); // %MEM
+  sortStates.insert(std::make_pair(_PROCTIME, 1)); // TIME+
+  sortStates.insert(std::make_pair(_COMMAND, 1)); // COMMAND
 
 #endif
 
@@ -1478,11 +1481,11 @@ int main()
 	  {
 	    progState = input;
 	  }
-	else if(input == '<' && sortState > 0)
+	else if(input == '<' && sortState > _PID)
 	  {
 	    sortState--;
 	  }
-	else if(input == '>' && sortState < 11)
+	else if(input == '>' && sortState < _COMMAND)
 	  {
 	    sortState++;
 	  }
@@ -1492,12 +1495,13 @@ int main()
     // change process state
     switch(progState)
       {
-      case 'h': // help
+      case _PROCSTATEHELP: // help
 	break;
-      case 'q': // quit
+      case _PROCSTATEQUIT: // quit
 	quit = true;
 	break;
-      case 'x': // highlight sorted column
+      case _PROCSTATEHL: // highlight
+	highlight = true;
 	break;
       default:
 	break;
@@ -1507,14 +1511,14 @@ int main()
     // *** creating funciton with pointer to funciton parameter should reduce DRY ***
     switch(sortState)
       {
-      case 0: // PID
+      case _PID: // PID
 	std::reverse(pidList.begin(),pidList.end());
 	outList = pidList;
 	break;
-      case 1: // USER
+      case _USER: // USER
 	outList = pidList;
 	break;
-      case 2: // PR
+      case _PR: // PR
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
 
@@ -1531,7 +1535,7 @@ int main()
 		     outList,
 		     pUmap);
 	break;
-      case 3: // NI
+      case _NI: // NI
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
 	    const int temp = pUmap[pidList.at(i)]->getNI();
@@ -1547,7 +1551,7 @@ int main()
 		     outList,
 		     pUmap);
 	break;
-      case 4: // VIRT
+      case _VIRT: // VIRT
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
 
@@ -1564,7 +1568,7 @@ int main()
 		     outList,
 		     pUmap);
 	break;
-      case 5: // RES
+      case _RES: // RES
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
 
@@ -1581,7 +1585,7 @@ int main()
 		     outList,
 		     pUmap);
 	break;
-      case 6: // SHR
+      case _SHR: // SHR
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
 
@@ -1598,7 +1602,7 @@ int main()
 		     outList,
 		     pUmap);
 	break;	
-      case 7: // S
+      case _S: // S
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
 	    const int temp = pUmap[pidList.at(i)]->getS();
@@ -1614,7 +1618,7 @@ int main()
 			outList,
 			pUmap);
 	break;
-      case 8: // %CPU
+      case _PROCCPU: // %CPU
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
 	    const double temp = pUmap[pidList.at(i)]->getCPUUsage();
@@ -1630,7 +1634,7 @@ int main()
 			outList,
 			pUmap);
 	break;
-      case 9: // %MEM
+      case _PROCMEM: // %MEM
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
 	    const double temp = pUmap[pidList.at(i)]->getMEMUsage();
@@ -1646,10 +1650,10 @@ int main()
 			outList,
 			pUmap);
 	break;	
-      case 10: // TIME+
+      case _PROCTIME: // TIME+
 	outList = pidList;
 	break;
-      case 11: // COMMAND
+      case _COMMAND: // COMMAND
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
 	    const std::string temp = pUmap[pidList.at(i)]->getCOMMAND();
@@ -1693,7 +1697,8 @@ int main()
     printProcs(shiftY,
 	       outList,
 	       pUmap,
-	       allWins);
+	       allWins,
+	       highlight);
     attronBottomWins(allWins, _BLACK_TEXT);
     printWindowNames(allWins);
     attroffBottomWins(allWins, _BLACK_TEXT);
