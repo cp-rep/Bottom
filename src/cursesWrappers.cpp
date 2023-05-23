@@ -274,13 +274,9 @@ void printSortedProcsReverse(const int& startLine,
 void printProcs(const int& shiftY,
 		const std::vector<int>& pidList,
 		const std::unordered_map<int, ProcessInfo*>& pUmap,
-		const std::vector<CursesWindow*>& wins,
-		const bool& highlight,
-		const int& highlightIndex)
+		const std::vector<CursesWindow*>& wins)
 {
   std::string outString;
-
-  
   
   for(int i = 0; i < pUmap.size(); i++)
     {
@@ -295,136 +291,77 @@ void printProcs(const int& shiftY,
 	continue;
 
       // PID
-      if(highlight == true && highlightIndex == _PIDWIN)
-	{
-	  wattron(wins.at(_PIDWIN)->getWindow(), A_BOLD);
-	}
       outString = std::to_string(pUmap.at(pidList.at(i))->getPID());
       mvwaddstr(wins.at(_PIDWIN)->getWindow(),
 		posY,
 		wins.at(_PIDWIN)->getNumCols() - outString.length(),
 		outString.c_str());
-      wattroff(wins.at(_PIDWIN)->getWindow(), A_BOLD);
       // USER
-      if(highlight == true && highlightIndex == _USERWIN)
-	{
-	  wattron(wins.at(_USERWIN)->getWindow(), A_BOLD);
-	}      
       mvwaddstr(wins.at(_USERWIN)->getWindow(),
 		posY,
 		0,
 		pUmap.at(pidList.at(i))->getUSER().c_str());
-      wattroff(wins.at(_USERWIN)->getWindow(), A_BOLD);
+
       // PR
-      if(highlight == true && highlightIndex == _PRWIN)
-	{
-	  wattron(wins.at(_PRWIN)->getWindow(), A_BOLD);
-	}
       outString = std::to_string(pUmap.at(pidList.at(i))->getPR());
       mvwaddstr(wins.at(_PRWIN)->getWindow(),
 		posY,
 		wins.at(_PRWIN)->getNumCols() - outString.length(),
 		outString.c_str());
-      wattroff(wins.at(_PRWIN)->getWindow(), A_BOLD);
       // NI
-      if(highlight == true && highlightIndex == _NIWIN)
-	{
-	  wattron(wins.at(_NIWIN)->getWindow(), A_BOLD);
-	}
       outString = std::to_string(pUmap.at(pidList.at(i))->getNI());
       mvwaddstr(wins.at(_NIWIN)->getWindow(),
 		posY,
 		wins.at(_NIWIN)->getNumCols() - outString.length(),
 		outString.c_str());
-      wattroff(wins.at(_NIWIN)->getWindow(), A_BOLD);
       // VIRT
-      if(highlight == true && highlightIndex == _VIRTWIN)
-	{
-	  wattron(wins.at(_VIRTWIN)->getWindow(), A_BOLD);
-	}
       outString = std::to_string(pUmap.at(pidList.at(i))->getVIRT());
       mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
 		posY,
 		wins.at(_VIRTWIN)->getNumCols() - outString.length(),
 		outString.c_str());
-      wattroff(wins.at(_VIRTWIN)->getWindow(), A_BOLD);
       // RES
-      if(highlight == true && highlightIndex == _RESWIN)
-	{
-	  wattron(wins.at(_RESWIN)->getWindow(), A_BOLD);
-	}
       outString = std::to_string(pUmap.at(pidList.at(i))->getRES());
       mvwaddstr(wins.at(_RESWIN)->getWindow(),
 		posY,
 		wins.at(_RESWIN)->getNumCols() - outString.length(),
 		outString.c_str());
-      wattroff(wins.at(_RESWIN)->getWindow(), A_BOLD);
       // SHR
-      if(highlight == true && highlightIndex == _SHRWIN)
-	{
-	  wattron(wins.at(_SHRWIN)->getWindow(), A_BOLD);
-	}
       outString = std::to_string(pUmap.at(pidList.at(i))->getSHR());
       mvwaddstr(wins.at(_SHRWIN)->getWindow(),
 		posY,
 		wins.at(_SHRWIN)->getNumCols() - outString.length(),
 		outString.c_str());
-      wattroff(wins.at(_SHRWIN)->getWindow(), A_BOLD);
       // S
-      if(highlight == true && highlightIndex == _SWIN)
-	{
-	  wattron(wins.at(_SWIN)->getWindow(), A_BOLD);
-	}
       mvwaddch(wins.at(_SWIN)->getWindow(),
 	       posY,
 	       0,
 	       pUmap.at(pidList.at(i))->getS());
-      wattroff(wins.at(_SWIN)->getWindow(), A_BOLD);
       // %CPU
-      if(highlight == true && highlightIndex == _PROCCPUWIN)
-	{
-	  wattron(wins.at(_PROCCPUWIN)->getWindow(), A_BOLD);
-	}
       outString = doubleToStr(pUmap.at(pidList.at(i))->getCPUUsage(), 1);
       mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
 		posY,
 		wins.at(_PROCCPUWIN)->getNumCols() - outString.length(),
 		outString.c_str());
-      wattroff(wins.at(_PROCCPUWIN)->getWindow(), A_BOLD);      
       // %MEM
-      if(highlight == true && highlightIndex == _PROCMEMWIN)
-	{
-	  wattron(wins.at(_PROCMEMWIN)->getWindow(), A_BOLD);
-	}
       outString = doubleToStr(pUmap.at(pidList.at(i))->getMEMUsage(), 1);
       mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
 		posY,
 		wins.at(_PROCMEMWIN)->getNumCols() - outString.length(),
 		outString.c_str());
-      wattroff(wins.at(_PROCMEMWIN)->getWindow(), A_BOLD);
       // TIME+
-      if(highlight == true && highlightIndex == _PROCTIMEWIN)
-	{
-	  wattron(wins.at(_PROCTIMEWIN)->getWindow(), A_BOLD);
-	}
       outString = pUmap.at(pidList.at(i))->getProcessCPUTime();
       mvwaddstr(wins.at(_PROCTIMEWIN)->getWindow(),
 		posY,
 		wins.at(_PROCTIMEWIN)->getNumCols() - outString.length(),
 		outString.c_str());
-      wattroff(wins.at(_PROCTIMEWIN)->getWindow(), A_BOLD);
       // COMMAND
-      if(highlight == true && highlightIndex == _COMMANDWIN)
-	{
-	 wattron(wins.at(_COMMANDWIN)->getWindow(), A_BOLD); 
-	}
       mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
 		posY,
 		0,
 		pUmap.at(pidList.at(i))->getCOMMAND().c_str());
-      wattroff(wins.at(_COMMANDWIN)->getWindow(), A_BOLD);
       
-    }      
+    }
 } // end of "printProcs"
 
 
