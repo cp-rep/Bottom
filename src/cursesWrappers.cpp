@@ -280,15 +280,7 @@ void printProcs(const int& shiftY,
   
   for(int i = 0; i < pUmap.size(); i++)
     {
-      int posY = i + 1 + shiftY;
-      if(posY == 0)
-	{
-	  posY =  1;
-	}
-
-      if(pUmap.at(pidList.at(i))->getUSER() == "-1" ||
-	 pUmap.at(pidList.at(i))->getUSER() == "")
-	continue;
+      int posY = i + shiftY;
 
       // PID
       outString = std::to_string(pUmap.at(pidList.at(i))->getPID());

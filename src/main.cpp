@@ -202,7 +202,7 @@ int main()
   int sortState = _PROCCPUWIN;
   bool highlight = false;
   bool quit = false;
-  int shiftY = 0;
+  int shiftY = 1;
   int shiftX = 0;
   std::unordered_map<char, int> progStates;
   std::unordered_map<int, int> sortStates;
@@ -1448,6 +1448,7 @@ int main()
 		      outLine.c_str());
 #endif
 	    /*
+
 	      log << std::endl << "PID: " << pUmap[pidList.at(i)]->getPID() << std::endl
 		<< "COMM: " << pUmap[pidList.at(i)]->getCOMMAND() << std::endl
 		<< "USER: " << pUmap[pidList.at(i)]->getUSER() << std::endl
@@ -1460,8 +1461,8 @@ int main()
 		<< "%CPU: " << pUmap[pidList.at(i)]->getCPUUsage() << std::endl
 		<< std::endl;
 	    */
+
       }
-    
     pInfo = nullptr;
     pidListOld.clear();
     
@@ -1691,16 +1692,22 @@ int main()
     switch(moveVal)
       {
       case KEY_UP:
-	shiftY++;
-	log << "KEY UP!" << std::endl;
+	if(shiftY < 1)
+	  {
+	    shiftY++;
+	  }
+	log << "KEY UP! shiftY: " << shiftY << std::endl;
 	break;
       case KEY_DOWN:
-	shiftY--;	
-	log << "KEY DOWN!" << std::endl;
+	if(std::abs(shiftY) < pUmap.size() - 1)
+	  {
+	    shiftY--;
+	  }
+	log << "KEY DOWN! shiftY: " << shiftY << std::endl;
       case KEY_LEFT:
-	log << "KEY LEFT!" << std::endl;
+	log << "KEY LEFT! shiftX: " << shiftX << std::endl;
       case KEY_RIGHT:
-	log << "KEY RIGHT!" << std::endl;
+	log << "KEY RIGHT! shiftX: " << shiftX << std::endl;
       default:
 	break;
       }
