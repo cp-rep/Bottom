@@ -19,6 +19,7 @@ void attroffBottomWins(const std::vector<CursesWindow*>& wins,
 void clearBottomWins(const std::vector<CursesWindow*>& wins);
 void printWindowNames(const std::vector<CursesWindow*>& wins);
 void printProcs(const int& shiftY,
+		const int& shiftX,
 		const std::vector<int>& pidList,
 		const std::unordered_map<int, ProcessInfo*>& pUmap,
 		const std::vector<CursesWindow*>& wins);

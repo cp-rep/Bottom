@@ -272,6 +272,7 @@ void printSortedProcsReverse(const int& startLine,
   Output:
  */
 void printProcs(const int& shiftY,
+		const int& shiftX,
 		const std::vector<int>& pidList,
 		const std::unordered_map<int, ProcessInfo*>& pUmap,
 		const std::vector<CursesWindow*>& wins)
@@ -283,76 +284,112 @@ void printProcs(const int& shiftY,
       int posY = i + shiftY;
 
       // PID
-      outString = std::to_string(pUmap.at(pidList.at(i))->getPID());
-      mvwaddstr(wins.at(_PIDWIN)->getWindow(),
-		posY,
-		wins.at(_PIDWIN)->getNumCols() - outString.length(),
-		outString.c_str());
-      // USER
-      mvwaddstr(wins.at(_USERWIN)->getWindow(),
-		posY,
-		0,
-		pUmap.at(pidList.at(i))->getUSER().c_str());
+      if(shiftX <= _PIDWIN)
+	{
+	  outString = std::to_string(pUmap.at(pidList.at(i))->getPID());
+	  mvwaddstr(wins.at(_PIDWIN)->getWindow(),
+		    posY,
+		    wins.at(_PIDWIN)->getNumCols() - outString.length(),
+		    outString.c_str());
+	}
+      // USER      
+      if(shiftX <= _USERWIN)
+      	{
 
+	  mvwaddstr(wins.at(_USERWIN)->getWindow(),
+		    posY,
+		    0,
+		    pUmap.at(pidList.at(i))->getUSER().c_str());
+	}
+      
       // PR
-      outString = std::to_string(pUmap.at(pidList.at(i))->getPR());
-      mvwaddstr(wins.at(_PRWIN)->getWindow(),
-		posY,
-		wins.at(_PRWIN)->getNumCols() - outString.length(),
-		outString.c_str());
+      if(shiftX <= _PRWIN)
+	{
+	  outString = std::to_string(pUmap.at(pidList.at(i))->getPR());
+	  mvwaddstr(wins.at(_PRWIN)->getWindow(),
+		    posY,
+		    wins.at(_PRWIN)->getNumCols() - outString.length(),
+		    outString.c_str());
+	}
       // NI
-      outString = std::to_string(pUmap.at(pidList.at(i))->getNI());
-      mvwaddstr(wins.at(_NIWIN)->getWindow(),
-		posY,
-		wins.at(_NIWIN)->getNumCols() - outString.length(),
-		outString.c_str());
+      if(shiftX <= _NIWIN)
+	{
+	  outString = std::to_string(pUmap.at(pidList.at(i))->getNI());
+	  mvwaddstr(wins.at(_NIWIN)->getWindow(),
+		    posY,
+		    wins.at(_NIWIN)->getNumCols() - outString.length(),
+		    outString.c_str());
+	}
       // VIRT
+      if(shiftX <= _VIRTWIN)
+	{
       outString = std::to_string(pUmap.at(pidList.at(i))->getVIRT());
       mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
 		posY,
 		wins.at(_VIRTWIN)->getNumCols() - outString.length(),
 		outString.c_str());
+	}
       // RES
+      if(shiftX <= _RESWIN)
+	{
       outString = std::to_string(pUmap.at(pidList.at(i))->getRES());
       mvwaddstr(wins.at(_RESWIN)->getWindow(),
 		posY,
 		wins.at(_RESWIN)->getNumCols() - outString.length(),
 		outString.c_str());
+	}
       // SHR
+      if(shiftX <= _SHRWIN)
+	{
       outString = std::to_string(pUmap.at(pidList.at(i))->getSHR());
       mvwaddstr(wins.at(_SHRWIN)->getWindow(),
 		posY,
 		wins.at(_SHRWIN)->getNumCols() - outString.length(),
 		outString.c_str());
+	}
       // S
+      if(shiftX <= _SWIN){
       mvwaddch(wins.at(_SWIN)->getWindow(),
 	       posY,
 	       0,
 	       pUmap.at(pidList.at(i))->getS());
+      }
       // %CPU
+      if(shiftX <= _PROCCPUWIN)
+	{
       outString = doubleToStr(pUmap.at(pidList.at(i))->getCPUUsage(), 1);
       mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
 		posY,
 		wins.at(_PROCCPUWIN)->getNumCols() - outString.length(),
 		outString.c_str());
+	}
       // %MEM
+      if(shiftX <= _PROCMEMWIN)
+	{
       outString = doubleToStr(pUmap.at(pidList.at(i))->getMEMUsage(), 1);
       mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
 		posY,
 		wins.at(_PROCMEMWIN)->getNumCols() - outString.length(),
 		outString.c_str());
+	}
       // TIME+
-      outString = pUmap.at(pidList.at(i))->getProcessCPUTime();
-      mvwaddstr(wins.at(_PROCTIMEWIN)->getWindow(),
-		posY,
-		wins.at(_PROCTIMEWIN)->getNumCols() - outString.length(),
-		outString.c_str());
+      if(shiftX <= _PROCTIMEWIN)
+	{
+	  outString = pUmap.at(pidList.at(i))->getProcessCPUTime();
+	  mvwaddstr(wins.at(_PROCTIMEWIN)->getWindow(),
+		    posY,
+		    wins.at(_PROCTIMEWIN)->getNumCols() - outString.length(),
+		    outString.c_str());
+	}
       // COMMAND
-      mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
-		posY,
-		0,
-		pUmap.at(pidList.at(i))->getCOMMAND().c_str());
-      
+      if(shiftX <= _COMMANDWIN)
+	{
+	  outString = pUmap.at(pidList.at(i))->getCOMMAND();
+	  mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
+		    posY,
+		    0,
+		    outString.c_str());
+	}
     }
 } // end of "printProcs"
 

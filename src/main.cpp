@@ -177,6 +177,7 @@ int main()
   std::vector<int> pidList;
   std::unordered_map<int, ProcessInfo*> pUmap;
   std::unordered_map<int, ProcessInfo*>::iterator pUmapIt;
+  std::unordered_map<std::string, std::vector<int>> winPositions;
 
   // window related vars
   CursesWindow mainWin;  
@@ -203,7 +204,7 @@ int main()
   bool highlight = false;
   bool quit = false;
   int shiftY = 1;
-  int shiftX = 0;
+  int shiftX = _PIDWIN;
   std::unordered_map<char, int> progStates;
   std::unordered_map<int, int> sortStates;
   
@@ -1704,10 +1705,21 @@ int main()
 	    shiftY--;
 	  }
 	log << "KEY DOWN! shiftY: " << shiftY << std::endl;
+	break;
       case KEY_LEFT:
-	log << "KEY LEFT! shiftX: " << shiftX << std::endl;
+	if(shiftX > _PIDWIN)
+	  {
+	    shiftX--;
+	    log << "KEY LEFT! shiftX: " << shiftX << std::endl;
+	  }
+	break;
       case KEY_RIGHT:
-	log << "KEY RIGHT! shiftX: " << shiftX << std::endl;
+	if(shiftX < _COMMANDWIN)
+	  {
+	    shiftX++;
+	    log << "KEY RIGHT! shiftX: " << shiftX << std::endl;
+	  }
+	break;
       default:
 	break;
       }
@@ -1719,6 +1731,7 @@ int main()
 	wattron(allWins.at(highlightIndex)->getWindow(), A_BOLD);
       }
     printProcs(shiftY,
+	       shiftX,
 	       outList,
 	       pUmap,
 	       allWins);
