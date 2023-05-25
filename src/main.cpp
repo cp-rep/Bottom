@@ -177,26 +177,15 @@ int main()
   std::vector<int> pidList;
   std::unordered_map<int, ProcessInfo*> pUmap;
   std::unordered_map<int, ProcessInfo*>::iterator pUmapIt;
-  std::unordered_map<std::string, std::vector<int>> winPositions;
 
   // window related vars
   CursesWindow mainWin;  
-  std::vector<CursesWindow*> allWins;  
+  std::vector<CursesWindow*> allWins;
   CursesWindow processWin;  
   short numLines = 0;
   short numCols = 0;
-  short maxWindowY = 0;
-  short maxWindowX = 0;
-  short minWindowY = 0;
-  short minWindowX = 0;
-  short centerY = 0;
-  short centerX = 0;
   short startY = 0;
   short startX = 0;
-  short currentY = 0;
-  short currentX = 0;
-  short previousY = 0;
-  short previousX = 0;
 
   // state related vars
   int progState = 0;
@@ -239,683 +228,314 @@ int main()
   
   // get main window dimensions
   getmaxyx(mainWin.getWindow(), numLines, numCols);
-
+  
   // define the main window
-  maxWindowY = numLines;
-  maxWindowX = numCols;
-  minWindowY = 0;
-  minWindowX = 0;
-  centerY = numLines/2;
-  centerX = numCols/2;
   startY = 0;
   startX = 0;
-  currentY = 0;
-  currentX = 0;
-  previousY = 0;
-  previousX = 0;
   
   mainWin.defineWindow("Main",
 		       numLines,
 		       numCols,
-		       maxWindowY,
-		       maxWindowX,
-		       minWindowY,
-		       minWindowX,
-		       centerY,
-		       centerX,
 		       startY,
-		       startX,
-		       currentY,
-		       currentX,
-		       previousY,
-		       previousX);
-
+		       startX);
+  
   // ## define windows ##
   // define top window
   numLines = 1;
   numCols = numCols;
-  maxWindowY = 1;
-  maxWindowX = numCols;
-  minWindowY = 1;
-  minWindowX = 0;
-  centerY = 1;
-  centerX = numCols/2;
   startY = 0;
   startX = 0;
-  currentY = 0;
-  currentX = 0;
-  previousY = 0;
-  previousX = 0;
 
   TopWindow topWin("top",
 		   numLines,
 		   numCols,
-		   maxWindowY,
-		   maxWindowX,
-		   minWindowY,
-		   minWindowX,
-		   centerY,
-		   centerX,
 		   startY,
-		   startX,
-		   currentY,
-		   currentX,
-		   previousY,
-		   previousX);
-
+		   startX);
+  
   // define tasks window
   numLines = 1;
   numCols = numCols;
-  maxWindowY = 1;
-  maxWindowX = numCols;
-  minWindowY = 1;
-  minWindowX = 0;
-  centerY = 2;
-  centerX = numCols/2;
   startY = 1;
   startX = 0;
-  currentY = 0;
-  currentX = 0;
-  previousY = 0;
-  previousX = 0;
-
+  
   TasksWindow tasksWin("Tasks",
 		       numLines,
 		       numCols,
-		       maxWindowY,
-		       maxWindowX,
-		       minWindowY,
-		       minWindowX,
-		       centerY,
-		       centerX,
 		       startY,
-		       startX,
-		       currentY,
-		       currentX,
-		       previousY,
-		       previousX);
+		       startX);
 
   // define cpu window
   numLines = 1;
   numCols = numCols;
-  maxWindowY = 1;
-  maxWindowX = numCols;
-  minWindowY = 1;
-  minWindowX = 0;
-  centerY = 2;
-  centerX = numCols/2;
   startY = 2;
   startX = 0;
-  currentY = 0;
-  currentX = 0;
-  previousY = 0;
-  previousX = 0;
-
+  
   CpuWindow cpuWin("CPU",
 		   numLines,
 		   numCols,
-		   maxWindowY,
-		   maxWindowX,
-		   minWindowY,
-		   minWindowX,
-		   centerY,
-		   centerX,
 		   startY,
-		   startX,
-		   currentY,
-		   currentX,
-		   previousY,
-		   previousX);
-
+		   startX);
+  
   // define mem window
   numLines = 2;
   numCols = numCols;
-  maxWindowY = 2;
-  maxWindowX = numCols;
-  minWindowY = 1;
-  minWindowX = 0;
-  centerY = numLines/2;
-  centerX = numCols/2;
   startY = 3;
   startX = 0;
-  currentY = 0;
-  currentX = 0;
-  previousY = 0;
-  previousX = 0;
-
+  
   MemWindow memWin("MEM",
 		   numLines,
 		   numCols,
-		   maxWindowY,
-		   maxWindowX,
-		   minWindowY,
-		   minWindowX,
-		   centerY,
-		   centerX,
 		   startY,
-		   startX,
-		   currentY,
-		   currentX,
-		   previousY,
-		   previousX);
+		   startX);
 
   // define PID window
-  /*
   numLines = mainWin.getNumLines() -
-             memWin.getNumLines() -
-             cpuWin.getNumLines() -
-             tasksWin.getNumLines() -
-             topWin.getNumLines() - 1;
-  */
-  numLines = 1000;
+    memWin.getNumLines() -
+    cpuWin.getNumLines() -
+    tasksWin.getNumLines() -
+    topWin.getNumLines() - 1;
+  
   numCols = 7;
-  maxWindowY = 0; 
-  maxWindowX = 0;
-  minWindowY = 0;
-  minWindowX = 0;
-  centerY = numLines/2;
-  centerX = numCols/2;
   startY = memWin.getStartY() + 3;  // can be optimized by adding levels above instead of constant
   startX = 0;
-  currentY = 0;
-  currentX = 0;
-  previousY = 0;
-  previousX = 0;
 
   PIDWindow PIDWin("    PID",
 		   numLines,
 		   numCols,
-		   maxWindowY,
-		   maxWindowX,
-		   minWindowY,
-		   minWindowX,
-		   centerY,
-		   centerX,
 		   startY,
-		   startX,
-		   currentY,
-		   currentX,
-		   previousY,
-		   previousX);
-
+		   startX);
+  
   // define USER window
-  /*
   numLines = mainWin.getNumLines() -
-             memWin.getNumLines() -
-             cpuWin.getNumLines() -
-             tasksWin.getNumLines() -
-             topWin.getNumLines() - 1;
-  */
-  numLines = 1000;
+    memWin.getNumLines() -
+    cpuWin.getNumLines() -
+    tasksWin.getNumLines() -
+    topWin.getNumLines() - 1;
   numCols = 8;
-  maxWindowY = 0;
-  maxWindowX = 0;
-  minWindowY = 0;
-  minWindowX = 0;
-  centerY = numLines/2;
-  centerX = numCols/2;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() + 1;
-  currentY = 0;
-  currentX = 0;
-  previousY = 0;
-  previousX = 0;
 
   USERWindow USERWin("USER    ",
 		     numLines,
 		     numCols,
-		     maxWindowY,
-		     maxWindowX,
-		     minWindowY,
-		     minWindowX,
-		     centerY,
-		     centerX,
 		     startY,
-		     startX,
-		     currentY,
-		     currentX,
-		     previousY,
-		     previousX);
+		     startX);
 
   // define PR window
-  /*
   numLines = mainWin.getNumLines() -
-             memWin.getNumLines() -
-             cpuWin.getNumLines() -
-             tasksWin.getNumLines() -
-             topWin.getNumLines() - 1;
-  */
-  numLines = 1000;  
+    memWin.getNumLines() -
+    cpuWin.getNumLines() -
+    tasksWin.getNumLines() -
+    topWin.getNumLines() - 1;
   numCols = 3;
-  maxWindowY = 0;
-  maxWindowX = 0;
-  minWindowY = 0;
-  minWindowX = 0;
-  centerY = numLines/2;
-  centerX = numCols/2;
   startY = memWin.getStartY() + 3;
-  startX = PIDWin.getNumCols() + USERWin.getNumCols() + 2;
-  currentY = 0;
-  currentX = 0;
-  previousY = 0;
-  previousX = 0;
+  startX = PIDWin.getNumCols() +
+    USERWin.getNumCols() + 2;
 
   PRWindow PRWin(" PR",
 		 numLines,
 		 numCols,
-		 maxWindowY,
-		 maxWindowX,
-		 minWindowY,
-		 minWindowX,
-		 centerY,
-		 centerX,
 		 startY,
-		 startX,
-		 currentY,
-		 currentX,
-		 previousY,
-		 previousX);
+		 startX);
 
   // define NI window
-  /*
   numLines = mainWin.getNumLines() -
-             memWin.getNumLines() -
-             cpuWin.getNumLines() -
-             tasksWin.getNumLines() -
-             topWin.getNumLines() - 1;
-  */
-  numLines = 1000;
+    memWin.getNumLines() -
+    cpuWin.getNumLines() -
+    tasksWin.getNumLines() -
+    topWin.getNumLines() - 1;
   numCols = 3;
-  maxWindowY = 0;
-  maxWindowX = 0;
-  minWindowY = 0;
-  minWindowX = 0;
-  centerY = numLines/2;
-  centerX = numCols/2;
   startY = memWin.getStartY() + 3;
-  startX = PIDWin.getNumCols() + USERWin.getNumCols() + PRWin.getNumCols() + 3;
-  currentY = 0;
-  currentX = 0;
-  previousY = 0;
-  previousX = 0;
+  startX = PIDWin.getNumCols() +
+    USERWin.getNumCols() +
+    PRWin.getNumCols() + 3;
 
   NIWindow NIWin(" NI",
 		 numLines,
 		 numCols,
-		 maxWindowY,
-		 maxWindowX,
-		 minWindowY,
-		 minWindowX,
-		 centerY,
-		 centerX,
 		 startY,
-		 startX,
-		 currentY,
-		 currentX,
-		 previousY,
-		 previousX);
+		 startX);
 
   // define VIRT window
-  /*
   numLines = mainWin.getNumLines() -
-             memWin.getNumLines() -
-             cpuWin.getNumLines() -
-             tasksWin.getNumLines() -
-             topWin.getNumLines() - 1;
-  */
-  numLines = 1000;
+    memWin.getNumLines() -
+    cpuWin.getNumLines() -
+    tasksWin.getNumLines() -
+    topWin.getNumLines() - 1;
   numCols = 7;
-  maxWindowY = 0;
-  maxWindowX = 0;
-  minWindowY = 0;
-  minWindowX = 0;
-  centerY = numLines/2;
-  centerX = numCols/2;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() +
-           USERWin.getNumCols() +
-           PRWin.getNumCols() +
+    USERWin.getNumCols() +
+    PRWin.getNumCols() +
     NIWin.getNumCols() + 4;
-  currentY = 0;
-  currentX = 0;
-  previousY = 0;
-  previousX = 0;
-
+  
   VIRTWindow VIRTWin("   VIRT",
 		     numLines,
 		     numCols,
-		     maxWindowY,
-		     maxWindowX,
-		     minWindowY,
-		     minWindowX,
-		     centerY,
-		     centerX,
 		     startY,
-		     startX,
-		     currentY,
-		     currentX,
-		     previousY,
-		     previousX);
+		     startX);
 
   // define RES window
-  /*
   numLines = mainWin.getNumLines() -
-             memWin.getNumLines() -
-             cpuWin.getNumLines() -
-             tasksWin.getNumLines() -
-             topWin.getNumLines() - 1;
-  */
-  numLines = 1000;
+    memWin.getNumLines() -
+    cpuWin.getNumLines() -
+    tasksWin.getNumLines() -
+    topWin.getNumLines() - 1;
   numCols = 6;
-  maxWindowY = 0;
-  maxWindowX = 0;
-  minWindowY = 0;
-  minWindowX = 0;
-  centerY = numLines/2;
-  centerX = numCols/2;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() +
-           USERWin.getNumCols() +
-           PRWin.getNumCols() +
-           NIWin.getNumCols() +
-           VIRTWin.getNumCols() + 5;
-  currentY = 0;
-  currentX = 0;
-  previousY = 0;
-  previousX = 0;
+    USERWin.getNumCols() +
+    PRWin.getNumCols() +
+    NIWin.getNumCols() +
+    VIRTWin.getNumCols() + 5;
 
   RESWindow RESWin("   RES",
 		   numLines,
 		   numCols,
-		   maxWindowY,
-		   maxWindowX,
-		   minWindowY,
-		   minWindowX,
-		   centerY,
-		   centerX,
 		   startY,
-		   startX,
-		   currentY,
-		   currentX,
-		   previousY,
-		   previousX);
+		   startX);
 
   // define SHR window
-  /*
   numLines = mainWin.getNumLines() -
-             memWin.getNumLines() -
-             cpuWin.getNumLines() -
-             tasksWin.getNumLines() -
-             topWin.getNumLines() - 1;
-  */
-  numLines = 1000;
+    memWin.getNumLines() -
+    cpuWin.getNumLines() -
+    tasksWin.getNumLines() -
+    topWin.getNumLines() - 1;
   numCols = 6;
-  maxWindowY = 0;
-  maxWindowX = 0;
-  minWindowY = 0;
-  minWindowX = 0;
-  centerY = numLines/2;
-  centerX = numCols/2;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() +
-           USERWin.getNumCols() +
-           PRWin.getNumCols() +
-           NIWin.getNumCols() +
-           VIRTWin.getNumCols() +
-           RESWin.getNumCols() + 6;
-  currentY = 0;
-  currentX = 0;
-  previousY = 0;
-  previousX = 0;
+    USERWin.getNumCols() +
+    PRWin.getNumCols() +
+    NIWin.getNumCols() +
+    VIRTWin.getNumCols() +
+    RESWin.getNumCols() + 6;
 
   SHRWindow SHRWin("   SHR",
 		   numLines,
 		   numCols,
-		   maxWindowY,
-		   maxWindowX,
-		   minWindowY,
-		   minWindowX,
-		   centerY,
-		   centerX,
 		   startY,
-		   startX,
-		   currentY,
-		   currentX,
-		   previousY,
-		   previousX);
+		   startX);
 
   // define S window
   numLines = mainWin.getNumLines() -
-             memWin.getNumLines() -
-             cpuWin.getNumLines() -
-             tasksWin.getNumLines() -
-             topWin.getNumLines() - 1;
+    memWin.getNumLines() -
+    cpuWin.getNumLines() -
+    tasksWin.getNumLines() -
+    topWin.getNumLines() - 1;
   numCols = 1;
-  maxWindowY = 0;
-  maxWindowX = 0;
-  minWindowY = 0;
-  minWindowX = 0;
-  centerY = numCols/2;
-  centerX = numCols/2;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() +
-           USERWin.getNumCols() +
-           PRWin.getNumCols() +
-           NIWin.getNumCols() +
-           VIRTWin.getNumCols() +
-           RESWin.getNumCols() +
-           SHRWin.getNumCols() + 7;
-  currentY = 0;
-  currentX = 0;
-  previousY = 0;
-  previousX = 0;
-
+    USERWin.getNumCols() +
+    PRWin.getNumCols() +
+    NIWin.getNumCols() +
+    VIRTWin.getNumCols() +
+    RESWin.getNumCols() +
+    SHRWin.getNumCols() + 7;
+  
   SWindow SWin("S",
 	       numLines,
 	       numCols,
-	       maxWindowY,
-	       maxWindowX,
-	       minWindowY,
-	       minWindowX,
-	       centerY,
-	       centerX,
 	       startY,
-	       startX,
-	       currentY,
-	       currentX,
-	       previousY,
-	       previousX);
-
+	       startX);
+  
   // define PercentCPU window
-  /*
   numLines = mainWin.getNumLines() -
-             memWin.getNumLines() -
-             cpuWin.getNumLines() -
-             tasksWin.getNumLines() -
-             topWin.getNumLines() - 1;
-  */
-  numLines = 1000;
+    memWin.getNumLines() -
+    cpuWin.getNumLines() -
+    tasksWin.getNumLines() -
+    topWin.getNumLines() - 1;
   numCols = 5;
-  maxWindowY = 0;
-  maxWindowX = 0;
-  minWindowY = 0;
-  minWindowX = 0;
-  centerY = numCols/2;
-  centerX = numCols/2;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() +
-           USERWin.getNumCols() +
-           PRWin.getNumCols() +
-           NIWin.getNumCols() +
-           VIRTWin.getNumCols() +
-           RESWin.getNumCols() +
-           SHRWin.getNumCols() + 
-           SWin.getNumCols() + 8;
-  currentY = 0;
-  currentX = 0;
-  previousY = 0;
-  previousX = 0;
-
+    USERWin.getNumCols() +
+    PRWin.getNumCols() +
+    NIWin.getNumCols() +
+    VIRTWin.getNumCols() +
+    RESWin.getNumCols() +
+    SHRWin.getNumCols() + 
+    SWin.getNumCols() + 8;
+  
   PercentCPUWindow PercentCPUWin(" %CPU",
 				 numLines,
 				 numCols,
-				 maxWindowY,
-				 maxWindowX,
-				 minWindowY,
-				 minWindowX,
-				 centerY,
-				 centerX,
 				 startY,
-				 startX,
-				 currentY,
-				 currentX,
-				 previousY,
-				 previousX);
-
+				 startX);
+  
   // define PercentMEM window
-  /*
   numLines = mainWin.getNumLines() -
-             memWin.getNumLines() -
-             cpuWin.getNumLines() -
-             tasksWin.getNumLines() -
-             topWin.getNumLines() - 1;
-  */
-  numLines = 1000;
+    memWin.getNumLines() -
+    cpuWin.getNumLines() -
+    tasksWin.getNumLines() -
+    topWin.getNumLines() - 1;
   numCols = 5;
-  maxWindowY = 0;
-  maxWindowX = 0;
-  minWindowY = 0;
-  minWindowX = 0;
-  centerY = numCols/2;
-  centerX = numCols/2;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() +
-           USERWin.getNumCols() +
-           PRWin.getNumCols() +
-           NIWin.getNumCols() +
-           VIRTWin.getNumCols() +
-           RESWin.getNumCols() +
-           SHRWin.getNumCols() + 
-           SWin.getNumCols() +
-           PercentCPUWin.getNumCols() + 9;
-  currentY = 0;
-  currentX = 0;
-  previousY = 0;
-  previousX = 0;
-
+    USERWin.getNumCols() +
+    PRWin.getNumCols() +
+    NIWin.getNumCols() +
+    VIRTWin.getNumCols() +
+    RESWin.getNumCols() +
+    SHRWin.getNumCols() + 
+    SWin.getNumCols() +
+    PercentCPUWin.getNumCols() + 9;
+  
   PercentMEMWindow PercentMEMWin(" %MEM",
 				 numLines,
 				 numCols,
-				 maxWindowY,
-				 maxWindowX,
-				 minWindowY,
-				 minWindowX,
-				 centerY,
-				 centerX,
 				 startY,
-				 startX,
-				 currentY,
-				 currentX,
-				 previousY,
-				 previousX);
-
+				 startX);
+  
   // define TIME window
-  /*
   numLines = mainWin.getNumLines() -
-             memWin.getNumLines() -
-             cpuWin.getNumLines() -
-             tasksWin.getNumLines() -
-             topWin.getNumLines() - 1;
-  */
-  numLines = 1000;
+    memWin.getNumLines() -
+    cpuWin.getNumLines() -
+    tasksWin.getNumLines() -
+    topWin.getNumLines() - 1;
   numCols = 9;
-  maxWindowY = 0;
-  maxWindowX = 0;
-  minWindowY = 0;
-  minWindowX = 0;
-  centerY = numCols/2;
-  centerX = numCols/2;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() +
-           USERWin.getNumCols() +
-           PRWin.getNumCols() +
-           NIWin.getNumCols() +
-           VIRTWin.getNumCols() +
-           RESWin.getNumCols() +
-           SHRWin.getNumCols() + 
-           SWin.getNumCols() +
-           PercentCPUWin.getNumCols() + 
-           PercentMEMWin.getNumCols() + 10;  
-  currentY = 0;
-  currentX = 0;
-  previousY = 0;
-  previousX = 0;
-
+    USERWin.getNumCols() +
+    PRWin.getNumCols() +
+    NIWin.getNumCols() +
+    VIRTWin.getNumCols() +
+    RESWin.getNumCols() +
+    SHRWin.getNumCols() + 
+    SWin.getNumCols() +
+    PercentCPUWin.getNumCols() + 
+    PercentMEMWin.getNumCols() + 10;  
+  
   TIMEWindow TIMEWin("    TIME+",
 		     numLines,
 		     numCols,
-		     maxWindowY,
-		     maxWindowX,
-		     minWindowY,
-		     minWindowX,
-		     centerY,
-		     centerX,
 		     startY,
-		     startX,
-		     currentY,
-		     currentX,
-		     previousY,
-		     previousX);
-
+		     startX);
+  
   // define COMMAND window
-  /*
   numLines = mainWin.getNumLines() -
-             memWin.getNumLines() -
-             cpuWin.getNumLines() -
-             tasksWin.getNumLines() -
-             topWin.getNumLines() - 1;
-  */
-  numLines = 1000;
-  numCols = 1000;
-  maxWindowY = 0;
-  maxWindowX = 0;
-  minWindowY = 0;
-  minWindowX = 0;
-  centerY = numCols/2;
-  centerX = numCols/2;
+    memWin.getNumLines() -
+    cpuWin.getNumLines() -
+    tasksWin.getNumLines() -
+    topWin.getNumLines() - 1;
+  numCols = 48;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() +
-           USERWin.getNumCols() +
-           PRWin.getNumCols() +
-           NIWin.getNumCols() +
-           VIRTWin.getNumCols() +
-           RESWin.getNumCols() +
-           SHRWin.getNumCols() + 
-           SWin.getNumCols() +
-           PercentCPUWin.getNumCols() + 
-           PercentMEMWin.getNumCols() +
-           TIMEWin.getNumCols() + 11;
-  //  numCols = mainWin.getMaxWindowX() - startX;
-  currentY = 0;
-  currentX = 0;
-  previousY = 0;
-  previousX = 0;
-
+    USERWin.getNumCols() +
+    PRWin.getNumCols() +
+    NIWin.getNumCols() +
+    VIRTWin.getNumCols() +
+    RESWin.getNumCols() +
+    SHRWin.getNumCols() + 
+    SWin.getNumCols() +
+    PercentCPUWin.getNumCols() + 
+    PercentMEMWin.getNumCols() +
+    TIMEWin.getNumCols() + 11;
+  
   COMMANDWindow COMMANDWin("COMMAND",
 			   numLines,
 			   numCols,
-			   maxWindowY,
-			   maxWindowX,
-			   minWindowY,
-			   minWindowX,
-			   centerY,
-			   centerX,
 			   startY,
-			   startX,
-			   currentY,
-			   currentX,
-			   previousY,
-			   previousX);
+			   startX);
+  
   COMMANDWin.fixCOMMANDWinName();
   
   // ## create windows ##
@@ -1008,7 +628,7 @@ int main()
   // ## create and print white proc name color line ##
   std::string colorLine;
   std::vector<int> winNums;
-  winNums.push_back(0);
+  winNums.push_back(_MAINWIN);
   colorLine = createColorLine(mainWin.getNumCols());
   printColorLine(allWins, winNums, colorLine, PIDWin.getStartY(), _BLACK_TEXT);
 
@@ -1710,14 +1330,24 @@ int main()
 	if(shiftX > _PIDWIN)
 	  {
 	    shiftX--;
+	    const int temp = shiftX - _PIDWIN;
 	    log << "KEY LEFT! shiftX: " << shiftX << std::endl;
+	    log << "Difference: " << shiftX - _PIDWIN << std::endl;
+
+	    shiftXBottomWins(allWins,
+			     temp);
+			     
 	  }
 	break;
       case KEY_RIGHT:
 	if(shiftX < _COMMANDWIN)
 	  {
 	    shiftX++;
+	    const int temp = shiftX - _PIDWIN;
 	    log << "KEY RIGHT! shiftX: " << shiftX << std::endl;
+	    log << "Difference: " << shiftX - _PIDWIN << std::endl;
+	    shiftXBottomWins(allWins,
+			     temp);
 	  }
 	break;
       default:
@@ -1726,6 +1356,9 @@ int main()
 
     // print updated windows
     clearBottomWins(allWins);
+    werase(allWins.at(_MAINWIN)->getWindow());
+    printColorLine(allWins, winNums, colorLine, PIDWin.getStartY(), _BLACK_TEXT);
+    
     if(highlight == true)
       {
 	wattron(allWins.at(highlightIndex)->getWindow(), A_BOLD);
@@ -1739,9 +1372,11 @@ int main()
       {
 	wattroff(allWins.at(highlightIndex)->getWindow(), A_BOLD);
       }
+
     attronBottomWins(allWins, _BLACK_TEXT);
     printWindowNames(allWins);
     attroffBottomWins(allWins, _BLACK_TEXT);
+
     
 #if _CURSES
     // refresh the windows
@@ -1805,18 +1440,8 @@ void printWindowToLog(std::ofstream& log, const CursesWindow& win)
   log << "m_windowName: " << win.getWindowName() << std::endl;
   log << "m_numLines: " << win.getNumLines() << std::endl;
   log << "m_numCols: " << win.getNumCols() << std::endl;
-  log << "m_maxWindowY: " << win.getMaxWindowY() << std::endl;
-  log << "m_maxWindowX: " << win.getMaxWindowX() << std::endl;
-  log << "m_minWindowY: " << win.getMinWindowY() << std::endl;
-  log << "m_minWindowX: " << win.getMinWindowX() << std::endl;
-  log << "m_centerY: " << win.getCenterY() << std::endl;
-  log << "m_centerX: " << win.getCenterX() << std::endl;
   log << "m_startY: " << win.getStartY() << std::endl;
   log << "m_startX: " << win.getStartX() << std::endl;
-  log << "m_currentY: " << win.getCurrentY() << std::endl;
-  log << "m_currentX: " << win.getCurrentX() << std::endl;
-  log << "m_previousY: " << win.getPreviousY() << std::endl;
-  log << "m_previousX: " << win.getPreviousX() << std::endl;
 } // end of "printWindow"
 
 

@@ -12,6 +12,7 @@
 #include "extractFileData.hpp"
 #include "procStates.hpp"
 
+void clearTopWins(const std::vector<CursesWindow*>& wins);
 void attronBottomWins(const std::vector<CursesWindow*>& wins,
 		      int attrs);
 void attroffBottomWins(const std::vector<CursesWindow*>& wins,
@@ -37,4 +38,7 @@ void printColorLine(const std::vector<CursesWindow*>& wins,
 		    const std::string& colorLine,
 		    const int& row,
 		    const int& attrs);
+
+void shiftXBottomWins(const std::vector<CursesWindow*>& wins,
+		      const int& totalShifts);
 #endif

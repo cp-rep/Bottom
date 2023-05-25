@@ -5,6 +5,15 @@
 
 
 
+void clearTopWins(const std::vector<CursesWindow*>& wins)
+{
+    werase(wins.at(_TOPWIN)->getWindow());
+    werase(wins.at(_TASKSWIN)->getWindow());
+    werase(wins.at(_CPUWIN)->getWindow());
+    werase(wins.at(_MEMWIN)->getWindow());
+} // end of "clearBottomWins"
+
+
 /*
   Function:
   clearBottomWins
@@ -30,6 +39,10 @@ void clearBottomWins(const std::vector<CursesWindow*>& wins)
     werase(wins.at(_USERWIN)->getWindow());
     werase(wins.at(_PIDWIN)->getWindow());
 } // end of "clearBottomWins"
+
+
+
+
 
 
 
@@ -257,6 +270,7 @@ void printSortedProcsReverse(const int& startLine,
 		0,
 		pUmap.at(sortedOut.at(k).second)->getCOMMAND().c_str());
     }
+  
 } // end of "printSortedProcsReverse"
 
 
@@ -278,7 +292,7 @@ void printProcs(const int& shiftY,
 		const std::vector<CursesWindow*>& wins)
 {
   std::string outString;
-  
+
   for(int i = 0; i < pUmap.size(); i++)
     {
       int posY = i + shiftY;
@@ -295,13 +309,12 @@ void printProcs(const int& shiftY,
       // USER      
       if(shiftX <= _USERWIN)
       	{
-
+	  outString = pUmap.at(pidList.at(i))->getUSER();
 	  mvwaddstr(wins.at(_USERWIN)->getWindow(),
 		    posY,
 		    0,
-		    pUmap.at(pidList.at(i))->getUSER().c_str());
+		    outString.c_str());
 	}
-      
       // PR
       if(shiftX <= _PRWIN)
 	{
@@ -323,54 +336,56 @@ void printProcs(const int& shiftY,
       // VIRT
       if(shiftX <= _VIRTWIN)
 	{
-      outString = std::to_string(pUmap.at(pidList.at(i))->getVIRT());
-      mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
-		posY,
-		wins.at(_VIRTWIN)->getNumCols() - outString.length(),
-		outString.c_str());
+	  outString = std::to_string(pUmap.at(pidList.at(i))->getVIRT());
+	  mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
+		    posY,
+		    wins.at(_VIRTWIN)->getNumCols() - outString.length(),
+		    outString.c_str());
 	}
       // RES
       if(shiftX <= _RESWIN)
 	{
-      outString = std::to_string(pUmap.at(pidList.at(i))->getRES());
-      mvwaddstr(wins.at(_RESWIN)->getWindow(),
-		posY,
-		wins.at(_RESWIN)->getNumCols() - outString.length(),
-		outString.c_str());
+	  outString = std::to_string(pUmap.at(pidList.at(i))->getRES());
+	  mvwaddstr(wins.at(_RESWIN)->getWindow(),
+		    posY,
+		    wins.at(_RESWIN)->getNumCols() - outString.length(),
+		    outString.c_str());
 	}
       // SHR
       if(shiftX <= _SHRWIN)
 	{
-      outString = std::to_string(pUmap.at(pidList.at(i))->getSHR());
-      mvwaddstr(wins.at(_SHRWIN)->getWindow(),
-		posY,
-		wins.at(_SHRWIN)->getNumCols() - outString.length(),
-		outString.c_str());
+	  outString = std::to_string(pUmap.at(pidList.at(i))->getSHR());
+	  mvwaddstr(wins.at(_SHRWIN)->getWindow(),
+		    posY,
+		    wins.at(_SHRWIN)->getNumCols() - outString.length(),
+		    outString.c_str());
 	}
       // S
-      if(shiftX <= _SWIN){
-      mvwaddch(wins.at(_SWIN)->getWindow(),
-	       posY,
-	       0,
-	       pUmap.at(pidList.at(i))->getS());
-      }
+      if(shiftX <= _SWIN)
+	{
+	  mvwaddch(wins.at(_SWIN)->getWindow(),
+		   posY,
+		   0,
+		   pUmap.at(pidList.at(i))->getS());
+	}
+
       // %CPU
       if(shiftX <= _PROCCPUWIN)
 	{
-      outString = doubleToStr(pUmap.at(pidList.at(i))->getCPUUsage(), 1);
-      mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
-		posY,
-		wins.at(_PROCCPUWIN)->getNumCols() - outString.length(),
-		outString.c_str());
+	  outString = doubleToStr(pUmap.at(pidList.at(i))->getCPUUsage(), 1);
+	  mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
+		    posY,
+		    wins.at(_PROCCPUWIN)->getNumCols() - outString.length(),
+		    outString.c_str());
 	}
       // %MEM
       if(shiftX <= _PROCMEMWIN)
 	{
-      outString = doubleToStr(pUmap.at(pidList.at(i))->getMEMUsage(), 1);
-      mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
-		posY,
-		wins.at(_PROCMEMWIN)->getNumCols() - outString.length(),
-		outString.c_str());
+	  outString = doubleToStr(pUmap.at(pidList.at(i))->getMEMUsage(), 1);
+	  mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
+		    posY,
+		    wins.at(_PROCMEMWIN)->getNumCols() - outString.length(),
+		    outString.c_str());
 	}
       // TIME+
       if(shiftX <= _PROCTIMEWIN)
@@ -445,3 +460,30 @@ void printColorLine(const std::vector<CursesWindow*>& wins,
   }
 } // end of "printColorLine"
 
+
+
+/*
+  Function:
+  shiftXBottomWins
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void shiftXBottomWins(const std::vector<CursesWindow*>& wins,
+		      const int& totalShifts)
+{
+  int column = 0;
+  int currWin = _PIDWIN + totalShifts;
+  const int totalWins = 12;
+  
+  for(int i = 0; i < totalWins - totalShifts; i++, currWin++)
+    {
+      mvwin(wins.at(currWin)->getWindow(),
+	    wins.at(currWin)->getStartY(),
+	    wins.at(_PIDWIN + i)->getStartX());
+    }
+
+} // end of "shiftXBottomWins"
