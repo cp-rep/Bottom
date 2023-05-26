@@ -16,7 +16,7 @@ COMMANDWindow::COMMANDWindow(std::string windowName,
 								 startY,
 								 startX)
 {
-  fixCOMMANDWinName();
+  //fixCOMMANDWinName();
 }
 
 
@@ -34,6 +34,7 @@ COMMANDWindow::COMMANDWindow(std::string windowName,
  */
 void COMMANDWindow::fixCOMMANDWinName()
 {
+  
   std::string temp;
   int len = getNumCols() - getWindowName().length();
   temp = getWindowName();
