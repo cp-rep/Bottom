@@ -69,34 +69,15 @@
 #include "secondsToTime.hpp"
 #include "cursesWrappers.hpp"
 #include "cursesColors.hpp"
-#include "processStates.hpp"
-#include "cursesWindowConstants.hpp"
+#include "progStateConsts.hpp"
+#include "cursesWinConsts.hpp"
+#include "fileConsts.hpp"
 
 //constants
 // debug
 #define _DEBUG 0
 #define _CURSES 1
 #define _NOLOG 0
-
-// directories and files
-#define _PROC "/proc/"
-#define _COMM "/comm"
-#define _STAT "/stat"
-#define _STATUS "/status"
-#define _MEMINFO "/meminfo"
-#define _PROC_MEMINFO "/proc/meminfo"
-#define _UPTIME "/proc/uptime"
-#define _UTMP "/var/run/utmp"
-
-// in-file phrases
-#define _MEMTOTAL "MemTotal"
-#define _MEMFREE "MemFree"
-#define _BUFFERS "Buffers"
-#define _CACHED "Cached"
-#define _SRECLAIMABLE "SReclaimable"
-#define _SWAPTOTAL "SwapTotal"
-#define _SWAPFREE "SwapFree"
-#define _MEMAVAILABLE "MemAvailable"
 
 // commands and options/modes
 #define _UTMPDUMP "utmpdump"
@@ -120,7 +101,7 @@ void mergeStringList(const std::vector<std::pair<std::string, int>>& frontList,
 		     const std::unordered_map<int, ProcessInfo*>& pUmap);
 
 
-  
+
 /*
   Function:
   main
@@ -198,8 +179,7 @@ int main()
   std::unordered_map<char, int> progStates;
   std::unordered_map<int, int> sortStates;
   
-  // ## setup the main window ##
-  // init curses to main window
+  // ## initialize and setup curses ##
   mainWin.setWindow(initscr());
 
 #if _CURSES
@@ -225,7 +205,6 @@ int main()
 
   //
   nodelay(mainWin.getWindow(), true);
-
 
   // ## define windows ##
   // define main window
@@ -266,7 +245,6 @@ int main()
 		       numCols,
 		       startY,
 		       startX);
-
   // define cpu window
   numLines = 1;
   numCols = numCols;
@@ -467,11 +445,6 @@ int main()
 				 startY,
 				 startX);
   // define TIME window
-  numLines = mainWin.getNumLines() -
-    memWin.getNumLines() -
-    cpuWin.getNumLines() -
-    tasksWin.getNumLines() -
-    topWin.getNumLines() - 1;
   numCols = 9;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() +
@@ -494,11 +467,6 @@ int main()
 		     startY,
 		     startX);
   // define COMMAND window
-  numLines = mainWin.getNumLines() -
-    memWin.getNumLines() -
-    cpuWin.getNumLines() -
-    tasksWin.getNumLines() -
-    topWin.getNumLines() - 1;
   numCols = 48;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() +
@@ -554,9 +522,9 @@ int main()
   */
 
   // ## define program states ##
-  progStates.insert(std::make_pair(_PROCSTATEHELP, 1)); // open help menu  
-  progStates.insert(std::make_pair(_PROCSTATEQUIT, 1)); // quit
-  progStates.insert(std::make_pair(_PROCSTATEHL, 1)); // highlight column
+  progStates.insert(std::make_pair(_PROGSTATEHELP, 1)); // open help menu  
+  progStates.insert(std::make_pair(_PROGSTATEQUIT, 1)); // quit
+  progStates.insert(std::make_pair(_PROGSTATEHL, 1)); // highlight column
 
   // ## define sort states ##
   sortStates.insert(std::make_pair(_PIDWIN, 1)); // PID
@@ -1039,12 +1007,12 @@ int main()
     // change process state
     switch(progState)
       {
-      case _PROCSTATEHELP: // help
+      case _PROGSTATEHELP: // help
 	break;
-      case _PROCSTATEQUIT: // quit
+      case _PROGSTATEQUIT: // quit
 	quit = true;
 	break;
-      case _PROCSTATEHL: // highlight
+      case _PROGSTATEHL: // highlight
 	highlight = true;
 	break;
       default:
@@ -1052,7 +1020,7 @@ int main()
       }
     
     // change sort state
-    // *** creating funciton with pointer to funciton parameter should reduce DRY ***
+    // *** creating function with pointer to funciton parameter should reduce DRY ***
     switch(sortState)
       {
       case _PIDWIN: // PID
@@ -1294,7 +1262,6 @@ int main()
     //attronBottomWins(allWins, _BLACK_TEXT);
      printWindowNames(allWins);
     //attroffBottomWins(allWins, _BLACK_TEXT);
-
     
 #if _CURSES
     // refresh the windows
