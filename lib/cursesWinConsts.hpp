@@ -1,8 +1,8 @@
 /*
-  File: cursesWindowConstants.hpp
+  cursesWinConsts.hpp
  */
-#ifndef CURSESWINDOWCONSTANTS_HPP
-#define CURSESWINDOWCONSTANTS_HPP
+#ifndef CURSESWINCONSTS_HPP
+#define CURSESWINCONSTS_HPP
 
 // window index constants
 #define _MAINWIN 0
@@ -22,5 +22,8 @@
 #define _PROCMEMWIN 14
 #define _PROCTIMEWIN 15
 #define _COMMANDWIN 16
+
+// window count constants
+#define _BOTTOMWINTOTAL 12
 
 #endif
