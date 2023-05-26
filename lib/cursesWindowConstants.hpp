@@ -1,16 +1,10 @@
 /*
-  File: procStates.hpp
+  File: cursesWindowConstants.hpp
  */
+#ifndef CURSESWINDOWCONSTANTS_HPP
+#define CURSESWINDOWCONSTANTS_HPP
 
-#ifndef PROCSTATES_HPP
-#define PROCSTATES_HPP
-
-// program state constants
-#define _PROCSTATEHELP 'h'
-#define _PROCSTATEQUIT 'q'
-#define _PROCSTATEHL 'x'
-
-// window index constants for main cursesWindow.hpp object
+// window index constants
 #define _MAINWIN 0
 #define _TOPWIN 1
 #define _TASKSWIN 2

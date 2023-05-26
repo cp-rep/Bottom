@@ -10,7 +10,8 @@
 #include "cursesWindow.hpp"
 #include "processInfo.hpp"
 #include "extractFileData.hpp"
-#include "procStates.hpp"
+#include "processStates.hpp"
+#include "cursesWindowConstants.hpp"
 
 void clearTopWins(const std::vector<CursesWindow*>& wins);
 void attronBottomWins(const std::vector<CursesWindow*>& wins,

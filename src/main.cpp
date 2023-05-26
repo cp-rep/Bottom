@@ -69,7 +69,8 @@
 #include "secondsToTime.hpp"
 #include "cursesWrappers.hpp"
 #include "cursesColors.hpp"
-#include "procStates.hpp"
+#include "processStates.hpp"
+#include "cursesWindowConstants.hpp"
 
 //constants
 // debug
@@ -225,28 +226,23 @@ int main()
   //
   nodelay(mainWin.getWindow(), true);
 
-  
-  // get main window dimensions
+
+  // ## define windows ##
+  // define main window
   getmaxyx(mainWin.getWindow(), numLines, numCols);
-  
-  // define the main window
   startY = 0;
   startX = 0;
-  
   mainWin.defineWindow(mainWin.getWindow(),
 		       "Main",
 		       numLines,
 		       numCols,
-		       startY,
-		       startX);
-  
-  // ## define windows ##
-  // define top window
+		       0,
+		       0);
+  // define topWindow
   numLines = 1;
   numCols = numCols;
   startY = 0;
   startX = 0;
-
   TopWindow topWin(newwin(numLines,
 			  numCols,
 			  startY,
@@ -256,13 +252,11 @@ int main()
 		   numCols,
 		   startY,
 		   startX);
-  
   // define tasks window
   numLines = 1;
   numCols = numCols;
   startY = 1;
   startX = 0;
-  
   TasksWindow tasksWin(newwin(numLines,
 			      numCols,
 			      startY,
@@ -278,7 +272,6 @@ int main()
   numCols = numCols;
   startY = 2;
   startX = 0;
-  
   CpuWindow cpuWin(newwin(numLines,
 			  numCols,
 			  startY,
@@ -288,13 +281,11 @@ int main()
 		   numCols,
 		   startY,
 		   startX);
-  
   // define mem window
   numLines = 2;
   numCols = numCols;
   startY = 3;
-  startX = 0;
-  
+  startX = 0;  
   MemWindow memWin(newwin(numLines,
 			  numCols,
 			  startY,
@@ -304,18 +295,15 @@ int main()
 		   numCols,
 		   startY,
 		   startX);
-
   // define PID window
   numLines = mainWin.getNumLines() -
     memWin.getNumLines() -
     cpuWin.getNumLines() -
     tasksWin.getNumLines() -
     topWin.getNumLines() - 1;
-  
   numCols = 7;
-  startY = memWin.getStartY() + 3;  // can be optimized by adding levels above instead of constant
+  startY = memWin.getStartY() + 3;
   startX = 0;
-
   PIDWindow PIDWin(newwin(numLines,
 			  numCols,
 			  startY,
@@ -325,17 +313,10 @@ int main()
 		   numCols,
 		   startY,
 		   startX);
-  
   // define USER window
-  numLines = mainWin.getNumLines() -
-    memWin.getNumLines() -
-    cpuWin.getNumLines() -
-    tasksWin.getNumLines() -
-    topWin.getNumLines() - 1;
   numCols = 8;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() + 1;
-
   USERWindow USERWin(newwin(numLines,
 			    numCols,
 			    startY,
@@ -345,18 +326,11 @@ int main()
 		     numCols,
 		     startY,
 		     startX);
-
   // define PR window
-  numLines = mainWin.getNumLines() -
-    memWin.getNumLines() -
-    cpuWin.getNumLines() -
-    tasksWin.getNumLines() -
-    topWin.getNumLines() - 1;
   numCols = 3;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() + 2;
-
   PRWindow PRWin(newwin(numLines,
 			numCols,
 			startY,
@@ -366,19 +340,12 @@ int main()
 		 numCols,
 		 startY,
 		 startX);
-
   // define NI window
-  numLines = mainWin.getNumLines() -
-    memWin.getNumLines() -
-    cpuWin.getNumLines() -
-    tasksWin.getNumLines() -
-    topWin.getNumLines() - 1;
   numCols = 3;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() + 3;
-
   NIWindow NIWin(newwin(numLines,
 			numCols,
 			startY,
@@ -388,20 +355,13 @@ int main()
 		 numCols,
 		 startY,
 		 startX);
-
   // define VIRT window
-  numLines = mainWin.getNumLines() -
-    memWin.getNumLines() -
-    cpuWin.getNumLines() -
-    tasksWin.getNumLines() -
-    topWin.getNumLines() - 1;
   numCols = 7;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() +
     NIWin.getNumCols() + 4;
-  
   VIRTWindow VIRTWin(newwin(numLines,
 			    numCols,
 			    startY,
@@ -411,13 +371,7 @@ int main()
 		     numCols,
 		     startY,
 		     startX);
-
   // define RES window
-  numLines = mainWin.getNumLines() -
-    memWin.getNumLines() -
-    cpuWin.getNumLines() -
-    tasksWin.getNumLines() -
-    topWin.getNumLines() - 1;
   numCols = 6;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() +
@@ -425,7 +379,6 @@ int main()
     PRWin.getNumCols() +
     NIWin.getNumCols() +
     VIRTWin.getNumCols() + 5;
-
   RESWindow RESWin(newwin(numLines,
 			  numCols,
 			  startY,
@@ -435,13 +388,7 @@ int main()
 		   numCols,
 		   startY,
 		   startX);
-
   // define SHR window
-  numLines = mainWin.getNumLines() -
-    memWin.getNumLines() -
-    cpuWin.getNumLines() -
-    tasksWin.getNumLines() -
-    topWin.getNumLines() - 1;
   numCols = 6;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() +
@@ -450,7 +397,6 @@ int main()
     NIWin.getNumCols() +
     VIRTWin.getNumCols() +
     RESWin.getNumCols() + 6;
-
   SHRWindow SHRWin(newwin(numLines,
 			  numCols,
 			  startY,
@@ -460,13 +406,7 @@ int main()
 		   numCols,
 		   startY,
 		   startX);
-
   // define S window
-  numLines = mainWin.getNumLines() -
-    memWin.getNumLines() -
-    cpuWin.getNumLines() -
-    tasksWin.getNumLines() -
-    topWin.getNumLines() - 1;
   numCols = 1;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() +
@@ -476,7 +416,6 @@ int main()
     VIRTWin.getNumCols() +
     RESWin.getNumCols() +
     SHRWin.getNumCols() + 7;
-  
   SWindow SWin(newwin(numLines,
 		      numCols,
 		      startY,
@@ -486,13 +425,7 @@ int main()
 	       numCols,
 	       startY,
 	       startX);
-  
   // define PercentCPU window
-  numLines = mainWin.getNumLines() -
-    memWin.getNumLines() -
-    cpuWin.getNumLines() -
-    tasksWin.getNumLines() -
-    topWin.getNumLines() - 1;
   numCols = 5;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() +
@@ -503,7 +436,6 @@ int main()
     RESWin.getNumCols() +
     SHRWin.getNumCols() + 
     SWin.getNumCols() + 8;
-  
   PercentCPUWindow PercentCPUWin(newwin(numLines,
 				  numCols,
 				  startY,
@@ -513,13 +445,7 @@ int main()
 				 numCols,
 				 startY,
 				 startX);
-  
   // define PercentMEM window
-  numLines = mainWin.getNumLines() -
-    memWin.getNumLines() -
-    cpuWin.getNumLines() -
-    tasksWin.getNumLines() -
-    topWin.getNumLines() - 1;
   numCols = 5;
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() +
@@ -531,7 +457,6 @@ int main()
     SHRWin.getNumCols() + 
     SWin.getNumCols() +
     PercentCPUWin.getNumCols() + 9;
-  
   PercentMEMWindow PercentMEMWin(newwin(numLines,
 				  numCols,
 				  startY,
@@ -541,7 +466,6 @@ int main()
 				 numCols,
 				 startY,
 				 startX);
-  
   // define TIME window
   numLines = mainWin.getNumLines() -
     memWin.getNumLines() -
@@ -560,7 +484,6 @@ int main()
     SWin.getNumCols() +
     PercentCPUWin.getNumCols() + 
     PercentMEMWin.getNumCols() + 10;  
-  
   TIMEWindow TIMEWin(newwin(numLines,
 			    numCols,
 			    startY,
@@ -570,7 +493,6 @@ int main()
 		     numCols,
 		     startY,
 		     startX);
-  
   // define COMMAND window
   numLines = mainWin.getNumLines() -
     memWin.getNumLines() -
@@ -590,8 +512,6 @@ int main()
     PercentCPUWin.getNumCols() + 
     PercentMEMWin.getNumCols() +
     TIMEWin.getNumCols() + 11;
-  
-  
   COMMANDWindow COMMANDWin(newwin(numLines,
 				  numCols,
 				  startY,
@@ -601,76 +521,7 @@ int main()
 			   numCols,
 			   startY,
 			   startX);
-  
-  COMMANDWin.fixCOMMANDWinName();
-
-  /*
-  // ## create windows ##
-  topWin.setWindow(newwin(topWin.getNumLines(),
-			  topWin.getNumCols(),
-			  topWin.getStartY(),
-			  topWin.getStartX()));
-  tasksWin.setWindow(newwin(tasksWin.getNumLines(),
-			   tasksWin.getNumCols(),
-			   tasksWin.getStartY(),
-			   tasksWin.getStartX()));
-  cpuWin.setWindow(newwin(cpuWin.getNumLines(),
-			  cpuWin.getNumCols(),
-			  cpuWin.getStartY(),
-			  cpuWin.getStartX()));
-  memWin.setWindow(newwin(memWin.getNumLines(),
-			  memWin.getNumCols(),
-			  memWin.getStartY(),
-			  memWin.getStartX()));
-  PIDWin.setWindow(newwin(PIDWin.getNumLines(),
-			  PIDWin.getNumCols(),
-			  PIDWin.getStartY(),
-			  PIDWin.getStartX()));
-  USERWin.setWindow(newwin(USERWin.getNumLines(),
-			   USERWin.getNumCols(),
-			   USERWin.getStartY(),
-			   USERWin.getStartX()));
-  PRWin.setWindow(newwin(PRWin.getNumLines(),
-			 PRWin.getNumCols(),
-			 PRWin.getStartY(),
-			 PRWin.getStartX()));
-  NIWin.setWindow(newwin(NIWin.getNumLines(),
-			 NIWin.getNumCols(),
-			 NIWin.getStartY(),
-			 NIWin.getStartX()));
-  VIRTWin.setWindow(newwin(VIRTWin.getNumLines(),
-			   VIRTWin.getNumCols(),
-			   VIRTWin.getStartY(),
-			   VIRTWin.getStartX()));		  
-  RESWin.setWindow(newwin(RESWin.getNumLines(),
-			  RESWin.getNumCols(),
-			  RESWin.getStartY(),
-			  RESWin.getStartX()));
-  SHRWin.setWindow(newwin(SHRWin.getNumLines(),
-			  SHRWin.getNumCols(),
-			  SHRWin.getStartY(),
-			  SHRWin.getStartX()));
-  SWin.setWindow(newwin(SWin.getNumLines(),
-			SWin.getNumCols(),
-			SWin.getStartY(),
-			SWin.getStartX()));
-  PercentCPUWin.setWindow(newwin(PercentCPUWin.getNumLines(),
-				 PercentCPUWin.getNumCols(),
-				 PercentCPUWin.getStartY(),
-				 PercentCPUWin.getStartX()));
-  PercentMEMWin.setWindow(newwin(PercentMEMWin.getNumLines(),
-				 PercentMEMWin.getNumCols(),
-				 PercentMEMWin.getStartY(),
-				 PercentMEMWin.getStartX()));  
-  TIMEWin.setWindow(newwin(TIMEWin.getNumLines(),
-			   TIMEWin.getNumCols(),
-			   TIMEWin.getStartY(),
-			   TIMEWin.getStartX()));
-  COMMANDWin.setWindow(newwin(COMMANDWin.getNumLines(),
-			      COMMANDWin.getNumCols(),
-			      COMMANDWin.getStartY(),
-			      COMMANDWin.getStartX()));
-  */
+  //  COMMANDWin.fixCOMMANDWinName();
   
   // store all windows in vector for polymorphic calls
   // process windows
