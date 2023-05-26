@@ -6,11 +6,13 @@
 
 
 
-SHRWindow::SHRWindow(std::string windowName,	      
+SHRWindow::SHRWindow(WINDOW* win,
+		     std::string windowName,	      
 		     const short& numLines,
 		     const short& numCols,
 		     const short& startY,
-		     const short& startX) : CursesWindow(windowName,
+		     const short& startX) : CursesWindow(win,
+							 windowName,
 							 numLines,
 							 numCols,
 							 startY,

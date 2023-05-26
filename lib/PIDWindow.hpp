@@ -10,7 +10,8 @@
 class PIDWindow : public CursesWindow {
 public:
 
-  PIDWindow(std::string windowName = "",	      
+  PIDWindow(WINDOW* win = nullptr,
+	    const std::string windowName = "",	      
 	    const short& numLines = 0,
 	    const short& numCols = 0,
 	    const short& startY = 0,

@@ -6,13 +6,15 @@
 
 
 
-MemWindow::MemWindow(std::string windowName,	      
+MemWindow::MemWindow(WINDOW* win,
+		     const std::string windowName,	      
 		     const short& numLines,
 		     const short& numCols,
 		     const short& startY,
 		     const short& startX,
 		     const std::string& MiB,
-		     const std::string& swap) : CursesWindow(windowName,		     
+		     const std::string& swap) : CursesWindow(win,
+							     windowName,		     
 							     numLines,
 							     numCols,
 							     startY,

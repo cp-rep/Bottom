@@ -1,15 +1,14 @@
 /*
-  File: TIMEWindow.hpp
+  File: mainWindow.hpp
   Description:
  */
-#ifndef TIMEWINDOW_HPP
-#define TIMEWINDOW_HPP
-
+#ifndef MAINWINDOW_HPP
+#define MAINWINDOW_HPP
 #include "cursesWindow.hpp"
 
-class TIMEWindow : public CursesWindow {
+class MainWindow : public CursesWindow {
 public:
-  TIMEWindow(WINDOW* win = nullptr,
+  MainWindow(WINDOW* win = nullptr,
 	     const std::string windowName = "",	      
 	     const short& numLines = 0,
 	     const short& numCols = 0,

@@ -1,11 +1,10 @@
 /*
-  File: TIMEWindow.cpp
+  File: mainWindow.cpp
   Description:
  */
-#include "TIMEWindow.hpp"
+#include "mainWindow.hpp"
 
-
-TIMEWindow::TIMEWindow(WINDOW* win,
+MainWindow::MainWindow(WINDOW* win,
 		       const std::string windowName,	      
 		       const short& numLines,
 		       const short& numCols,
@@ -18,4 +17,6 @@ TIMEWindow::TIMEWindow(WINDOW* win,
 							   startX)
 {
 }
+
+
 

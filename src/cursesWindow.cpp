@@ -24,13 +24,15 @@
   Output:
   None
 */
-CursesWindow::CursesWindow(std::string windowName,
+CursesWindow::CursesWindow(WINDOW* win,
+			   const std::string windowName,
 			   const int& numLines,
 			   const int& numCols,
 			   const int& startY,
 			   const int& startX)
 {
-  defineWindow(windowName,
+  defineWindow(win,
+	       windowName,
 	       numLines,
 	       numCols,
 	       startY,
@@ -71,12 +73,14 @@ CursesWindow::~CursesWindow()
   Output:
 
 */
-void CursesWindow::defineWindow(std::string windowName,
+void CursesWindow::defineWindow(WINDOW* win,
+				const std::string windowName,
 				const int& numLines,
 				const int& numCols,
 				const int& startY,
 				const int& startX)
 {
+  m_window = win;
   m_windowName.append(windowName);
   m_numLines = numLines;
   m_numCols = numCols;

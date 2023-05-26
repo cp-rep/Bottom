@@ -8,7 +8,8 @@
 
 class NIWindow : public CursesWindow {
 public:
-  NIWindow(std::string windowName = "",	      
+  NIWindow(WINDOW* win = nullptr,
+	   const std::string windowName = "",	      
 	   const short& numLines = 0,
 	   const short& numCols = 0,
 	   const short& startY = 0,

@@ -8,7 +8,8 @@
 
 class PercentCPUWindow : public CursesWindow {
 public:
-  PercentCPUWindow(std::string windowName = "",
+  PercentCPUWindow(WINDOW* win = nullptr,
+		   const std::string windowName = "",
 		   const short& numLines = 0,
 		   const short& numCols = 0,
 		   const short& startY = 0,

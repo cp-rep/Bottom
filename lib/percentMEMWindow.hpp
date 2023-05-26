@@ -8,7 +8,8 @@
 
 class PercentMEMWindow : public CursesWindow {
 public:
-  PercentMEMWindow(std::string windowName = "",	      
+  PercentMEMWindow(WINDOW* win = nullptr,
+		   std::string windowName = "",	      
 		   const short& numLines = 0,
 		   const short& numCols = 0,
 		   const short& startY = 0,

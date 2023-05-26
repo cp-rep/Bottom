@@ -45,6 +45,7 @@
 #include <algorithm>
 #include "log.hpp"
 #include "cursesWindow.hpp"
+#include "mainWindow.hpp"
 #include "topWindow.hpp"
 #include "tasksWindow.hpp"
 #include "VIRTWindow.hpp"
@@ -180,7 +181,7 @@ int main()
 
   // window related vars
   std::vector<CursesWindow*> allWins;
-  CursesWindow mainWin;  
+  MainWindow mainWin;  
   short numLines = 0;
   short numCols = 0;
   short startY = 0;
@@ -232,7 +233,8 @@ int main()
   startY = 0;
   startX = 0;
   
-  mainWin.defineWindow("Main",
+  mainWin.defineWindow(mainWin.getWindow(),
+		       "Main",
 		       numLines,
 		       numCols,
 		       startY,
@@ -245,7 +247,11 @@ int main()
   startY = 0;
   startX = 0;
 
-  TopWindow topWin("top",
+  TopWindow topWin(newwin(numLines,
+			  numCols,
+			  startY,
+			  startX),
+		   "top",
 		   numLines,
 		   numCols,
 		   startY,
@@ -257,7 +263,11 @@ int main()
   startY = 1;
   startX = 0;
   
-  TasksWindow tasksWin("Tasks",
+  TasksWindow tasksWin(newwin(numLines,
+			      numCols,
+			      startY,
+			      startX),
+		       "Tasks",
 		       numLines,
 		       numCols,
 		       startY,
@@ -269,7 +279,11 @@ int main()
   startY = 2;
   startX = 0;
   
-  CpuWindow cpuWin("CPU",
+  CpuWindow cpuWin(newwin(numLines,
+			  numCols,
+			  startY,
+			  startX),
+		   "CPU",
 		   numLines,
 		   numCols,
 		   startY,
@@ -281,7 +295,11 @@ int main()
   startY = 3;
   startX = 0;
   
-  MemWindow memWin("MEM",
+  MemWindow memWin(newwin(numLines,
+			  numCols,
+			  startY,
+			  startX),
+		   "MEM",
 		   numLines,
 		   numCols,
 		   startY,
@@ -298,7 +316,11 @@ int main()
   startY = memWin.getStartY() + 3;  // can be optimized by adding levels above instead of constant
   startX = 0;
 
-  PIDWindow PIDWin("PID",
+  PIDWindow PIDWin(newwin(numLines,
+			  numCols,
+			  startY,
+			  startX),
+		   "PID",
 		   numLines,
 		   numCols,
 		   startY,
@@ -314,7 +336,11 @@ int main()
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() + 1;
 
-  USERWindow USERWin("USER",
+  USERWindow USERWin(newwin(numLines,
+			    numCols,
+			    startY,
+			    startX),
+		     "USER",
 		     numLines,
 		     numCols,
 		     startY,
@@ -331,7 +357,11 @@ int main()
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() + 2;
 
-  PRWindow PRWin("PR",
+  PRWindow PRWin(newwin(numLines,
+			numCols,
+			startY,
+			startX),
+		 "PR",
 		 numLines,
 		 numCols,
 		 startY,
@@ -349,7 +379,11 @@ int main()
     USERWin.getNumCols() +
     PRWin.getNumCols() + 3;
 
-  NIWindow NIWin("NI",
+  NIWindow NIWin(newwin(numLines,
+			numCols,
+			startY,
+			startX),
+		 "NI",
 		 numLines,
 		 numCols,
 		 startY,
@@ -368,7 +402,11 @@ int main()
     PRWin.getNumCols() +
     NIWin.getNumCols() + 4;
   
-  VIRTWindow VIRTWin("VIRT",
+  VIRTWindow VIRTWin(newwin(numLines,
+			    numCols,
+			    startY,
+			    startX),
+		     "VIRT",
 		     numLines,
 		     numCols,
 		     startY,
@@ -388,7 +426,11 @@ int main()
     NIWin.getNumCols() +
     VIRTWin.getNumCols() + 5;
 
-  RESWindow RESWin("RES",
+  RESWindow RESWin(newwin(numLines,
+			  numCols,
+			  startY,
+			  startX),
+		   "RES",
 		   numLines,
 		   numCols,
 		   startY,
@@ -409,7 +451,11 @@ int main()
     VIRTWin.getNumCols() +
     RESWin.getNumCols() + 6;
 
-  SHRWindow SHRWin("SHR",
+  SHRWindow SHRWin(newwin(numLines,
+			  numCols,
+			  startY,
+			  startX),
+		   "SHR",
 		   numLines,
 		   numCols,
 		   startY,
@@ -431,7 +477,11 @@ int main()
     RESWin.getNumCols() +
     SHRWin.getNumCols() + 7;
   
-  SWindow SWin("S",
+  SWindow SWin(newwin(numLines,
+		      numCols,
+		      startY,
+		      startX),
+	       "S",
 	       numLines,
 	       numCols,
 	       startY,
@@ -454,7 +504,11 @@ int main()
     SHRWin.getNumCols() + 
     SWin.getNumCols() + 8;
   
-  PercentCPUWindow PercentCPUWin("%CPU",
+  PercentCPUWindow PercentCPUWin(newwin(numLines,
+				  numCols,
+				  startY,
+				  startX),
+				 "%CPU",
 				 numLines,
 				 numCols,
 				 startY,
@@ -478,7 +532,11 @@ int main()
     SWin.getNumCols() +
     PercentCPUWin.getNumCols() + 9;
   
-  PercentMEMWindow PercentMEMWin("%MEM",
+  PercentMEMWindow PercentMEMWin(newwin(numLines,
+				  numCols,
+				  startY,
+				  startX),
+				 "%MEM",
 				 numLines,
 				 numCols,
 				 startY,
@@ -503,7 +561,11 @@ int main()
     PercentCPUWin.getNumCols() + 
     PercentMEMWin.getNumCols() + 10;  
   
-  TIMEWindow TIMEWin("TIME+",
+  TIMEWindow TIMEWin(newwin(numLines,
+			    numCols,
+			    startY,
+			    startX),
+		     "TIME+",
 		     numLines,
 		     numCols,
 		     startY,
@@ -529,14 +591,20 @@ int main()
     PercentMEMWin.getNumCols() +
     TIMEWin.getNumCols() + 11;
   
-  COMMANDWindow COMMANDWin("COMMAND",
+  
+  COMMANDWindow COMMANDWin(newwin(numLines,
+				  numCols,
+				  startY,
+				  startX), 
+			   "COMMAND",
 			   numLines,
 			   numCols,
 			   startY,
 			   startX);
   
   COMMANDWin.fixCOMMANDWinName();
-  
+
+  /*
   // ## create windows ##
   topWin.setWindow(newwin(topWin.getNumLines(),
 			  topWin.getNumCols(),
@@ -602,6 +670,7 @@ int main()
 			      COMMANDWin.getNumCols(),
 			      COMMANDWin.getStartY(),
 			      COMMANDWin.getStartX()));
+  */
   
   // store all windows in vector for polymorphic calls
   // process windows

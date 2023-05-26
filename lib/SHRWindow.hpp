@@ -8,7 +8,8 @@
 
 class SHRWindow : public CursesWindow {
 public:
-  SHRWindow(std::string windowName = "",	      
+  SHRWindow(WINDOW* win = nullptr,
+	    const std::string windowName = "",	      
 	    const short& numLines = 0,
 	    const short& numCols = 0,
 	    const short& startY = 0,

@@ -10,7 +10,8 @@
 class COMMANDWindow : public CursesWindow {
 public:
   // default constructor
-  COMMANDWindow(std::string windowName = "",	      
+  COMMANDWindow(WINDOW* win = nullptr,
+		const std::string windowName = "",	      
 		const short& numLines = 0,
 		const short& numCols = 0,
 		const short& startY = 0,

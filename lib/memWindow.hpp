@@ -11,7 +11,8 @@
 class MemWindow : public CursesWindow {
 public:
   // constructors
-  MemWindow(std::string windowName = "",	      
+  MemWindow(WINDOW* win = nullptr,
+	    const std::string windowName = "",	      
 	    const short& numLines = 0,
 	    const short& numCols = 0,
 	    const short& startY = 0,
