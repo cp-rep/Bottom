@@ -179,9 +179,8 @@ int main()
   std::unordered_map<int, ProcessInfo*>::iterator pUmapIt;
 
   // window related vars
-  CursesWindow mainWin;  
   std::vector<CursesWindow*> allWins;
-  CursesWindow processWin;  
+  CursesWindow mainWin;  
   short numLines = 0;
   short numCols = 0;
   short startY = 0;
@@ -299,7 +298,7 @@ int main()
   startY = memWin.getStartY() + 3;  // can be optimized by adding levels above instead of constant
   startX = 0;
 
-  PIDWindow PIDWin("    PID",
+  PIDWindow PIDWin("PID",
 		   numLines,
 		   numCols,
 		   startY,
@@ -315,7 +314,7 @@ int main()
   startY = memWin.getStartY() + 3;
   startX = PIDWin.getNumCols() + 1;
 
-  USERWindow USERWin("USER    ",
+  USERWindow USERWin("USER",
 		     numLines,
 		     numCols,
 		     startY,
@@ -332,7 +331,7 @@ int main()
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() + 2;
 
-  PRWindow PRWin(" PR",
+  PRWindow PRWin("PR",
 		 numLines,
 		 numCols,
 		 startY,
@@ -350,7 +349,7 @@ int main()
     USERWin.getNumCols() +
     PRWin.getNumCols() + 3;
 
-  NIWindow NIWin(" NI",
+  NIWindow NIWin("NI",
 		 numLines,
 		 numCols,
 		 startY,
@@ -369,7 +368,7 @@ int main()
     PRWin.getNumCols() +
     NIWin.getNumCols() + 4;
   
-  VIRTWindow VIRTWin("   VIRT",
+  VIRTWindow VIRTWin("VIRT",
 		     numLines,
 		     numCols,
 		     startY,
@@ -389,7 +388,7 @@ int main()
     NIWin.getNumCols() +
     VIRTWin.getNumCols() + 5;
 
-  RESWindow RESWin("   RES",
+  RESWindow RESWin("RES",
 		   numLines,
 		   numCols,
 		   startY,
@@ -410,7 +409,7 @@ int main()
     VIRTWin.getNumCols() +
     RESWin.getNumCols() + 6;
 
-  SHRWindow SHRWin("   SHR",
+  SHRWindow SHRWin("SHR",
 		   numLines,
 		   numCols,
 		   startY,
@@ -455,7 +454,7 @@ int main()
     SHRWin.getNumCols() + 
     SWin.getNumCols() + 8;
   
-  PercentCPUWindow PercentCPUWin(" %CPU",
+  PercentCPUWindow PercentCPUWin("%CPU",
 				 numLines,
 				 numCols,
 				 startY,
@@ -479,7 +478,7 @@ int main()
     SWin.getNumCols() +
     PercentCPUWin.getNumCols() + 9;
   
-  PercentMEMWindow PercentMEMWin(" %MEM",
+  PercentMEMWindow PercentMEMWin("%MEM",
 				 numLines,
 				 numCols,
 				 startY,
@@ -504,7 +503,7 @@ int main()
     PercentCPUWin.getNumCols() + 
     PercentMEMWin.getNumCols() + 10;  
   
-  TIMEWindow TIMEWin("    TIME+",
+  TIMEWindow TIMEWin("TIME+",
 		     numLines,
 		     numCols,
 		     startY,
@@ -628,9 +627,11 @@ int main()
   // ## create and print white proc name color line ##
   std::string colorLine;
   std::vector<int> winNums;
+  /*
   winNums.push_back(_MAINWIN);
   colorLine = createColorLine(mainWin.getNumCols());
   printColorLine(allWins, winNums, colorLine, PIDWin.getStartY(), _BLACK_TEXT);
+  */
 
   // ## define program states ##
   progStates.insert(std::make_pair(_PROCSTATEHELP, 1)); // open help menu  
@@ -1333,10 +1334,9 @@ int main()
 	    const int temp = shiftX - _PIDWIN;
 	    log << "KEY LEFT! shiftX: " << shiftX << std::endl;
 	    log << "Difference: " << shiftX - _PIDWIN << std::endl;
-
 	    shiftXBottomWins(allWins,
 			     temp);
-			     
+	    
 	  }
 	break;
       case KEY_RIGHT:
@@ -1354,10 +1354,8 @@ int main()
 	break;
       }
 
-    // print updated windows
+    // print process windows
     clearBottomWins(allWins);
-    werase(allWins.at(_MAINWIN)->getWindow());
-    printColorLine(allWins, winNums, colorLine, PIDWin.getStartY(), _BLACK_TEXT);
     
     if(highlight == true)
       {
@@ -1373,9 +1371,9 @@ int main()
 	wattroff(allWins.at(highlightIndex)->getWindow(), A_BOLD);
       }
 
-    attronBottomWins(allWins, _BLACK_TEXT);
-    printWindowNames(allWins);
-    attroffBottomWins(allWins, _BLACK_TEXT);
+    //attronBottomWins(allWins, _BLACK_TEXT);
+     printWindowNames(allWins);
+    //attroffBottomWins(allWins, _BLACK_TEXT);
 
     
 #if _CURSES
