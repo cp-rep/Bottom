@@ -86,8 +86,40 @@ void CursesWindow::defineWindow(WINDOW* win,
   m_numCols = numCols;
   m_startY = startY;
   m_startX = startX;
-} // end of "CursesWindow::DefineWindow"
+} // end of "CursesWindow::defineWindow"
 
+
+
+
+/*
+  Function:
+  createWindow
+   
+  Description:
+
+  Input:
+  
+  Output:
+
+*/
+void CursesWindow::createWindow(const int& numLines,
+				const int& numCols,
+				const int& startY,
+				const int& startX)
+{
+  if(m_window == nullptr)
+    {
+      m_window = newwin(numLines,
+			numCols,
+			startY,
+			startX);
+    }
+  else
+    {
+      endwin();
+      exit(EXIT_FAILURE);
+    }
+} // end of "CursesWindow::createWindow"
 
 
 /*

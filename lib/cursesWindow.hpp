@@ -27,6 +27,10 @@ public:
 		    const int& numCols,
 		    const int& startY,
 		    const int& startX);
+  void createWindow(const int& numLines,
+		    const int& numCols,
+		    const int& startY,
+		    const int& startX);
   void deleteWindow();
   
   // getters
@@ -39,6 +43,7 @@ public:
   
   // setters
   void setWindow(WINDOW* window);
+  WINDOW* createWindow();
   void setWindowName(const std::string winName);
   void setNumLines(const int& numLines);
   void setNumCols(const int& numCols);
