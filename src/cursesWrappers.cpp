@@ -485,30 +485,35 @@ void shiftXBottomWins(const std::vector<CursesWindow*>& wins,
 	      wins.at(currWin)->getStartY(),
 	      wins.at(_PIDWIN + i)->getStartX());
       }
-
 } // end of "shiftXBottomWins"
 
 
 
-void shiftBottomWinsRight(std::vector<CursesWindow*>& wins,
-			  const int& winVal)
-{
-  /*
-  int column = 0;
-  int currWin = _PIDWIN + totalShifts;
-  const int totalWins = 12;
-  
-  for(int i = 0; i < totalWins - totalShifts; i++, currWin++)
-    {
-      mvwin(wins.at(currWin)->getWindow(),
-	    wins.at(currWin)->getStartY(),
-	    wins.at(_PIDWIN + i)->getStartX());
-    }
-  */
-  deleteWindow(wins.at(_PIDWIN));
-  //wins.at(_PIDWIN)->deleteWindow();
-}
+/*
+  Function:
+  shiftBottomWinsRight
 
+  Description:
+
+  Input:
+
+  Output:
+*/
+int shiftBottomWinsRight(std::vector<CursesWindow*>& wins,
+			  const int& shiftX)
+{
+  int totalShifts = 0;
+  int oldWin = shiftX - 1;
+  int newX = wins.at(oldWin)->getStartX();
+  wins.at(oldWin)->deleteWindow();
+
+  for(int i = shiftX; i < wins.size(); i++)
+    {
+      totalShifts++;
+    }
+
+  return newX;
+} // end of "shiftBottomWinsRight"
 
 
 
@@ -524,6 +529,8 @@ void shiftBottomWinsRight(std::vector<CursesWindow*>& wins,
 */
 void deleteWindow(CursesWindow* win)
 {
+  int y,x;
   delwin(win->getWindow());
+  getmaxyx(win->getWindow(), y, x);
   win->setWindow(nullptr);
-}
+} // end of "deleteWindow"
