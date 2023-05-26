@@ -41,20 +41,35 @@ CursesWindow::CursesWindow(std::string windowName,
 
 /*
   Function:
+  Destructor
+   
+  Description:
+
+  Input:
+  
+  Output:
+
+*/
+CursesWindow::~CursesWindow()
+{
+  if(getWindow() != nullptr)
+    {
+      deleteWindow();
+    }
+} // end of "Destructor"
+
+
+
+/*
+  Function:
    defineWindow
    
   Description:
-   Defines the values/dimensions for the named window.
 
   Input:
-  windowName      -
-  numLines        -
-  numCols         -
-  startY          -
-  startX          -
   
   Output:
-  None
+
 */
 void CursesWindow::defineWindow(std::string windowName,
 				const int& numLines,
@@ -210,3 +225,11 @@ void CursesWindow::setStartX(const int& startX)
 {
   m_startX = startX;
 } // end of "CursesWindow::setStartX"
+
+
+
+void CursesWindow::deleteWindow()
+{
+  delwin(getWindow());
+  setWindow(nullptr);
+}

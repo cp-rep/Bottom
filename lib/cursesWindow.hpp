@@ -16,12 +16,16 @@ public:
 	       const int& startY = 0,
 	       const int& startX = 0);
 
+  // destructor
+  ~CursesWindow();
+
   // member functions
   void defineWindow(std::string windowName,
 		    const int& numLines,
 		    const int& numCols,
 		    const int& startY,
 		    const int& startX);
+  void deleteWindow();
   
   // getters
   WINDOW* getWindow();
