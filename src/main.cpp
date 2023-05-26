@@ -163,7 +163,6 @@ int main()
 
   // window related vars
   std::vector<CursesWindow*> allWins;
-  MainWindow mainWin;  
   short numLines = 0;
   short numCols = 0;
   short startY = 0;
@@ -180,9 +179,19 @@ int main()
   std::unordered_map<int, int> sortStates;
   
   // ## initialize and setup curses ##
-  mainWin.setWindow(initscr());
-
-#if _CURSES
+#if _CURSES  
+  MainWindow mainWin(initscr(),
+		     "Main",
+		     0,
+		     0,
+		     0,
+		     0);
+  getmaxyx(mainWin.getWindow(), numLines, numCols);
+  mainWin.setNumLines(numLines);
+  mainWin.setNumCols(numCols);
+  mainWin.setStartX(0);
+  mainWin.setStartY(0);
+  
   if(has_colors())
     {
       start_color();
@@ -207,16 +216,6 @@ int main()
   nodelay(mainWin.getWindow(), true);
 
   // ## define windows ##
-  // define main window
-  getmaxyx(mainWin.getWindow(), numLines, numCols);
-  startY = 0;
-  startX = 0;
-  mainWin.defineWindow(mainWin.getWindow(),
-		       "Main",
-		       numLines,
-		       numCols,
-		       0,
-		       0);
   // define topWindow
   numLines = 1;
   numCols = numCols;
@@ -605,40 +604,32 @@ int main()
 	      0,
 	      outLine.c_str());
 #endif
-    
-    // get memWin data
+
+    // mInfo data from /proc/meminfo
     fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
     parsedLine = parseLine(fileLine);
     mInfo.setMemTotal(convertToInt(parsedLine.at(1)));
-
     fileLine = returnFileLineByNumber(_PROC_MEMINFO, 2);
     parsedLine = parseLine(fileLine);
     mInfo.setMemFree(convertToInt(parsedLine.at(1)));
-
     fileLine = returnFileLineByNumber(_PROC_MEMINFO, 3);
     parsedLine = parseLine(fileLine);
     mInfo.setMemAvailable(convertToInt(parsedLine.at(1)));
-
     fileLine = returnFileLineByNumber(_PROC_MEMINFO, 4);
     parsedLine = parseLine(fileLine);
     mInfo.setBuffers(convertToInt(parsedLine.at(1)));
-
     fileLine = returnFileLineByNumber(_PROC_MEMINFO, 5);
     parsedLine = parseLine(fileLine);
     mInfo.setCached(convertToInt(parsedLine.at(1)));
-
     fileLine = returnFileLineByNumber(_PROC_MEMINFO, 15);
     parsedLine = parseLine(fileLine);
     mInfo.setSwapTotal(convertToInt(parsedLine.at(1)));
-
     fileLine = returnFileLineByNumber(_PROC_MEMINFO, 16);
     parsedLine = parseLine(fileLine);
     mInfo.setSwapFree(convertToInt(parsedLine.at(1)));
-
     fileLine = returnFileLineByNumber(_PROC_MEMINFO, 26);
     parsedLine = parseLine(fileLine);
     mInfo.setSReclaimable(convertToInt(parsedLine.at(1)));
-
     mInfo.setMemUsed(mInfo.calculateMemUsed());
     mInfo.setSwapUsed(mInfo.calculateSwapUsed());
     mInfo.setBuffCache(mInfo.calculateBuffCache());
@@ -971,7 +962,6 @@ int main()
 		<< "%CPU: " << pUmap[pidList.at(i)]->getCPUUsage() << std::endl
 		<< std::endl;
 	    */
-
       }
     pInfo = nullptr;
     pidListOld.clear();
@@ -1224,18 +1214,14 @@ int main()
 	    log << "Difference: " << shiftX - _PIDWIN << std::endl;
 	    shiftXBottomWins(allWins,
 			     temp);
-	    
 	  }
 	break;
       case KEY_RIGHT:
 	if(shiftX < _COMMANDWIN)
 	  {
 	    shiftX++;
-	    const int temp = shiftX - _PIDWIN;
-	    log << "KEY RIGHT! shiftX: " << shiftX << std::endl;
-	    log << "Difference: " << shiftX - _PIDWIN << std::endl;
-	    shiftXBottomWins(allWins,
-			     temp);
+	    int temp = shiftBottomWinsRight(allWins, shiftX);
+	    log << "Temp: " << temp << std::endl;
 	  }
 	break;
       default:
