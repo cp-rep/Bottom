@@ -41,4 +41,7 @@ void printColorLine(const std::vector<CursesWindow*>& wins,
 
 void shiftXBottomWins(const std::vector<CursesWindow*>& wins,
 		      const int& totalShifts);
+void shiftBottomWinsRight(std::vector<CursesWindow*>& wins,
+			  const int& winVal);
+void deleteWindow(CursesWindow* win);
 #endif

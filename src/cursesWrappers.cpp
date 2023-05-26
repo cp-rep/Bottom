@@ -298,7 +298,7 @@ void printProcs(const int& shiftY,
       int posY = i + shiftY;
 
       // PID
-      if(shiftX <= _PIDWIN)
+      if(shiftX <= _PIDWIN && wins.at(_PIDWIN) != nullptr)
 	{
 	  outString = std::to_string(pUmap.at(pidList.at(i))->getPID());
 	  mvwaddstr(wins.at(_PIDWIN)->getWindow(),
@@ -307,7 +307,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // USER      
-      if(shiftX <= _USERWIN)
+      if(shiftX <= _USERWIN && wins.at(_USERWIN) != nullptr)
       	{
 	  outString = pUmap.at(pidList.at(i))->getUSER();
 	  mvwaddstr(wins.at(_USERWIN)->getWindow(),
@@ -316,7 +316,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // PR
-      if(shiftX <= _PRWIN)
+      if(shiftX <= _PRWIN && wins.at(_USERWIN) != nullptr)
 	{
 	  outString = std::to_string(pUmap.at(pidList.at(i))->getPR());
 	  mvwaddstr(wins.at(_PRWIN)->getWindow(),
@@ -325,7 +325,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // NI
-      if(shiftX <= _NIWIN)
+      if(shiftX <= _NIWIN && wins.at(_NIWIN) != nullptr)
 	{
 	  outString = std::to_string(pUmap.at(pidList.at(i))->getNI());
 	  mvwaddstr(wins.at(_NIWIN)->getWindow(),
@@ -334,7 +334,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // VIRT
-      if(shiftX <= _VIRTWIN)
+      if(shiftX <= _VIRTWIN && wins.at(_VIRTWIN) != nullptr)
 	{
 	  outString = std::to_string(pUmap.at(pidList.at(i))->getVIRT());
 	  mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
@@ -343,7 +343,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // RES
-      if(shiftX <= _RESWIN)
+      if(shiftX <= _RESWIN && wins.at(_RESWIN) != nullptr)
 	{
 	  outString = std::to_string(pUmap.at(pidList.at(i))->getRES());
 	  mvwaddstr(wins.at(_RESWIN)->getWindow(),
@@ -352,7 +352,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // SHR
-      if(shiftX <= _SHRWIN)
+      if(shiftX <= _SHRWIN && wins.at(_SHRWIN) != nullptr)
 	{
 	  outString = std::to_string(pUmap.at(pidList.at(i))->getSHR());
 	  mvwaddstr(wins.at(_SHRWIN)->getWindow(),
@@ -361,7 +361,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // S
-      if(shiftX <= _SWIN)
+      if(shiftX <= _SWIN && wins.at(_SWIN) != nullptr)
 	{
 	  mvwaddch(wins.at(_SWIN)->getWindow(),
 		   posY,
@@ -370,7 +370,7 @@ void printProcs(const int& shiftY,
 	}
 
       // %CPU
-      if(shiftX <= _PROCCPUWIN)
+      if(shiftX <= _PROCCPUWIN && wins.at(_PROCCPUWIN) != nullptr)
 	{
 	  outString = doubleToStr(pUmap.at(pidList.at(i))->getCPUUsage(), 1);
 	  mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
@@ -379,7 +379,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // %MEM
-      if(shiftX <= _PROCMEMWIN)
+      if(shiftX <= _PROCMEMWIN && wins.at(_PROCMEMWIN) != nullptr)
 	{
 	  outString = doubleToStr(pUmap.at(pidList.at(i))->getMEMUsage(), 1);
 	  mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
@@ -388,7 +388,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // TIME+
-      if(shiftX <= _PROCTIMEWIN)
+      if(shiftX <= _PROCTIMEWIN && wins.at(_PROCTIMEWIN) != nullptr)
 	{
 	  outString = pUmap.at(pidList.at(i))->getProcessCPUTime();
 	  mvwaddstr(wins.at(_PROCTIMEWIN)->getWindow(),
@@ -397,7 +397,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // COMMAND
-      if(shiftX <= _COMMANDWIN)
+      if(shiftX <= _COMMANDWIN && wins.at(_COMMANDWIN) != nullptr)
 	{
 	  outString = pUmap.at(pidList.at(i))->getCOMMAND();
 	  mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
@@ -480,10 +480,50 @@ void shiftXBottomWins(const std::vector<CursesWindow*>& wins,
   const int totalWins = 12;
   
   for(int i = 0; i < totalWins - totalShifts; i++, currWin++)
+      {
+	mvwin(wins.at(currWin)->getWindow(),
+	      wins.at(currWin)->getStartY(),
+	      wins.at(_PIDWIN + i)->getStartX());
+      }
+
+} // end of "shiftXBottomWins"
+
+
+
+void shiftBottomWinsRight(std::vector<CursesWindow*>& wins,
+			  const int& winVal)
+{
+  /*
+  int column = 0;
+  int currWin = _PIDWIN + totalShifts;
+  const int totalWins = 12;
+  
+  for(int i = 0; i < totalWins - totalShifts; i++, currWin++)
     {
       mvwin(wins.at(currWin)->getWindow(),
 	    wins.at(currWin)->getStartY(),
 	    wins.at(_PIDWIN + i)->getStartX());
     }
+  */
+  deleteWindow(wins.at(_PIDWIN));
+  //wins.at(_PIDWIN)->deleteWindow();
+}
 
-} // end of "shiftXBottomWins"
+
+
+
+/*
+  Function:
+  deleteWindow
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void deleteWindow(CursesWindow* win)
+{
+  delwin(win->getWindow());
+  win->setWindow(nullptr);
+}
