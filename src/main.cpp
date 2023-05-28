@@ -170,6 +170,7 @@ int main()
 
   // state related vars
   int progState = 0;
+  int prevState = 0;
   int sortState = _PROCCPUWIN;
   bool highlight = false;
   bool quit = false;
@@ -551,10 +552,16 @@ int main()
 
 #if _CURSES
     // clear the windows
-    werase(topWin.getWindow());
-    werase(tasksWin.getWindow());
-    werase(cpuWin.getWindow());
-    werase(memWin.getWindow());
+    /*
+      werase(allWins.at(0)->getWindow());
+      clearTopWins(allWins);
+      clearBottomWins(allWins);
+
+      werase(topWin.getWindow());
+      werase(tasksWin.getWindow());
+      werase(cpuWin.getWindow());
+      werase(memWin.getWindow());
+    */
 #endif
     
     // get topWin data
@@ -981,6 +988,7 @@ int main()
       {
 	if(progStates[input])
 	  {
+	    prevState = progState;
 	    progState = input;
 	  }
 	else if(input == '<' && sortState > _PIDWIN)
@@ -1003,7 +1011,15 @@ int main()
 	quit = true;
 	break;
       case _PROGSTATEHL: // highlight
-	highlight = true;
+	if(highlight == true)
+	  {
+	    highlight = false;
+	  }
+	else if(highlight == false)
+	  {
+	    highlight = true;
+	  }
+	progState = prevState;
 	break;
       default:
 	break;
@@ -1187,7 +1203,7 @@ int main()
       default:
 	break;
       }
-    
+
     // shift windows
     switch(moveVal)
       {
@@ -1208,20 +1224,15 @@ int main()
       case KEY_LEFT:
 	if(shiftX > _PIDWIN)
 	  {
+	    shiftBottomWinsRight(allWins, shiftX);
 	    shiftX--;
-	    const int temp = shiftX - _PIDWIN;
-	    log << "KEY LEFT! shiftX: " << shiftX << std::endl;
-	    log << "Difference: " << shiftX - _PIDWIN << std::endl;
-	    shiftXBottomWins(allWins,
-			     temp);
 	  }
 	break;
       case KEY_RIGHT:
 	if(shiftX < _COMMANDWIN)
 	  {
+	    shiftBottomWinsLeft(allWins, shiftX);
 	    shiftX++;
-	    int temp = shiftBottomWinsRight(allWins, shiftX);
-	    log << "Temp: " << temp << std::endl;
 	  }
 	break;
       default:
@@ -1229,46 +1240,29 @@ int main()
       }
 
     // print process windows
-    clearBottomWins(allWins);
-    
     if(highlight == true)
       {
 	wattron(allWins.at(highlightIndex)->getWindow(), A_BOLD);
+      }
+    else
+      {
+	wattroff(allWins.at(highlightIndex)->getWindow(), A_BOLD);
       }
     printProcs(shiftY,
 	       shiftX,
 	       outList,
 	       pUmap,
 	       allWins);
-    if(highlight == true)
-      {
-	wattroff(allWins.at(highlightIndex)->getWindow(), A_BOLD);
-      }
-
-    //attronBottomWins(allWins, _BLACK_TEXT);
-     printWindowNames(allWins);
-    //attroffBottomWins(allWins, _BLACK_TEXT);
+    
+    attronBottomWins(allWins, _BLACK_TEXT);
+    printWindowNames(allWins);
+    attroffBottomWins(allWins, _BLACK_TEXT);
     
 #if _CURSES
     // refresh the windows
     // *** can make function to refresh all windows ***
-    wnoutrefresh(mainWin.getWindow());
-    wnoutrefresh(topWin.getWindow());
-    wnoutrefresh(tasksWin.getWindow());
-    wnoutrefresh(cpuWin.getWindow());
-    wnoutrefresh(memWin.getWindow());
-    wnoutrefresh(PIDWin.getWindow());
-    wnoutrefresh(USERWin.getWindow());
-    wnoutrefresh(PRWin.getWindow());
-    wnoutrefresh(NIWin.getWindow());
-    wnoutrefresh(VIRTWin.getWindow());
-    wnoutrefresh(RESWin.getWindow());
-    wnoutrefresh(SHRWin.getWindow());
-    wnoutrefresh(SWin.getWindow());
-    wnoutrefresh(PercentCPUWin.getWindow());
-    wnoutrefresh(PercentMEMWin.getWindow());
-    wnoutrefresh(TIMEWin.getWindow());
-    wnoutrefresh(COMMANDWin.getWindow());
+    werase(mainWin.getWindow());
+    refreshAllWins(allWins);
     doupdate();
 
     //napms(3000);
