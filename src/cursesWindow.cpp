@@ -264,8 +264,14 @@ void CursesWindow::setStartX(const int& startX)
 
 
 
+/*
+  Function:
+  deleteWindow
+
+  Description:
+*/
 void CursesWindow::deleteWindow()
 {
   delwin(getWindow());
   setWindow(nullptr);
-}
+} // end of "deleteWindow"
