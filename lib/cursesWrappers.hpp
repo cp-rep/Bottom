@@ -13,6 +13,9 @@
 #include "progStateConsts.hpp"
 #include "cursesWinConsts.hpp"
 
+
+void refreshAllWins(const std::vector<CursesWindow*>& wins);
+void clearAllWins(const std::vector<CursesWindow*>& wins);
 void clearTopWins(const std::vector<CursesWindow*>& wins);
 void attronBottomWins(const std::vector<CursesWindow*>& wins,
 		      int attrs);
@@ -39,11 +42,14 @@ void printColorLine(const std::vector<CursesWindow*>& wins,
 		    const std::string& colorLine,
 		    const int& row,
 		    const int& attrs);
-
-void shiftXBottomWins(const std::vector<CursesWindow*>& wins,
-		      const int& totalShifts);
-int shiftBottomWinsRight(std::vector<CursesWindow*>& wins,
+void shiftBottomWinsRight(std::vector<CursesWindow*>& wins,
 			  const int& shiftX);
-
+void shiftBottomWinsLeft(std::vector<CursesWindow*>& wins,
+			 const int& shiftX);
 void deleteWindow(CursesWindow* win);
+void drawBoxes(std::vector<CursesWindow*>& wins,
+	       const int& shiftX);
+
+int getTotalShifts(const std::vector<CursesWindow*>& wins,
+		   const int& winStartPos);
 #endif

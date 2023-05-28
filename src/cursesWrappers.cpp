@@ -5,6 +5,28 @@
 
 
 
+void refreshAllWins(const std::vector<CursesWindow*>& wins)
+{
+  for(int i = 0; i < wins.size(); i++)
+    {
+      wnoutrefresh(wins.at(i)->getWindow());
+    }
+}
+
+
+void clearAllWins(const std::vector<CursesWindow*>& wins)
+{
+
+  for(int i = 0; i < wins.size(); i++)
+    {
+      if(wins.at(i)->getWindow() != nullptr)
+	{
+	  werase(wins.at(i)->getWindow());
+	}
+    }
+}
+
+
 void clearTopWins(const std::vector<CursesWindow*>& wins)
 {
     werase(wins.at(_TOPWIN)->getWindow());
@@ -298,7 +320,7 @@ void printProcs(const int& shiftY,
       int posY = i + shiftY;
 
       // PID
-      if(shiftX <= _PIDWIN && wins.at(_PIDWIN) != nullptr)
+      if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr)
 	{
 	  outString = std::to_string(pUmap.at(pidList.at(i))->getPID());
 	  mvwaddstr(wins.at(_PIDWIN)->getWindow(),
@@ -307,7 +329,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // USER      
-      if(shiftX <= _USERWIN && wins.at(_USERWIN) != nullptr)
+      if(shiftX <= _USERWIN && wins.at(_USERWIN)->getWindow() != nullptr)
       	{
 	  outString = pUmap.at(pidList.at(i))->getUSER();
 	  mvwaddstr(wins.at(_USERWIN)->getWindow(),
@@ -316,7 +338,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // PR
-      if(shiftX <= _PRWIN && wins.at(_USERWIN) != nullptr)
+      if(shiftX <= _PRWIN && wins.at(_USERWIN)->getWindow() != nullptr)
 	{
 	  outString = std::to_string(pUmap.at(pidList.at(i))->getPR());
 	  mvwaddstr(wins.at(_PRWIN)->getWindow(),
@@ -325,7 +347,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // NI
-      if(shiftX <= _NIWIN && wins.at(_NIWIN) != nullptr)
+      if(shiftX <= _NIWIN && wins.at(_NIWIN)->getWindow() != nullptr)
 	{
 	  outString = std::to_string(pUmap.at(pidList.at(i))->getNI());
 	  mvwaddstr(wins.at(_NIWIN)->getWindow(),
@@ -334,7 +356,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // VIRT
-      if(shiftX <= _VIRTWIN && wins.at(_VIRTWIN) != nullptr)
+      if(shiftX <= _VIRTWIN && wins.at(_VIRTWIN)->getWindow() != nullptr)
 	{
 	  outString = std::to_string(pUmap.at(pidList.at(i))->getVIRT());
 	  mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
@@ -343,7 +365,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // RES
-      if(shiftX <= _RESWIN && wins.at(_RESWIN) != nullptr)
+      if(shiftX <= _RESWIN && wins.at(_RESWIN)->getWindow() != nullptr)
 	{
 	  outString = std::to_string(pUmap.at(pidList.at(i))->getRES());
 	  mvwaddstr(wins.at(_RESWIN)->getWindow(),
@@ -352,7 +374,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // SHR
-      if(shiftX <= _SHRWIN && wins.at(_SHRWIN) != nullptr)
+      if(shiftX <= _SHRWIN && wins.at(_SHRWIN)->getWindow() != nullptr)
 	{
 	  outString = std::to_string(pUmap.at(pidList.at(i))->getSHR());
 	  mvwaddstr(wins.at(_SHRWIN)->getWindow(),
@@ -361,7 +383,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // S
-      if(shiftX <= _SWIN && wins.at(_SWIN) != nullptr)
+      if(shiftX <= _SWIN && wins.at(_SWIN)->getWindow() != nullptr)
 	{
 	  mvwaddch(wins.at(_SWIN)->getWindow(),
 		   posY,
@@ -370,7 +392,7 @@ void printProcs(const int& shiftY,
 	}
 
       // %CPU
-      if(shiftX <= _PROCCPUWIN && wins.at(_PROCCPUWIN) != nullptr)
+      if(shiftX <= _PROCCPUWIN && wins.at(_PROCCPUWIN)->getWindow() != nullptr)
 	{
 	  outString = doubleToStr(pUmap.at(pidList.at(i))->getCPUUsage(), 1);
 	  mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
@@ -379,7 +401,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // %MEM
-      if(shiftX <= _PROCMEMWIN && wins.at(_PROCMEMWIN) != nullptr)
+      if(shiftX <= _PROCMEMWIN && wins.at(_PROCMEMWIN)->getWindow() != nullptr)
 	{
 	  outString = doubleToStr(pUmap.at(pidList.at(i))->getMEMUsage(), 1);
 	  mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
@@ -388,7 +410,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // TIME+
-      if(shiftX <= _PROCTIMEWIN && wins.at(_PROCTIMEWIN) != nullptr)
+      if(shiftX <= _PROCTIMEWIN && wins.at(_PROCTIMEWIN)->getWindow() != nullptr)
 	{
 	  outString = pUmap.at(pidList.at(i))->getProcessCPUTime();
 	  mvwaddstr(wins.at(_PROCTIMEWIN)->getWindow(),
@@ -397,7 +419,7 @@ void printProcs(const int& shiftY,
 		    outString.c_str());
 	}
       // COMMAND
-      if(shiftX <= _COMMANDWIN && wins.at(_COMMANDWIN) != nullptr)
+      if(shiftX <= _COMMANDWIN && wins.at(_COMMANDWIN)->getWindow() != nullptr)
 	{
 	  outString = pUmap.at(pidList.at(i))->getCOMMAND();
 	  mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
@@ -464,7 +486,7 @@ void printColorLine(const std::vector<CursesWindow*>& wins,
 
 /*
   Function:
-  shiftXBottomWins
+  shiftBottomWinsLeft
 
   Description:
 
@@ -472,20 +494,45 @@ void printColorLine(const std::vector<CursesWindow*>& wins,
 
   Output:
 */
-void shiftXBottomWins(const std::vector<CursesWindow*>& wins,
-		      const int& totalShifts)
+void shiftBottomWinsLeft(std::vector<CursesWindow*>& wins,
+			 const int& shiftX)
 {
-  int column = 0;
-  int currWin = _PIDWIN + totalShifts;
-  const int totalWins = 12;
-  
-  for(int i = 0; i < totalWins - totalShifts; i++, currWin++)
-      {
-	mvwin(wins.at(currWin)->getWindow(),
-	      wins.at(currWin)->getStartY(),
-	      wins.at(_PIDWIN + i)->getStartX());
-      }
-} // end of "shiftXBottomWins"
+  int totalShifts = 0;
+  int currWin = shiftX;
+  int startX = 0;
+
+  // delete the current window at x-position 0
+  wins.at(currWin)->deleteWindow();
+
+  // move the window index forward to the first window that needs moving
+  currWin++;
+
+  // get the total number of needed right shifts
+  totalShifts = getTotalShifts(wins, shiftX + 1);
+
+  for(int i = 0; i < totalShifts; i++, currWin++)
+    {
+      // set the starting window to the 0 x-position
+      if(i == 0)
+	{
+	  startX = 0;
+	}
+      // set the proceeding windows to their new starting x-positions
+      // which is the starting position of the last window + that windows
+      // total number of columns + space (1)
+      else
+	{
+	  startX = wins.at(currWin - 1)->getStartX() +
+	           wins.at(currWin - 1)->getNumCols() +
+	           1;
+	}
+      // move the windows until the total shifts have been reached
+      wins.at(currWin)->setStartX(startX);
+      mvwin(wins.at(currWin)->getWindow(),
+	    wins.at(currWin)->getStartY(),
+	    wins.at(currWin)->getStartX());
+    }  
+} // end of "shiftBottomWinsLeft"
 
 
 
@@ -499,38 +546,87 @@ void shiftXBottomWins(const std::vector<CursesWindow*>& wins,
 
   Output:
 */
-int shiftBottomWinsRight(std::vector<CursesWindow*>& wins,
+void shiftBottomWinsRight(std::vector<CursesWindow*>& wins,
 			  const int& shiftX)
 {
+  int currWin = shiftX;
   int totalShifts = 0;
-  int oldWin = shiftX - 1;
-  int newX = wins.at(oldWin)->getStartX();
-  wins.at(oldWin)->deleteWindow();
+  
+  // set the data for the new starting window at x-position 0
+  wins.at(shiftX - 1)->setStartX(0);
 
-  for(int i = shiftX; i < wins.size(); i++)
+  // get the total number of needed shifts
+  totalShifts = getTotalShifts(wins, currWin);
+
+  // shift the windows
+  for(int i = 0; i < totalShifts; i++, currWin++)
     {
-      totalShifts++;
+      // get the new starting position of the current window
+      wins.at(currWin)->setStartX(wins.at(currWin - 1)->getStartX() +
+				  wins.at(currWin - 1)->getNumCols() +
+				  1);
+      // move the window to the new starting position
+      mvwin(wins.at(currWin)->getWindow(),
+	    wins.at(currWin)->getStartY(),
+	    wins.at(currWin)->getStartX());
     }
 
-  return newX;
+  // create the starting window now that the windows have been shifted
+  wins.at(shiftX - 1)->createWindow(wins.at(shiftX - 1)->getNumLines(),
+				    wins.at(shiftX - 1)->getNumCols(),
+				    wins.at(shiftX - 1)->getStartY(),
+				    wins.at(shiftX - 1)->getStartX());
 } // end of "shiftBottomWinsRight"
 
 
 
 /*
   Function:
-  deleteWindow
+  getTotalShifts
 
   Description:
 
   Input:
 
   Output:
+
 */
-void deleteWindow(CursesWindow* win)
+int getTotalShifts(const std::vector<CursesWindow*>& wins,
+		   const int& winStartPos)
 {
-  int y,x;
-  delwin(win->getWindow());
-  getmaxyx(win->getWindow(), y, x);
-  win->setWindow(nullptr);
-} // end of "deleteWindow"
+  int totalShifts = 0;
+  
+  for(int i = winStartPos; i < wins.size(); i++)
+    {
+      totalShifts++;
+    }
+
+  return totalShifts;
+} // end of "getTotalShifts"
+
+
+
+/*
+  Function:
+  drawBoxes
+
+  Description:
+  Draws a box for every "WINDOW" that is currently initialized.
+
+  Input:
+
+  Output:
+
+*/
+void drawBoxes(std::vector<CursesWindow*>& wins,
+	       const int& shiftX)
+{
+  char val = 'a';
+  for(int i = 0; i < wins.size(); i++, val++)
+    {
+      if(wins.at(i)->getWindow() != nullptr)
+	{
+	  box(wins.at(i)->getWindow(), val, val);
+	}
+    }
+} // end of "drawBoxes"
