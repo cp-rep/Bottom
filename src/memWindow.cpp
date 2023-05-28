@@ -11,23 +11,12 @@ MemWindow::MemWindow(WINDOW* win,
 		     const short& numLines,
 		     const short& numCols,
 		     const short& startY,
-		     const short& startX,
-		     const std::string& MiB,
-		     const std::string& swap) : CursesWindow(win,
-							     windowName,		     
-							     numLines,
-							     numCols,
-							     startY,
-							     startX)
+		     const short& startX)
 { 
-  m_MiB = MiB;
-  m_swap = swap;
 } // end of "MemWindow Default Constructor"
 
 
-
 /*
- */
 void MemWindow::setStringMiB(const std::string& memTotal,
 			     const std::string& memFree,
 			     const std::string& memUsed,
@@ -47,9 +36,6 @@ void MemWindow::setStringMiB(const std::string& memTotal,
 } // end of "setMiB"
 
 
-
-/*
- */
 void MemWindow::setStringSwap(const std::string& swapTotal,
 			      const std::string& swapFree,
 			      const std::string& swapUsed,
@@ -66,5 +52,6 @@ void MemWindow::setStringSwap(const std::string& swapTotal,
   m_swap.append(memAvailable);
   m_swap.append(" avail/mem");  
 } // end of "setStringSwap"
+*/
 
 

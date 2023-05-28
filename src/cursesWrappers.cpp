@@ -5,7 +5,7 @@
 
 
 
-void refreshAllWins(const std::vector<CursesWindow*>& wins)
+void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
   for(int i = 0; i < wins.size(); i++)
     {
@@ -14,7 +14,7 @@ void refreshAllWins(const std::vector<CursesWindow*>& wins)
 }
 
 
-void clearAllWins(const std::vector<CursesWindow*>& wins)
+void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
 
   for(int i = 0; i < wins.size(); i++)
@@ -27,7 +27,7 @@ void clearAllWins(const std::vector<CursesWindow*>& wins)
 }
 
 
-void clearTopWins(const std::vector<CursesWindow*>& wins)
+void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
     werase(wins.at(_TOPWIN)->getWindow());
     werase(wins.at(_TASKSWIN)->getWindow());
@@ -46,7 +46,7 @@ void clearTopWins(const std::vector<CursesWindow*>& wins)
 
   Output:
  */
-void clearBottomWins(const std::vector<CursesWindow*>& wins)
+void clearBottomWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
     werase(wins.at(_COMMANDWIN)->getWindow());
     werase(wins.at(_PROCTIMEWIN)->getWindow());
@@ -78,7 +78,7 @@ void clearBottomWins(const std::vector<CursesWindow*>& wins)
 
   Output:
  */
-void attronBottomWins(const std::vector<CursesWindow*>& wins, int attrs)
+void attronBottomWins(const std::unordered_map<int, CursesWindow*>& wins, int attrs)
 {  
   wattron(wins.at(_COMMANDWIN)->getWindow(), COLOR_PAIR(attrs));
   wattron(wins.at(_PROCTIMEWIN)->getWindow(), COLOR_PAIR(attrs));
@@ -106,7 +106,8 @@ void attronBottomWins(const std::vector<CursesWindow*>& wins, int attrs)
 
   Output:
  */
-void attroffBottomWins(const std::vector<CursesWindow*>& wins, int attrs)
+void attroffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
+		       int attrs)
 {
   wattroff(wins.at(_COMMANDWIN)->getWindow(), COLOR_PAIR(attrs));
   wattroff(wins.at(_PROCTIMEWIN)->getWindow(), COLOR_PAIR(attrs));
@@ -134,7 +135,7 @@ void attroffBottomWins(const std::vector<CursesWindow*>& wins, int attrs)
 
   Output:
  */
-void printWindowNames(const std::vector<CursesWindow*>& wins)
+void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins)
 {
   std::string outString;
 
@@ -227,7 +228,7 @@ void printWindowNames(const std::vector<CursesWindow*>& wins)
 void printSortedProcsReverse(const int& startLine,
 			     const std::vector<std::pair<double, int>>& sortedOut,
 			     const std::unordered_map<int, ProcessInfo*>& pUmap,
-			     const std::vector<CursesWindow*>& wins)
+			     const std::unordered_map<int, CursesWindow*>& wins)
 {
   for(int k = sortedOut.size() - 1, g = startLine; k >= 0; k--, g++)
     {
@@ -311,121 +312,123 @@ void printProcs(const int& shiftY,
 		const int& shiftX,
 		const std::vector<int>& pidList,
 		const std::unordered_map<int, ProcessInfo*>& pUmap,
-		const std::vector<CursesWindow*>& wins)
+		const std::unordered_map<int, CursesWindow*>& wins)
 {
   std::string outString;
 
   for(int i = 0; i < pUmap.size(); i++)
     {
       int posY = i + shiftY;
+      if(posY != 0)
+	{
+	  // PID
+	  if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr)
+	    {
+	      outString = std::to_string(pUmap.at(pidList.at(i))->getPID());
+	      mvwaddstr(wins.at(_PIDWIN)->getWindow(),
+			posY,
+			wins.at(_PIDWIN)->getNumCols() - outString.length(),
+			outString.c_str());
+	    }
+	  // USER      
+	  if(shiftX <= _USERWIN && wins.at(_USERWIN)->getWindow() != nullptr)
+	    {
+	      outString = pUmap.at(pidList.at(i))->getUSER();
+	      mvwaddstr(wins.at(_USERWIN)->getWindow(),
+			posY,
+			0,
+			outString.c_str());
+	    }
+	  // PR
+	  if(shiftX <= _PRWIN && wins.at(_USERWIN)->getWindow() != nullptr)
+	    {
+	      outString = std::to_string(pUmap.at(pidList.at(i))->getPR());
+	      mvwaddstr(wins.at(_PRWIN)->getWindow(),
+			posY,
+			wins.at(_PRWIN)->getNumCols() - outString.length(),
+			outString.c_str());
+	    }
+	  // NI
+	  if(shiftX <= _NIWIN && wins.at(_NIWIN)->getWindow() != nullptr)
+	    {
+	      outString = std::to_string(pUmap.at(pidList.at(i))->getNI());
+	      mvwaddstr(wins.at(_NIWIN)->getWindow(),
+			posY,
+			wins.at(_NIWIN)->getNumCols() - outString.length(),
+			outString.c_str());
+	    }
+	  // VIRT
+	  if(shiftX <= _VIRTWIN && wins.at(_VIRTWIN)->getWindow() != nullptr)
+	    {
+	      outString = std::to_string(pUmap.at(pidList.at(i))->getVIRT());
+	      mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
+			posY,
+			wins.at(_VIRTWIN)->getNumCols() - outString.length(),
+			outString.c_str());
+	    }
+	  // RES
+	  if(shiftX <= _RESWIN && wins.at(_RESWIN)->getWindow() != nullptr)
+	    {
+	      outString = std::to_string(pUmap.at(pidList.at(i))->getRES());
+	      mvwaddstr(wins.at(_RESWIN)->getWindow(),
+			posY,
+			wins.at(_RESWIN)->getNumCols() - outString.length(),
+			outString.c_str());
+	    }
+	  // SHR
+	  if(shiftX <= _SHRWIN && wins.at(_SHRWIN)->getWindow() != nullptr)
+	    {
+	      outString = std::to_string(pUmap.at(pidList.at(i))->getSHR());
+	      mvwaddstr(wins.at(_SHRWIN)->getWindow(),
+			posY,
+			wins.at(_SHRWIN)->getNumCols() - outString.length(),
+			outString.c_str());
+	    }
+	  // S
+	  if(shiftX <= _SWIN && wins.at(_SWIN)->getWindow() != nullptr)
+	    {
+	      mvwaddch(wins.at(_SWIN)->getWindow(),
+		       posY,
+		       0,
+		       pUmap.at(pidList.at(i))->getS());
+	    }
 
-      // PID
-      if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr)
-	{
-	  outString = std::to_string(pUmap.at(pidList.at(i))->getPID());
-	  mvwaddstr(wins.at(_PIDWIN)->getWindow(),
-		    posY,
-		    wins.at(_PIDWIN)->getNumCols() - outString.length(),
-		    outString.c_str());
-	}
-      // USER      
-      if(shiftX <= _USERWIN && wins.at(_USERWIN)->getWindow() != nullptr)
-      	{
-	  outString = pUmap.at(pidList.at(i))->getUSER();
-	  mvwaddstr(wins.at(_USERWIN)->getWindow(),
-		    posY,
-		    0,
-		    outString.c_str());
-	}
-      // PR
-      if(shiftX <= _PRWIN && wins.at(_USERWIN)->getWindow() != nullptr)
-	{
-	  outString = std::to_string(pUmap.at(pidList.at(i))->getPR());
-	  mvwaddstr(wins.at(_PRWIN)->getWindow(),
-		    posY,
-		    wins.at(_PRWIN)->getNumCols() - outString.length(),
-		    outString.c_str());
-	}
-      // NI
-      if(shiftX <= _NIWIN && wins.at(_NIWIN)->getWindow() != nullptr)
-	{
-	  outString = std::to_string(pUmap.at(pidList.at(i))->getNI());
-	  mvwaddstr(wins.at(_NIWIN)->getWindow(),
-		    posY,
-		    wins.at(_NIWIN)->getNumCols() - outString.length(),
-		    outString.c_str());
-	}
-      // VIRT
-      if(shiftX <= _VIRTWIN && wins.at(_VIRTWIN)->getWindow() != nullptr)
-	{
-	  outString = std::to_string(pUmap.at(pidList.at(i))->getVIRT());
-	  mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
-		    posY,
-		    wins.at(_VIRTWIN)->getNumCols() - outString.length(),
-		    outString.c_str());
-	}
-      // RES
-      if(shiftX <= _RESWIN && wins.at(_RESWIN)->getWindow() != nullptr)
-	{
-	  outString = std::to_string(pUmap.at(pidList.at(i))->getRES());
-	  mvwaddstr(wins.at(_RESWIN)->getWindow(),
-		    posY,
-		    wins.at(_RESWIN)->getNumCols() - outString.length(),
-		    outString.c_str());
-	}
-      // SHR
-      if(shiftX <= _SHRWIN && wins.at(_SHRWIN)->getWindow() != nullptr)
-	{
-	  outString = std::to_string(pUmap.at(pidList.at(i))->getSHR());
-	  mvwaddstr(wins.at(_SHRWIN)->getWindow(),
-		    posY,
-		    wins.at(_SHRWIN)->getNumCols() - outString.length(),
-		    outString.c_str());
-	}
-      // S
-      if(shiftX <= _SWIN && wins.at(_SWIN)->getWindow() != nullptr)
-	{
-	  mvwaddch(wins.at(_SWIN)->getWindow(),
-		   posY,
-		   0,
-		   pUmap.at(pidList.at(i))->getS());
-	}
-
-      // %CPU
-      if(shiftX <= _PROCCPUWIN && wins.at(_PROCCPUWIN)->getWindow() != nullptr)
-	{
-	  outString = doubleToStr(pUmap.at(pidList.at(i))->getCPUUsage(), 1);
-	  mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
-		    posY,
-		    wins.at(_PROCCPUWIN)->getNumCols() - outString.length(),
-		    outString.c_str());
-	}
-      // %MEM
-      if(shiftX <= _PROCMEMWIN && wins.at(_PROCMEMWIN)->getWindow() != nullptr)
-	{
-	  outString = doubleToStr(pUmap.at(pidList.at(i))->getMEMUsage(), 1);
-	  mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
-		    posY,
-		    wins.at(_PROCMEMWIN)->getNumCols() - outString.length(),
-		    outString.c_str());
-	}
-      // TIME+
-      if(shiftX <= _PROCTIMEWIN && wins.at(_PROCTIMEWIN)->getWindow() != nullptr)
-	{
-	  outString = pUmap.at(pidList.at(i))->getProcessCPUTime();
-	  mvwaddstr(wins.at(_PROCTIMEWIN)->getWindow(),
-		    posY,
-		    wins.at(_PROCTIMEWIN)->getNumCols() - outString.length(),
-		    outString.c_str());
-	}
-      // COMMAND
-      if(shiftX <= _COMMANDWIN && wins.at(_COMMANDWIN)->getWindow() != nullptr)
-	{
-	  outString = pUmap.at(pidList.at(i))->getCOMMAND();
-	  mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
-		    posY,
-		    0,
-		    outString.c_str());
+	  // %CPU
+	  if(shiftX <= _PROCCPUWIN && wins.at(_PROCCPUWIN)->getWindow() != nullptr)
+	    {
+	      outString = doubleToStr(pUmap.at(pidList.at(i))->getCPUUsage(), 1);
+	      mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
+			posY,
+			wins.at(_PROCCPUWIN)->getNumCols() - outString.length(),
+			outString.c_str());
+	    }
+	  // %MEM
+	  if(shiftX <= _PROCMEMWIN && wins.at(_PROCMEMWIN)->getWindow() != nullptr)
+	    {
+	      outString = doubleToStr(pUmap.at(pidList.at(i))->getMEMUsage(), 1);
+	      mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
+			posY,
+			wins.at(_PROCMEMWIN)->getNumCols() - outString.length(),
+			outString.c_str());
+	    }
+	  // TIME+
+	  if(shiftX <= _PROCTIMEWIN && wins.at(_PROCTIMEWIN)->getWindow() != nullptr)
+	    {
+	      outString = pUmap.at(pidList.at(i))->getProcessCPUTime();
+	      mvwaddstr(wins.at(_PROCTIMEWIN)->getWindow(),
+			posY,
+			wins.at(_PROCTIMEWIN)->getNumCols() - outString.length(),
+			outString.c_str());
+	    }
+	  // COMMAND
+	  if(shiftX <= _COMMANDWIN && wins.at(_COMMANDWIN)->getWindow() != nullptr)
+	    {
+	      outString = pUmap.at(pidList.at(i))->getCOMMAND();
+	      mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
+			posY,
+			0,
+			outString.c_str());
+	    } 
 	}
     }
 } // end of "printProcs"
@@ -465,21 +468,27 @@ const std::string createColorLine(const int& len)
 
   Output:
  */
-void printColorLine(const std::vector<CursesWindow*>& wins,
-		    const std::vector<int>& winNums,
+void printColorLine(const std::unordered_map<int, CursesWindow*>& wins,
 		    const std::string& colorLine,
 		    const int& row,
 		    const int& attrs)
-{
+{/*
   for(int i = 0; i < winNums.size(); i++)
-  {
-    wattron(wins.at(winNums.at(i))->getWindow(), COLOR_PAIR(attrs));
-    mvwaddstr(wins.at(winNums.at(i))->getWindow(),
-	      row,
-	      0,
-	      colorLine.c_str());
-    wattroff(wins.at(winNums.at(i))->getWindow(), COLOR_PAIR(attrs));    
-  }
+    {
+      wattron(wins.at(winNums.at(i))->getWindow(), COLOR_PAIR(attrs));
+      mvwaddstr(wins.at(winNums.at(i))->getWindow(),
+		row,
+		0,
+		colorLine.c_str());
+      wattroff(wins.at(winNums.at(i))->getWindow(), COLOR_PAIR(attrs));    
+    }
+ */
+  wattron(wins.at(_MAINWIN)->getWindow(), COLOR_PAIR(attrs));
+  mvwaddstr(wins.at(_MAINWIN)->getWindow(),
+	    row,
+	    0,
+	    colorLine.c_str());
+  wattroff(wins.at(_MAINWIN)->getWindow(), COLOR_PAIR(attrs));
 } // end of "printColorLine"
 
 
@@ -494,7 +503,7 @@ void printColorLine(const std::vector<CursesWindow*>& wins,
 
   Output:
 */
-void shiftBottomWinsLeft(std::vector<CursesWindow*>& wins,
+void shiftBottomWinsLeft(std::unordered_map<int, CursesWindow*>& wins,
 			 const int& shiftX)
 {
   int totalShifts = 0;
@@ -508,7 +517,7 @@ void shiftBottomWinsLeft(std::vector<CursesWindow*>& wins,
   currWin++;
 
   // get the total number of needed right shifts
-  totalShifts = getTotalShifts(wins, shiftX + 1);
+  totalShifts = _COMMANDWIN - shiftX; // = getTotalShifts(wins, shiftX + 1);
 
   for(int i = 0; i < totalShifts; i++, currWin++)
     {
@@ -546,7 +555,7 @@ void shiftBottomWinsLeft(std::vector<CursesWindow*>& wins,
 
   Output:
 */
-void shiftBottomWinsRight(std::vector<CursesWindow*>& wins,
+void shiftBottomWinsRight(std::unordered_map<int, CursesWindow*>& wins,
 			  const int& shiftX)
 {
   int currWin = shiftX;
@@ -556,7 +565,7 @@ void shiftBottomWinsRight(std::vector<CursesWindow*>& wins,
   wins.at(shiftX - 1)->setStartX(0);
 
   // get the total number of needed shifts
-  totalShifts = getTotalShifts(wins, currWin);
+  totalShifts = _COMMANDWIN - shiftX;// = getTotalShifts(wins, currWin);
 
   // shift the windows
   for(int i = 0; i < totalShifts; i++, currWin++)
@@ -591,7 +600,7 @@ void shiftBottomWinsRight(std::vector<CursesWindow*>& wins,
   Output:
 
 */
-int getTotalShifts(const std::vector<CursesWindow*>& wins,
+int getTotalShifts(const std::unordered_map<int, CursesWindow*>& wins,
 		   const int& winStartPos)
 {
   int totalShifts = 0;
@@ -618,7 +627,7 @@ int getTotalShifts(const std::vector<CursesWindow*>& wins,
   Output:
 
 */
-void drawBoxes(std::vector<CursesWindow*>& wins,
+void drawBoxes(const std::unordered_map<int, CursesWindow*>& wins,
 	       const int& shiftX)
 {
   char val = 'a';

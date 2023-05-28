@@ -162,7 +162,7 @@ int main()
   std::unordered_map<int, ProcessInfo*>::iterator pUmapIt;
 
   // window related vars
-  std::vector<CursesWindow*> allWins;
+  std::unordered_map<int, CursesWindow*> allWins;  
   short numLines = 0;
   short numCols = 0;
   short startY = 0;
@@ -489,37 +489,29 @@ int main()
 			   numCols,
 			   startY,
 			   startX);
-  //  COMMANDWin.fixCOMMANDWinName();
   
-  // store all windows in vector for polymorphic calls
-  // process windows
-  // hardware windows
-  allWins.push_back(&mainWin); // 0
-  allWins.push_back(&topWin); // 1
-  allWins.push_back(&tasksWin); // 2
-  allWins.push_back(&cpuWin); // 3
-  allWins.push_back(&memWin); //  4
-  allWins.push_back(&PIDWin); // 5
-  allWins.push_back(&USERWin); // 6
-  allWins.push_back(&PRWin); // 7
-  allWins.push_back(&NIWin); // 8
-  allWins.push_back(&VIRTWin); // 9
-  allWins.push_back(&RESWin); // 10
-  allWins.push_back(&SHRWin); // 11
-  allWins.push_back(&SWin); // 12
-  allWins.push_back(&PercentCPUWin); // 13
-  allWins.push_back(&PercentMEMWin); // 14
-  allWins.push_back(&TIMEWin); // 15
-  allWins.push_back(&COMMANDWin); // 16
+  // ## store all windows for polymorphic calls ##
+  allWins.insert(std::make_pair(_MAINWIN,&mainWin));
+  allWins.insert(std::make_pair(_TOPWIN, &topWin));
+  allWins.insert(std::make_pair(_TASKSWIN, &tasksWin));
+  allWins.insert(std::make_pair(_CPUWIN, &cpuWin));
+  allWins.insert(std::make_pair(_MEMWIN, &memWin));
+  allWins.insert(std::make_pair(_PIDWIN, &PIDWin));
+  allWins.insert(std::make_pair(_USERWIN, &USERWin));
+  allWins.insert(std::make_pair(_PRWIN, &PRWin));
+  allWins.insert(std::make_pair(_NIWIN, &NIWin));
+  allWins.insert(std::make_pair(_VIRTWIN, &VIRTWin));
+  allWins.insert(std::make_pair(_RESWIN, &RESWin));
+  allWins.insert(std::make_pair(_SHRWIN, &SHRWin));
+  allWins.insert(std::make_pair(_SWIN, &SWin));
+  allWins.insert(std::make_pair(_PROCCPUWIN, &PercentCPUWin));
+  allWins.insert(std::make_pair(_PROCMEMWIN, &PercentMEMWin));
+  allWins.insert(std::make_pair(_PROCTIMEWIN, &TIMEWin));
+  allWins.insert(std::make_pair(_COMMANDWIN, &COMMANDWin));
 
-  // ## create and print white proc name color line ##
+  // ## create colorLine ##
   std::string colorLine;
-  std::vector<int> winNums;
-  /*
-  winNums.push_back(_MAINWIN);
   colorLine = createColorLine(mainWin.getNumCols());
-  printColorLine(allWins, winNums, colorLine, PIDWin.getStartY(), _BLACK_TEXT);
-  */
 
   // ## define program states ##
   progStates.insert(std::make_pair(_PROGSTATEHELP, 1)); // open help menu  
@@ -550,20 +542,6 @@ int main()
     std::vector<std::string> parsedLine;
     int val = 0;
 
-#if _CURSES
-    // clear the windows
-    /*
-      werase(allWins.at(0)->getWindow());
-      clearTopWins(allWins);
-      clearBottomWins(allWins);
-
-      werase(topWin.getWindow());
-      werase(tasksWin.getWindow());
-      werase(cpuWin.getWindow());
-      werase(memWin.getWindow());
-    */
-#endif
-    
     // get topWin data
     fileLine = returnFileLineByNumber(_UPTIME, 1);
     parsedLine = parseLine(fileLine);
@@ -575,6 +553,7 @@ int main()
     outLine.append(uptime.returnHHMMSS(timeinfo->tm_hour,
 				       timeinfo->tm_min,
 				       timeinfo->tm_sec));
+
     outLine.append(" up ");
     val = uptime.getHours()/24;
     if(val == 1)
@@ -588,6 +567,7 @@ int main()
 	outLine.append(std::to_string(val));
 	outLine.append(" days, ");
       }
+
     outLine.append(std::to_string(uptime.getHours() % 24));
     outLine.append(":");
     outLine.append(std::to_string(uptime.getMinutes()));
@@ -606,12 +586,14 @@ int main()
 
     // print topWin data window
 #if _CURSES
-    mvwaddstr(topWin.getWindow(),
+    //    mvwaddstr(topWin.getWindow(),
+    mvwaddstr(allWins.at(_TOPWIN)->getWindow(),	      
 	      0,
 	      0,
 	      outLine.c_str());
 #endif
 
+    /*    
     // mInfo data from /proc/meminfo
     fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
     parsedLine = parseLine(fileLine);
@@ -642,25 +624,28 @@ int main()
     mInfo.setBuffCache(mInfo.calculateBuffCache());
 
     // set memWin data
-    memWin.setStringMiB(doubleToStr(KiBToMiB(mInfo.getMemTotal()), 1),
+    allWins.at(_MEMWIN)->setStringMiB(doubleToStr(KiBToMiB(mInfo.getMemTotal()), 1),
 			doubleToStr(KiBToMiB(mInfo.getMemFree()), 1),
 			doubleToStr(KiBToMiB(mInfo.getMemUsed()), 1),
 			doubleToStr(KiBToMiB(mInfo.getBuffCache()), 1));
-    memWin.setStringSwap(doubleToStr(KiBToMiB(mInfo.getSwapTotal()), 1),
+    allWins.at(_MEMWIN)->setStringSwap(doubleToStr(KiBToMiB(mInfo.getSwapTotal()), 1),
 			 doubleToStr(KiBToMiB(mInfo.getSwapFree()), 1),
 			 doubleToStr(KiBToMiB(mInfo.getSwapUsed()), 1),
 			 doubleToStr(KiBToMiB(mInfo.getMemAvailable()), 1));
+
 #if _CURSES
     // print memWin data to window
-    mvwaddstr(memWin.getWindow(),
+    mvwaddstr(allWins.at(_MEMWIN)->getWindow(),
 	      0,
 	      0,
 	      memWin.getMiB().c_str());
-    mvwaddstr(memWin.getWindow(),
+    mvwaddstr(allWins.at(_MEMWIN)->getWindow(),
 	      1,
 	      0,
 	      memWin.getSwap().c_str());
-#endif    
+
+#endif
+    */
 
     // ## find running processes and update the list if needed ##
     // store old process list
@@ -805,10 +790,8 @@ int main()
 		pUmap[pidList.at(i)]->setS(lineString.at(0));
 
 		// get %cpu for processes
-		/*
-		  (utime - stime)/(system uptime - process start time)
-		  (col(14) - col(15))/(/proc/uptime(0) - col(22)
-		 */
+		// (utime - stime)/(system uptime - process start time)
+		// (col(14) - col(15))/(/proc/uptime(0) - col(22)
  		utime = convertToInt(parsedLine.at(11));
 		cutime = convertToInt(parsedLine.at(12));
 		pstart = convertToInt(parsedLine.at(19));
@@ -955,21 +938,22 @@ int main()
 		      0,
 		      outLine.c_str());
 #endif
-	    /*
 
-	      log << std::endl << "PID: " << pUmap[pidList.at(i)]->getPID() << std::endl
-		<< "COMM: " << pUmap[pidList.at(i)]->getCOMMAND() << std::endl
-		<< "USER: " << pUmap[pidList.at(i)]->getUSER() << std::endl
-		<< "PR: " << pUmap[pidList.at(i)]->getPR() << std::endl
-		<< "NI: " << pUmap[pidList.at(i)]->getNI() << std::endl
-		<< "VIRT: " << pUmap[pidList.at(i)]->getVIRT() << std::endl
-		<< "RES: " << pUmap[pidList.at(i)]->getRES() << std::endl
-		<< "SHR: " << pUmap[pidList.at(i)]->getSHR() << std::endl
-		<< "S: " << pUmap[pidList.at(i)]->getS() << std::endl
-		<< "%CPU: " << pUmap[pidList.at(i)]->getCPUUsage() << std::endl
-		<< std::endl;
-	    */
+
+//	      log << std::endl << "PID: " << pUmap[pidList.at(i)]->getPID() << std::endl
+//		<< "COMM: " << pUmap[pidList.at(i)]->getCOMMAND() << std::endl
+//		<< "USER: " << pUmap[pidList.at(i)]->getUSER() << std::endl
+//		<< "PR: " << pUmap[pidList.at(i)]->getPR() << std::endl
+//		<< "NI: " << pUmap[pidList.at(i)]->getNI() << std::endl
+//		<< "VIRT: " << pUmap[pidList.at(i)]->getVIRT() << std::endl
+//		<< "RES: " << pUmap[pidList.at(i)]->getRES() << std::endl
+//		<< "SHR: " << pUmap[pidList.at(i)]->getSHR() << std::endl
+//		<< "S: " << pUmap[pidList.at(i)]->getS() << std::endl
+//		<< "%CPU: " << pUmap[pidList.at(i)]->getCPUUsage() << std::endl
+//		<< std::endl;
+
       }
+
     pInfo = nullptr;
     pidListOld.clear();
     
@@ -1024,7 +1008,7 @@ int main()
       default:
 	break;
       }
-    
+
     // change sort state
     // *** creating function with pointer to funciton parameter should reduce DRY ***
     switch(sortState)
@@ -1239,7 +1223,7 @@ int main()
 	break;
       }
 
-    // print process windows
+    // ## print process windows ##
     if(highlight == true)
       {
 	wattron(allWins.at(highlightIndex)->getWindow(), A_BOLD);
@@ -1253,15 +1237,14 @@ int main()
 	       outList,
 	       pUmap,
 	       allWins);
-    
+    werase(mainWin.getWindow());
+    printColorLine(allWins, colorLine, PIDWin.getStartY(), _BLACK_TEXT);        
     attronBottomWins(allWins, _BLACK_TEXT);
     printWindowNames(allWins);
     attroffBottomWins(allWins, _BLACK_TEXT);
-    
+
 #if _CURSES
     // refresh the windows
-    // *** can make function to refresh all windows ***
-    werase(mainWin.getWindow());
     refreshAllWins(allWins);
     doupdate();
 
@@ -1273,8 +1256,9 @@ int main()
       {
 	break;
       }
-    
+
 #endif
+
   } while(true);
 
   endwin();
