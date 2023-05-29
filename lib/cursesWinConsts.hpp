@@ -6,10 +6,9 @@
 
 // window index constants
 enum _WINS {
-  _MAINWIN, // 0
-  _TOPWIN, // 1
-  _TASKSWIN, // 2
-  /*
+  _MAINWIN,
+  _TOPWIN, 
+  _TASKSWIN,
   _TASKSTOTALDATA,
   _TASKSTOTAL,
   _TASKSRUNNINGDATA,
@@ -20,7 +19,6 @@ enum _WINS {
   _TASKSSTOPPED,
   _TASKSZOMBIEDATA,
   _TASKSZOMBIE,
-  */
   _CPUWIN,
   _MEMWIN,
   _PIDWIN,
@@ -34,7 +32,7 @@ enum _WINS {
   _PROCCPUWIN,
   _PROCMEMWIN,
   _PROCTIMEWIN,
-  _COMMANDWIN
+  _COMMANDWIN // 26
 };
 
 // window count constants
