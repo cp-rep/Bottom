@@ -162,7 +162,7 @@ int main()
   std::unordered_map<int, ProcessInfo*>::iterator pUmapIt;
 
   // window related vars
-  std::unordered_map<int, CursesWindow*> allWins;  
+  std::unordered_map<int, CursesWindow*> allWins;
   short numLines = 0;
   short numCols = 0;
   short startY = 0;
@@ -633,6 +633,7 @@ int main()
 			 doubleToStr(KiBToMiB(mInfo.getSwapUsed()), 1),
 			 doubleToStr(KiBToMiB(mInfo.getMemAvailable()), 1));
 
+
 #if _CURSES
     // print memWin data to window
     mvwaddstr(allWins.at(_MEMWIN)->getWindow(),
@@ -646,6 +647,7 @@ int main()
 
 #endif
     */
+
 
     // ## find running processes and update the list if needed ##
     // store old process list
@@ -879,7 +881,8 @@ int main()
 		      0,
 		      0,
 		      outLine.c_str());
-#endif	    
+#endif
+
 	    // ## get process state count ##
 	    unsigned int running = 0;
 	    unsigned int unSleep = 0;
@@ -1008,6 +1011,7 @@ int main()
       default:
 	break;
       }
+
 
     // change sort state
     // *** creating function with pointer to funciton parameter should reduce DRY ***
@@ -1188,6 +1192,7 @@ int main()
 	break;
       }
 
+
     // shift windows
     switch(moveVal)
       {
@@ -1196,14 +1201,12 @@ int main()
 	  {
 	    shiftY++;
 	  }
-	log << "KEY UP! shiftY: " << shiftY << std::endl;
 	break;
       case KEY_DOWN:
 	if(std::abs(shiftY) < pUmap.size() - 1)
 	  {
 	    shiftY--;
 	  }
-	log << "KEY DOWN! shiftY: " << shiftY << std::endl;
 	break;
       case KEY_LEFT:
 	if(shiftX > _PIDWIN)
@@ -1222,7 +1225,8 @@ int main()
       default:
 	break;
       }
-
+    
+#if _CURSES
     // ## print process windows ##
     if(highlight == true)
       {
@@ -1237,17 +1241,15 @@ int main()
 	       outList,
 	       pUmap,
 	       allWins);
-    werase(mainWin.getWindow());
-    printColorLine(allWins, colorLine, PIDWin.getStartY(), _BLACK_TEXT);        
     attronBottomWins(allWins, _BLACK_TEXT);
     printWindowNames(allWins);
     attroffBottomWins(allWins, _BLACK_TEXT);
-
-#if _CURSES
+    werase(mainWin.getWindow());
+    printColorLine(allWins, colorLine, PIDWin.getStartY(), _BLACK_TEXT);
+    
     // refresh the windows
     refreshAllWins(allWins);
     doupdate();
-
     //napms(3000);
     //sleep(3);
     //delay(3000);
@@ -1256,8 +1258,8 @@ int main()
       {
 	break;
       }
-
 #endif
+
 
   } while(true);
 
