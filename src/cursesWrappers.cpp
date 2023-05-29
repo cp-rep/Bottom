@@ -565,7 +565,7 @@ void shiftBottomWinsRight(std::unordered_map<int, CursesWindow*>& wins,
   wins.at(shiftX - 1)->setStartX(0);
 
   // get the total number of needed shifts
-  totalShifts = _COMMANDWIN - shiftX;// = getTotalShifts(wins, currWin);
+  totalShifts = _COMMANDWIN - shiftX + 1; // = getTotalShifts(wins, currWin);
 
   // shift the windows
   for(int i = 0; i < totalShifts; i++, currWin++)
