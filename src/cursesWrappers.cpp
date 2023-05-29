@@ -2,18 +2,51 @@
   File: cursesWrappers.cpp
  */
 #include "cursesWrappers.hpp"
+#include <algorithm>
 
 
 
+/*
+  Function:
+  refreshAllWins
+
+  Description:
+ */
 void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
-  for(int i = 0; i < wins.size(); i++)
+  std::unordered_map<int, CursesWindow*>::const_iterator it = wins.begin();
+  std::vector<int> tempWins;
+
+  // store all currently initialized window indexes
+  for(it = wins.begin(); it != wins.end(); it++)
     {
-      wnoutrefresh(wins.at(i)->getWindow());
+      if(it->second->getWindow() != nullptr)
+	{
+	  tempWins.push_back(it->first);
+	}
     }
-}
+
+  // sort them in ascending order
+  std::sort(tempWins.begin(), tempWins.end());
+
+  // refresh the initialized windows
+  for(std::vector<int>::iterator vecIt = tempWins.begin();
+      vecIt != tempWins.end();
+      vecIt++)
+    {
+      wnoutrefresh(wins.at(*vecIt)->getWindow());
+    }
+  
+} // end of "refreshAllWins"
 
 
+
+/*
+  Function:
+  clearAllWins
+
+  Description:
+ */
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
 
@@ -27,6 +60,13 @@ void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins)
 }
 
 
+
+/*
+  Function:
+  clearTopWins
+
+  Description:
+ */
 void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
     werase(wins.at(_TOPWIN)->getWindow());
