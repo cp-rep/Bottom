@@ -10,24 +10,7 @@
   - Top's horizontal window scroll is determined by the total possible length
     of the value the column is representing until you reach command.  Once
     command is reached, every proceeding scroll is an 8 character window shift.
-
-  To Add:
-  - Wrapper functions for the curse calls with error handling
-  - could use a counter for up/down left/right arrow clicks for starting point
-    in array.
- 
-  Potential Future Additions:
-  - mouse functionality option which would then pop up a window with buttons
-    to click. all* keyboard options should be possible with a mouse
-  - make the help menu more user friendly
-  - could leverage internet connectivity.
-  * pull our processes and check if any are considered malicious
-  against a database.
-  - could prompt chapGPT
-  - scan /var/log/wtmp  /var/run/utmp /var/log/btmp  for intrusions
-  - adding hardware statistics to a database that we can compare to over time
-    and get a "dynamic" look at how a PC performs compared to it's past.
-  */
+*/
 #include <iostream>
 #include <ctime>
 #include <chrono>
@@ -156,7 +139,6 @@ int main()
   // process related vars
   MemInfo mInfo;
   ProcessInfo* pInfo;
-  struct passwd* userData;
   std::vector<int> pidList;
   std::unordered_map<int, ProcessInfo*> pUmap;
   std::unordered_map<int, ProcessInfo*>::iterator pUmapIt;
@@ -697,7 +679,7 @@ int main()
 	    std::string filePath;
 	    std::string lineString;
 	    const std::string currProc = _PROC + std::to_string(pidList.at(i));
-	    int value = 0;
+	    unsigned int value = 0;
 	    
 	    // set pid
 	    pUmap[pidList.at(i)]->setPID(pidList.at(i));
@@ -710,23 +692,34 @@ int main()
 	    pUmap[pidList.at(i)]->setCOMMAND(lineString);
 	    // log << "COMM: " << pUmap[pidList.at(i)]->getCOMMAND() << std::endl;
 
-	    /*
  	    // get USER
 	    filePath = currProc;
 	    filePath.append(_STATUS);
 	    lineString = returnPhraseLine(filePath, "Gid");
+
 	    if(lineString != "-1")
 	      {
+		struct passwd userData;
+		struct passwd* userDataPtr;
+		uid_t uidt;
+		char buff[1024];		
+		
 		parsedLine = parseLine(lineString);
-		value = convertToInt(parsedLine.at(1));
-		userData = getpwuid(value);
-		pUmap[pidList.at(i)]->setUSER(userData->pw_name);
+		uidt = convertToInt(parsedLine.at(1));
+		
+		if(getpwuid_r(uidt, &userData, buff, sizeof(buff), &userDataPtr))
+		  {
+		    log << "Failed to call getpwuid_r()" << std::endl;
+		  }
+		else
+		  {
+		    pUmap[pidList.at(i)]->setUSER(userData.pw_name);		    
+		  }
 	      }
 	    else
 	      {
 		pUmap[pidList.at(i)]->setUSER("-1");
 	      }
-	    */
 
 	    // get VIRT
 	    lineString = returnFileLineByPhrase(filePath, "VmSize");
