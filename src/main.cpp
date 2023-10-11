@@ -931,7 +931,6 @@ int main()
 		      outLine.c_str());
 #endif
 
-
 //	      log << std::endl << "PID: " << pUmap[pidList.at(i)]->getPID() << std::endl
 //		<< "COMM: " << pUmap[pidList.at(i)]->getCOMMAND() << std::endl
 //		<< "USER: " << pUmap[pidList.at(i)]->getUSER() << std::endl
@@ -943,7 +942,6 @@ int main()
 //		<< "S: " << pUmap[pidList.at(i)]->getS() << std::endl
 //		<< "%CPU: " << pUmap[pidList.at(i)]->getCPUUsage() << std::endl
 //		<< std::endl;
-
       }
 
     pInfo = nullptr;
@@ -1001,9 +999,7 @@ int main()
 	break;
       }
 
-
     // change sort state
-    // *** creating function with pointer to funciton parameter should reduce DRY ***
     switch(sortState)
       {
       case _PIDWIN: // PID
@@ -1019,7 +1015,6 @@ int main()
 	highlightIndex = _PRWIN;
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
-
 	    const int temp = pUmap[pidList.at(i)]->getPR();
 
 	    if(temp != 0)
@@ -1054,7 +1049,6 @@ int main()
 	highlightIndex = _VIRTWIN;
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
-
 	    const int temp = pUmap[pidList.at(i)]->getVIRT();
 
 	    if(temp != 0)
@@ -1072,7 +1066,6 @@ int main()
 	highlightIndex = _RESWIN;
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
-
 	    const int temp = pUmap[pidList.at(i)]->getRES();
 
 	    if(temp != 0)
@@ -1090,7 +1083,6 @@ int main()
 	highlightIndex = _SHRWIN;
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
-
 	    const int temp = pUmap[pidList.at(i)]->getSHR();
 
 	    if(temp != 0)
