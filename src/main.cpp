@@ -73,6 +73,9 @@
 #define _UTMPDUMP "utmpdump"
 #define _READ "r"
 
+// other WINDOW constants
+#define _Y_OFFSET 6
+
 // function prototypes
 void printWindowToLog(std::ofstream& log,
 		      const CursesWindow& win);
@@ -209,7 +212,8 @@ int main()
   // define topWindow
   numLines = 1;
   numCols = numCols;
-  startY = 0;
+  //  startY = 0;
+  startY = _Y_OFFSET - 6;  
   startX = 0;
   TopWindow topWin(newwin(numLines,
 			  numCols,
@@ -223,7 +227,8 @@ int main()
   // define tasks window
   numLines = 1;
   numCols = numCols;
-  startY = 1;
+  //  startY = 1;
+  startY = _Y_OFFSET - 5;  
   startX = 0;
   TasksWindow tasksWin(newwin(numLines,
 			      numCols,
@@ -237,7 +242,8 @@ int main()
   // define cpu window
   numLines = 1;
   numCols = numCols;
-  startY = 2;
+  //  startY = 2;
+  startY = _Y_OFFSET - 4;
   startX = 0;
   CpuWindow cpuWin(newwin(numLines,
 			  numCols,
@@ -251,7 +257,7 @@ int main()
   // define mem window
   numLines = 2;
   numCols = numCols;
-  startY = 3;
+  startY = _Y_OFFSET - 3;
   startX = 0;  
   MemWindow memWin(newwin(numLines,
 			  numCols,
@@ -269,7 +275,7 @@ int main()
     tasksWin.getNumLines() -
     topWin.getNumLines() - 1;
   numCols = 7;
-  startY = memWin.getStartY() + 3;
+  startY = memWin.getStartY() + _Y_OFFSET - 3;
   startX = 0;
   PIDWindow PIDWin(newwin(numLines,
 			  numCols,
@@ -282,7 +288,7 @@ int main()
 		   startX);
   // define USER window
   numCols = 8;
-  startY = memWin.getStartY() + 3;
+  startY = memWin.getStartY() + _Y_OFFSET - 3;
   startX = PIDWin.getNumCols() + 1;
   USERWindow USERWin(newwin(numLines,
 			    numCols,
@@ -295,7 +301,7 @@ int main()
 		     startX);
   // define PR window
   numCols = 3;
-  startY = memWin.getStartY() + 3;
+  startY = memWin.getStartY() + _Y_OFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() + 2;
   PRWindow PRWin(newwin(numLines,
@@ -309,7 +315,7 @@ int main()
 		 startX);
   // define NI window
   numCols = 3;
-  startY = memWin.getStartY() + 3;
+  startY = memWin.getStartY() + _Y_OFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() + 3;
@@ -324,7 +330,7 @@ int main()
 		 startX);
   // define VIRT window
   numCols = 7;
-  startY = memWin.getStartY() + 3;
+  startY = memWin.getStartY() + _Y_OFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() +
@@ -340,7 +346,7 @@ int main()
 		     startX);
   // define RES window
   numCols = 6;
-  startY = memWin.getStartY() + 3;
+  startY = memWin.getStartY() + _Y_OFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() +
@@ -357,7 +363,7 @@ int main()
 		   startX);
   // define SHR window
   numCols = 6;
-  startY = memWin.getStartY() + 3;
+  startY = memWin.getStartY() + _Y_OFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() +
@@ -375,7 +381,7 @@ int main()
 		   startX);
   // define S window
   numCols = 1;
-  startY = memWin.getStartY() + 3;
+  startY = memWin.getStartY() + _Y_OFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() +
@@ -394,7 +400,7 @@ int main()
 	       startX);
   // define PercentCPU window
   numCols = 5;
-  startY = memWin.getStartY() + 3;
+  startY = memWin.getStartY() + _Y_OFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() +
@@ -414,7 +420,7 @@ int main()
 				 startX);
   // define PercentMEM window
   numCols = 5;
-  startY = memWin.getStartY() + 3;
+  startY = memWin.getStartY() + _Y_OFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() +
@@ -435,7 +441,7 @@ int main()
 				 startX);
   // define TIME window
   numCols = 9;
-  startY = memWin.getStartY() + 3;
+  startY = memWin.getStartY() + _Y_OFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() +
@@ -457,7 +463,7 @@ int main()
 		     startX);
   // define COMMAND window
   numCols = 48;
-  startY = memWin.getStartY() + 3;
+  startY = memWin.getStartY() + _Y_OFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() +
@@ -575,63 +581,12 @@ int main()
 
     // print topWin data window
 #if _CURSES
-    //    mvwaddstr(topWin.getWindow(),
     mvwaddstr(allWins.at(_TOPWIN)->getWindow(),	      
 	      0,
 	      0,
 	      outLine.c_str());
 #endif
-
-    // mInfo data from /proc/meminfo
-    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
-    parsedLine = parseLine(fileLine);
-    mInfo.setMemTotal(convertToInt(parsedLine.at(1)));
-    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 2);
-    parsedLine = parseLine(fileLine);
-    mInfo.setMemFree(convertToInt(parsedLine.at(1)));
-    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 3);
-    parsedLine = parseLine(fileLine);
-    mInfo.setMemAvailable(convertToInt(parsedLine.at(1)));
-    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 4);
-    parsedLine = parseLine(fileLine);
-    mInfo.setBuffers(convertToInt(parsedLine.at(1)));
-    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 5);
-    parsedLine = parseLine(fileLine);
-    mInfo.setCached(convertToInt(parsedLine.at(1)));
-    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 15);
-    parsedLine = parseLine(fileLine);
-    mInfo.setSwapTotal(convertToInt(parsedLine.at(1)));
-    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 16);
-    parsedLine = parseLine(fileLine);
-    mInfo.setSwapFree(convertToInt(parsedLine.at(1)));
-    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 26);
-    parsedLine = parseLine(fileLine);
-    mInfo.setSReclaimable(convertToInt(parsedLine.at(1)));
-    mInfo.setMemUsed(mInfo.calculateMemUsed());
-    mInfo.setSwapUsed(mInfo.calculateSwapUsed());
-    mInfo.setBuffCache(mInfo.calculateBuffCache());
-
-    allWins.at(_MEMWIN)->setStringMiB(doubleToStr(KiBToMiB(mInfo.getMemTotal()), 1),
-			doubleToStr(KiBToMiB(mInfo.getMemFree()), 1),
-			doubleToStr(KiBToMiB(mInfo.getMemUsed()), 1),
-			doubleToStr(KiBToMiB(mInfo.getBuffCache()), 1));
-    allWins.at(_MEMWIN)->setStringSwap(doubleToStr(KiBToMiB(mInfo.getSwapTotal()), 1),
-			 doubleToStr(KiBToMiB(mInfo.getSwapFree()), 1),
-			 doubleToStr(KiBToMiB(mInfo.getSwapUsed()), 1),
-			 doubleToStr(KiBToMiB(mInfo.getMemAvailable()), 1));
-
-#if _CURSES
-    // print memWin data to window
-    mvwaddstr(allWins.at(_MEMWIN)->getWindow(),
-	      0,
-	      0,
-	      memWin.getMiB().c_str());
-    mvwaddstr(allWins.at(_MEMWIN)->getWindow(),
-	      1,
-	      0,
-	      memWin.getSwap().c_str());
-#endif
-
+    
     // ## find running processes and update the list if needed ##
     // store old process list
     std::vector<int> pidListOld(pidList);
@@ -938,6 +893,58 @@ int main()
 		      outLine.c_str());
 #endif
 
+
+    // mInfo data from /proc/meminfo
+    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
+    parsedLine = parseLine(fileLine);
+    mInfo.setMemTotal(convertToInt(parsedLine.at(1)));
+    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 2);
+    parsedLine = parseLine(fileLine);
+    mInfo.setMemFree(convertToInt(parsedLine.at(1)));
+    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 3);
+    parsedLine = parseLine(fileLine);
+    mInfo.setMemAvailable(convertToInt(parsedLine.at(1)));
+    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 4);
+    parsedLine = parseLine(fileLine);
+    mInfo.setBuffers(convertToInt(parsedLine.at(1)));
+    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 5);
+    parsedLine = parseLine(fileLine);
+    mInfo.setCached(convertToInt(parsedLine.at(1)));
+    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 15);
+    parsedLine = parseLine(fileLine);
+    mInfo.setSwapTotal(convertToInt(parsedLine.at(1)));
+    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 16);
+    parsedLine = parseLine(fileLine);
+    mInfo.setSwapFree(convertToInt(parsedLine.at(1)));
+    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 26);
+    parsedLine = parseLine(fileLine);
+    mInfo.setSReclaimable(convertToInt(parsedLine.at(1)));
+    mInfo.setMemUsed(mInfo.calculateMemUsed());
+    mInfo.setSwapUsed(mInfo.calculateSwapUsed());
+    mInfo.setBuffCache(mInfo.calculateBuffCache());
+    allWins.at(_MEMWIN)->setStringMiB(doubleToStr(KiBToMiB(mInfo.getMemTotal()), 1),
+				      doubleToStr(KiBToMiB(mInfo.getMemFree()), 1),
+				      doubleToStr(KiBToMiB(mInfo.getMemUsed()), 1),
+				      doubleToStr(KiBToMiB(mInfo.getBuffCache()), 1));
+    allWins.at(_MEMWIN)->setStringSwap(doubleToStr(KiBToMiB(mInfo.getSwapTotal()), 1),
+				       doubleToStr(KiBToMiB(mInfo.getSwapFree()), 1),
+				       doubleToStr(KiBToMiB(mInfo.getSwapUsed()), 1),
+				       doubleToStr(KiBToMiB(mInfo.getMemAvailable()), 1));
+
+#if _CURSES
+    // print memWin data to window
+    mvwaddstr(allWins.at(_MEMWIN)->getWindow(),
+	      0,
+	      0,
+	      memWin.getMiB().c_str());
+    mvwaddstr(allWins.at(_MEMWIN)->getWindow(),
+	      1,
+	      0,
+	      memWin.getSwap().c_str());
+#endif
+
+
+	    
 //	      log << std::endl << "PID: " << pUmap[pidList.at(i)]->getPID() << std::endl
 //		<< "COMM: " << pUmap[pidList.at(i)]->getCOMMAND() << std::endl
 //		<< "USER: " << pUmap[pidList.at(i)]->getUSER() << std::endl
@@ -950,10 +957,10 @@ int main()
 //		<< "%CPU: " << pUmap[pidList.at(i)]->getCPUUsage() << std::endl
 //		<< std::endl;
       }
-
+    
     pInfo = nullptr;
     pidListOld.clear();
-    
+
     // ## get user input ##
     std::vector<std::pair<double, int>> sortedByDouble;
     std::vector<std::pair<std::string, int>> sortedByString;
@@ -1252,8 +1259,7 @@ int main()
 	break;
       }
 #endif
-
-
+    
   } while(true);
 
   endwin();
