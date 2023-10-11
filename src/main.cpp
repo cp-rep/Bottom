@@ -490,7 +490,7 @@ int main()
 			   startY,
 			   startX);
   
-  // ## store all windows for polymorphic calls ##
+  // ## store all windows ##
   allWins.insert(std::make_pair(_MAINWIN,&mainWin));
   allWins.insert(std::make_pair(_TOPWIN, &topWin));
   allWins.insert(std::make_pair(_TASKSWIN, &tasksWin));
@@ -593,7 +593,6 @@ int main()
 	      outLine.c_str());
 #endif
 
-    /*    
     // mInfo data from /proc/meminfo
     fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
     parsedLine = parseLine(fileLine);
@@ -623,7 +622,6 @@ int main()
     mInfo.setSwapUsed(mInfo.calculateSwapUsed());
     mInfo.setBuffCache(mInfo.calculateBuffCache());
 
-    // set memWin data
     allWins.at(_MEMWIN)->setStringMiB(doubleToStr(KiBToMiB(mInfo.getMemTotal()), 1),
 			doubleToStr(KiBToMiB(mInfo.getMemFree()), 1),
 			doubleToStr(KiBToMiB(mInfo.getMemUsed()), 1),
@@ -632,7 +630,6 @@ int main()
 			 doubleToStr(KiBToMiB(mInfo.getSwapFree()), 1),
 			 doubleToStr(KiBToMiB(mInfo.getSwapUsed()), 1),
 			 doubleToStr(KiBToMiB(mInfo.getMemAvailable()), 1));
-
 
 #if _CURSES
     // print memWin data to window
@@ -644,10 +641,7 @@ int main()
 	      1,
 	      0,
 	      memWin.getSwap().c_str());
-
 #endif
-    */
-
 
     // ## find running processes and update the list if needed ##
     // store old process list
