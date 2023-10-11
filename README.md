@@ -4,7 +4,7 @@
 The Bottom program is an exploration in Linux and NCurses through recreating Top from the GNU Core Utilities using C++.
 
 ## How to Build Bottom
-Bottom uses the "CMake" utility for building the base program.
+Bottom uses the "CMake" utility for building the base program.  The last working version of "Bottom" to its coressponding branch is included in the /bin directory.
 - Type "make" while in Bottom's working directory to build.
 - Type "make clean" to clean up build files. "make clean" currently does not delete the executable in the ./Bottom/bin directory
 
