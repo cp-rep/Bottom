@@ -49,6 +49,18 @@ public:
   void setNumCols(const int& numCols);
   void setStartY(const int& startY);
   void setStartX(const int& startX);
+
+  // virtual functions
+  // memWindow.hpp
+  virtual void setStringMiB(const std::string& memTotal,
+			    const std::string& memFree,
+			    const std::string& memUsed,
+			    const std::string& buffCache) {}
+
+  virtual void setStringSwap(const std::string& swapTotal,
+			     const std::string& swapFree,
+			     const std::string& swapUsed,
+			     const std::string& memAvailable) {}
   
 private:
   // member variables
