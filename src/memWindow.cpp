@@ -11,7 +11,12 @@ MemWindow::MemWindow(WINDOW* win,
 		     const short& numLines,
 		     const short& numCols,
 		     const short& startY,
-		     const short& startX)
+		     const short& startX) : CursesWindow(win,
+							 windowName,
+							 numLines,
+							 numCols,
+							 startY,
+							 startX)
 { 
 } // end of "MemWindow Default Constructor"
 
