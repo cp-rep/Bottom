@@ -4,7 +4,7 @@
 The Bottom program is an exploration in Linux and NCurses through recreating Top from the GNU Core Utilities using C++.
 
 ## Methods
-Everything has been written from scratch, done by eye, and from testing the Top program.  I have not examined the C code for either the GNU Core Utilities Top program or the HTop code.  I have used the man pages for the Top program and other built-in programs such as "user", "ls" and others to help explain where those programs pull their process/OS data from.
+Everything has been written from scratch, done by eye, and from testing the Top program.  I have not examined the C code for either the GNU Core Utilities Top program or the HTop code.  I have used the man pages for the Top program and other built-in programs such as "user", "ls" to help explain where those programs pull their process/OS data from.
 
 ## Why in the world did I use C++?
 Yes, I know it is complete blasphemy to use C++ for a Linux program and that Linus Torvalds would never accept this in any Linux echo system ever.  However, that is one of the very reasons I wanted to write this program in C++.  I wanted to write a Linux process management utility that may be easier expanded upon with experimental features.  As it currently sits, it is comparatively lightweight to the C implementation of Top.
@@ -27,7 +27,7 @@ The following is a quick list of my most important upcoming short-term changes:
 - Adding unit tests for appropriate functions in GTEST
 
 ## What long term changes?
-- Most if not all of the functionality that Top offers.
+- Most if not all of the functionality that Top offers
 - Mouse functionality
-- Web-based features.  For example, snap shotting the process list uploading it for examining for unusual values that may determine a milicious connection or program.
-- Potentially many others I have considered but these are at the top of my list.
+- Web-based features.  For example, snap shotting the process list and uploading it to examine for unusual values that may determine a malicious connection or program.
+- Potentially many others I have considered but these are at the top of my list!
