@@ -1,6 +1,0 @@
-1. printProcs() prints the dead process created from the pipe of utmpdump
-2. 
-3.
-4.
-5.
-6.
