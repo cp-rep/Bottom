@@ -3,6 +3,11 @@
 ## What is this project?
 The Bottom program is an exploration in Linux and NCurses through recreating Top from the GNU Core Utilities using C++.
 
+## How to Build Bottom
+Bottom uses the "make" utility.
+- Type "make" while in Bottom's working directory to build.
+- TYpe "make clean" to clean up build files. "make clean" currently does not delete the executable in the ./Bottom/bin directory
+
 ## Current Features and How to Use Them
 - the arrow keys allow scrolling left right up and down shifting the windows
 - the '<' and '>' keys determine which column to sort by
