@@ -1,15 +1,22 @@
 /*
-  File: main.c
+  File: main.cpp
+  Version: V0.1
 
-  Program Description: A rendition of the Top program.
-
-  Details:
-  V0.1
+  Program Description: 
+    A rendition of the Top program using C++. It is currently
+    tested in Ubuntu and ArchLinux.  Each have a branch that corresponds to the
+    working implementation.  The main branch contains a stable version that works
+    on both operating systems.
 
   Notes:
   - Top's horizontal window scroll is determined by the total possible length
-    of the value the column is representing until you reach command.  Once
-    command is reached, every proceeding scroll is an 8 character window shift.
+  of the value the column is representing until you reach command.  Once
+  command is reached, every proceeding scroll is an 8 character window shift.
+
+  Controls:
+  - the 'x' key allows highlighting a particular column.
+  - the arrow keys allow shifting the windows left and right.
+  - the '<' and '>' keys change how the columns are sorted.
 */
 #include <iostream>
 #include <ctime>
