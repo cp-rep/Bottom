@@ -16,12 +16,11 @@ MemWindow::MemWindow(WINDOW* win,
 } // end of "MemWindow Default Constructor"
 
 
-/*
+
 void MemWindow::setStringMiB(const std::string& memTotal,
 			     const std::string& memFree,
 			     const std::string& memUsed,
 			     const std::string& buffCache)
-
 {
   m_MiB.clear();
   m_MiB.append("MiB Mem: ");
@@ -50,8 +49,9 @@ void MemWindow::setStringSwap(const std::string& swapTotal,
   m_swap.append(swapUsed);
   m_swap.append(" used, ");
   m_swap.append(memAvailable);
-  m_swap.append(" avail/mem");  
+  m_swap.append(" avail/mem");
+
 } // end of "setStringSwap"
-*/
+
 
 

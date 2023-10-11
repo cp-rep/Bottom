@@ -56,7 +56,6 @@ public:
 			    const std::string& memFree,
 			    const std::string& memUsed,
 			    const std::string& buffCache) {}
-
   virtual void setStringSwap(const std::string& swapTotal,
 			     const std::string& swapFree,
 			     const std::string& swapUsed,

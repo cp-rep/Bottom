@@ -17,7 +17,22 @@ public:
 	    const short& numCols = 0,
 	    const short& startY = 0,
 	    const short& startX = 0);
+
+  // getters and setters
+  void setStringMiB(const std::string& memTotal,
+		    const std::string& memFree,
+		    const std::string& memUsed,
+		    const std::string& buffCache);
+  void setStringSwap(const std::string& swapTotal,
+		     const std::string& swapFree,
+		     const std::string& swapUsed,
+		     const std::string& memAvailable);
+  const std::string getMiB() const { return m_MiB; }
+  const std::string getSwap() const { return m_swap; }
+  
 private:
+  std::string m_MiB;
+  std::string m_swap;
 };
 
 #endif
