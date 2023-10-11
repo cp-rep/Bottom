@@ -7,7 +7,7 @@ project(Gtest LANGUAGES CXX)
 # set the C++ standard
 set(CMAKE_CXX_STANDARD 14)
 
-# require the standard
+# require the C++ standard
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # disable the .cxx extension requirement
