@@ -716,6 +716,7 @@ int main()
 	    pUmap[pidList.at(i)]->setCOMMAND(lineString);
 	    // log << "COMM: " << pUmap[pidList.at(i)]->getCOMMAND() << std::endl;
 
+	    /*
  	    // get USER
 	    filePath = currProc;
 	    filePath.append(_STATUS);
@@ -731,6 +732,7 @@ int main()
 	      {
 		pUmap[pidList.at(i)]->setUSER("-1");
 	      }
+	    */
 
 	    // get VIRT
 	    lineString = returnFileLineByPhrase(filePath, "VmSize");
@@ -1211,14 +1213,16 @@ int main()
       case KEY_LEFT:
 	if(shiftX > _PIDWIN)
 	  {
-	    shiftBottomWinsRight(allWins, shiftX);
+	    shiftBottomWinsRight(allWins,
+				 shiftX);
 	    shiftX--;
 	  }
 	break;
       case KEY_RIGHT:
 	if(shiftX < _COMMANDWIN)
 	  {
-	    shiftBottomWinsLeft(allWins, shiftX);
+	    shiftBottomWinsLeft(allWins,
+				shiftX);
 	    shiftX++;
 	  }
 	break;
@@ -1230,29 +1234,32 @@ int main()
     // ## print process windows ##
     if(highlight == true)
       {
-	wattron(allWins.at(highlightIndex)->getWindow(), A_BOLD);
+	wattron(allWins.at(highlightIndex)->getWindow(),
+		A_BOLD);
       }
     else
       {
-	wattroff(allWins.at(highlightIndex)->getWindow(), A_BOLD);
+	wattroff(allWins.at(highlightIndex)->getWindow(),
+		 A_BOLD);
       }
+    
     printProcs(shiftY,
 	       shiftX,
 	       outList,
 	       pUmap,
 	       allWins);
-    attronBottomWins(allWins, _BLACK_TEXT);
+    attronBottomWins(allWins,
+		     _BLACK_TEXT);
     printWindowNames(allWins);
-    attroffBottomWins(allWins, _BLACK_TEXT);
+    attroffBottomWins(allWins,
+		      _BLACK_TEXT);
     werase(mainWin.getWindow());
-    printColorLine(allWins, colorLine, PIDWin.getStartY(), _BLACK_TEXT);
-    
-    // refresh the windows
+    printColorLine(allWins,
+		   colorLine,
+		   PIDWin.getStartY(),
+		   _BLACK_TEXT);
     refreshAllWins(allWins);
     doupdate();
-    //napms(3000);
-    //sleep(3);
-    //delay(3000);
     
     if(quit)
       {
