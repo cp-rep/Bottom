@@ -10,7 +10,7 @@ Everything has been written from scratch, done by eye, and from testing the Top 
 Yes, I know it is complete blasphemy to use C++ for a Linux program and that Linus Torvalds would never accept this in any Linux echo system ever.  However, that is one of the very reasons I wanted to write this program in C++.  I wanted to write a Linux process management utility that may be easier expanded upon with experimental features.  As it currently sits, it is comparatively lightweight to the C implementation of Top.
 
 ## What is the state of the project?
-Bottom is currently memory leak free and displays 90% of Top's data from the default screen.  The "main" branch will maintain this stable version.  It currently supports Arch Linux and Ubuntu.  The tested Kernel versions will soon be tagged to the corresponding pushes.
+Bottom is currently memory leak free and displays 90% of Top's data from the default screen.  The "main" branch will maintain this stable version.  It currently supports Arch Linux and Ubuntu.  The tested Kernel versions will soon be tagged to corresponding commits.
 
 ## What are the current challenges?
 I have not determined how to calculate every single process related or OS related data piece and researching those calculations has proved very time consuming.  I would estimate that the research has often taken as much time as the coding. In consequence, I'm using at least one core utility program piped from a function call to retrieve that calculation.  This results in the main program loop infinitely expanding it's total process count (even though the process closes correctly the total PID number grows very quickly).
