@@ -1,8 +1,8 @@
 /*
-  File: cursesWrappers.hpp
+  File: cursesFunctions.hpp
 */
-#ifndef CURSESWRAPPERS_HPP
-#define CURSESWRAPPERS_HPP
+#ifndef CURSESFUNCTIONS_HPP
+#define CURSESFUNCTIONS_HPP
 #include <curses.h>
 #include <vector>
 #include <unordered_map>
@@ -12,7 +12,6 @@
 #include "extractFileData.hpp"
 #include "progStateConsts.hpp"
 #include "cursesWinConsts.hpp"
-
 
 void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins);

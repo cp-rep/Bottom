@@ -17,6 +17,9 @@
   - the 'x' key allows highlighting a particular column.
   - the arrow keys allow shifting the windows left and right.
   - the '<' and '>' keys change how the columns are sorted.
+
+  Changes Needed:
+  - highlight row when a change happens in the sorted value type
 */
 #include <iostream>
 #include <ctime>
@@ -57,7 +60,7 @@
 #include "memInfo.hpp"
 #include "processInfo.hpp"
 #include "secondsToTime.hpp"
-#include "cursesWrappers.hpp"
+#include "cursesFunctions.hpp"
 #include "cursesColors.hpp"
 #include "progStateConsts.hpp"
 #include "cursesWinConsts.hpp"
@@ -100,7 +103,7 @@ void mergeStringList(const std::vector<std::pair<std::string, int>>& frontList,
   main
 
   Description:
-  The main driver file for the Bottom program.
+  The main driver function for the Bottom program.
  */
 int main()
 {

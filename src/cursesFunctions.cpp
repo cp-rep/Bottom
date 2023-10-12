@@ -1,7 +1,7 @@
 /*
-  File: cursesWrappers.cpp
+  File: cursesFunctions.cpp
  */
-#include "cursesWrappers.hpp"
+#include "cursesFunctions.hpp"
 #include <algorithm>
 
 
