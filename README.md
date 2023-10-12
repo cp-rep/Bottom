@@ -6,7 +6,7 @@ The Bottom program is an exploration in Linux and NCurses through recreating Top
 ## How to Build Bottom
 Bottom uses the "CMake" utility for building the base program.
 - Type "make" while in Bottom's working directory to build.
-- Type "make clean" to clean up build files. "make clean" currently does not delete the executable in the ./Bottom/bin directory
+- Type "make clean" to clean up build files.
 
 ## Current Features and How to Use Them
 - the arrow keys allow scrolling left right up and down shifting the windows
@@ -28,6 +28,7 @@ I have not determined how to calculate every single process related or OS relate
 ## Short Term Fixes and Changes/Additions
 The following is a quick list of my most important upcoming short-term changes:
 - Cleaning up the very ugly code
+- A bash or python script to check for all proper directory files/folders for build
 - Adding an interruptable delay
 - Removing any useless/deprecated functions
 - Writing proper comments for function implementations
