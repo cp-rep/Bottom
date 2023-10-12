@@ -28,7 +28,7 @@ I have not determined how to calculate every single process related or OS relate
 
 ## Short Term Fixes and Changes/Additions
 The following is a quick list of my most important upcoming short-term changes:
-- Cleaning up the very ugly code
+- Cleaning up ugly code
 - Adding an interruptable delay
 - Removing any useless/deprecated functions
 - Writing proper comments for function implementations
