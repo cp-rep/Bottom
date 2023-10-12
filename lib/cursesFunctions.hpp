@@ -47,7 +47,6 @@ void shiftBottomWinsLeft(std::unordered_map<int, CursesWindow*>& wins,
 void deleteWindow(CursesWindow* win);
 void drawBoxes(const std::unordered_map<int, CursesWindow*>& wins,
 	       const int& shiftX);
-
 int getTotalShifts(const std::unordered_map<int, CursesWindow*>& wins,
 		   const int& winStartPos);
 #endif

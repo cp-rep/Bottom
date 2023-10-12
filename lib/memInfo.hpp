@@ -27,8 +27,7 @@ public:
   const int calculateBuffCache() const;
   const int calculateMemUsed() const;
   const int calculateSwapUsed() const;
-				
-  
+
   // getters
   const int& getMemTotal() const;
   const int& getMemFree() const;
