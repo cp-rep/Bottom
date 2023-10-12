@@ -1286,7 +1286,7 @@ void mergeDoubleList(const std::vector<std::pair<double, int>>& frontList,
   // output the rest of the processes by PID in ascending order
   for(int i = frontList.size() - 1; i >= 0; i--)
     {
-      outList.push_back(frontList.at(j).second);
+      outList.push_back(frontList.at(i).second);
     }
 
   for(int i = 0; i < pUmap.size(); i++)
