@@ -17,51 +17,6 @@
 
 /*
   Function:
-  sortByString
-
-  Description:
-  After the list is sorted, all duplicate data will be moved to their own lists.
-  The duplicate data lists will be sorted by PID. After all lists are sorted
-  accordingly, they will be merged into one list based upon desired output
-  hierarchy.
-  
-  Input:
-
-  std::vector<int> pidNums; // to be populated with all current /proc/[pid] numbers
-  std::unordered_map<int, ProcessInfo*> procData; // to be populated with /proc/[pid] data
-
-  pidNums indexes into procData
-  
-  Output:
- */
-void sortByString(const std::vector<int>& processIds,
-		  const std::unordered_map<int, ProcessInfo*> procData)
-{
-  
-} // end of "sortByString"
-
-
-
-/*
-void sortByString()
-{
-}
-
-
-void sortByInt()
-{
-}
-
-
-void sortByDouble()
-*/
-
-  
-
-
-
-/*
-  Function:
   mergeDoubleLists
 
   Description:
@@ -216,19 +171,39 @@ const std::vector<int> mergeStringLists(const std::vector<std::pair<std::string,
 
 
 /*
-  std::vector<int> pidNums; // to be populated with all current /proc/[pid] numbers
-  std::unordered_map<int, ProcessInfo*> procData; // to be populated with /proc/[pid] data
-  std::vector<std::pair<std::string, int>> sortedByString;
+  Description:
+  Stores related data corresponding to the desired sort state and
+  returns it to the caller.
+
+
+  Input:
+  
+  pidNums               - a const reference to a PID list representing all running
+                          processes
+
+  procData              - all stored process data that will be traversed in
+                          ordere to retrieve desired sort state values
+
+  sortState             - a const reference to the sort state the program will
+                          be switching to.  It is used here as a switch statement
+			  value to determine which set of data to return to the
+			  caller.
+
+  Output:
+
+  const std::vector<std::pair<std::string, int>>
+                        - the list of <string, int> pairs that is the string
+			  to sort by and it's corresponding process ID
 */
-const std::vector<std::pair<std::string, int>> retrievePRStrings
+const std::vector<std::pair<std::string, int>> getProcStrs
 (const std::vector<int>& pidNums,
  std::unordered_map<int, ProcessInfo*>& procData,
  const int& listType)
 {
-  //  std::string temp;
   std::vector<std::pair<std::string, int>> tempStrings;
   std::string temp;
-  
+
+  // retrieve the desired corresponding processes data string
   for(int i = 0; i < procData.size(); i++)
     {
       switch(listType)
@@ -237,13 +212,15 @@ const std::vector<std::pair<std::string, int>> retrievePRStrings
 	  break;
 	case _PRWIN:
 	    temp = procData[pidNums.at(i)]->getPR();
-	    tempStrings.push_back(std::make_pair(temp, pidNums.at(i)));
 	  break;
 	case _SWIN:
+	    temp = procData[pidNums.at(i)]->getS();	  
 	  break;
 	case _COMMANDWIN:
+	    temp = procData[pidNums.at(i)]->getCOMMAND();	  
 	  break;
 	case _PROCTIMEWIN:
+	  temp = procData[pidNums.at(i)]->getProcessCPUTime();	  	  
 	  break;
 	default:
 	  break;
@@ -252,7 +229,8 @@ const std::vector<std::pair<std::string, int>> retrievePRStrings
       tempStrings.push_back(std::make_pair(temp, pidNums.at(i)));
     }
 
-  std::sort(tempStrings.begin(), tempStrings.end());
-
   return tempStrings;
 } // end of "retrieveProcDataStrs"
+
+
+

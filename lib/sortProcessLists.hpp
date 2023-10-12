@@ -22,7 +22,7 @@ const std::vector<int> mergeStringLists(const std::vector<std::pair<std::string,
 					const std::vector<int>& backList,
 					const std::unordered_map<int, ProcessInfo*>& pUmap);
 
-const std::vector<std::pair<std::string, int>> retrievePRStrings
+const std::vector<std::pair<std::string, int>> getProcStrs
 (const std::vector<int>& pidNums,
  std::unordered_map<int, ProcessInfo*>& procData,
  const int& listType);

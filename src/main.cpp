@@ -155,7 +155,7 @@ int main()
   // state related vars
   int progState = 0;
   int prevState = 0;
-  int sortState = _PROCCPUWIN;
+  int sortState = _PRWIN;
   bool highlight = false;
   bool quit = false;
   int shiftY = 1;
@@ -914,7 +914,7 @@ int main()
 
     // ## get user input ##
     std::vector<std::pair<double, int>> sortedByDouble;
-    std::vector<std::pair<std::string, int>> sortedByString;
+    std::vector<std::pair<std::string, int>> procStrings;
     std::vector<std::pair<int, int>> sortedByInt;
     std::vector<int> outList;
     int highlightIndex = 0;
@@ -967,151 +967,14 @@ int main()
     highlightIndex = sortState;
     
     // change sort state
-    switch(sortState)
+    procStrings = getProcStrs(pidNums,
+			      procData,
+			      sortState);
+    std::sort(procStrings.begin(), procStrings.end());
+    
+    for(int i = 0; i < procStrings.size(); i++)
       {
-      case _PIDWIN: // PID
-	std::reverse(pidNums.begin(),pidNums.end());
-	outList = pidNums;
-	break;
-      case _USERWIN: // USER
-	outList = pidNums;
-	break;
-      case _PRWIN: // PR
-	sortedByString = retrievePRStrings(pidNums,
-					   procData,
-					   sortState);
-	for(int i = 0; i < sortedByString.size(); i++)
-	  {
-	    outList.push_back(sortedByString.at(i).second);
-	  }
-	break;
-      case _NIWIN: // NI
-	for(int i = 0; i < procData.size(); i++)
-	  {
-	    const int temp = procData[pidNums.at(i)]->getNI();
-
-	    if(temp != 0)
-	      {
-		sortedByInt.push_back(std::make_pair(temp, pidNums.at(i)));
-	      }
-	  }
-	std::sort(sortedByInt.begin(), sortedByInt.end());
-	outList = mergeIntLists(sortedByInt,
-				pidNums,
-				procData);
-	break;
-      case _VIRTWIN: // VIRT
-	for(int i = 0; i < procData.size(); i++)
-	  {
-	    const int temp = procData[pidNums.at(i)]->getVIRT();
-
-	    if(temp != 0)
-	      {
-		sortedByInt.push_back(std::make_pair(temp, pidNums.at(i)));
-	      }
-	  }
-	std::sort(sortedByInt.begin(), sortedByInt.end());
-	outList = mergeIntLists(sortedByInt,
-				pidNums,
-				procData);
-	break;
-      case _RESWIN: // RES
-	for(int i = 0; i < procData.size(); i++)
-	  {
-	    const int temp = procData[pidNums.at(i)]->getRES();
-
-	    if(temp != 0)
-	      {
-		sortedByInt.push_back(std::make_pair(temp, pidNums.at(i)));
-	      }
-	  }
-	std::sort(sortedByInt.begin(), sortedByInt.end());
-	outList = mergeIntLists(sortedByInt,
-			       pidNums,
-			       procData);
-	break;
-      case _SHRWIN: // SHR
-	for(int i = 0; i < procData.size(); i++)
-	  {
-	    const int temp = procData[pidNums.at(i)]->getSHR();
-
-	    if(temp != 0)
-	      {
-		sortedByInt.push_back(std::make_pair(temp, pidNums.at(i)));
-	      }
-	  }
-	std::sort(sortedByInt.begin(), sortedByInt.end());
-	outList = mergeIntLists(sortedByInt,
-			       pidNums,
-			       procData);
-	break;
-      case _SWIN: // S
-	for(int i = 0; i < procData.size(); i++)
-	  {
-	    const int temp = procData[pidNums.at(i)]->getS();
-
-	    if(temp != 0)
-	      {
-		sortedByInt.push_back(std::make_pair(temp, pidNums.at(i)));
-	      }
-	  }
-	std::sort(sortedByInt.begin(), sortedByInt.end());
-	outList = mergeIntLists(sortedByInt,
-			       pidNums,
-			       procData);
-	break;
-      case _PROCCPUWIN: // %CPU
-	for(int i = 0; i < procData.size(); i++)
-	  {
-	    const double temp = procData[pidNums.at(i)]->getCPUUsage();
-
-	    if(temp != 0)
-	      {
-		sortedByDouble.push_back(std::make_pair(temp, pidNums.at(i)));
-	      }
-	  }
-	std::sort(sortedByDouble.begin(), sortedByDouble.end());
-	outList = mergeDoubleLists(sortedByDouble,
-				  pidNums,
-				  procData);
-	break;
-      case _PROCMEMWIN: // %MEM
-	for(int i = 0; i < procData.size(); i++)
-	  {
-	    const double temp = procData[pidNums.at(i)]->getMEMUsage();
-
-	    if(temp != 0)
-	      {
-		sortedByDouble.push_back(std::make_pair(temp, pidNums.at(i)));
-	      }
-	  }
-	std::sort(sortedByDouble.begin(), sortedByDouble.end());
-	outList = mergeDoubleLists(sortedByDouble,
-				pidNums,
-				procData);
-	break;	
-      case _PROCTIMEWIN: // TIME+
-	outList = pidNums;
-	break;
-      case _COMMANDWIN: // COMMAND
-	for(int i = 0; i < procData.size(); i++)
-	  {
-	    const std::string temp = procData[pidNums.at(i)]->getCOMMAND();
-
-	    if(temp != "")
-	      {
-		sortedByString.push_back(std::make_pair(temp, pidNums.at(i)));
-	      }
-	  }
-
-	// std::vector<std::pair<std::string, int>> sortedByString;	
-	std::sort(sortedByString.begin(), sortedByString.end());
-	outList = mergeStringLists(sortedByString,
-				   pidNums,
-				   procData);
-	break;
-      default:
-	break;
+	outList.push_back(procStrings.at(i).second);
       }
 
     // shift windows
@@ -1161,15 +1024,7 @@ int main()
 	wattroff(allWins.at(highlightIndex)->getWindow(),
 		 A_BOLD);
       }
-
-
-    for(int i = 0; i < outList.size(); i++)
-      {
-	if(sortState == _PRWIN)
-	  {
-	    log << "out: " << procData[outList.at(i)]->getPR() << std::endl;
-	  }
-      }
+      
     printProcs(shiftY,
 	       shiftX,
 	       outList,
