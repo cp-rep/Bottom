@@ -96,7 +96,7 @@ void printWindowToLog(std::ofstream& log,
 int main()
 {
   //  ## create log system ##
-  Log logFile("./log/", "log", 0, ".log");
+  Log logFile("./log/", "log", 1, ".log");
   time_t rawtime;
   struct tm* timeinfo;
   std::ofstream log;
@@ -105,6 +105,7 @@ int main()
   time(&rawtime);
   timeinfo = localtime(&rawtime);
 
+  // open log file
   while(true)
     {
       std::ifstream inFile(logFile.getFullPath(), std::ifstream::in);
@@ -206,7 +207,7 @@ int main()
   // define tasks window
   numLines = 1;
   numCols = numCols;
-  startY = _Y_OFFSET - 5;  
+  startY = _Y_OFFSET - 5;
   startX = 0;
   TasksWindow tasksWin(newwin(numLines,
 			      numCols,
@@ -1051,7 +1052,7 @@ int main()
 	outList = mergeIntLists(sortedByInt,
 			       pidList,
 			       pUmap);
-	break;	
+	break;
       case _SWIN: // S
 	highlightIndex = _SWIN;
 	for(int i = 0; i < pUmap.size(); i++)
