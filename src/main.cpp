@@ -141,9 +141,9 @@ int main()
   // process related vars
   MemInfo mInfo;
   ProcessInfo* pInfo;
-  std::vector<int> pidList;
-  std::unordered_map<int, ProcessInfo*> pUmap;
-  std::unordered_map<int, ProcessInfo*>::iterator pUmapIt;
+  std::vector<int> pidNums; // to be populated with all current /proc/[pid] numbers
+  std::unordered_map<int, ProcessInfo*> procData; // to be populated with /proc/[pid] data
+  std::unordered_map<int, ProcessInfo*>::iterator procDataIt;
 
   // window related vars
   std::unordered_map<int, CursesWindow*> allWins;
@@ -553,22 +553,22 @@ int main()
     
     // ## find running processes and update the list if needed ##
     // store old process list
-    std::vector<int> pidListOld(pidList);
-    std::vector<int> pidListDead;
+    std::vector<int> pidNumsOld(pidNums);
+    std::vector<int> pidNumsDead;
 
     // get new process list
-    pidList.clear();
-    pidList = (findNumericDirs(_PROC));
-    std::sort(pidList.begin(), pidList.end());
+    pidNums.clear();
+    pidNums = (findNumericDirs(_PROC));
+    std::sort(pidNums.begin(), pidNums.end());
     
     // find any dead processes
-    for(int i = 0; i < pidListOld.size(); i++)
+    for(int i = 0; i < pidNumsOld.size(); i++)
       {
 	bool exists = false;
 	
-	for(int j = 0; j < pidList.size(); j++)
+	for(int j = 0; j < pidNums.size(); j++)
 	  {
-	    if(pidListOld.at(i) == pidList.at(j))
+	    if(pidNumsOld.at(i) == pidNums.at(j))
 	      {
 		exists = true;
 		break;
@@ -577,45 +577,45 @@ int main()
 
 	if(exists == false)
 	  {
-	    pidListDead.push_back(pidListOld.at(i));
+	    pidNumsDead.push_back(pidNumsOld.at(i));
 	  }
       }
 
     // remove dead processes from the process umap
-    for(int i = 0; i < pidListDead.size(); i++)
+    for(int i = 0; i < pidNumsDead.size(); i++)
       {
-	if(pUmap.count(pidListDead.at(i)) > 0)
+	if(procData.count(pidNumsDead.at(i)) > 0)
 	  {
-	    delete(pUmap[pidListDead.at(i)]);
-	    // log << "Deleted Process With PID: " << pidListDead.at(i) << std::endl;
-	    pUmap.erase(pidListDead.at(i));
+	    delete(procData[pidNumsDead.at(i)]);
+	    // log << "Deleted Process With PID: " << pidNumsDead.at(i) << std::endl;
+	    procData.erase(pidNumsDead.at(i));
 	  }
       }
 
     // update processes data
-    for(int i = 0; i < pidList.size(); i++)
+    for(int i = 0; i < pidNums.size(); i++)
       {
 	// if process is new, allocate it
-	if(pUmap.count(pidList.at(i)) == 0)
+	if(procData.count(pidNums.at(i)) == 0)
 	  {
 	    pInfo = new ProcessInfo();
-	    pUmap.insert(std::make_pair(pidList.at(i), pInfo));
+	    procData.insert(std::make_pair(pidNums.at(i), pInfo));
 	  }
 	    std::string filePath;
 	    std::string lineString;
-	    const std::string currProc = _PROC + std::to_string(pidList.at(i));
+	    const std::string currProc = _PROC + std::to_string(pidNums.at(i));
 	    unsigned int value = 0;
 	    
 	    // set pid
-	    pUmap[pidList.at(i)]->setPID(pidList.at(i));
-	    // log << std::endl << "PID: " << pidList.at(i) << std::endl;
+	    procData[pidNums.at(i)]->setPID(pidNums.at(i));
+	    // log << std::endl << "PID: " << pidNums.at(i) << std::endl;
 
 	    // get command
 	    filePath = currProc;
 	    filePath.append(_COMM);
 	    lineString = returnFileLineByNumber(filePath, 1);
-	    pUmap[pidList.at(i)]->setCOMMAND(lineString);
-	    // log << "COMM: " << pUmap[pidList.at(i)]->getCOMMAND() << std::endl;
+	    procData[pidNums.at(i)]->setCOMMAND(lineString);
+	    // log << "COMM: " << procData[pidNums.at(i)]->getCOMMAND() << std::endl;
 
  	    // get USER
 	    filePath = currProc;
@@ -638,12 +638,12 @@ int main()
 		  }
 		else
 		  {
-		    pUmap[pidList.at(i)]->setUSER(userData.pw_name);		    
+		    procData[pidNums.at(i)]->setUSER(userData.pw_name);		    
 		  }
 	      }
 	    else
 	      {
-		pUmap[pidList.at(i)]->setUSER("-1");
+		procData[pidNums.at(i)]->setUSER("-1");
 	      }
 
 	    // get VIRT
@@ -652,7 +652,7 @@ int main()
 	      {
 		parsedLine = parseLine(lineString);
 		value = convertToInt(parsedLine.at(1));
-		pUmap[pidList.at(i)]->setVIRT(value);
+		procData[pidNums.at(i)]->setVIRT(value);
 	      }
 
 	    // get RES
@@ -661,7 +661,7 @@ int main()
 	      {
 		parsedLine = parseLine(lineString);
 		value = convertToInt(parsedLine.at(1));
-		pUmap[pidList.at(i)]->setRes(value);
+		procData[pidNums.at(i)]->setRes(value);
 	      }
 
 	    // get SHR
@@ -670,7 +670,7 @@ int main()
 	      {
 		parsedLine = parseLine(lineString);
 		value = convertToInt(parsedLine.at(1));
-		pUmap[pidList.at(i)]->setSHR(value);
+		procData[pidNums.at(i)]->setSHR(value);
 	      }
 
  	    // get PR
@@ -690,7 +690,7 @@ int main()
 		parsedLine = parseLine(fileLine);
 		newVal = stringToDouble(parsedLine.at(0));
 		uptime.setTotalSecs(newVal);
-		pUmap[pidList.at(i)]->setCPUUsage(newVal);
+		procData[pidNums.at(i)]->setCPUUsage(newVal);
 
 		// get priority
 		lineString = fixStatLine(lineString);
@@ -699,15 +699,15 @@ int main()
 		  {
 		    parsedLine.at(15) = "rt";
 		  }
-		pUmap[pidList.at(i)]->setPR(parsedLine.at(15));
-		log << "PR: " << pUmap[pidList.at(i)]->getPR() << std::endl;
+		procData[pidNums.at(i)]->setPR(parsedLine.at(15));
+		log << "PR: " << procData[pidNums.at(i)]->getPR() << std::endl;
 
 		// get NI
 		value = convertToInt(parsedLine.at(16));
-		pUmap[pidList.at(i)]->setNI(value);
+		procData[pidNums.at(i)]->setNI(value);
 
 		// get S
-		pUmap[pidList.at(i)]->setS(lineString.at(0));
+		procData[pidNums.at(i)]->setS(lineString.at(0));
 
 		// get %cpu for processes
 		// (utime - stime)/(system uptime - process start time)
@@ -725,11 +725,11 @@ int main()
 		  {
 		    newVal = intPercentage;
 		    newVal = newVal/10;
-		    pUmap[pidList.at(i)]->setCPUUsage(newVal);
+		    procData[pidNums.at(i)]->setCPUUsage(newVal);
 		  }
 		else
 		  {
-		    pUmap[pidList.at(i)]->setCPUUsage(0);
+		    procData[pidNums.at(i)]->setCPUUsage(0);
 		  }
 	      }
 	    
@@ -860,8 +860,8 @@ int main()
 	    unsigned int idle = 0;
 	    unsigned int total = 0;
 
- 	    for(std::unordered_map<int, ProcessInfo*>::iterator it = pUmap.begin();
-		it != pUmap.end(); it++)
+ 	    for(std::unordered_map<int, ProcessInfo*>::iterator it = procData.begin();
+		it != procData.end(); it++)
 	      {
 		switch(it->second->getS())
 		  {
@@ -911,7 +911,7 @@ int main()
       }
     
     pInfo = nullptr;
-    pidListOld.clear();
+    pidNumsOld.clear();
 
     // ## get user input ##
     std::vector<std::pair<double, int>> sortedByDouble;
@@ -970,180 +970,149 @@ int main()
       {
       case _PIDWIN: // PID
 	highlightIndex = _PIDWIN;
-	std::reverse(pidList.begin(),pidList.end());
-	outList = pidList;
+	std::reverse(pidNums.begin(),pidNums.end());
+	outList = pidNums;
 	break;
       case _USERWIN: // USER
 	highlightIndex = _USERWIN;
-	outList = pidList;
+	outList = pidNums;
 	break;
       case _PRWIN: // PR
 	highlightIndex = _PRWIN;
-	/*
-	for(int i = 0; i < pUmap.size(); i++)
-	  {
-	    const std::string temp = pUmap[pidList.at(i)]->getPR();
-
-	    if(temp != "")
-	      {
-		sortedByString.push_back(std::make_pair(temp, pidList.at(i)));
-	      }
-	  }
-
-
-	std::sort(sortedByString.begin(), sortedByString.end());
-	outList = mergeStringLists(sortedByString,
-				  pidList,
-				  pUmap);
-	*/
-	/*
-	for(int i = 0; i < pUmap.size(); i++)
-	  {
-	    const int temp = pUmap[pidList.at(i)]->getPR();
-
-	    if(temp != 0)
-	      {
-		sortedByInt.push_back(std::make_pair(temp, pidList.at(i)));
-	      }
-	  }
-	std::sort(sortedByInt.begin(), sortedByInt.end());
-	outList = mergeIntLists(sortedByInt,
-			       pidList,
-			       pUmap);
-	*/
+	outList = pidNums;
 	break;
       case _NIWIN: // NI
 	highlightIndex = _NIWIN;
-	for(int i = 0; i < pUmap.size(); i++)
+	for(int i = 0; i < procData.size(); i++)
 	  {
-	    const int temp = pUmap[pidList.at(i)]->getNI();
+	    const int temp = procData[pidNums.at(i)]->getNI();
 
 	    if(temp != 0)
 	      {
-		sortedByInt.push_back(std::make_pair(temp, pidList.at(i)));
+		sortedByInt.push_back(std::make_pair(temp, pidNums.at(i)));
 	      }
 	  }
 	std::sort(sortedByInt.begin(), sortedByInt.end());
 	outList = mergeIntLists(sortedByInt,
-			       pidList,
-			       pUmap);
+			       pidNums,
+			       procData);
 	break;
       case _VIRTWIN: // VIRT
 	highlightIndex = _VIRTWIN;
-	for(int i = 0; i < pUmap.size(); i++)
+	for(int i = 0; i < procData.size(); i++)
 	  {
-	    const int temp = pUmap[pidList.at(i)]->getVIRT();
+	    const int temp = procData[pidNums.at(i)]->getVIRT();
 
 	    if(temp != 0)
 	      {
-		sortedByInt.push_back(std::make_pair(temp, pidList.at(i)));
+		sortedByInt.push_back(std::make_pair(temp, pidNums.at(i)));
 	      }
 	  }
 	std::sort(sortedByInt.begin(), sortedByInt.end());
 	outList = mergeIntLists(sortedByInt,
-			       pidList,
-			       pUmap);
+			       pidNums,
+			       procData);
 	break;
       case _RESWIN: // RES
 	highlightIndex = _RESWIN;
-	for(int i = 0; i < pUmap.size(); i++)
+	for(int i = 0; i < procData.size(); i++)
 	  {
-	    const int temp = pUmap[pidList.at(i)]->getRES();
+	    const int temp = procData[pidNums.at(i)]->getRES();
 
 	    if(temp != 0)
 	      {
-		sortedByInt.push_back(std::make_pair(temp, pidList.at(i)));
+		sortedByInt.push_back(std::make_pair(temp, pidNums.at(i)));
 	      }
 	  }
 	std::sort(sortedByInt.begin(), sortedByInt.end());
 	outList = mergeIntLists(sortedByInt,
-			       pidList,
-			       pUmap);
+			       pidNums,
+			       procData);
 	break;
       case _SHRWIN: // SHR
 	highlightIndex = _SHRWIN;
-	for(int i = 0; i < pUmap.size(); i++)
+	for(int i = 0; i < procData.size(); i++)
 	  {
-	    const int temp = pUmap[pidList.at(i)]->getSHR();
+	    const int temp = procData[pidNums.at(i)]->getSHR();
 
 	    if(temp != 0)
 	      {
-		sortedByInt.push_back(std::make_pair(temp, pidList.at(i)));
+		sortedByInt.push_back(std::make_pair(temp, pidNums.at(i)));
 	      }
 	  }
 	std::sort(sortedByInt.begin(), sortedByInt.end());
 	outList = mergeIntLists(sortedByInt,
-			       pidList,
-			       pUmap);
+			       pidNums,
+			       procData);
 	break;
       case _SWIN: // S
 	highlightIndex = _SWIN;
-	for(int i = 0; i < pUmap.size(); i++)
+	for(int i = 0; i < procData.size(); i++)
 	  {
-	    const int temp = pUmap[pidList.at(i)]->getS();
+	    const int temp = procData[pidNums.at(i)]->getS();
 
 	    if(temp != 0)
 	      {
-		sortedByInt.push_back(std::make_pair(temp, pidList.at(i)));
+		sortedByInt.push_back(std::make_pair(temp, pidNums.at(i)));
 	      }
 	  }
 	std::sort(sortedByInt.begin(), sortedByInt.end());
 	outList = mergeIntLists(sortedByInt,
-			       pidList,
-			       pUmap);
+			       pidNums,
+			       procData);
 	break;
       case _PROCCPUWIN: // %CPU
 	highlightIndex = _PROCCPUWIN;
-	for(int i = 0; i < pUmap.size(); i++)
+	for(int i = 0; i < procData.size(); i++)
 	  {
-	    const double temp = pUmap[pidList.at(i)]->getCPUUsage();
+	    const double temp = procData[pidNums.at(i)]->getCPUUsage();
 
 	    if(temp != 0)
 	      {
-		sortedByDouble.push_back(std::make_pair(temp, pidList.at(i)));
+		sortedByDouble.push_back(std::make_pair(temp, pidNums.at(i)));
 	      }
 	  }
 	std::sort(sortedByDouble.begin(), sortedByDouble.end());
 	outList = mergeDoubleLists(sortedByDouble,
-				  pidList,
-				  pUmap);
+				  pidNums,
+				  procData);
 	break;
       case _PROCMEMWIN: // %MEM
 	highlightIndex = _PROCMEMWIN;
-	for(int i = 0; i < pUmap.size(); i++)
+	for(int i = 0; i < procData.size(); i++)
 	  {
-	    const double temp = pUmap[pidList.at(i)]->getMEMUsage();
+	    const double temp = procData[pidNums.at(i)]->getMEMUsage();
 
 	    if(temp != 0)
 	      {
-		sortedByDouble.push_back(std::make_pair(temp, pidList.at(i)));
+		sortedByDouble.push_back(std::make_pair(temp, pidNums.at(i)));
 	      }
 	  }
 	std::sort(sortedByDouble.begin(), sortedByDouble.end());
 	outList = mergeDoubleLists(sortedByDouble,
-				pidList,
-				pUmap);
+				pidNums,
+				procData);
 	break;	
       case _PROCTIMEWIN: // TIME+
 	highlightIndex = _PROCTIMEWIN;
-	outList = pidList;
+	outList = pidNums;
 	break;
       case _COMMANDWIN: // COMMAND
 	highlightIndex = _COMMANDWIN;
-	for(int i = 0; i < pUmap.size(); i++)
+	for(int i = 0; i < procData.size(); i++)
 	  {
-	    const std::string temp = pUmap[pidList.at(i)]->getCOMMAND();
+	    const std::string temp = procData[pidNums.at(i)]->getCOMMAND();
 
 	    if(temp != "")
 	      {
-		sortedByString.push_back(std::make_pair(temp, pidList.at(i)));
+		sortedByString.push_back(std::make_pair(temp, pidNums.at(i)));
 	      }
 	  }
 
 	std::sort(sortedByString.begin(), sortedByString.end());
 	outList = mergeStringLists(sortedByString,
-				  pidList,
-				  pUmap);
+				  pidNums,
+				  procData);
 	break;
       default:
 	break;
@@ -1159,7 +1128,7 @@ int main()
 	  }
 	break;
       case KEY_DOWN:
-	if(std::abs(shiftY) < pUmap.size() - 1)
+	if(std::abs(shiftY) < procData.size() - 1)
 	  {
 	    shiftY--;
 	  }
@@ -1200,7 +1169,7 @@ int main()
     printProcs(shiftY,
 	       shiftX,
 	       outList,
-	       pUmap,
+	       procData,
 	       allWins);
     attronBottomWins(allWins,
 		     _BLACK_TEXT);
