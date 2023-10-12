@@ -1,4 +1,4 @@
-/*
+ /*
   File: main.cpp
   Version: V0.1
 
@@ -65,6 +65,7 @@
 #include "progStateConsts.hpp"
 #include "cursesWinConsts.hpp"
 #include "fileConsts.hpp"
+#include "sortProcessLists.hpp"
 
 //constants
 // debug
@@ -82,18 +83,6 @@
 // function prototypes
 void printWindowToLog(std::ofstream& log,
 		      const CursesWindow& win);
-void mergeDoubleList(const std::vector<std::pair<double, int>>& frontList,
-		     const std::vector<int>& backList,
-		     std::vector<int>& newList,
-		     const std::unordered_map<int, ProcessInfo*>& pUmap);
-void mergeIntList(const std::vector<std::pair<int, int>>& frontList,
-		  const std::vector<int>& backList,
-		  std::vector<int>& outList,
-		  const std::unordered_map<int, ProcessInfo*>& pUmap);
-void mergeStringList(const std::vector<std::pair<std::string, int>>& frontList,
-		     const std::vector<int>& backList,
-		     std::vector<int>& outList,
-		     const std::unordered_map<int, ProcessInfo*>& pUmap);
 
 
 
@@ -565,7 +554,6 @@ int main()
     // store old process list
     std::vector<int> pidListOld(pidList);
     std::vector<int> pidListDead;
-    std::vector<int> pidListNew;
 
     // get new process list
     pidList.clear();
@@ -915,18 +903,6 @@ int main()
 		      0,
 		      outLine.c_str());
 #endif
-    
-//	      log << std::endl << "PID: " << pUmap[pidList.at(i)]->getPID() << std::endl
-//		<< "COMM: " << pUmap[pidList.at(i)]->getCOMMAND() << std::endl
-//		<< "USER: " << pUmap[pidList.at(i)]->getUSER() << std::endl
-//		<< "PR: " << pUmap[pidList.at(i)]->getPR() << std::endl
-//		<< "NI: " << pUmap[pidList.at(i)]->getNI() << std::endl
-//		<< "VIRT: " << pUmap[pidList.at(i)]->getVIRT() << std::endl
-//		<< "RES: " << pUmap[pidList.at(i)]->getRES() << std::endl
-//		<< "SHR: " << pUmap[pidList.at(i)]->getSHR() << std::endl
-//		<< "S: " << pUmap[pidList.at(i)]->getS() << std::endl
-//		<< "%CPU: " << pUmap[pidList.at(i)]->getCPUUsage() << std::endl
-//		<< std::endl;
       }
     
     pInfo = nullptr;
@@ -1008,10 +984,9 @@ int main()
 	      }
 	  }
 	std::sort(sortedByInt.begin(), sortedByInt.end());
-	mergeIntList(sortedByInt,
-		     pidList,
-		     outList,
-		     pUmap);
+	outList = mergeIntLists(sortedByInt,
+			       pidList,
+			       pUmap);
 	break;
       case _NIWIN: // NI
 	highlightIndex = _NIWIN;
@@ -1025,10 +1000,9 @@ int main()
 	      }
 	  }
 	std::sort(sortedByInt.begin(), sortedByInt.end());
-	mergeIntList(sortedByInt,
-		     pidList,
-		     outList,
-		     pUmap);
+	outList = mergeIntLists(sortedByInt,
+			       pidList,
+			       pUmap);
 	break;
       case _VIRTWIN: // VIRT
 	highlightIndex = _VIRTWIN;
@@ -1042,10 +1016,9 @@ int main()
 	      }
 	  }
 	std::sort(sortedByInt.begin(), sortedByInt.end());
-	mergeIntList(sortedByInt,
-		     pidList,
-		     outList,
-		     pUmap);
+	outList = mergeIntLists(sortedByInt,
+			       pidList,
+			       pUmap);
 	break;
       case _RESWIN: // RES
 	highlightIndex = _RESWIN;
@@ -1059,10 +1032,9 @@ int main()
 	      }
 	  }
 	std::sort(sortedByInt.begin(), sortedByInt.end());
-	mergeIntList(sortedByInt,
-		     pidList,
-		     outList,
-		     pUmap);
+	outList = mergeIntLists(sortedByInt,
+			       pidList,
+			       pUmap);
 	break;
       case _SHRWIN: // SHR
 	highlightIndex = _SHRWIN;
@@ -1076,10 +1048,9 @@ int main()
 	      }
 	  }
 	std::sort(sortedByInt.begin(), sortedByInt.end());
-	mergeIntList(sortedByInt,
-		     pidList,
-		     outList,
-		     pUmap);
+	outList = mergeIntLists(sortedByInt,
+			       pidList,
+			       pUmap);
 	break;	
       case _SWIN: // S
 	highlightIndex = _SWIN;
@@ -1093,10 +1064,9 @@ int main()
 	      }
 	  }
 	std::sort(sortedByInt.begin(), sortedByInt.end());
-	mergeIntList(sortedByInt,
-			pidList,
-			outList,
-			pUmap);
+	outList = mergeIntLists(sortedByInt,
+			       pidList,
+			       pUmap);
 	break;
       case _PROCCPUWIN: // %CPU
 	highlightIndex = _PROCCPUWIN;
@@ -1110,10 +1080,9 @@ int main()
 	      }
 	  }
 	std::sort(sortedByDouble.begin(), sortedByDouble.end());
-	mergeDoubleList(sortedByDouble,
-			pidList,
-			outList,
-			pUmap);
+	outList = mergeDoubleLists(sortedByDouble,
+				  pidList,
+				  pUmap);
 	break;
       case _PROCMEMWIN: // %MEM
 	highlightIndex = _PROCMEMWIN;
@@ -1127,10 +1096,9 @@ int main()
 	      }
 	  }
 	std::sort(sortedByDouble.begin(), sortedByDouble.end());
-	mergeDoubleList(sortedByDouble,
-			pidList,
-			outList,
-			pUmap);
+	outList = mergeDoubleLists(sortedByDouble,
+				pidList,
+				pUmap);
 	break;	
       case _PROCTIMEWIN: // TIME+
 	highlightIndex = _PROCTIMEWIN;
@@ -1149,10 +1117,9 @@ int main()
 	  }
 
 	std::sort(sortedByString.begin(), sortedByString.end());
-	mergeStringList(sortedByString,
-			pidList,
-			outList,
-			pUmap);
+	outList = mergeStringLists(sortedByString,
+				  pidList,
+				  pUmap);
 	break;
       default:
 	break;
@@ -1264,129 +1231,3 @@ void printWindowToLog(std::ofstream& log, const CursesWindow& win)
   log << "m_startY: " << win.getStartY() << std::endl;
   log << "m_startX: " << win.getStartX() << std::endl;
 } // end of "printWindowToLog"
-
-
-
-/*
-  Function:
-  mergeDoubleList
-
-  Description:
-  
-
-  Input:
-
-  Output:
- */
-void mergeDoubleList(const std::vector<std::pair<double, int>>& frontList,
-		     const std::vector<int>& backList,
-		     std::vector<int>& outList,
-		     const std::unordered_map<int, ProcessInfo*>& pUmap)
-{
-  // output the rest of the processes by PID in ascending order
-  for(int i = frontList.size() - 1; i >= 0; i--)
-    {
-      outList.push_back(frontList.at(i).second);
-    }
-
-  for(int i = 0; i < pUmap.size(); i++)
-    {
-      bool isInArray = false;
-
-      for(int j = 0; j < frontList.size(); j++)
-	{
-	  if(frontList.at(j).second == pUmap.at(backList.at(i))->getPID())
-	    {
-	      isInArray = true;
-	    }
-	}
-      if(isInArray == false)
-	{
-	  outList.push_back(backList.at(i));
-	}
-    }
-} // end of "mergeDoubleList"
-
-
-
-
-
-/*
-  Function:
-  mergeIntList
-
-  Description:
-
-  Input:
-
-  Output:
- */
-void mergeIntList(const std::vector<std::pair<int, int>>& frontList,
-		     const std::vector<int>& backList,
-		     std::vector<int>& outList,
-		     const std::unordered_map<int, ProcessInfo*>& pUmap)
-{
-  // output the rest of the processes by PID in ascending order
-  for(int i = 0, j = frontList.size() - 1; i < frontList.size(); i++, j--)
-    {
-      outList.push_back(frontList.at(j).second);
-    }
-  
-  for(int i = 0; i < pUmap.size(); i++)
-    {
-      bool isInArray = false;
-
-      for(int j = 0; j < frontList.size(); j++)
-	{
-	  if(frontList.at(j).second == pUmap.at(backList.at(i))->getPID())
-	    {
-	      isInArray = true;
-	    }
-	}
-      if(isInArray == false)
-	{
-	  outList.push_back(backList.at(i));
-	}
-    }
-} // end of "mergeIntList"
-
-
-
-/*
-  Function:
-  mergeDoubleList
-
-  Description:
-
-  Input:
-
-  Output:
- */
-void mergeStringList(const std::vector<std::pair<std::string, int>>& frontList,
-		     const std::vector<int>& backList,
-		     std::vector<int>& outList,
-		     const std::unordered_map<int, ProcessInfo*>& pUmap)
-{
-  // output the rest of the processes by PID in ascending order
-  for(int i = 0, j = frontList.size() - 1; i < frontList.size(); i++, j--)
-    {
-      outList.push_back(frontList.at(j).second);
-    }
-  
-  for(int i = 0; i < pUmap.size(); i++)
-    {
-      bool isInArray = false;
-
-      for(int j = 0; j < frontList.size(); j++)
-	{
-	  if(frontList.at(j).second == pUmap.at(backList.at(i))->getPID())
-	    {
-	      isInArray = true;
-	    }
-	}
-      if(isInArray == false)
-	{
-	  outList.push_back(backList.at(i));
-	}
-    }
-} // end of "mergeStringList"
