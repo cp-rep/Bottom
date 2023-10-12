@@ -683,7 +683,7 @@ int main()
 		double cutime = 0;
 		double pstart = 0;
 		double newVal = 0;
-		int intPercentage = 0;		
+		int intPercentage = 0;
 		
 		// get uptime
 		fileLine = returnFileLineByNumber(_UPTIME, 1);
@@ -695,8 +695,12 @@ int main()
 		// get priority
 		lineString = fixStatLine(lineString);
 		parsedLine = parseLine(lineString);
-		value = convertToInt(parsedLine.at(15));
-		pUmap[pidList.at(i)]->setPR(value);
+		if(parsedLine.at(15) == "-100")
+		  {
+		    parsedLine.at(15) = "rt";
+		  }
+		pUmap[pidList.at(i)]->setPR(parsedLine.at(15));
+		log << "PR: " << pUmap[pidList.at(i)]->getPR() << std::endl;
 
 		// get NI
 		value = convertToInt(parsedLine.at(16));
@@ -975,6 +979,24 @@ int main()
 	break;
       case _PRWIN: // PR
 	highlightIndex = _PRWIN;
+	/*
+	for(int i = 0; i < pUmap.size(); i++)
+	  {
+	    const std::string temp = pUmap[pidList.at(i)]->getPR();
+
+	    if(temp != "")
+	      {
+		sortedByString.push_back(std::make_pair(temp, pidList.at(i)));
+	      }
+	  }
+
+
+	std::sort(sortedByString.begin(), sortedByString.end());
+	outList = mergeStringLists(sortedByString,
+				  pidList,
+				  pUmap);
+	*/
+	/*
 	for(int i = 0; i < pUmap.size(); i++)
 	  {
 	    const int temp = pUmap[pidList.at(i)]->getPR();
@@ -988,6 +1010,7 @@ int main()
 	outList = mergeIntLists(sortedByInt,
 			       pidList,
 			       pUmap);
+	*/
 	break;
       case _NIWIN: // NI
 	highlightIndex = _NIWIN;
