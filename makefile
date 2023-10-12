@@ -34,6 +34,7 @@ clean:
 	rm -f $(LDIR)/*~
 	rm -f $(VALDIR)/*~
 	rm -f $(OPDIR)/*~
+	rm -rf $(BINDIR)/bottom
 	rm -rf $(BUILDDIR)/
 	rm -rf $(GTESTDIR)/*~
 	rm -rf $(LOGDIR)/*.log
