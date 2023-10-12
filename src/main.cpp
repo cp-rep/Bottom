@@ -82,7 +82,6 @@
 // function prototypes
 void printWindowToLog(std::ofstream& log,
 		      const CursesWindow& win);
-void copyList(std::vector<int>& lhs, const std::vector<int>& rhs);
 void mergeDoubleList(const std::vector<std::pair<double, int>>& frontList,
 		     const std::vector<int>& backList,
 		     std::vector<int>& newList,
@@ -172,7 +171,6 @@ int main()
   int shiftY = 1;
   int shiftX = _PIDWIN;
   std::unordered_map<char, int> progStates;
-  std::unordered_map<int, int> sortStates;
   
   // ## initialize and setup curses ##
 #if _CURSES  
@@ -195,27 +193,16 @@ int main()
       init_pair(_BLACK_TEXT, COLOR_BLACK, COLOR_WHITE);      
     }
 
-  // disable echoing characters to the window from getch();
   noecho();
-  
-  // make typed characters immediately available to program
-  // (override part of the tty driver protocol)
   cbreak();
-
-  // disable keyboard cursor visibility
   curs_set(false);
-
-  // disable curses defined key values for getch() to mainWin
   keypad(mainWin.getWindow(), true);
-
-  //
   nodelay(mainWin.getWindow(), true);
 
   // ## define windows ##
   // define topWindow
   numLines = 1;
   numCols = numCols;
-  //  startY = 0;
   startY = _Y_OFFSET - 6;  
   startX = 0;
   TopWindow topWin(newwin(numLines,
@@ -230,7 +217,6 @@ int main()
   // define tasks window
   numLines = 1;
   numCols = numCols;
-  //  startY = 1;
   startY = _Y_OFFSET - 5;  
   startX = 0;
   TasksWindow tasksWin(newwin(numLines,
@@ -245,7 +231,6 @@ int main()
   // define cpu window
   numLines = 1;
   numCols = numCols;
-  //  startY = 2;
   startY = _Y_OFFSET - 4;
   startX = 0;
   CpuWindow cpuWin(newwin(numLines,
@@ -488,7 +473,7 @@ int main()
 			   startY,
 			   startX);
   
-  // ## store all windows ##
+  // ## store all startup windows ##
   allWins.insert(std::make_pair(_MAINWIN,&mainWin));
   allWins.insert(std::make_pair(_TOPWIN, &topWin));
   allWins.insert(std::make_pair(_TASKSWIN, &tasksWin));
@@ -512,24 +497,10 @@ int main()
   colorLine = createColorLine(mainWin.getNumCols());
 
   // ## define program states ##
-  progStates.insert(std::make_pair(_PROGSTATEHELP, 1)); // open help menu  
+  progStates.insert(std::make_pair(_PROGSTATEHELP, 1)); // open help menu
   progStates.insert(std::make_pair(_PROGSTATEQUIT, 1)); // quit
   progStates.insert(std::make_pair(_PROGSTATEHL, 1)); // highlight column
-
-  // ## define sort states ##
-  sortStates.insert(std::make_pair(_PIDWIN, 1)); // PID
-  sortStates.insert(std::make_pair(_USERWIN, 1)); // USER
-  sortStates.insert(std::make_pair(_PRWIN, 1)); // PR
-  sortStates.insert(std::make_pair(_NIWIN, 1)); // NI
-  sortStates.insert(std::make_pair(_VIRTWIN, 1)); // VIRT  
-  sortStates.insert(std::make_pair(_RESWIN, 1)); // RES
-  sortStates.insert(std::make_pair(_SHRWIN, 1)); // SHR
-  sortStates.insert(std::make_pair(_SWIN, 1));  // S
-  sortStates.insert(std::make_pair(_PROCCPUWIN, 1)); // %CPU
-  sortStates.insert(std::make_pair(_PROCMEMWIN, 1)); // %MEM
-  sortStates.insert(std::make_pair(_PROCTIMEWIN, 1)); // TIME+
-  sortStates.insert(std::make_pair(_COMMANDWIN, 1)); // COMMAND
-
+  
 #endif
 
   // ## run the main program loop ##
@@ -551,9 +522,9 @@ int main()
     outLine.append(uptime.returnHHMMSS(timeinfo->tm_hour,
 				       timeinfo->tm_min,
 				       timeinfo->tm_sec));
-
     outLine.append(" up ");
     val = uptime.getHours()/24;
+    
     if(val == 1)
       {
 	outLine.append(std::to_string(val));
@@ -836,6 +807,55 @@ int main()
 		      0,
 		      outLine.c_str());
 #endif
+	    
+	    // mInfo data from /proc/meminfo
+	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
+	    parsedLine = parseLine(fileLine);
+	    mInfo.setMemTotal(convertToInt(parsedLine.at(1)));
+	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 2);
+	    parsedLine = parseLine(fileLine);
+	    mInfo.setMemFree(convertToInt(parsedLine.at(1)));
+	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 3);
+	    parsedLine = parseLine(fileLine);
+	    mInfo.setMemAvailable(convertToInt(parsedLine.at(1)));
+	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 4);
+	    parsedLine = parseLine(fileLine);
+	    mInfo.setBuffers(convertToInt(parsedLine.at(1)));
+	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 5);
+	    parsedLine = parseLine(fileLine);
+	    mInfo.setCached(convertToInt(parsedLine.at(1)));
+	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 15);
+	    parsedLine = parseLine(fileLine);
+	    mInfo.setSwapTotal(convertToInt(parsedLine.at(1)));
+	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 16);
+	    parsedLine = parseLine(fileLine);
+	    mInfo.setSwapFree(convertToInt(parsedLine.at(1)));
+	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 26);
+	    parsedLine = parseLine(fileLine);
+	    mInfo.setSReclaimable(convertToInt(parsedLine.at(1)));
+	    mInfo.setMemUsed(mInfo.calculateMemUsed());
+	    mInfo.setSwapUsed(mInfo.calculateSwapUsed());
+	    mInfo.setBuffCache(mInfo.calculateBuffCache());
+	    allWins.at(_MEMWIN)->setStringMiB(doubleToStr(KiBToMiB(mInfo.getMemTotal()), 1),
+					      doubleToStr(KiBToMiB(mInfo.getMemFree()), 1),
+					      doubleToStr(KiBToMiB(mInfo.getMemUsed()), 1),
+					      doubleToStr(KiBToMiB(mInfo.getBuffCache()), 1));
+	    allWins.at(_MEMWIN)->setStringSwap(doubleToStr(KiBToMiB(mInfo.getSwapTotal()), 1),
+					       doubleToStr(KiBToMiB(mInfo.getSwapFree()), 1),
+					       doubleToStr(KiBToMiB(mInfo.getSwapUsed()), 1),
+					       doubleToStr(KiBToMiB(mInfo.getMemAvailable()), 1));
+
+#if _CURSES
+	    // print memWin data to window
+	    mvwaddstr(allWins.at(_MEMWIN)->getWindow(),
+		      0,
+		      0,
+		      memWin.getMiB().c_str());
+	    mvwaddstr(allWins.at(_MEMWIN)->getWindow(),
+		      1,
+		      0,
+		      memWin.getSwap().c_str());
+#endif
 
 	    // ## get process state count ##
 	    unsigned int running = 0;
@@ -895,59 +915,7 @@ int main()
 		      0,
 		      outLine.c_str());
 #endif
-
-
-    // mInfo data from /proc/meminfo
-    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
-    parsedLine = parseLine(fileLine);
-    mInfo.setMemTotal(convertToInt(parsedLine.at(1)));
-    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 2);
-    parsedLine = parseLine(fileLine);
-    mInfo.setMemFree(convertToInt(parsedLine.at(1)));
-    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 3);
-    parsedLine = parseLine(fileLine);
-    mInfo.setMemAvailable(convertToInt(parsedLine.at(1)));
-    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 4);
-    parsedLine = parseLine(fileLine);
-    mInfo.setBuffers(convertToInt(parsedLine.at(1)));
-    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 5);
-    parsedLine = parseLine(fileLine);
-    mInfo.setCached(convertToInt(parsedLine.at(1)));
-    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 15);
-    parsedLine = parseLine(fileLine);
-    mInfo.setSwapTotal(convertToInt(parsedLine.at(1)));
-    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 16);
-    parsedLine = parseLine(fileLine);
-    mInfo.setSwapFree(convertToInt(parsedLine.at(1)));
-    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 26);
-    parsedLine = parseLine(fileLine);
-    mInfo.setSReclaimable(convertToInt(parsedLine.at(1)));
-    mInfo.setMemUsed(mInfo.calculateMemUsed());
-    mInfo.setSwapUsed(mInfo.calculateSwapUsed());
-    mInfo.setBuffCache(mInfo.calculateBuffCache());
-    allWins.at(_MEMWIN)->setStringMiB(doubleToStr(KiBToMiB(mInfo.getMemTotal()), 1),
-				      doubleToStr(KiBToMiB(mInfo.getMemFree()), 1),
-				      doubleToStr(KiBToMiB(mInfo.getMemUsed()), 1),
-				      doubleToStr(KiBToMiB(mInfo.getBuffCache()), 1));
-    allWins.at(_MEMWIN)->setStringSwap(doubleToStr(KiBToMiB(mInfo.getSwapTotal()), 1),
-				       doubleToStr(KiBToMiB(mInfo.getSwapFree()), 1),
-				       doubleToStr(KiBToMiB(mInfo.getSwapUsed()), 1),
-				       doubleToStr(KiBToMiB(mInfo.getMemAvailable()), 1));
-
-#if _CURSES
-    // print memWin data to window
-    mvwaddstr(allWins.at(_MEMWIN)->getWindow(),
-	      0,
-	      0,
-	      memWin.getMiB().c_str());
-    mvwaddstr(allWins.at(_MEMWIN)->getWindow(),
-	      1,
-	      0,
-	      memWin.getSwap().c_str());
-#endif
-
-
-	    
+    
 //	      log << std::endl << "PID: " << pUmap[pidList.at(i)]->getPID() << std::endl
 //		<< "COMM: " << pUmap[pidList.at(i)]->getCOMMAND() << std::endl
 //		<< "USER: " << pUmap[pidList.at(i)]->getUSER() << std::endl
@@ -1190,7 +1158,6 @@ int main()
 	break;
       }
 
-
     // shift windows
     switch(moveVal)
       {
@@ -1274,10 +1241,11 @@ int main()
 
 /*
   Function:
-  printWindow
+  printWindowToLog
 
   Description:
-  Prints the CursesWindow object's current data members to the log file.
+  A debugging function that prints a CursesWindow object's current data members
+   to the log file.
 
   Input:
   log             - a reference to an output file stream object, the
@@ -1295,7 +1263,7 @@ void printWindowToLog(std::ofstream& log, const CursesWindow& win)
   log << "m_numCols: " << win.getNumCols() << std::endl;
   log << "m_startY: " << win.getStartY() << std::endl;
   log << "m_startX: " << win.getStartX() << std::endl;
-} // end of "printWindow"
+} // end of "printWindowToLog"
 
 
 
@@ -1304,6 +1272,7 @@ void printWindowToLog(std::ofstream& log, const CursesWindow& win)
   mergeDoubleList
 
   Description:
+  
 
   Input:
 
@@ -1315,11 +1284,11 @@ void mergeDoubleList(const std::vector<std::pair<double, int>>& frontList,
 		     const std::unordered_map<int, ProcessInfo*>& pUmap)
 {
   // output the rest of the processes by PID in ascending order
-  for(int i = 0, j = frontList.size() - 1; i < frontList.size(); i++, j--)
+  for(int i = frontList.size() - 1; i >= 0; i--)
     {
       outList.push_back(frontList.at(j).second);
     }
-  
+
   for(int i = 0; i < pUmap.size(); i++)
     {
       bool isInArray = false;
@@ -1421,23 +1390,3 @@ void mergeStringList(const std::vector<std::pair<std::string, int>>& frontList,
 	}
     }
 } // end of "mergeStringList"
-
-
-
-/*
-  Function:
-  copyList
-
-  Description:
-
-  Input:
-
-  Output:
- */
-void copyList(std::vector<int>& lhs, const std::vector<int>& rhs)
-{
-  for(int i = 0; i < rhs.size(); i++)
-    {
-      lhs.push_back(rhs.at(i));
-    }
-} // end of "copyList"
