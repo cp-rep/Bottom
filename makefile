@@ -1,4 +1,5 @@
 BINDIR=./bin
+MKDIR_P = mkdir -p
 SRCDIR=./src
 BUILDDIR=./build
 GTESTDIR=./gtest
@@ -25,7 +26,7 @@ $(SRCDIR)/$(ODIR)/%.o: $(SRCDIR)/%.cpp $(DEPS)
 $(BINDIR)/$(BINNAME): $(OBJ)
 	$(CC) -o $@ $^ -l panel -l ncurses -I$(LDIR) $(LIBS)
 
-.PHONY: clean
+.PHONY: clean  dirs
 
 clean:
 	rm -f $(SRCDIR)/$(ODIR)/*.o
@@ -40,3 +41,11 @@ clean:
 	rm -rf $(LOGDIR)/*.log
 	rm -rf $(TESTINGDIR)/
 	rm -f ./*~
+
+dirs: $(BINDIR) ${LOGDIR}
+
+${BINDIR}:
+	${MKDIR_P} ${BINDIR}
+
+${LOGDIR}:
+	${MKDIR_P} ${LOGDIR}
