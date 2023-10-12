@@ -14,7 +14,7 @@ Bottom uses the "CMake" utility for building the base program.
 - the 'x' key allows highlighting a particular column (currently a "smear" bug when hightlighting and shifting)
 
 ## Methods
-Everything has been written from scratch, done by eye, and from testing the Top program.  I have not examined the C code for either the GNU Core Utilities Top program or the HTop code.  I have used the man pages for the Top program and other built-in programs such as "user", "ls" to help explain where those programs pull their process/OS data from.
+Everything has been written from scratch. I built all of the windows from running the Top program, testing it's functionality, and then returning to code up what I felt it was doing. Regarding gathering the process and OS data, that came from examining the man pages, reading from books, and researching online.  I really try to pursue the topics I am interested in the "old fashioned" way for best learning and that is what this project is.
 
 ## Why C++?
 I wanted to write a Linux process management utility that may be easier expanded upon with experimental features. I don't have much interest in actually trying to submit this into any official Linux circles or ecosystems.
