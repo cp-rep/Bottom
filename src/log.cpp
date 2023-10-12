@@ -33,14 +33,14 @@ Log::Log(const std::string& pName,
 	 const unsigned int fNum,
 	 const std::string& fType)
 {
+  std::string tempNum = "0";
+  
   // initialize member variables
   m_pathName = pName;
   m_fileName = fName;
   m_fileNum = fNum;
   m_fileType = fType;
-
-  std::string tempNum(std::to_string(fNum));
-  
+  tempNum += std::to_string(fNum);
   setFullPath(pName, fName, tempNum, fType);
 } // end of "Log::Constructor"
 
@@ -64,39 +64,42 @@ Log::Log(const std::string& pName,
 // ============================================================================
 void Log::incrementFileName()
 {
-  if(m_fileName == "" && m_fileNum == 0)
+  std::string tempNumeric = "";
+  
+  int i;
+  // get the file number from the full path
+  for(i = 0; i < m_fullPath.length(); i++)
     {
-      m_fileNum++;
-    }
-  else
-    {
-      std::string tempNumeric = "";      
-      int i;
-      // get the file number from the full path
-      for(i = 0; i < m_fullPath.length(); i++)
+      if(m_fullPath.at(i) >= '0' && m_fullPath.at(i) <= '9')
 	{
-	  if(m_fullPath.at(i) >= '0' && m_fullPath.at(i) <= '9')
-	    {
-	      tempNumeric += m_fullPath.at(i);
+	  tempNumeric += m_fullPath.at(i);
 
-	      // if there is a file type, this allows us to end the loop early
-	      // instead of checking it for numeric characters
-	      if(m_fileType != "")
+	  // if there is a file type, this allows us to end the loop early
+	  // instead of checking it for numeric characters
+	  if(m_fileType != "")
+	    {
+	      if(m_fullPath.at(i + 1) == 0 ||
+		 (m_fullPath.at(i) < '0' || m_fullPath.at(i) > '9'))
 		{
-		  if(m_fullPath.at(i + 1) == 0 ||
-		     (m_fullPath.at(i) < '0' || m_fullPath.at(i) > '9'))
-		    {
-		      break;
-		    }
+		  break;
 		}
 	    }
 	}
-      
-      m_fileNum = stoi(tempNumeric);
-      m_fileNum++;	    
     }
+      
+  m_fileNum = stoi(tempNumeric);
+  m_fileNum++;
+  std::string tempStr;
   
-  setFullPath(m_pathName, m_fileName, std::to_string(m_fileNum), m_fileType);
+  if(m_fileNum < 10)
+    {
+      tempStr.append("0");
+    }
+
+  tempStr.append(std::to_string(m_fileNum));
+  
+  setFullPath(m_pathName, m_fileName, tempStr, m_fileType);
+  //  setFullPath(m_pathName, m_fileName, std::to_string(m_fileNum), m_fileType);  
 } // end of "Log::incrementFileName"
 
 
