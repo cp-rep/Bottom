@@ -700,7 +700,6 @@ int main()
 		    parsedLine.at(15) = "rt";
 		  }
 		procData[pidNums.at(i)]->setPR(parsedLine.at(15));
-		log << "PR: " << procData[pidNums.at(i)]->getPR() << std::endl;
 
 		// get NI
 		value = convertToInt(parsedLine.at(16));
@@ -965,24 +964,28 @@ int main()
 	break;
       }
 
+    highlightIndex = sortState;
+    
     // change sort state
     switch(sortState)
       {
       case _PIDWIN: // PID
-	highlightIndex = _PIDWIN;
 	std::reverse(pidNums.begin(),pidNums.end());
 	outList = pidNums;
 	break;
       case _USERWIN: // USER
-	highlightIndex = _USERWIN;
 	outList = pidNums;
 	break;
       case _PRWIN: // PR
-	highlightIndex = _PRWIN;
-	outList = pidNums;
+	sortedByString = retrievePRStrings(pidNums,
+					   procData,
+					   sortState);
+	for(int i = 0; i < sortedByString.size(); i++)
+	  {
+	    outList.push_back(sortedByString.at(i).second);
+	  }
 	break;
       case _NIWIN: // NI
-	highlightIndex = _NIWIN;
 	for(int i = 0; i < procData.size(); i++)
 	  {
 	    const int temp = procData[pidNums.at(i)]->getNI();
@@ -994,11 +997,10 @@ int main()
 	  }
 	std::sort(sortedByInt.begin(), sortedByInt.end());
 	outList = mergeIntLists(sortedByInt,
-			       pidNums,
-			       procData);
+				pidNums,
+				procData);
 	break;
       case _VIRTWIN: // VIRT
-	highlightIndex = _VIRTWIN;
 	for(int i = 0; i < procData.size(); i++)
 	  {
 	    const int temp = procData[pidNums.at(i)]->getVIRT();
@@ -1010,11 +1012,10 @@ int main()
 	  }
 	std::sort(sortedByInt.begin(), sortedByInt.end());
 	outList = mergeIntLists(sortedByInt,
-			       pidNums,
-			       procData);
+				pidNums,
+				procData);
 	break;
       case _RESWIN: // RES
-	highlightIndex = _RESWIN;
 	for(int i = 0; i < procData.size(); i++)
 	  {
 	    const int temp = procData[pidNums.at(i)]->getRES();
@@ -1030,7 +1031,6 @@ int main()
 			       procData);
 	break;
       case _SHRWIN: // SHR
-	highlightIndex = _SHRWIN;
 	for(int i = 0; i < procData.size(); i++)
 	  {
 	    const int temp = procData[pidNums.at(i)]->getSHR();
@@ -1046,7 +1046,6 @@ int main()
 			       procData);
 	break;
       case _SWIN: // S
-	highlightIndex = _SWIN;
 	for(int i = 0; i < procData.size(); i++)
 	  {
 	    const int temp = procData[pidNums.at(i)]->getS();
@@ -1062,7 +1061,6 @@ int main()
 			       procData);
 	break;
       case _PROCCPUWIN: // %CPU
-	highlightIndex = _PROCCPUWIN;
 	for(int i = 0; i < procData.size(); i++)
 	  {
 	    const double temp = procData[pidNums.at(i)]->getCPUUsage();
@@ -1078,7 +1076,6 @@ int main()
 				  procData);
 	break;
       case _PROCMEMWIN: // %MEM
-	highlightIndex = _PROCMEMWIN;
 	for(int i = 0; i < procData.size(); i++)
 	  {
 	    const double temp = procData[pidNums.at(i)]->getMEMUsage();
@@ -1094,11 +1091,9 @@ int main()
 				procData);
 	break;	
       case _PROCTIMEWIN: // TIME+
-	highlightIndex = _PROCTIMEWIN;
 	outList = pidNums;
 	break;
       case _COMMANDWIN: // COMMAND
-	highlightIndex = _COMMANDWIN;
 	for(int i = 0; i < procData.size(); i++)
 	  {
 	    const std::string temp = procData[pidNums.at(i)]->getCOMMAND();
@@ -1109,10 +1104,11 @@ int main()
 	      }
 	  }
 
+	// std::vector<std::pair<std::string, int>> sortedByString;	
 	std::sort(sortedByString.begin(), sortedByString.end());
 	outList = mergeStringLists(sortedByString,
-				  pidNums,
-				  procData);
+				   pidNums,
+				   procData);
 	break;
       default:
 	break;
@@ -1165,7 +1161,15 @@ int main()
 	wattroff(allWins.at(highlightIndex)->getWindow(),
 		 A_BOLD);
       }
-    
+
+
+    for(int i = 0; i < outList.size(); i++)
+      {
+	if(sortState == _PRWIN)
+	  {
+	    log << "out: " << procData[outList.at(i)]->getPR() << std::endl;
+	  }
+      }
     printProcs(shiftY,
 	       shiftX,
 	       outList,
