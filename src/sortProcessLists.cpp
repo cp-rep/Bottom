@@ -14,37 +14,94 @@
 #include "sortProcessLists.hpp"
 
 
+
 /*
+  Function:
+   sortByUSER
+
+  Description:
+   Updates the PID list that is used for printing process data to the screen.
+   It sorts the pid list by USER. First it separates users into their own lists,
+   then it sorts those lists by their contained PIDS.  That final sorted list list
+   is then copied to an output list and returned to the caller.  Ultimately, it's
+   an O(N^2) algorithm determined by number of running processes and number of
+   users.
+
+  Input:
+  
+   pidNums              - a const reference to a PID list representing all running
+                          processes
+
+   procData             - all stored process data that will be traversed in
+                          ordere to retrieve desired sort state values
+  Output:
+   const std::vector<int>
+                        _ the sorted list of PIDs
+ */
 const std::vector<int> sortByUSER(const std::vector<int>& pidNums,
-				  std::unordered_map<int, ProcessInfo*>& procData,
-				  const int& listType)
+				  std::unordered_map<int, ProcessInfo*>& procData)
 {
   std::vector<std::pair<std::string,int>> procStrings;
-  std::vector<std::vector<std::pair<std::string, int>>> sortedByUserTypePID;
-  std::vector<int> tempPIDs;
   std::set<std::string> userTypes;
-
-  userTypes.insert("root");
-
-  // get all USERS and PIDS
-  for(int i = 0; i < procData.size(); i++)
+  std::vector<std::string> types;
+  std::vector<int> tempPIDs;
+  
+  // get all std::pairs of <user, pid> and store them in vector
+  for(int i = 0, j = 0; i < procData.size(); i++)
     {
       procStrings.push_back(std::make_pair(procData[pidNums.at(i)]->getUSER(),
 					   pidNums.at(i)));
+
+      // get the different user types
+      if(userTypes.count(procStrings.at(i).first) == 0)
+	{
+	  userTypes.insert(procStrings.at(i).first);
+	}
     }
 
-  // sort them by user type
-  std::sort(procStrings.begin(), procStrings.end());
-
-  // sort
+  // ignore unwated user type while saving user types as vector of string for later use
+  for(std::set<std::string>::iterator it = userTypes.begin();
+      it != userTypes.end(); it++)
+    {
+      // bandaid for the current pipe process "bug"
+      if(*it != "-1")
+	{
+	  types.push_back(*it);
+	}
+    }
+  
+  // store all PIDS as a vector of vector of std::pair<int, user>
+  std::vector<std::vector<std::pair<int, std::string>>> sortedByUserTypePID(types.size());
   for(int i = 0; i < procStrings.size(); i++)
     {
-      tempPIDs.push_back(procStrings.at(i).second);
+      for(int j = 0; j < types.size(); j++)
+	{
+	  if(types.at(j) == procStrings.at(i).first)
+	    {
+	      sortedByUserTypePID[j].push_back(std::make_pair(procStrings.at(i).second,
+							      procStrings.at(i).first));
+	    }
+	}
+    }
+
+  // sort each user type list by PID
+  for(int i = 0; i < sortedByUserTypePID.size(); i++)
+    {
+      std::sort(sortedByUserTypePID.at(i).begin(), sortedByUserTypePID.at(i).end());
+    }
+
+  // store the list of sorted PIDs to vector<int> to return to caller 
+  for(int i = 0; i < sortedByUserTypePID.size(); i++)
+    {
+      for(int j = 0; j < sortedByUserTypePID.at(i).size(); j++)
+	{
+	  tempPIDs.push_back(sortedByUserTypePID.at(i).at(j).first);
+	}
     }
   
   return tempPIDs;
 } // end of "sortByUSER"
-*/
+
 
 
 /*
@@ -199,76 +256,3 @@ const std::vector<int> mergeStringLists(const std::vector<std::pair<std::string,
 
   return tempList;
 } // end of "mergeStringLists"
-
-
-
-/*
-  Description:
-  Stores related data corresponding to the desired sort state and
-  returns it to the caller.
-
-
-  Input:
-  
-  pidNums               - a const reference to a PID list representing all running
-                          processes
-
-  procData              - all stored process data that will be traversed in
-                          ordere to retrieve desired sort state values
-
-  sortState             - a const reference to the sort state the program will
-                          be switching to.  It is used here as a switch statement
-			  value to determine which set of data to return to the
-			  caller.
-
-  Output:
-
-  const std::vector<std::pair<std::string, int>>
-                        - the list of <string, int> pairs that is the string
-			  to sort by and it's corresponding process ID
-*/
-const std::vector<std::pair<std::string, int>> getProcStrs
-(const std::vector<int>& pidNums,
- std::unordered_map<int, ProcessInfo*>& procData,
- const int& listType)
-{
-  std::vector<std::pair<std::string, int>> tempStrings;
-  std::string temp;
-
-  // retrieve the desired corresponding processes data string
-  switch(listType)
-    {
-    case _PIDWIN:
-      break;
-    case _USERWIN:
-      break;
-    case _PRWIN:
-      break;
-    case _NIWIN:
-      break;
-    case _VIRTWIN:
-      break;
-    case _RESWIN:
-      break;
-    case _SHRWIN:
-      break;
-    case _SWIN:
-      break;
-    case _PROCCPUWIN:
-      break;
-    case _PROCMEMWIN:
-      break;
-    case _PROCTIMEWIN:
-      break;
-    case _COMMANDWIN:
-      break;
-    default:
-      break;
-    }
-
-
-  return tempStrings;
-} // end of "retrieveProcDataStrs"
-
-
-
