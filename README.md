@@ -35,7 +35,6 @@ The following is a quick list of my most important upcoming short-term changes:
 - Unit tests
 
 ## Longer Term Changes/Additions
-- Basic process management
 - Mouse functionality
 - Web-based features.  For example, snap shotting the process list and uploading it to examine for unusual values that may determine a malicious connection or program.
 - Potentially many others I have considered but these are at the top of my list!
