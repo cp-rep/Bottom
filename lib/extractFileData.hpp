@@ -6,8 +6,6 @@
 #define EXTRACTFILEDATA_HPP
 #include <string>
 #include <vector>
-#include <sys/stat.h>
-#include <ftw.h>
 
 // read from files
 const std::string returnPhraseLine(const std::string& fileName,
@@ -40,6 +38,8 @@ const std::string returnLineFromPipe(const std::string& comm,
 				     const int& lineNum);
 const std::string listDirContents();
 const std::vector<int> findNumericDirsPipe(const std::string& dirPath);
+const std::vector<int> findNumericDirs(const std::string& dirPath, std::ofstream& log);
+int direntNoRecurse(const struct dirent *name);
 
 // create strings
 const std::string fixStatLine(const std::string& line);
