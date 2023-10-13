@@ -980,33 +980,33 @@ int main()
 		  outList.end());
 	break;
       case _USERWIN:
-	outList = sortByUSER(pidNums, procData);
+	outList = sortByUSER(procData,
+			     pidNums);
 	break;
       case _PRWIN:
-	
 	break;
       case _NIWIN:
-	for(int i = 0; i < procData.size(); i++)
-	  {
-	    const int temp = procData[pidNums.at(i)]->getNI();
-
-	    sortedByInt.push_back(std::make_pair(temp, pidNums.at(i)));
-	  }
-
-	std::sort(sortedByInt.begin(), sortedByInt.end());
-	outList = mergeIntLists(sortedByInt,
-				pidNums,
-				procData);
+	outList = sortByNI(procData,
+			   pidNums);
 	break;
       case _VIRTWIN:
+	outList = sortByVIRT(procData,
+			     pidNums);
 	break;
       case _RESWIN:
+	outList = sortByRES(procData,
+			    pidNums);
 	break;
       case _SHRWIN:
+	outList = sortBySHR(procData,
+			    pidNums);
 	break;
       case _SWIN:
+	outList = sortByS(procData,
+			  pidNums);
 	break;
       case _PROCCPUWIN:
+	
 	break;
       case _PROCMEMWIN:
 	break;
