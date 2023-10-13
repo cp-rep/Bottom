@@ -35,6 +35,7 @@
 #include <sys/types.h>
 #include <sys/param.h>
 #include <pwd.h>
+#include <dirent.h>
 #include <algorithm>
 #include "log.hpp"
 #include "cursesWindow.hpp"
@@ -536,7 +537,7 @@ int main()
     outLine.append(":");
     outLine.append(std::to_string(uptime.getMinutes()));
     outLine.append(", ");
-    fileLine = returnLineFromPipe("users", _READ, 1);
+    //    fileLine = returnLineFromPipe("users", _READ, 1);
     parsedLine = parseLine(fileLine);
     outLine.append(std::to_string(parsedLine.size()));
     outLine.append(" users, load average: ");
@@ -563,7 +564,7 @@ int main()
 
     // get new process list
     pidNums.clear();
-    pidNums = (findNumericDirs(_PROC));
+    pidNums = (findNumericDirsPipe(_PROC));
     std::sort(pidNums.begin(), pidNums.end());
     
     // find any dead processes
