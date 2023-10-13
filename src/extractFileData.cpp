@@ -14,6 +14,29 @@
 
 /*
   Function:
+   findNumericDirs
+
+   Description:
+    Uses the <dirent.h> library to find all directories at the target 
+    directory that contain only numbers and return them as a vector<int> 
+    to the caller.
+
+    Input:
+     dirpath            - a const string type representing the target 
+                          directory to search for numeric directories in.
+
+    Output:
+     const std::vector<int>
+                        - the list of found numeric directories
+ */
+const std::vector<int> findNumericDirs(const std::string& dirPath)
+{
+} // end of "findNumericDirs"
+
+
+
+/*
+  Function:
   returnPhraseLine
    
   Description:
@@ -88,10 +111,8 @@ const std::string returnPhraseLine(const std::string& fileName,
                                 for numeric characters.
   
   Output:
-  -1                          - a constant integer representing an error.
-
-  stoi(temp)                  - a string of numeric characters converted
-                                to a constant integer.
+  const int             - returns the value extract from the line if
+                          successful, else returns -1
 */
 const int returnFirstIntFromLine(const std::string& line)
 {
@@ -498,7 +519,7 @@ const std::string listDirContents()
 
   Output:
  */
-const std::vector<int> findNumericDirs(const std::string& dirPath)
+const std::vector<int> findNumericDirsPipe(const std::string& dirPath)
 {
   FILE* pipe;
   std::string command = "ls ";
