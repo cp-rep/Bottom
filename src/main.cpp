@@ -160,7 +160,7 @@ int main()
   // state related vars
   int progState = 0;
   int prevState = 0;
-  int sortState = _USERWIN;
+  int sortState = _PIDWIN;
   bool highlight = false;
   bool quit = false;
   int shiftY = 1;
@@ -983,8 +983,20 @@ int main()
 	outList = sortByUSER(pidNums, procData);
 	break;
       case _PRWIN:
+	
 	break;
       case _NIWIN:
+	for(int i = 0; i < procData.size(); i++)
+	  {
+	    const int temp = procData[pidNums.at(i)]->getNI();
+
+	    sortedByInt.push_back(std::make_pair(temp, pidNums.at(i)));
+	  }
+
+	std::sort(sortedByInt.begin(), sortedByInt.end());
+	outList = mergeIntLists(sortedByInt,
+				pidNums,
+				procData);
 	break;
       case _VIRTWIN:
 	break;
@@ -1006,17 +1018,6 @@ int main()
 	break;
       }
     
-    /*    
-    for(int i = 0; i < procStrings.size(); i++)
-      {
-	outList.push_back(procStrings.at(i).second);
-	log << outList.at(i) << std::endl;
-      }
-
-    endwin();
-    exit(EXIT_SUCCESS);
-    */
-
     // shift windows
     switch(moveVal)
       {
