@@ -595,11 +595,9 @@ const std::vector<int> findNumericDirs(const std::string& dirPath, std::ofstream
   struct dirent **dirNames;
   std::vector<int> tempDirs;
   int numDirs = scandir("/proc/", &dirNames, direntNoRecurse, alphasort);
-  int i = 0;
 
   while(numDirs--)
     {
-      log << "n: " << numDirs << std::endl;
       std::string fullPath = "/proc/";
       std::string fileInPath;
       fileInPath = dirNames[numDirs]->d_name;
