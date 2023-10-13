@@ -14,6 +14,38 @@
 #include "sortProcessLists.hpp"
 
 
+/*
+const std::vector<int> sortByUSER(const std::vector<int>& pidNums,
+				  std::unordered_map<int, ProcessInfo*>& procData,
+				  const int& listType)
+{
+  std::vector<std::pair<std::string,int>> procStrings;
+  std::vector<std::vector<std::pair<std::string, int>>> sortedByUserTypePID;
+  std::vector<int> tempPIDs;
+  std::set<std::string> userTypes;
+
+  userTypes.insert("root");
+
+  // get all USERS and PIDS
+  for(int i = 0; i < procData.size(); i++)
+    {
+      procStrings.push_back(std::make_pair(procData[pidNums.at(i)]->getUSER(),
+					   pidNums.at(i)));
+    }
+
+  // sort them by user type
+  std::sort(procStrings.begin(), procStrings.end());
+
+  // sort
+  for(int i = 0; i < procStrings.size(); i++)
+    {
+      tempPIDs.push_back(procStrings.at(i).second);
+    }
+  
+  return tempPIDs;
+} // end of "sortByUSER"
+*/
+
 
 /*
   Function:
@@ -204,30 +236,36 @@ const std::vector<std::pair<std::string, int>> getProcStrs
   std::string temp;
 
   // retrieve the desired corresponding processes data string
-  for(int i = 0; i < procData.size(); i++)
+  switch(listType)
     {
-      switch(listType)
-	{
-	case _USERWIN:
-	  break;
-	case _PRWIN:
-	    temp = procData[pidNums.at(i)]->getPR();
-	  break;
-	case _SWIN:
-	    temp = procData[pidNums.at(i)]->getS();	  
-	  break;
-	case _COMMANDWIN:
-	    temp = procData[pidNums.at(i)]->getCOMMAND();	  
-	  break;
-	case _PROCTIMEWIN:
-	  temp = procData[pidNums.at(i)]->getProcessCPUTime();	  	  
-	  break;
-	default:
-	  break;
-	}
-      
-      tempStrings.push_back(std::make_pair(temp, pidNums.at(i)));
+    case _PIDWIN:
+      break;
+    case _USERWIN:
+      break;
+    case _PRWIN:
+      break;
+    case _NIWIN:
+      break;
+    case _VIRTWIN:
+      break;
+    case _RESWIN:
+      break;
+    case _SHRWIN:
+      break;
+    case _SWIN:
+      break;
+    case _PROCCPUWIN:
+      break;
+    case _PROCMEMWIN:
+      break;
+    case _PROCTIMEWIN:
+      break;
+    case _COMMANDWIN:
+      break;
+    default:
+      break;
     }
+
 
   return tempStrings;
 } // end of "retrieveProcDataStrs"

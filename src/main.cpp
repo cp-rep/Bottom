@@ -66,6 +66,7 @@
 #include "cursesWinConsts.hpp"
 #include "fileConsts.hpp"
 #include "sortProcessLists.hpp"
+#include <set>
 
 //constants
 // debug
@@ -83,6 +84,11 @@
 // function prototypes
 void printWindowToLog(std::ofstream& log,
 		      const CursesWindow& win);
+const std::vector<int> sortByUSER
+  (const std::vector<int>& pidNums,
+   std::unordered_map<int, ProcessInfo*>& procData,
+   const int& listType,
+   std::ofstream& log);   
 
 
 
@@ -155,7 +161,7 @@ int main()
   // state related vars
   int progState = 0;
   int prevState = 0;
-  int sortState = _PRWIN;
+  int sortState = _USERWIN;
   bool highlight = false;
   bool quit = false;
   int shiftY = 1;
@@ -967,15 +973,50 @@ int main()
     highlightIndex = sortState;
     
     // change sort state
-    procStrings = getProcStrs(pidNums,
-			      procData,
-			      sortState);
-    std::sort(procStrings.begin(), procStrings.end());
+    switch(sortState)
+      {
+      case _PIDWIN:
+	outList = pidNums;
+	std::sort(outList.begin(),
+		  outList.end());
+	break;
+      case _USERWIN:
+	outList = sortByUSER(pidNums, procData, sortState, log);
+	break;
+      case _PRWIN:
+	break;
+      case _NIWIN:
+	break;
+      case _VIRTWIN:
+	break;
+      case _RESWIN:
+	break;
+      case _SHRWIN:
+	break;
+      case _SWIN:
+	break;
+      case _PROCCPUWIN:
+	break;
+      case _PROCMEMWIN:
+	break;
+      case _PROCTIMEWIN:
+	break;
+      case _COMMANDWIN:
+	break;
+      default:
+	break;
+      }
     
+    /*    
     for(int i = 0; i < procStrings.size(); i++)
       {
 	outList.push_back(procStrings.at(i).second);
+	log << outList.at(i) << std::endl;
       }
+
+    endwin();
+    exit(EXIT_SUCCESS);
+    */
 
     // shift windows
     switch(moveVal)
@@ -1083,3 +1124,122 @@ void printWindowToLog(std::ofstream& log, const CursesWindow& win)
   log << "m_startY: " << win.getStartY() << std::endl;
   log << "m_startX: " << win.getStartX() << std::endl;
 } // end of "printWindowToLog"
+
+
+
+/*
+  Function:
+  sortByUSER
+
+  Description:
+
+  Input:
+  Output:
+ */
+const std::vector<int> sortByUSER(const std::vector<int>& pidNums,
+				  std::unordered_map<int, ProcessInfo*>& procData,
+				  const int& listType,
+				  std::ofstream& log)
+{
+  std::vector<std::pair<std::string,int>> procStrings;
+  //  std::vector<std::vector<std::pair<std::string, int>>> sortedByUserTypePID[5];
+  std::vector<int> tempROOTPIDs;
+  std::vector<int> tempDBUSPIDS;
+  std::set<std::string> userTypes;
+  std::vector<std::string> types;
+  std::vector<int> rootPIDS;
+  std::vector<int> dbusPIDS;
+  int rootIndex = 0;
+  int dbusIndex = 0;
+  userTypes.insert("root");
+
+  // get all std::pairs of <user, pid> and store them in vector
+  for(int i = 0, j = 0; i < procData.size(); i++)
+    {
+      procStrings.push_back(std::make_pair(procData[pidNums.at(i)]->getUSER(),
+					   pidNums.at(i)));
+
+      // get the different user types
+      if(userTypes.count(procStrings.at(i).first) == 0)
+	{
+	  userTypes.insert(procStrings.at(i).first);
+	}
+    }
+
+  // remove the bad user type while saving user types in a string for easier use
+  for(std::set<std::string>::iterator it = userTypes.begin();
+      it != userTypes.end(); it++)
+    {
+      // bandaid for the current pipe process "bug"
+      if(*it != "-1")
+	{
+	  types.push_back(*it);
+	}
+    }
+
+  // sort the vector of std::pair<user, int> by users
+  std::sort(procStrings.begin(), procStrings.end());
+  
+  // store all user types in a vector of vector of std::pair<int, user>
+  std::vector<std::vector<std::pair<int, std::string>>> sortedByUserTypePID(types.size());
+  for(int i = 0; i < procStrings.size(); i++)
+    {
+      for(int j = 0; j < types.size(); j++)
+	{
+	  if(types.at(j) == procStrings.at(i).first)
+	    {
+	      sortedByUserTypePID[j].push_back(std::make_pair(procStrings.at(i).second,
+							      procStrings.at(i).first));
+	    }
+	}
+    }
+
+  // sort each list of users by PID
+  for(int i = 0; i < sortedByUserTypePID.size(); i++)
+    {
+      std::sort(sortedByUserTypePID.at(i).begin(), sortedByUserTypePID.at(i).end());
+    }
+
+
+
+  // copy all the PIDS of the root user first
+  
+  
+  
+
+
+  for(int i = 0; i < sortedByUserTypePID.size(); i++)
+    {
+      for(int j = 0; j < sortedByUserTypePID.at(i).size(); j++)
+	{
+	  log << "PID: " << sortedByUserTypePID.at(i).at(j).first
+	      << " , USER: " << sortedByUserTypePID.at(i).at(j).second << std::endl;	  
+	}
+    }
+
+
+  
+
+
+
+
+  
+  /*
+    for(int i = 0; i < procStrings.size(); i++)
+    {
+    std::string tempStr = procStrings.at(i).first;
+    for(int j = 0; procStrings.at(j).first == tempStr; j++)
+    {
+    userTypes.at(0).push_back(makeprocStrings.at(j).first,
+    }
+    }
+
+  // sort
+  for(int i = 0; i < procStrings.size(); i++)
+    {
+      tempPIDs.push_back(procStrings.at(i).second);
+    }
+  */
+  
+  //  return tempPIDs;
+} // end of "sortByUSER"

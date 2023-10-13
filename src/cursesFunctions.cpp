@@ -356,15 +356,16 @@ void printProcs(const int& shiftY,
 {
   std::string outString;
 
-  for(int i = 0; i < pUmap.size(); i++)
+  for(int i = 0; i < pidList.size(); i++)
     {
       int posY = i + shiftY;
       if(posY != 0)
-	{
+      	{
 	  // PID
 	  if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr)
 	    {
 	      outString = std::to_string(pUmap.at(pidList.at(i))->getPID());
+	      //	      outString = pidList.at(i);
 	      mvwaddstr(wins.at(_PIDWIN)->getWindow(),
 			posY,
 			wins.at(_PIDWIN)->getNumCols() - outString.length(),
@@ -469,7 +470,7 @@ void printProcs(const int& shiftY,
 			0,
 			outString.c_str());
 	    } 
-	}
+    }
     }
 } // end of "printProcs"
 
