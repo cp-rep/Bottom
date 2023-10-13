@@ -1,4 +1,4 @@
- /*
+/*
   File: main.cpp
   Version: V0.1
 
@@ -7,11 +7,6 @@
     tested in Ubuntu and ArchLinux.  Each have a branch that corresponds to the
     working implementation.  The main branch contains a stable version that works
     on both operating systems.
-
-  Notes:
-  - Top's horizontal window scroll is determined by the total possible length
-  of the value the column is representing until you reach command.  Once
-  command is reached, every proceeding scroll is an 8 character window shift.
 
   Controls:
   - the 'x' key allows highlighting a particular column.
@@ -564,7 +559,7 @@ int main()
 
     // get new process list
     pidNums.clear();
-    pidNums = (findNumericDirsPipe(_PROC));
+    pidNums = findNumericDirs(_PROC, log);
     std::sort(pidNums.begin(), pidNums.end());
     
     // find any dead processes
