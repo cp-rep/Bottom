@@ -1,7 +1,7 @@
 # Bottom
 
 ## What is Bottom?
-The Bottom program is an exploration in Linux and NCurses through creating a Top-like program from the GNU Core Utilities using C++.  It is not meant to be Top but a side project for learning.
+The Bottom program is an exploration in Linux and NCurses through creating a Top-like program from the GNU Core Utilities using C++.  It is not meant to be Top but a side project for learning and experimental features.
 
 ## How to Build Bottom
 Bottom uses the "CMake" utility for building the base program.
