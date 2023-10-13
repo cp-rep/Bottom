@@ -28,18 +28,18 @@
    users.
 
   Input:
-  
+   procData             - all stored process data that will be traversed in
+                          ordere to retrieve desired sort state values
+
    pidNums              - a const reference to a PID list representing all running
                           processes
 
-   procData             - all stored process data that will be traversed in
-                          ordere to retrieve desired sort state values
   Output:
    const std::vector<int>
-                        _ the sorted list of PIDs
+                        - the sorted list of PIDs
  */
-const std::vector<int> sortByUSER(const std::vector<int>& pidNums,
-				  std::unordered_map<int, ProcessInfo*>& procData)
+const std::vector<int> sortByUSER(std::unordered_map<int, ProcessInfo*>& procData,
+				  const std::vector<int>& pidNums)
 {
   std::vector<std::pair<std::string,int>> procStrings;
   std::set<std::string> userTypes;
@@ -49,7 +49,7 @@ const std::vector<int> sortByUSER(const std::vector<int>& pidNums,
   // get all std::pairs of <user, pid> and store them in vector
   for(int i = 0, j = 0; i < procData.size(); i++)
     {
-      procStrings.push_back(std::make_pair(procData[pidNums.at(i)]->getUSER(),
+      procStrings.push_back(std::make_pair(procData.at(pidNums.at(i))->getUSER(),
 					   pidNums.at(i)));
 
       // get the different user types
@@ -106,6 +106,200 @@ const std::vector<int> sortByUSER(const std::vector<int>& pidNums,
 
 /*
   Function:
+   sortByNI
+
+  Description:
+   Sorts and returns the PID list by NI.
+
+  Input:
+   procData             - a const reference to the entire list of processes and their data.
+
+   pidNums              - a const reference to a PID list representing all running
+                          processes
+
+  Output:
+   vector<int>          - the resulting merged list of process IDs
+ */
+const std::vector<int> sortByNI(const std::unordered_map<int, ProcessInfo*>& procData,
+				const std::vector<int>& pidNums)
+{
+  std::vector<std::pair<int, int>> sortedByInt;
+  std::vector<int> tempPIDs;
+  
+  for(int i = 0; i < procData.size(); i++)
+    {
+      // get NI int value
+      const int tempInt = procData.at(pidNums.at(i))->getNI();
+
+      // store NI value with pid in vector<pair(NI, PID)>
+      sortedByInt.push_back(std::make_pair(tempInt, pidNums.at(i)));
+    }
+
+  // sort vector by NI val
+  std::sort(sortedByInt.begin(), sortedByInt.end());
+
+  // save merged sorted list
+  tempPIDs = mergeIntLists(sortedByInt,
+			   pidNums,
+			   procData);
+
+  // return sorted PIDS
+  return tempPIDs;
+} // end of "sortByNI"
+
+
+
+/*
+  Function:
+   sortByVIRT
+
+  Description:
+   Sorts and returns the PID list by VIRT.
+  
+  Input:
+   procData             - a const reference to the entire list of processes and their data.
+
+  Output:
+   vector<int>          - the resulting merged list of process IDs
+ */
+const std::vector<int> sortByVIRT(const std::unordered_map<int, ProcessInfo*>& procData,
+				  const std::vector<int>& pidNums)
+{
+  std::vector<std::pair<int, int>> sortedByInt;
+  std::vector<int> tempPIDs;
+  
+  for(int i = 0; i < procData.size(); i++)
+    {
+      const int tempInt = procData.at(pidNums.at(i))->getVIRT();
+      sortedByInt.push_back(std::make_pair(tempInt, pidNums.at(i)));
+    }
+
+  std::sort(sortedByInt.begin(), sortedByInt.end());
+  tempPIDs = mergeIntLists(sortedByInt,
+			   pidNums,
+			   procData);
+  
+  return tempPIDs;
+} // end of "sortByVIRT"
+
+
+
+/*
+  Function:
+   sortByRES
+
+  Description:
+   Sorts and returns the PID list by RES.
+  
+  Input:
+   procData             - a const reference to the entire list of processes and their data.
+
+   pidNums              - a const reference to a PID list representing all running
+                          processes
+		      
+  Output:
+   vector<int>          - the resulting merged list of process IDs
+ */
+const std::vector<int> sortByRES(const std::unordered_map<int, ProcessInfo*>& procData,
+				 const std::vector<int>& pidNums)
+{
+  std::vector<std::pair<int, int>> sortedByInt;
+  std::vector<int> tempPIDs;
+  
+  for(int i = 0; i < procData.size(); i++)
+    {
+      const int tempInt = procData.at(pidNums.at(i))->getRES();
+      sortedByInt.push_back(std::make_pair(tempInt, pidNums.at(i)));
+    }
+
+  std::sort(sortedByInt.begin(), sortedByInt.end());
+  tempPIDs = mergeIntLists(sortedByInt,
+			   pidNums,
+			   procData);
+  
+  return tempPIDs;
+} // end of "sortByRES'
+
+
+
+/*
+  Function:
+   sortBySHR
+
+  Description:
+   Sorts and returns the PID list by SHR.
+  
+  Input:
+   procData             - a const reference to the entire list of processes and their data.
+
+   pidNums              - a const reference to a PID list representing all running
+                          processes
+
+  Output:
+   vector<int>          - the resulting merged list of process IDs
+ */
+const std::vector<int> sortBySHR(const std::unordered_map<int, ProcessInfo*>& procData,
+				 const std::vector<int>& pidNums)
+{
+  std::vector<std::pair<int, int>> sortedByInt;
+  std::vector<int> tempPIDs;
+  
+  for(int i = 0; i < procData.size(); i++)
+    {
+      const int tempInt = procData.at(pidNums.at(i))->getSHR();
+      sortedByInt.push_back(std::make_pair(tempInt, pidNums.at(i)));
+    }
+
+  std::sort(sortedByInt.begin(), sortedByInt.end());
+  tempPIDs = mergeIntLists(sortedByInt,
+			   pidNums,
+			   procData);
+  
+  return tempPIDs;
+} // end of "sortBySHR"
+
+
+
+/*
+  Function:
+   sortByS
+
+  Description:
+   Sorts and returns the PID list by S.
+  
+  Input:
+   procData             - a const reference to the entire list of processes and their data.
+
+   pidNums              - a const reference to a PID list representing all running
+                          processes
+
+  Output:
+   vector<int>          - the resulting merged list of process IDs
+ */
+const std::vector<int> sortByS(const std::unordered_map<int, ProcessInfo*>& procData,
+			       const std::vector<int>& pidNums)
+{
+  std::vector<std::pair<std::string, int>> sortedByStr;
+  std::vector<int> tempPIDs;
+  
+  for(int i = 0; i < procData.size(); i++)
+    {
+      const std::string tempStr = std::to_string(procData.at(pidNums.at(i))->getS());
+      sortedByStr.push_back(std::make_pair(tempStr, pidNums.at(i)));
+    }
+
+  std::sort(sortedByStr.begin(), sortedByStr.end());
+  tempPIDs = mergeStringLists(sortedByStr,
+			      pidNums,
+			      procData);
+  
+  return tempPIDs;
+} // end of "sortByS"
+
+
+
+/*
+  Function:
   mergeDoubleLists
 
   Description:
@@ -116,7 +310,7 @@ const std::vector<int> sortByUSER(const std::vector<int>& pidNums,
 
   backList          - a const reference to the current entire process list
 
-  pUmap             - a const reference to the entire list of processes including 
+  procData             - a const reference to the entire list of processes including 
                       any that have died/closed
 
   Output:
@@ -124,7 +318,7 @@ const std::vector<int> sortByUSER(const std::vector<int>& pidNums,
  */
 const std::vector<int> mergeDoubleLists(const std::vector<std::pair<double, int>>& frontList,
 					const std::vector<int>& backList,
-					const std::unordered_map<int, ProcessInfo*>& pUmap)
+					const std::unordered_map<int, ProcessInfo*>& procData)
 {
   std::vector<int> tempList;
   
@@ -133,13 +327,13 @@ const std::vector<int> mergeDoubleLists(const std::vector<std::pair<double, int>
       tempList.push_back(frontList.at(i).second);
     }
 
-  for(int i = 0; i < pUmap.size(); i++)
+  for(int i = 0; i < procData.size(); i++)
     {
       bool isInArray = false;
 
       for(int j = 0; j < frontList.size(); j++)
 	{
-	  if(frontList.at(j).second == pUmap.at(backList.at(i))->getPID())
+	  if(frontList.at(j).second == procData.at(backList.at(i))->getPID())
 	    {
 	      isInArray = true;
 	      break;
@@ -168,7 +362,7 @@ const std::vector<int> mergeDoubleLists(const std::vector<std::pair<double, int>
 
   backList          - a const reference to the current entire process list
 
-  pUmap             - a const reference to the entire list of processes including 
+  procData             - a const reference to the entire list of processes including 
                       any that have died/closed
 
   Output:
@@ -176,7 +370,7 @@ const std::vector<int> mergeDoubleLists(const std::vector<std::pair<double, int>
  */
 const std::vector<int> mergeIntLists(const std::vector<std::pair<int, int>>& frontList,
 				    const std::vector<int>& backList,
-				    const std::unordered_map<int, ProcessInfo*>& pUmap)
+				    const std::unordered_map<int, ProcessInfo*>& procData)
 {
   std::vector<int> tempList;
 
@@ -185,13 +379,13 @@ const std::vector<int> mergeIntLists(const std::vector<std::pair<int, int>>& fro
       tempList.push_back(frontList.at(i).second);
     }  
   
-  for(int i = 0; i < pUmap.size(); i++)
+  for(int i = 0; i < procData.size(); i++)
     {
       bool isInArray = false;
 
       for(int j = 0; j < frontList.size(); j++)
 	{
-	  if(frontList.at(j).second == pUmap.at(backList.at(i))->getPID())
+	  if(frontList.at(j).second == procData.at(backList.at(i))->getPID())
 	    {
 	      isInArray = true;
 	    }
@@ -212,14 +406,15 @@ const std::vector<int> mergeIntLists(const std::vector<std::pair<int, int>>& fro
   Function:
   mergeStringLists
 
-  Merges two process lists.
+  Description:
+   A helper function that merges two sorted lists.
   
   Input:
   frontList         - a const reference to a list of sorted string data types
 
   backList          - a const reference to the current entire process list
 
-  pUmap             - a const reference to the entire list of processes including 
+  procData             - a const reference to the entire list of processes including 
                       any that have died/closed
 
   Output:
@@ -228,7 +423,7 @@ const std::vector<int> mergeIntLists(const std::vector<std::pair<int, int>>& fro
 const std::vector<int> mergeStringLists(const std::vector<std::pair<std::string,
 					int>>& frontList,
 					const std::vector<int>& backList,
-					const std::unordered_map<int, ProcessInfo*>& pUmap)
+					const std::unordered_map<int, ProcessInfo*>& procData)
 {
   std::vector<int> tempList;
 
@@ -237,13 +432,13 @@ const std::vector<int> mergeStringLists(const std::vector<std::pair<std::string,
       tempList.push_back(frontList.at(i).second);
     }
   
-  for(int i = 0; i < pUmap.size(); i++)
+  for(int i = 0; i < procData.size(); i++)
     {
       bool isInArray = false;
 
       for(int j = 0; j < frontList.size(); j++)
 	{
-	  if(frontList.at(j).second == pUmap.at(backList.at(i))->getPID())
+	  if(frontList.at(j).second == procData.at(backList.at(i))->getPID())
 	    {
 	      isInArray = true;
 	    }

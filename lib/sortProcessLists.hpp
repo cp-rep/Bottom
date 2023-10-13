@@ -13,9 +13,18 @@
 #include "processInfo.hpp"
 #include "cursesWinConsts.hpp"
 
-const std::vector<int> sortByUSER(const std::vector<int>& pidNums,
-				  std::unordered_map<int, ProcessInfo*>& procData);
-
+const std::vector<int> sortByUSER(std::unordered_map<int, ProcessInfo*>& procData,
+				  const std::vector<int>& pidNums);
+const std::vector<int> sortByNI(const std::unordered_map<int, ProcessInfo*>& procData,
+				const std::vector<int>& pidNums);
+const std::vector<int> sortByVIRT(const std::unordered_map<int, ProcessInfo*>& procData,
+				  const std::vector<int>& pidNums);
+const std::vector<int> sortByRES(const std::unordered_map<int, ProcessInfo*>& procData,
+				 const std::vector<int>& pidNums);
+const std::vector<int> sortBySHR(const std::unordered_map<int, ProcessInfo*>& procData,
+				 const std::vector<int>& pidNums);
+const std::vector<int> sortByS(const std::unordered_map<int, ProcessInfo*>& procData,
+			       const std::vector<int>& pidNums);
 const std::vector<int> mergeDoubleLists(const std::vector<std::pair<double, int>>& frontList,
 					const std::vector<int>& backList,
 					const std::unordered_map<int, ProcessInfo*>& pUmap);
