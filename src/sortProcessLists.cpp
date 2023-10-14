@@ -2,14 +2,15 @@
   File: sortProcessLists.cpp
   
   Description:
-  Function implementations for sortProcessList.  These functions are used by main.cpp
-  to combine PID lists and return a merged sorted lists while checking for duplicates.
+   These are a temporary brute force solution for sorting the process data until it
+   is better understood how the TOP program determines the priority for some of the
+   operating system processes in sorting order.
 
-  Notes:
-  Brute Force Solution to output Sorted Process Data:
-  - sort all of the data
-  - for all duplicates, sort them by PID
-  - concatenate/append them to an output list according to required list hierarchy
+   The current solution sorts by the list type (PID, USER, PR...).  The algorithms
+   determine the significant values and places them in descending order.  If there
+   is a duplicate value, it sorts those by PID in descending order. This pattern
+   is repeated until all the lists are sorted(although the algorithm doesn't 
+   necessarily operate systematically by that pattern, it is the result).
 */
 #include "sortProcessLists.hpp"
 
@@ -36,7 +37,7 @@
 const std::vector<int> sortByUSER(std::unordered_map<int, ProcessInfo*>& procData,
 				  const std::vector<int>& pidNums)
 {
-  std::vector<std::pair<std::string,int>> procStrings;
+  std::vector<std::pair<std::string,int>> procUSERStrings;
   std::set<std::string> userTypes;
   std::vector<std::string> types;
   std::vector<int> tempPIDs;
@@ -44,13 +45,13 @@ const std::vector<int> sortByUSER(std::unordered_map<int, ProcessInfo*>& procDat
   // get all std::pairs of <user, pid> and store them in vector
   for(int i = 0, j = 0; i < procData.size(); i++)
     {
-      procStrings.push_back(std::make_pair(procData.at(pidNums.at(i))->getUSER(),
-					   pidNums.at(i)));
+      procUSERStrings.push_back(std::make_pair(procData.at(pidNums.at(i))->getUSER(),
+					       pidNums.at(i)));
 
-      // get the different user types
-      if(userTypes.count(procStrings.at(i).first) == 0)
+      // get the different user types (repeated values for separating later)
+      if(userTypes.count(procUSERStrings.at(i).first) == 0)
 	{
-	  userTypes.insert(procStrings.at(i).first);
+	  userTypes.insert(procUSERStrings.at(i).first);
 	}
     }
 
@@ -61,16 +62,16 @@ const std::vector<int> sortByUSER(std::unordered_map<int, ProcessInfo*>& procDat
       types.push_back(*it);
     }
   
-  // store all PIDS as a vector of vector of std::pair<int, user>
+  // store all PIDS as a vector of vector of std::pair<int, USER>
   std::vector<std::vector<std::pair<int, std::string>>> sortedByUserTypePID(types.size());
-  for(int i = 0; i < procStrings.size(); i++)
+  for(int i = 0; i < procUSERStrings.size(); i++)
     {
       for(int j = 0; j < types.size(); j++)
 	{
-	  if(types.at(j) == procStrings.at(i).first)
+	  if(types.at(j) == procUSERStrings.at(i).first)
 	    {
-	      sortedByUserTypePID[j].push_back(std::make_pair(procStrings.at(i).second,
-							      procStrings.at(i).first));
+	      sortedByUserTypePID[j].push_back(std::make_pair(procUSERStrings.at(i).second,
+							      procUSERStrings.at(i).first));
 	    }
 	}
     }
@@ -114,27 +115,60 @@ const std::vector<int> sortByUSER(std::unordered_map<int, ProcessInfo*>& procDat
 const std::vector<int> sortByNI(const std::unordered_map<int, ProcessInfo*>& procData,
 				const std::vector<int>& pidNums)
 {
-  std::vector<std::pair<int, int>> sortedByInt;
+  std::vector<std::pair<int,int>> procNI;
+  std::set<int> intTypes;
+  std::vector<int> types;
   std::vector<int> tempPIDs;
   
-  for(int i = 0; i < procData.size(); i++)
+  // get all std::pairs of <NI, pid> and store them in vector
+  for(int i = 0, j = 0; i < procData.size(); i++)
     {
-      // get NI int value
-      const int tempInt = procData.at(pidNums.at(i))->getNI();
+      procNI.push_back(std::make_pair(procData.at(pidNums.at(i))->getNI(),
+				      pidNums.at(i)));
 
-      // store NI value with pid in vector<pair(NI, PID)>
-      sortedByInt.push_back(std::make_pair(tempInt, pidNums.at(i)));
+      // get the different NI types(repeated values for separating later)
+      if(intTypes.count(procNI.at(i).first) == 0)
+	{
+	  intTypes.insert(procNI.at(i).first);
+	}
     }
 
-  // sort vector by NI val
-  std::sort(sortedByInt.begin(), sortedByInt.end());
+  // save NI types as vector of string for later use
+  for(std::set<int>::iterator it = intTypes.begin();
+      it != intTypes.end(); it++)
+    {
+      types.push_back(*it);
+    }
+  
+  // store all PIDS as a vector of vector of std::pair<PID, NI>
+  std::vector<std::vector<std::pair<int, int>>> sortedByNITypePID(types.size());
+  for(int i = 0; i < procNI.size(); i++)
+    {
+      for(int j = 0; j < types.size(); j++)
+	{
+	  if(types.at(j) == procNI.at(i).first)
+	    {
+	      sortedByNITypePID[j].push_back(std::make_pair(procNI.at(i).second,
+							      procNI.at(i).first));
+	    }
+	}
+    }
+  
+  // sort each NI type list by PID
+  for(int i = 0; i < sortedByNITypePID.size(); i++)
+    {
+      std::sort(sortedByNITypePID.at(i).begin(), sortedByNITypePID.at(i).end());
+    }
 
-  // save merged sorted list
-  tempPIDs = mergeIntLists(sortedByInt,
-			   pidNums,
-			   procData);
-
-  // return sorted PIDS
+  // store the list of sorted PIDs to vector<int> to return to caller 
+  for(int i = sortedByNITypePID.size() - 1; i >= 0; i--)    
+    {
+      for(int j = 0; j < sortedByNITypePID.at(i).size(); j++)
+	{
+	  tempPIDs.push_back(sortedByNITypePID.at(i).at(j).first);
+	}
+    }
+  
   return tempPIDs;
 } // end of "sortByNI"
 
@@ -156,19 +190,59 @@ const std::vector<int> sortByNI(const std::unordered_map<int, ProcessInfo*>& pro
 const std::vector<int> sortByVIRT(const std::unordered_map<int, ProcessInfo*>& procData,
 				  const std::vector<int>& pidNums)
 {
-  std::vector<std::pair<int, int>> sortedByInt;
+  std::vector<std::pair<int,int>> procVIRT;
+  std::set<int> intTypes;
+  std::vector<int> types;
   std::vector<int> tempPIDs;
   
-  for(int i = 0; i < procData.size(); i++)
+  // get all std::pairs of <VIRT, pid> and store them in vector
+  for(int i = 0, j = 0; i < procData.size(); i++)
     {
-      const int tempInt = procData.at(pidNums.at(i))->getVIRT();
-      sortedByInt.push_back(std::make_pair(tempInt, pidNums.at(i)));
+      procVIRT.push_back(std::make_pair(procData.at(pidNums.at(i))->getVIRT(),
+				      pidNums.at(i)));
+
+      // get the different VIRT types (repeated values for separating later)
+      if(intTypes.count(procVIRT.at(i).first) == 0)
+	{
+	  intTypes.insert(procVIRT.at(i).first);
+	}
     }
 
-  std::sort(sortedByInt.begin(), sortedByInt.end());
-  tempPIDs = mergeIntLists(sortedByInt,
-			   pidNums,
-			   procData);
+  // save VIRT types as vector of string for later use
+  for(std::set<int>::iterator it = intTypes.begin();
+      it != intTypes.end(); it++)
+    {
+      types.push_back(*it);
+    }
+  
+  // store all PIDS as a vector of vector of std::pair<PID, VIRT>
+  std::vector<std::vector<std::pair<int, int>>> sortedByVIRTTypePID(types.size());
+  for(int i = 0; i < procVIRT.size(); i++)
+    {
+      for(int j = 0; j < types.size(); j++)
+	{
+	  if(types.at(j) == procVIRT.at(i).first)
+	    {
+	      sortedByVIRTTypePID[j].push_back(std::make_pair(procVIRT.at(i).second,
+							      procVIRT.at(i).first));
+	    }
+	}
+    }
+  
+  // sort each VIRT type list by PID
+  for(int i = 0; i < sortedByVIRTTypePID.size(); i++)
+    {
+      std::sort(sortedByVIRTTypePID.at(i).begin(), sortedByVIRTTypePID.at(i).end());
+    }
+
+  // store the list of sorted PIDs to vector<int> to return to caller 
+  for(int i = sortedByVIRTTypePID.size() - 1; i >= 0; i--)    
+    {
+      for(int j = 0; j < sortedByVIRTTypePID.at(i).size(); j++)
+	{
+	  tempPIDs.push_back(sortedByVIRTTypePID.at(i).at(j).first);
+	}
+    }
   
   return tempPIDs;
 } // end of "sortByVIRT"
@@ -194,19 +268,59 @@ const std::vector<int> sortByVIRT(const std::unordered_map<int, ProcessInfo*>& p
 const std::vector<int> sortByRES(const std::unordered_map<int, ProcessInfo*>& procData,
 				 const std::vector<int>& pidNums)
 {
-  std::vector<std::pair<int, int>> sortedByInt;
+  std::vector<std::pair<int,int>> procRES;
+  std::set<int> intTypes;
+  std::vector<int> types;
   std::vector<int> tempPIDs;
   
-  for(int i = 0; i < procData.size(); i++)
+  // get all std::pairs of <RES, pid> and store them in vector
+  for(int i = 0, j = 0; i < procData.size(); i++)
     {
-      const int tempInt = procData.at(pidNums.at(i))->getRES();
-      sortedByInt.push_back(std::make_pair(tempInt, pidNums.at(i)));
+      procRES.push_back(std::make_pair(procData.at(pidNums.at(i))->getRES(),
+				      pidNums.at(i)));
+
+      // get the different RES types (repeated values for separating later)
+      if(intTypes.count(procRES.at(i).first) == 0)
+	{
+	  intTypes.insert(procRES.at(i).first);
+	}
     }
 
-  std::sort(sortedByInt.begin(), sortedByInt.end());
-  tempPIDs = mergeIntLists(sortedByInt,
-			   pidNums,
-			   procData);
+  // save RES types as vector of string for later use
+  for(std::set<int>::iterator it = intTypes.begin();
+      it != intTypes.end(); it++)
+    {
+      types.push_back(*it);
+    }
+  
+  // store all PIDS as a vector of vector of std::pair<PID, RES>
+  std::vector<std::vector<std::pair<int, int>>> sortedByRESTypePID(types.size());
+  for(int i = 0; i < procRES.size(); i++)
+    {
+      for(int j = 0; j < types.size(); j++)
+	{
+	  if(types.at(j) == procRES.at(i).first)
+	    {
+	      sortedByRESTypePID[j].push_back(std::make_pair(procRES.at(i).second,
+							      procRES.at(i).first));
+	    }
+	}
+    }
+  
+  // sort each RES type list by PID
+  for(int i = 0; i < sortedByRESTypePID.size(); i++)
+    {
+      std::sort(sortedByRESTypePID.at(i).begin(), sortedByRESTypePID.at(i).end());
+    }
+
+  // store the list of sorted PIDs to vector<int> to return to caller 
+  for(int i = sortedByRESTypePID.size() - 1; i >= 0; i--)    
+    {
+      for(int j = 0; j < sortedByRESTypePID.at(i).size(); j++)
+	{
+	  tempPIDs.push_back(sortedByRESTypePID.at(i).at(j).first);
+	}
+    }
   
   return tempPIDs;
 } // end of "sortByRES'
@@ -232,19 +346,59 @@ const std::vector<int> sortByRES(const std::unordered_map<int, ProcessInfo*>& pr
 const std::vector<int> sortBySHR(const std::unordered_map<int, ProcessInfo*>& procData,
 				 const std::vector<int>& pidNums)
 {
-  std::vector<std::pair<int, int>> sortedByInt;
+  std::vector<std::pair<int,int>> procSHR;
+  std::set<int> intTypes;
+  std::vector<int> types;
   std::vector<int> tempPIDs;
   
-  for(int i = 0; i < procData.size(); i++)
+  // get all std::pairs of <SHR, pid> and store them in vector
+  for(int i = 0, j = 0; i < procData.size(); i++)
     {
-      const int tempInt = procData.at(pidNums.at(i))->getSHR();
-      sortedByInt.push_back(std::make_pair(tempInt, pidNums.at(i)));
+      procSHR.push_back(std::make_pair(procData.at(pidNums.at(i))->getSHR(),
+				      pidNums.at(i)));
+
+      // get the different SHR types (repeated values for separating later)
+      if(intTypes.count(procSHR.at(i).first) == 0)
+	{
+	  intTypes.insert(procSHR.at(i).first);
+	}
     }
 
-  std::sort(sortedByInt.begin(), sortedByInt.end());
-  tempPIDs = mergeIntLists(sortedByInt,
-			   pidNums,
-			   procData);
+  // save SHR types as vector of string for later use
+  for(std::set<int>::iterator it = intTypes.begin();
+      it != intTypes.end(); it++)
+    {
+      types.push_back(*it);
+    }
+  
+  // store all PIDs as a vector of vector of std::pair<PID, SHR>
+  std::vector<std::vector<std::pair<int, int>>> sortedBySHRTypePID(types.size());
+  for(int i = 0; i < procSHR.size(); i++)
+    {
+      for(int j = 0; j < types.size(); j++)
+	{
+	  if(types.at(j) == procSHR.at(i).first)
+	    {
+	      sortedBySHRTypePID[j].push_back(std::make_pair(procSHR.at(i).second,
+							      procSHR.at(i).first));
+	    }
+	}
+    }
+  
+  // sort each SHR type list by PID
+  for(int i = 0; i < sortedBySHRTypePID.size(); i++)
+    {
+      std::sort(sortedBySHRTypePID.at(i).begin(), sortedBySHRTypePID.at(i).end());
+    }
+
+  // store the list of sorted PIDs to vector<int> to return to caller 
+  for(int i = sortedBySHRTypePID.size() - 1; i >= 0; i--)    
+    {
+      for(int j = 0; j < sortedBySHRTypePID.at(i).size(); j++)
+	{
+	  tempPIDs.push_back(sortedBySHRTypePID.at(i).at(j).first);
+	}
+    }
   
   return tempPIDs;
 } // end of "sortBySHR"
@@ -283,7 +437,7 @@ const std::vector<int> sortByS(std::unordered_map<int, ProcessInfo*>& procData,
       procStrings.push_back(std::make_pair(std::to_string(procData.at(pidNums.at(i))->getS()),
 					   pidNums.at(i)));
 
-      // get the different S types
+      // get the different S types (repeated values for separating later)
       if(STypes.count(procStrings.at(i).first) == 0)
 	{
 	  STypes.insert(procStrings.at(i).first);
@@ -333,6 +487,86 @@ const std::vector<int> sortByS(std::unordered_map<int, ProcessInfo*>& procData,
 
 /*
   Function:
+   sortByCPUUSAGE
+
+  Description:
+   Sorts the pid list by COMMAND. Complexity O(N^2)
+
+  Input:
+   procData             - all stored process data that will be traversed in
+                          ordere to retrieve desired sort state values
+
+   pidNums              - a const reference to a PID list representing all running
+                          processes
+
+  Output:
+   const std::vector<int>
+                        - the sorted list of PIDs
+*/
+const std::vector<int> sortByCPUUSAGE(const std::unordered_map<int, ProcessInfo*>& procData,
+				      const std::vector<int>& pidNums)
+{
+  std::vector<std::pair<double,int>> procCPUUSAGE;
+  std::set<double> intTypes;
+  std::vector<double> types;
+  std::vector<int> tempPIDs;
+  
+  // get all std::pairs of <CPUUSAGE, pid> and store them in vector
+  for(int i = 0, j = 0; i < procData.size(); i++)
+    {
+      procCPUUSAGE.push_back(std::make_pair(procData.at(pidNums.at(i))->getCPUUsage(),
+					    pidNums.at(i)));
+
+      // get the different CPUUSAGE types (repeated values for separating later)
+      if(intTypes.count(procCPUUSAGE.at(i).first) == 0)
+	{
+	  intTypes.insert(procCPUUSAGE.at(i).first);
+	}
+    }
+
+  // save CPUUSAGE types as vector of double for later use
+  for(std::set<double>::iterator it = intTypes.begin();
+      it != intTypes.end(); it++)
+    {
+      types.push_back(*it);
+    }
+  
+  // store all PIDS as a vector of vector of std::pair<PID, CPUUSAGE>
+  std::vector<std::vector<std::pair<int, double>>> sortedByCPUUSAGETypePID(types.size());
+  for(int i = 0; i < procCPUUSAGE.size(); i++)
+    {
+      for(int j = 0; j < types.size(); j++)
+	{
+	  if(types.at(j) == procCPUUSAGE.at(i).first)
+	    {
+	      sortedByCPUUSAGETypePID[j].push_back(std::make_pair(procCPUUSAGE.at(i).second,
+							      procCPUUSAGE.at(i).first));
+	    }
+	}
+    }
+  
+  // sort each CPUUSAGE types list by PID
+  for(int i = 0; i < sortedByCPUUSAGETypePID.size(); i++)
+    {
+      std::sort(sortedByCPUUSAGETypePID.at(i).begin(), sortedByCPUUSAGETypePID.at(i).end());
+    }
+
+  // store the list of sorted PIDs to vector<int> to return to caller 
+  for(int i = sortedByCPUUSAGETypePID.size() - 1; i >= 0; i--)    
+    {
+      for(int j = 0; j < sortedByCPUUSAGETypePID.at(i).size(); j++)
+	{
+	  tempPIDs.push_back(sortedByCPUUSAGETypePID.at(i).at(j).first);
+	}
+    }
+  
+  return tempPIDs;
+} // end of "sortByCPUUSAGE"
+
+
+
+/*
+  Function:
    sortByCOMMAND
 
   Description:
@@ -363,7 +597,7 @@ const std::vector<int> sortByCOMMAND(std::unordered_map<int, ProcessInfo*>& proc
       procStrings.push_back(std::make_pair(procData.at(pidNums.at(i))->getCOMMAND(),
 					   pidNums.at(i)));
 
-      // get the different COMMAND types
+      // get the different COMMAND types (repeated values for separating later)
       if(commandTypes.count(procStrings.at(i).first) == 0)
 	{
 	  commandTypes.insert(procStrings.at(i).first);
@@ -408,159 +642,3 @@ const std::vector<int> sortByCOMMAND(std::unordered_map<int, ProcessInfo*>& proc
   
   return tempPIDs;
 } // end of "sortByCOMMAND"
-
-
-
-/*
-  Function:
-  mergeDoubleLists
-
-  Description:
-  Merges two process lists.
-  
-  Input:
-  frontList         - a const reference to a list of sorted double data types
-
-  backList          - a const reference to the current entire process list
-
-  procData             - a const reference to the entire list of processes including 
-                      any that have died/closed
-
-  Output:
-  vector<int>       - the resulting merged list of process IDs
- */
-const std::vector<int> mergeDoubleLists(const std::vector<std::pair<double, int>>& frontList,
-					const std::vector<int>& backList,
-					const std::unordered_map<int, ProcessInfo*>& procData)
-{
-  std::vector<int> tempList;
-  
-  for(int i = frontList.size() - 1; i >= 0; i--)
-    {
-      tempList.push_back(frontList.at(i).second);
-    }
-
-  for(int i = 0; i < procData.size(); i++)
-    {
-      bool isInArray = false;
-
-      for(int j = 0; j < frontList.size(); j++)
-	{
-	  if(frontList.at(j).second == procData.at(backList.at(i))->getPID())
-	    {
-	      isInArray = true;
-	      break;
-	    }
-	}
-      
-      if(isInArray == false)
-	{
-	  tempList.push_back(backList.at(i));
-	}
-    }
-
-  return tempList;
-} // end of "mergeDoubleLists"
-
-
-
-/*
-  Function:
-  mergeIntLists
-
-  Merges two process lists.
-  
-  Input:
-  frontList         - a const reference to a list of sorted int data types
-
-  backList          - a const reference to the current entire process list
-
-  procData             - a const reference to the entire list of processes including 
-                      any that have died/closed
-
-  Output:
-  vector<int>       - the resulting merged list of process IDs
- */
-const std::vector<int> mergeIntLists(const std::vector<std::pair<int, int>>& frontList,
-				    const std::vector<int>& backList,
-				    const std::unordered_map<int, ProcessInfo*>& procData)
-{
-  std::vector<int> tempList;
-
-  for(int i = frontList.size() - 1; i >= 0; i--)
-    {
-      tempList.push_back(frontList.at(i).second);
-    }  
-  
-  for(int i = 0; i < procData.size(); i++)
-    {
-      bool isInArray = false;
-
-      for(int j = 0; j < frontList.size(); j++)
-	{
-	  if(frontList.at(j).second == procData.at(backList.at(i))->getPID())
-	    {
-	      isInArray = true;
-	    }
-	}
-      
-      if(isInArray == false)
-	{
-	  tempList.push_back(backList.at(i));
-	}
-    }
-  
-  return tempList;
-} // end of "mergeIntLists"
-
-
-
-/*
-  Function:
-  mergeStringLists
-
-  Description:
-   A helper function that merges two sorted lists.
-  
-  Input:
-  frontList         - a const reference to a list of sorted string data types
-
-  backList          - a const reference to the current entire process list
-
-  procData             - a const reference to the entire list of processes including 
-                      any that have died/closed
-
-  Output:
-  vector<int>       - the resulting merged list of process IDs
- */
-const std::vector<int> mergeStringLists(const std::vector<std::pair<std::string,
-					int>>& frontList,
-					const std::vector<int>& backList,
-					const std::unordered_map<int, ProcessInfo*>& procData)
-{
-  std::vector<int> tempList;
-
-  for(int i = frontList.size() - 1; i >= 0; i--)
-    {
-      tempList.push_back(frontList.at(i).second);
-    }
-  
-  for(int i = 0; i < procData.size(); i++)
-    {
-      bool isInArray = false;
-
-      for(int j = 0; j < frontList.size(); j++)
-	{
-	  if(frontList.at(j).second == procData.at(backList.at(i))->getPID())
-	    {
-	      isInArray = true;
-	    }
-	}
-      if(isInArray == false)
-	{
-	  tempList.push_back(backList.at(i));
-	}
-    }
-
-  return tempList;
-} // end of "mergeStringLists"
