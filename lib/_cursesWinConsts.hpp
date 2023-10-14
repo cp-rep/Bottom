@@ -1,8 +1,8 @@
 /*
-  cursesWinConsts.hpp
+  _cursesWinConsts.hpp
  */
-#ifndef CURSESWINCONSTS_HPP
-#define CURSESWINCONSTS_HPP
+#ifndef _CURSESWINCONSTS_HPP
+#define _CURSESWINCONSTS_HPP
 
 // window index constants
 enum _WINS {

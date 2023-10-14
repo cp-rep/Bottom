@@ -1,8 +1,8 @@
 /*
-  File: fileConsts.hpp
+  File: _fileConsts.hpp
  */
-#ifndef FILECONSTS_HPP
-#define FILECONSTS_HPP
+#ifndef _FILECONSTS_HPP
+#define _FILECONSTS_HPP
 
 // paths
 #define _PROC "/proc/"
