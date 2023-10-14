@@ -12,7 +12,7 @@ Bottom uses the "CMake" utility for building the base program.
 ## Current Features and How to Use Them
 - The arrow keys allow scrolling left right up and down shifting the windows.
 - The '<' and '>' keys determine which column to sort by.
-- The 'x' key allows highlighting a particular column
+- The 'x' key allows highlighting a particular column.
 
 ## Methods
 Everything has been written from scratch. I built all of the windows from running the Top program, testing it's functionality, and then coding up something that would visually represent those tests. Regarding gathering the process and OS data, that came from examining the man pages, reading from books, and researching online.  I really try to pursue the topics I am interested in the "old fashioned" way for best learning and that is what this project is.
