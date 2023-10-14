@@ -696,11 +696,8 @@ int main()
 		// get priority
 		lineString = fixStatLine(lineString);
 		parsedLine = parseLine(lineString);
-		if(parsedLine.at(15) == "-100")
-		  {
-		    parsedLine.at(15) = "rt";
-		  }
-		procData[pidNums.at(i)]->setPR(parsedLine.at(15));
+		value = convertToInt(parsedLine.at(15));
+		procData[pidNums.at(i)]->setPR(value);
 
 		// get NI
 		value = convertToInt(parsedLine.at(16));
@@ -980,6 +977,8 @@ int main()
 			     pidNums);
 	break;
       case _PRWIN:
+	outList = sortByPR(procData,
+			   pidNums);	
 	break;
       case _NIWIN:
 	outList = sortByNI(procData,
