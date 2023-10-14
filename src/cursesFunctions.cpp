@@ -356,11 +356,11 @@ void printProcs(const int& shiftY,
 {
   std::string outString;
 
-  for(int i = 0; i < pUmap.size(); i++)
+  for(int i = 0; i < pidList.size(); i++)
     {
       int posY = i + shiftY;
       if(posY != 0)
-	{
+      	{
 	  // PID
 	  if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr)
 	    {
@@ -380,14 +380,22 @@ void printProcs(const int& shiftY,
 			outString.c_str());
 	    }
 	  // PR
-	  if(shiftX <= _PRWIN && wins.at(_USERWIN)->getWindow() != nullptr)
+	  if(shiftX <= _PRWIN && wins.at(_PRWIN)->getWindow() != nullptr)
 	    {
-	      outString = std::to_string(pUmap.at(pidList.at(i))->getPR());
+	      const int tempPRVal = pUmap.at(pidList.at(i))->getPR();
+	      if(tempPRVal == -100)
+		{
+		  outString = "rt";
+		}
+	      else
+		{
+		  outString = std::to_string(tempPRVal);
+		}
 	      mvwaddstr(wins.at(_PRWIN)->getWindow(),
 			posY,
 			wins.at(_PRWIN)->getNumCols() - outString.length(),
 			outString.c_str());
-	    }
+	    }	  
 	  // NI
 	  if(shiftX <= _NIWIN && wins.at(_NIWIN)->getWindow() != nullptr)
 	    {
@@ -469,7 +477,7 @@ void printProcs(const int& shiftY,
 			0,
 			outString.c_str());
 	    } 
-	}
+    }
     }
 } // end of "printProcs"
 
@@ -512,7 +520,8 @@ void printColorLine(const std::unordered_map<int, CursesWindow*>& wins,
 		    const std::string& colorLine,
 		    const int& row,
 		    const int& attrs)
-{/*
+{
+  /*
   for(int i = 0; i < winNums.size(); i++)
     {
       wattron(wins.at(winNums.at(i))->getWindow(), COLOR_PAIR(attrs));

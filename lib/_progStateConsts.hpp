@@ -1,9 +1,9 @@
 /*
-  File: progStateConsts.hpp
+  File: _progStateConsts.hpp
  */
 
-#ifndef PROGSTATECONSTS_HPP
-#define PROGSTATECONSTS_HPP
+#ifndef _PROGSTATECONSTS_HPP
+#define _PROGSTATECONSTS_HPP
 
 // program state constants
 #define _PROGSTATEHELP 'h'

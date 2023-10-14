@@ -7,8 +7,9 @@
 #include <fstream>
 #include <sstream>
 #include <unordered_map>
-
-#define NEWLINE '\n'
+#include <sys/stat.h>
+#include <dirent.h>
+#include "log.hpp"
 
 
 
@@ -88,10 +89,8 @@ const std::string returnPhraseLine(const std::string& fileName,
                                 for numeric characters.
   
   Output:
-  -1                          - a constant integer representing an error.
-
-  stoi(temp)                  - a string of numeric characters converted
-                                to a constant integer.
+  const int             - returns the value extract from the line if
+                          successful, else returns -1
 */
 const int returnFirstIntFromLine(const std::string& line)
 {
@@ -490,7 +489,7 @@ const std::string listDirContents()
 
 /*
   Function:
-  findNumericDirs
+  findNumericDirsPipe
 
   Description:
 
@@ -498,7 +497,7 @@ const std::string listDirContents()
 
   Output:
  */
-const std::vector<int> findNumericDirs(const std::string& dirPath)
+const std::vector<int> findNumericDirsPipe(const std::string& dirPath)
 {
   FILE* pipe;
   std::string command = "ls ";
@@ -548,6 +547,81 @@ const std::vector<int> findNumericDirs(const std::string& dirPath)
   pclose(pipe);
   
   return dirs;
+} // end of "findNumericDirsPipe"
+
+
+
+/*
+  Function:
+   direntNoRecurse
+
+   Description:
+    A helper function used as an argument to the dirent.h scandir function.
+    Returning a value of 1 tells that function to not recurse further down.
+
+    Input:
+     name               - a const pointer to a dirent.h structure
+
+    Output:
+     int                - value that tells the scandir function not to recurse
+    
+ */
+int direntNoRecurse(const struct dirent *name)
+{
+  return 1;
+}
+  
+
+
+/*
+  Function:
+   findNumericDirs
+
+   Description:
+    Uses the <dirent.h> library to find all directories at the target 
+    directory that contain only numbers and return them as a vector<int> 
+    to the caller.
+
+    Input:
+     dirpath            - a const string type representing the target 
+                          directory to search for numeric directories in.
+
+    Output:
+     const std::vector<int>
+                        - the list of found numeric directories
+ */
+const std::vector<int> findNumericDirs(const std::string& dirPath, std::ofstream& log)
+{
+  struct dirent **dirNames;
+  std::vector<int> tempDirs;
+  int numDirs = scandir("/proc/", &dirNames, direntNoRecurse, alphasort);
+
+  while(numDirs--)
+    {
+      std::string fullPath = "/proc/";
+      std::string fileInPath;
+      fileInPath = dirNames[numDirs]->d_name;
+      fullPath.append(fileInPath);
+      
+      if(true == testNumericDir(fullPath))
+	{
+	  int val;
+	  
+	  std::stringstream container(fileInPath);
+	  container >> val;
+	  
+	  if(val != 0)
+	    {
+	      tempDirs.push_back(val);
+	    }
+	}
+      
+      free(dirNames[numDirs]);
+    }
+
+  free(dirNames);
+
+  return tempDirs;
 } // end of "findNumericDirs"
 
 

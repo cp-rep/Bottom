@@ -10,8 +10,8 @@
 #include "cursesWindow.hpp"
 #include "processInfo.hpp"
 #include "extractFileData.hpp"
-#include "progStateConsts.hpp"
-#include "cursesWinConsts.hpp"
+#include "_progStateConsts.hpp"
+#include "_cursesWinConsts.hpp"
 
 void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins);
