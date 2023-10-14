@@ -1,8 +1,8 @@
 /*
-  File: gtest_memInfo.cpp
+  File: gtest_byteConverter.cpp
   
   Description:
-  Tests the function implementations of the byteConverter.hpp header.
+  Google Unit Tests for the function implementations of the byteConverter.hpp class.
 */
 #include <gtest/gtest.h>
 #include "byteConverter.hpp"
