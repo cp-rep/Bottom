@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <set>
 #include "processInfo.hpp"
-#include "cursesWinConsts.hpp"
+#include "_cursesWinConsts.hpp"
 
 const std::vector<int> sortByUSER(std::unordered_map<int, ProcessInfo*>& procData,
 				  const std::vector<int>& pidNums);

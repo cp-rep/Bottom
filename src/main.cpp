@@ -58,9 +58,9 @@
 #include "secondsToTime.hpp"
 #include "cursesFunctions.hpp"
 #include "cursesColors.hpp"
-#include "progStateConsts.hpp"
-#include "cursesWinConsts.hpp"
-#include "fileConsts.hpp"
+#include "_progStateConsts.hpp"
+#include "_cursesWinConsts.hpp"
+#include "_fileConsts.hpp"
 #include "sortProcessLists.hpp"
 #include <set>
 
