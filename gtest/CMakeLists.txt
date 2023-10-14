@@ -14,10 +14,31 @@ FetchContent_MakeAvailable(googletest)
 # create executable that tests the code with attached source files
 add_executable(
     unit_tests
-    gtest_cursesWindow.cpp
-    gtest_extractFileData.cpp
-    gtest_memInfo.cpp
     gtest_byteConverter.cpp
+    gtest_COMMANDWindow.cpp
+    gtest_cpuInfo.cpp
+    gtest_cpuWindow.cpp
+    gtest_extractFileData.cpp
+    gtest_log.cpp
+    gtest_mainWindow.cpp
+    gtest_memInfo.cpp
+    gtest_memWindow.cpp
+    gtest_NIWindow.cpp
+    gtest_percentCPUWindow.cpp
+    gtest_percentMEMWindow.cpp
+    gtest_PIDWindow.cpp
+    gtest_processInfo.cpp
+    gtest_PRWindow.cpp
+    gtest_RESWindow.cpp
+    gtest_secondsToTime.cpp
+    gtest_SHRWindow.cpp
+    gtest_sortProcessLists.cpp
+    gtest_SWindow.cpp
+    gtest_tasksWindow.cpp
+    gtest_TIMEWindow.cpp
+    gtest_topWindow.cpp
+    gtest_USERWindow.cpp
+    gtest_VIRTWindow.cpp
     )
 
 # link the test source files to application source files
