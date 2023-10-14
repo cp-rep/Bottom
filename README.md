@@ -24,7 +24,7 @@ I wanted to write a small Linux process management utility that may be easier ex
 Bottom is currently memory leak free and the "main" branch will maintain this stable version.  It currently supports Arch Linux and Ubuntu.  The tested Kernel versions will soon be tagged to corresponding commits.
 
 ## Current Challenges
-I have not determined how to calculate every single process related or OS related data piece and researching those calculations has proved very time consuming.  I would estimate that the research has often taken as much time as the coding. In consequence, I'm using at least one core utility program piped from a function call to retrieve that calculation.  This results in the main program loop infinitely expanding it's total process count (even though the process closes correctly the total PID number grows very quickly).
+Determining how to retrieve every process or OS related data piece and making subsequent calculations for correct output.
 
 ## Short Term Fixes and Changes/Additions
 The following is a quick list of my most important upcoming short-term changes:
