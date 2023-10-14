@@ -29,6 +29,7 @@ I have not determined how to calculate every single process related or OS relate
 ## Short Term Fixes and Changes/Additions
 The following is a quick list of my most important upcoming short-term changes:
 - Cleaning up ugly code
+- Retrieving the few missing calculations
 - Basic process management
 - Adding an interruptable delay
 - Unit tests
