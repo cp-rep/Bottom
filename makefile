@@ -6,9 +6,6 @@ GTESTDIR=./gtest
 LOGDIR=./log
 LDIR=./lib
 ODIR=obj
-TESTINGDIR=./Testing
-VALDIR=./valtest
-OPDIR=./open_project
 CC=g++
 CPPFLAGS=-I$(IDIR)
 LIBS=-lm
@@ -26,26 +23,27 @@ $(SRCDIR)/$(ODIR)/%.o: $(SRCDIR)/%.cpp $(DEPS)
 $(BINDIR)/$(BINNAME): $(OBJ)
 	$(CC) -o $@ $^ -l panel -l ncurses -I$(LDIR) $(LIBS)
 
-.PHONY: clean  dirs
+.PHONY: clean dirs
 
 clean:
 	rm -f $(SRCDIR)/$(ODIR)/*.o
 	rm -f $(SRCDIR)/$(ODIR)/*~
 	rm -f $(SRCDIR)/*~
 	rm -f $(LDIR)/*~
-	rm -f $(VALDIR)/*~
 	rm -f $(OPDIR)/*~
 	rm -rf $(BINDIR)/bottom
 	rm -rf $(BUILDDIR)/
 	rm -rf $(GTESTDIR)/*~
 	rm -rf $(LOGDIR)/*.log
-	rm -rf $(TESTINGDIR)/
 	rm -f ./*~
 
-dirs: $(BINDIR) ${LOGDIR}
+dirs: ${BINDIR} ${LOGDIR} ${SRCDIR}/${ODIR}
 
 ${BINDIR}:
 	${MKDIR_P} ${BINDIR}
 
 ${LOGDIR}:
 	${MKDIR_P} ${LOGDIR}
+
+${SRCDIR}/${ODIR}:
+	${MKDIR_P} ${SRCDIR}/${ODIR}
