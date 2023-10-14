@@ -1,6 +1,8 @@
 /*
   File: topWindow.cpp
+
   Description:
+   The implementation of the topWindow.hpp class functions.
 */
 #include "topWindow.hpp"
 
