@@ -286,7 +286,7 @@ void printSortedProcsReverse(const int& startLine,
       mvwaddstr(wins.at(_PRWIN)->getWindow(),
 		g,
 		0,
-		pUmap.at(sortedOut.at(k).second)->getPR().c_str());
+		std::to_string(pUmap.at(sortedOut.at(k).second)->getPR()).c_str());
       // NI
       mvwaddstr(wins.at(_NIWIN)->getWindow(),
 		g,
@@ -365,7 +365,6 @@ void printProcs(const int& shiftY,
 	  if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr)
 	    {
 	      outString = std::to_string(pUmap.at(pidList.at(i))->getPID());
-	      //	      outString = pidList.at(i);
 	      mvwaddstr(wins.at(_PIDWIN)->getWindow(),
 			posY,
 			wins.at(_PIDWIN)->getNumCols() - outString.length(),
@@ -383,7 +382,15 @@ void printProcs(const int& shiftY,
 	  // PR
 	  if(shiftX <= _PRWIN && wins.at(_USERWIN)->getWindow() != nullptr)
 	    {
-	      outString = pUmap.at(pidList.at(i))->getPR();
+	      const int tempPRVal = pUmap.at(pidList.at(i))->getPR();
+	      if(tempPRVal == -100)
+		{
+		  outString = "rt";
+		}
+	      else
+		{
+		  outString = std::to_string(tempPRVal);
+		}
 	      mvwaddstr(wins.at(_PRWIN)->getWindow(),
 			posY,
 			wins.at(_PRWIN)->getNumCols() - outString.length(),
