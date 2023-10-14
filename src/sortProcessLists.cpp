@@ -20,12 +20,7 @@
    sortByUSER
 
   Description:
-   Updates the PID list that is used for printing process data to the screen.
-   It sorts the pid list by USER. First it separates users into their own lists,
-   then it sorts those lists by their contained PIDS.  That final sorted list list
-   is then copied to an output list and returned to the caller.  Ultimately, it's
-   an O(N^2) algorithm determined by number of running processes and number of
-   users.
+   Sorts the pid list by USER.
 
   Input:
    procData             - all stored process data that will be traversed in
@@ -59,15 +54,11 @@ const std::vector<int> sortByUSER(std::unordered_map<int, ProcessInfo*>& procDat
 	}
     }
 
-  // ignore unwated user type while saving user types as vector of string for later use
+  // save user types as vector of string for later use
   for(std::set<std::string>::iterator it = userTypes.begin();
       it != userTypes.end(); it++)
     {
-      // bandaid for the current pipe process "bug"
-      if(*it != "-1")
-	{
-	  types.push_back(*it);
-	}
+      types.push_back(*it);
     }
   
   // store all PIDS as a vector of vector of std::pair<int, user>
@@ -265,36 +256,158 @@ const std::vector<int> sortBySHR(const std::unordered_map<int, ProcessInfo*>& pr
    sortByS
 
   Description:
-   Sorts and returns the PID list by S.
-  
+   Sorts the pid list by S. Complexity O(N^2)
+
   Input:
-   procData             - a const reference to the entire list of processes and their data.
+   procData             - all stored process data that will be traversed in
+                          ordere to retrieve desired sort state values
 
    pidNums              - a const reference to a PID list representing all running
                           processes
 
   Output:
-   vector<int>          - the resulting merged list of process IDs
- */
-const std::vector<int> sortByS(const std::unordered_map<int, ProcessInfo*>& procData,
+   const std::vector<int>
+                        - the sorted list of PIDs
+*/
+const std::vector<int> sortByS(std::unordered_map<int, ProcessInfo*>& procData,
 			       const std::vector<int>& pidNums)
 {
-  std::vector<std::pair<std::string, int>> sortedByStr;
+  std::vector<std::pair<std::string,int>> procStrings;
+  std::set<std::string> STypes;
+  std::vector<std::string> types;
   std::vector<int> tempPIDs;
   
-  for(int i = 0; i < procData.size(); i++)
+  // get all std::pairs of <S, pid> and store them in vector
+  for(int i = 0, j = 0; i < procData.size(); i++)
     {
-      const std::string tempStr = std::to_string(procData.at(pidNums.at(i))->getS());
-      sortedByStr.push_back(std::make_pair(tempStr, pidNums.at(i)));
+      procStrings.push_back(std::make_pair(std::to_string(procData.at(pidNums.at(i))->getS()),
+					   pidNums.at(i)));
+
+      // get the different S types
+      if(STypes.count(procStrings.at(i).first) == 0)
+	{
+	  STypes.insert(procStrings.at(i).first);
+	}
     }
 
-  std::sort(sortedByStr.begin(), sortedByStr.end());
-  tempPIDs = mergeStringLists(sortedByStr,
-			      pidNums,
-			      procData);
+  // save S types as vector of string for later use
+  for(std::set<std::string>::iterator it = STypes.begin();
+      it != STypes.end(); it++)
+    {
+      types.push_back(*it);
+    }
+  
+  // store all PIDS as a vector of vector of std::pair<int, S>
+  std::vector<std::vector<std::pair<int, std::string>>> sortedBySTypePID(types.size());
+  for(int i = 0; i < procStrings.size(); i++)
+    {
+      for(int j = 0; j < types.size(); j++)
+	{
+	  if(types.at(j) == procStrings.at(i).first)
+	    {
+	      sortedBySTypePID[j].push_back(std::make_pair(procStrings.at(i).second,
+							   procStrings.at(i).first));
+	    }
+	}
+    }
+
+  // sort each S type list by PID
+  for(int i = 0; i < sortedBySTypePID.size(); i++)
+    {
+      std::sort(sortedBySTypePID.at(i).begin(), sortedBySTypePID.at(i).end());
+    }
+
+  // store the list of sorted PIDs to vector<int> to return to caller 
+  for(int i = 0; i < sortedBySTypePID.size(); i++)
+    {
+      for(int j = 0; j < sortedBySTypePID.at(i).size(); j++)
+	{
+	  tempPIDs.push_back(sortedBySTypePID.at(i).at(j).first);
+	}
+    }
   
   return tempPIDs;
-} // end of "sortByS"
+}  // end of "sortByS"
+
+
+
+/*
+  Function:
+   sortByCOMMAND
+
+  Description:
+   Sorts the pid list by COMMAND. Complexity O(N^2)
+
+  Input:
+   procData             - all stored process data that will be traversed in
+                          ordere to retrieve desired sort state values
+
+   pidNums              - a const reference to a PID list representing all running
+                          processes
+
+  Output:
+   const std::vector<int>
+                        - the sorted list of PIDs
+*/
+const std::vector<int> sortByCOMMAND(std::unordered_map<int, ProcessInfo*>& procData,
+				     const std::vector<int>& pidNums)
+{
+  std::vector<std::pair<std::string,int>> procStrings;
+  std::set<std::string> commandTypes;
+  std::vector<std::string> types;
+  std::vector<int> tempPIDs;
+  
+  // get all std::pairs of <COMMAND, pid> and store them in vector
+  for(int i = 0, j = 0; i < procData.size(); i++)
+    {
+      procStrings.push_back(std::make_pair(procData.at(pidNums.at(i))->getCOMMAND(),
+					   pidNums.at(i)));
+
+      // get the different COMMAND types
+      if(commandTypes.count(procStrings.at(i).first) == 0)
+	{
+	  commandTypes.insert(procStrings.at(i).first);
+	}
+    }
+
+  // save command types as vector of string for later use
+  for(std::set<std::string>::iterator it = commandTypes.begin();
+      it != commandTypes.end(); it++)
+    {
+      types.push_back(*it);
+    }
+  
+  // store all PIDS as a vector of vector of std::pair<int, COMMAND>
+  std::vector<std::vector<std::pair<int, std::string>>> sortedByCOMMANDTypePID(types.size());
+  for(int i = 0; i < procStrings.size(); i++)
+    {
+      for(int j = 0; j < types.size(); j++)
+	{
+	  if(types.at(j) == procStrings.at(i).first)
+	    {
+	      sortedByCOMMANDTypePID[j].push_back(std::make_pair(procStrings.at(i).second,
+							      procStrings.at(i).first));
+	    }
+	}
+    }
+
+  // sort each COMMAND type list by PID
+  for(int i = 0; i < sortedByCOMMANDTypePID.size(); i++)
+    {
+      std::sort(sortedByCOMMANDTypePID.at(i).begin(), sortedByCOMMANDTypePID.at(i).end());
+    }
+
+  // store the list of sorted PIDs to vector<int> to return to caller 
+  for(int i = 0; i < sortedByCOMMANDTypePID.size(); i++)
+    {
+      for(int j = 0; j < sortedByCOMMANDTypePID.at(i).size(); j++)
+	{
+	  tempPIDs.push_back(sortedByCOMMANDTypePID.at(i).at(j).first);
+	}
+    }
+  
+  return tempPIDs;
+} // end of "sortByCOMMAND"
 
 
 
