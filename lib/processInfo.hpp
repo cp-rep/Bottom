@@ -28,7 +28,7 @@ public:
   // getters
   const int& getPID() { return m_pid; }
   const std::string& getUSER() { return m_user; }
-  const std::string& getPR() { return m_pr; }
+  const int& getPR() { return m_pr; }
   const short& getNI() { return m_ni; }
   const unsigned int& getVIRT() { return m_virt; }
   const unsigned int& getRES() { return m_res; }
@@ -42,7 +42,7 @@ public:
   // setters
   void setPID(const int& pid) { m_pid = pid; }
   void setUSER(const std::string& user) { m_user = user; }
-  void setPR(const std::string& pr) { m_pr = pr; }
+  void setPR(const int& pr) { m_pr = pr; }
   void setNI(const short& ni) { m_ni = ni; }
   void setVIRT(const unsigned int& virt) { m_virt = virt; }
   void setRes(const unsigned int& res) { m_res = res; }
@@ -57,7 +57,7 @@ public:
 private:
   int m_pid;
   std::string m_user;
-  std::string m_pr;
+  int m_pr;
   short m_ni;
   unsigned int m_virt;
   unsigned int m_res;
