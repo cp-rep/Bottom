@@ -1002,13 +1002,15 @@ int main()
 			  pidNums);
 	break;
       case _PROCCPUWIN:
-	
 	break;
       case _PROCMEMWIN:
 	break;
       case _PROCTIMEWIN:
 	break;
       case _COMMANDWIN:
+	outList = sortByCOMMAND(procData,
+				pidNums);
+	break;	
 	break;
       default:
 	break;
