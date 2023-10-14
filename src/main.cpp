@@ -918,6 +918,7 @@ int main()
     int highlightIndex = 0;
     int input = 0;
     int moveVal = 0;
+    int previousSortState = sortState;
 
     moveVal = input = getch();
 
@@ -930,11 +931,33 @@ int main()
 	  }
 	else if(input == '<' && sortState > _PIDWIN)
 	  {
-	    sortState--;
+	    if(highlight == true)
+	      {
+		wattroff(allWins.at(sortState)->getWindow(),
+			 A_BOLD);
+		sortState--;
+		wattron(allWins.at(sortState)->getWindow(),
+			A_BOLD);
+	      }
+	    else
+	      {
+		sortState--;
+	      }
 	  }
 	else if(input == '>' && sortState < _COMMANDWIN)
 	  {
-	    sortState++;
+	    if(highlight == true)
+	      {
+		wattroff(allWins.at(sortState)->getWindow(),
+			 A_BOLD);
+		sortState++;
+		wattron(allWins.at(sortState)->getWindow(),
+			A_BOLD);
+	      }
+	    else
+	      {
+		sortState++;
+	      }
 	  }
       }
 
