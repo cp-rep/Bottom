@@ -15,6 +15,8 @@
 
 const std::vector<int> sortByUSER(std::unordered_map<int, ProcessInfo*>& procData,
 				  const std::vector<int>& pidNums);
+const std::vector<int> sortByPR(const std::unordered_map<int, ProcessInfo*>& procData,
+				 const std::vector<int>& pidNums);
 const std::vector<int> sortByNI(const std::unordered_map<int, ProcessInfo*>& procData,
 				 const std::vector<int>& pidNums);
 const std::vector<int> sortByVIRT(const std::unordered_map<int, ProcessInfo*>& procData,

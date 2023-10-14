@@ -98,6 +98,86 @@ const std::vector<int> sortByUSER(std::unordered_map<int, ProcessInfo*>& procDat
 
 /*
   Function:
+   sortByPR
+
+  Description:
+   Sorts the pid list by PR
+
+  Input:
+   procData             - all stored process data that will be traversed in
+                          ordere to retrieve desired sort state values
+
+   pidNums              - a const reference to a PID list representing all running
+                          processes
+
+  Output:
+   const std::vector<int>
+                        - the sorted list of PIDs
+*/
+const std::vector<int> sortByPR(const std::unordered_map<int, ProcessInfo*>& procData,
+				const std::vector<int>& pidNums)
+{
+  std::vector<std::pair<int,int>> procPR;
+  std::set<int> intTypes;
+  std::vector<int> types;
+  std::vector<int> tempPIDs;
+  
+  // get all std::pairs of <PR, pid> and store them in vector
+  for(int i = 0, j = 0; i < procData.size(); i++)
+    {
+      procPR.push_back(std::make_pair(procData.at(pidNums.at(i))->getPR(),
+				      pidNums.at(i)));
+
+      // get the different PR types (repeated values for separating later)
+      if(intTypes.count(procPR.at(i).first) == 0)
+	{
+	  intTypes.insert(procPR.at(i).first);
+	}
+    }
+
+  // save PR types as vector of string for later use
+  for(std::set<int>::iterator it = intTypes.begin();
+      it != intTypes.end(); it++)
+    {
+      types.push_back(*it);
+    }
+  
+  // store all PIDS as a vector of vector of std::pair<PID, PR>
+  std::vector<std::vector<std::pair<int, int>>> sortedByPRTypePID(types.size());
+  for(int i = 0; i < procPR.size(); i++)
+    {
+      for(int j = 0; j < types.size(); j++)
+	{
+	  if(types.at(j) == procPR.at(i).first)
+	    {
+	      sortedByPRTypePID[j].push_back(std::make_pair(procPR.at(i).second,
+							      procPR.at(i).first));
+	    }
+	}
+    }
+  
+  // sort each PR type list by PID
+  for(int i = 0; i < sortedByPRTypePID.size(); i++)
+    {
+      std::sort(sortedByPRTypePID.at(i).begin(), sortedByPRTypePID.at(i).end());
+    }
+
+  // store the list of sorted PIDs to vector<int> to return to caller 
+  for(int i = sortedByPRTypePID.size() - 1; i >= 0; i--)    
+    {
+      for(int j = 0; j < sortedByPRTypePID.at(i).size(); j++)
+	{
+	  tempPIDs.push_back(sortedByPRTypePID.at(i).at(j).first);
+	}
+    }
+  
+  return tempPIDs;
+} // end of "sortByPR"
+
+
+
+/*
+  Function:
    sortByNI
 
   Description:
@@ -111,7 +191,7 @@ const std::vector<int> sortByUSER(std::unordered_map<int, ProcessInfo*>& procDat
 
   Output:
    vector<int>          - the resulting merged list of process IDs
- */
+*/
 const std::vector<int> sortByNI(const std::unordered_map<int, ProcessInfo*>& procData,
 				const std::vector<int>& pidNums)
 {
