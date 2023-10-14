@@ -156,7 +156,7 @@ int main()
   // state related vars
   int progState = 0;
   int prevState = 0;
-  int sortState = _PIDWIN;
+  int sortState = _PROCCPUWIN;
   bool highlight = false;
   bool quit = false;
   int shiftY = 1;
@@ -1002,16 +1002,23 @@ int main()
 			  pidNums);
 	break;
       case _PROCCPUWIN:
+	outList = sortByCPUUSAGE(procData,
+				 pidNums);	
 	break;
       case _PROCMEMWIN:
+	outList = pidNums;
+	std::sort(outList.begin(),
+		  outList.end());
 	break;
       case _PROCTIMEWIN:
+	outList = pidNums;
+	std::sort(outList.begin(),
+		  outList.end());	
 	break;
       case _COMMANDWIN:
 	outList = sortByCOMMAND(procData,
 				pidNums);
 	break;	
-	break;
       default:
 	break;
       }
@@ -1122,3 +1129,4 @@ void printWindowToLog(std::ofstream& log, const CursesWindow& win)
   log << "m_startY: " << win.getStartY() << std::endl;
   log << "m_startX: " << win.getStartX() << std::endl;
 } // end of "printWindowToLog"
+
