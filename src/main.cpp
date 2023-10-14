@@ -921,6 +921,7 @@ int main()
     int previousSortState = sortState;
 
     moveVal = input = getch();
+    flushinp();
 
     if(input != -1)
       {
