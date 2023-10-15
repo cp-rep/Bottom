@@ -49,6 +49,7 @@
 #include <pwd.h>
 #include <dirent.h>
 #include <algorithm>
+#include <set>
 #include "log.hpp"
 #include "cursesWindow.hpp"
 #include "mainWindow.hpp"
@@ -80,7 +81,7 @@
 #include "_cursesWinConsts.hpp"
 #include "_fileConsts.hpp"
 #include "sortProcessLists.hpp"
-#include <set>
+#include "taskInfo.hpp"
 
 //constants
 // debug
