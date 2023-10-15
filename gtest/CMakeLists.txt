@@ -39,6 +39,7 @@ add_executable(
     gtest_topWindow.cpp
     gtest_USERWindow.cpp
     gtest_VIRTWindow.cpp
+    gtest_taskInfo.cpp
     )
 
 # link the test source files to application source files
