@@ -5,7 +5,7 @@
 #define _FILECONSTS_HPP
 
 // paths
-#define _PROC "/proc/"
+#define _PROC "/proc"
 #define _COMM "/comm"
 #define _STAT "/stat"
 #define _STATUS "/status"
@@ -23,7 +23,5 @@
 #define _SWAPTOTAL "SwapTotal"
 #define _SWAPFREE "SwapFree"
 #define _MEMAVAILABLE "MemAvailable"
-
-
 
 #endif
