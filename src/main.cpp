@@ -75,7 +75,7 @@
 #define _READ "r"
 
 // other WINDOW constants
-#define _Y_OFFSET 6
+#define _YOFFSET 6
 
 // function prototypes
 void printWindowToLog(std::ofstream& log,
@@ -83,7 +83,6 @@ void printWindowToLog(std::ofstream& log,
 const std::vector<int> sortByUSER
 (const std::vector<int>& pidNums,
  std::unordered_map<int, ProcessInfo*>& procData);
-
 
 
 
@@ -194,7 +193,7 @@ int main()
   // define topWindow
   numLines = 1;
   numCols = numCols;
-  startY = _Y_OFFSET - 6;  
+  startY = _YOFFSET - 6;  
   startX = 0;
   TopWindow topWin(newwin(numLines,
 			  numCols,
@@ -208,7 +207,7 @@ int main()
   // define tasks window
   numLines = 1;
   numCols = numCols;
-  startY = _Y_OFFSET - 5;
+  startY = _YOFFSET - 5;
   startX = 0;
   TasksWindow tasksWin(newwin(numLines,
 			      numCols,
@@ -222,7 +221,7 @@ int main()
   // define cpu window
   numLines = 1;
   numCols = numCols;
-  startY = _Y_OFFSET - 4;
+  startY = _YOFFSET - 4;
   startX = 0;
   CpuWindow cpuWin(newwin(numLines,
 			  numCols,
@@ -236,7 +235,7 @@ int main()
   // define mem window
   numLines = 2;
   numCols = numCols;
-  startY = _Y_OFFSET - 3;
+  startY = _YOFFSET - 3;
   startX = 0;  
   MemWindow memWin(newwin(numLines,
 			  numCols,
@@ -254,7 +253,7 @@ int main()
     tasksWin.getNumLines() -
     topWin.getNumLines() - 1;
   numCols = 7;
-  startY = memWin.getStartY() + _Y_OFFSET - 3;
+  startY = memWin.getStartY() + _YOFFSET - 3;
   startX = 0;
   PIDWindow PIDWin(newwin(numLines,
 			  numCols,
@@ -267,7 +266,7 @@ int main()
 		   startX);
   // define USER window
   numCols = 8;
-  startY = memWin.getStartY() + _Y_OFFSET - 3;
+  startY = memWin.getStartY() + _YOFFSET - 3;
   startX = PIDWin.getNumCols() + 1;
   USERWindow USERWin(newwin(numLines,
 			    numCols,
@@ -280,7 +279,7 @@ int main()
 		     startX);
   // define PR window
   numCols = 3;
-  startY = memWin.getStartY() + _Y_OFFSET - 3;
+  startY = memWin.getStartY() + _YOFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() + 2;
   PRWindow PRWin(newwin(numLines,
@@ -294,7 +293,7 @@ int main()
 		 startX);
   // define NI window
   numCols = 3;
-  startY = memWin.getStartY() + _Y_OFFSET - 3;
+  startY = memWin.getStartY() + _YOFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() + 3;
@@ -309,7 +308,7 @@ int main()
 		 startX);
   // define VIRT window
   numCols = 7;
-  startY = memWin.getStartY() + _Y_OFFSET - 3;
+  startY = memWin.getStartY() + _YOFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() +
@@ -325,7 +324,7 @@ int main()
 		     startX);
   // define RES window
   numCols = 6;
-  startY = memWin.getStartY() + _Y_OFFSET - 3;
+  startY = memWin.getStartY() + _YOFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() +
@@ -342,7 +341,7 @@ int main()
 		   startX);
   // define SHR window
   numCols = 6;
-  startY = memWin.getStartY() + _Y_OFFSET - 3;
+  startY = memWin.getStartY() + _YOFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() +
@@ -360,7 +359,7 @@ int main()
 		   startX);
   // define S window
   numCols = 1;
-  startY = memWin.getStartY() + _Y_OFFSET - 3;
+  startY = memWin.getStartY() + _YOFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() +
@@ -379,7 +378,7 @@ int main()
 	       startX);
   // define PercentCPU window
   numCols = 5;
-  startY = memWin.getStartY() + _Y_OFFSET - 3;
+  startY = memWin.getStartY() + _YOFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() +
@@ -399,7 +398,7 @@ int main()
 				 startX);
   // define PercentMEM window
   numCols = 5;
-  startY = memWin.getStartY() + _Y_OFFSET - 3;
+  startY = memWin.getStartY() + _YOFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() +
@@ -420,7 +419,7 @@ int main()
 				 startX);
   // define TIME window
   numCols = 9;
-  startY = memWin.getStartY() + _Y_OFFSET - 3;
+  startY = memWin.getStartY() + _YOFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() +
@@ -442,7 +441,7 @@ int main()
 		     startX);
   // define COMMAND window
   numCols = 48;
-  startY = memWin.getStartY() + _Y_OFFSET - 3;
+  startY = memWin.getStartY() + _YOFFSET - 3;
   startX = PIDWin.getNumCols() +
     USERWin.getNumCols() +
     PRWin.getNumCols() +
@@ -496,10 +495,10 @@ int main()
 
   // ## run the main program loop ##
   do{
-    std::string outLine;
+    std::vector<std::string> parsedLine;
+    std::vector <std::string> outLines;
     std::string tempLine;
     std::string fileLine;
-    std::vector<std::string> parsedLine;
     int val = 0;
 
     // get topWin data
@@ -507,51 +506,54 @@ int main()
     parsedLine = parseLine(fileLine);
     val = convertToInt(parsedLine.at(0));
     SecondsToTime uptime(val);
-    outLine = "top - ";
+    tempLine = "top - ";
     time(&rawtime);
-    timeinfo = localtime(&rawtime);    
-    outLine.append(uptime.returnHHMMSS(timeinfo->tm_hour,
-				       timeinfo->tm_min,
-				       timeinfo->tm_sec));
-    outLine.append(" up ");
+    timeinfo = localtime(&rawtime);
+    tempLine.append(uptime.returnHHMMSS(timeinfo->tm_hour,
+					timeinfo->tm_min,
+					timeinfo->tm_sec));
+    tempLine.append(" up ");
     val = uptime.getHours()/24;
     
     if(val == 1)
       {
-	outLine.append(std::to_string(val));
-	outLine.append(" day, ");
+	tempLine.append(std::to_string(val));
+	tempLine.append(" day, ");
       }
     else if (val > 1)
       {
 	val = uptime.getHours()/24;
-	outLine.append(std::to_string(val));
-	outLine.append(" days, ");
+	tempLine.append(std::to_string(val));
+	tempLine.append(" days, ");
       }
 
-    outLine.append(std::to_string(uptime.getHours() % 24));
-    outLine.append(":");
-    outLine.append(std::to_string(uptime.getMinutes()));
-    outLine.append(", ");
+    tempLine.append(std::to_string(uptime.getHours() % 24));
+    tempLine.append(":");
+    tempLine.append(std::to_string(uptime.getMinutes()));
+    tempLine.append(", ");
     // fileLine = returnLineFromPipe("users", _READ, 1);
     parsedLine = parseLine(fileLine);
-    outLine.append(std::to_string(parsedLine.size()));
-    outLine.append(" users, load average: ");
+    tempLine.append(std::to_string(parsedLine.size()));
+    tempLine.append(" users, load average: ");
     fileLine = returnFileLineByNumber("/proc/loadavg", 1);
     parsedLine = parseLine(fileLine);
-    outLine.append(parsedLine.at(0));
-    outLine.append(" ");
-    outLine.append(parsedLine.at(1));
-    outLine.append(" ");
-    outLine.append(parsedLine.at(2));
-
+    tempLine.append(parsedLine.at(0));
+    tempLine.append(" ");
+    tempLine.append(parsedLine.at(1));
+    tempLine.append(" ");
+    tempLine.append(parsedLine.at(2));
+    outLines.push_back(tempLine);
+    tempLine.clear();
+    
+    /*
     // print topWin data window
 #if _CURSES
     mvwaddstr(allWins.at(_TOPWIN)->getWindow(),	      
 	      0,
 	      0,
-	      outLine.c_str());
+	      outLines.c_str());
 #endif
-    
+    */
     // ## find running processes and update the list if needed ##
     // store old process list
     std::vector<int> pidNumsOld(pidNums);
@@ -772,28 +774,34 @@ int main()
 	    avgSt = (ticks * st)/totalJiffs;
 	    avgUs = 100 - (avgId);
 	    // avgHi = (100 * hi)/totalJiffs;
-	    outLine = "%CPU(s): ";
-	    outLine.append(doubleToStr(avgUs, 1));
-	    outLine.append(" us, ");
-	    outLine.append(doubleToStr(avgSy, 1));
-	    outLine.append(" sy, ");
-	    outLine.append(doubleToStr(avgNi, 1));
-	    outLine.append(" ni, ");
-	    outLine.append(doubleToStr(avgId, 1));
-	    outLine.append(" id, ");
-	    outLine.append(doubleToStr(avgWa, 1));
-	    outLine.append(" wa, ");
-	    outLine.append("N/A");
-	    outLine.append(" si, ");
-	    outLine.append(doubleToStr(avgSt, 1));
-	    outLine.append(" st, ");
 
+	    
+	    tempLine = "%CPU(s): ";
+	    tempLine.append(doubleToStr(avgUs, 1));
+	    tempLine.append(" us, ");
+	    tempLine.append(doubleToStr(avgSy, 1));
+	    tempLine.append(" sy, ");
+	    tempLine.append(doubleToStr(avgNi, 1));
+	    tempLine.append(" ni, ");
+	    tempLine.append(doubleToStr(avgId, 1));
+	    tempLine.append(" id, ");
+	    tempLine.append(doubleToStr(avgWa, 1));
+	    tempLine.append(" wa, ");
+	    tempLine.append("N/A");
+	    tempLine.append(" si, ");
+	    tempLine.append(doubleToStr(avgSt, 1));
+	    tempLine.append(" st, ");
+	    outLines.push_back(tempLine);
+	    tempLine.clear();
+	    
+	    /*
 #if _CURSES
 	    mvwaddstr(cpuWin.getWindow(),
 		      0,
 		      0,
-		      outLine.c_str());
+		      outLines.c_str());
 #endif
+	    */
 	    
 	    // mInfo data from /proc/meminfo
 	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
@@ -831,7 +839,7 @@ int main()
 					       doubleToStr(KiBToMiB(mInfo.getSwapFree()), 1),
 					       doubleToStr(KiBToMiB(mInfo.getSwapUsed()), 1),
 					       doubleToStr(KiBToMiB(mInfo.getMemAvailable()), 1));
-
+	    /*
 #if _CURSES
 	    // print memWin data to window
 	    mvwaddstr(allWins.at(_MEMWIN)->getWindow(),
@@ -843,7 +851,7 @@ int main()
 		      0,
 		      memWin.getSwap().c_str());
 #endif
-
+	    */
 	    // ## get process state count ##
 	    unsigned int running = 0;
 	    unsigned int unSleep = 0;
@@ -885,22 +893,22 @@ int main()
 	    // output the "tasks" line
 	    sleeping = inSleep + unSleep + idle;
 	    total = running + sleeping;
-	    outLine = "Tasks: ";
-	    outLine.append(std::to_string(total));
-	    outLine.append(" total, ");
-	    outLine.append(std::to_string(running));
-	    outLine.append(" running, ");
-	    outLine.append(std::to_string(sleeping));
-	    outLine.append(" sleeping, ");
-	    outLine.append(std::to_string(stopped));
-	    outLine.append(" stopped, ");
-	    outLine.append(std::to_string(zombie));
-	    outLine.append(" zombie");
+	    outLines = "Tasks: ";
+	    outLines.append(std::to_string(total));
+	    outLines.append(" total, ");
+	    outLines.append(std::to_string(running));
+	    outLines.append(" running, ");
+	    outLines.append(std::to_string(sleeping));
+	    outLines.append(" sleeping, ");
+	    outLines.append(std::to_string(stopped));
+	    outLines.append(" stopped, ");
+	    outLines.append(std::to_string(zombie));
+	    outLines.append(" zombie");
 #if _CURSES
 	    mvwaddstr(tasksWin.getWindow(),
 		      0,
 		      0,
-		      outLine.c_str());
+		      outLines.c_str());
 #endif
       }
     
@@ -1090,6 +1098,7 @@ int main()
 	wattroff(allWins.at(highlightIndex)->getWindow(),
 		 A_BOLD);
       }
+    
     printProcs(shiftY,
 	       shiftX,
 	       outList,
