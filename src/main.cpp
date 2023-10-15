@@ -85,9 +85,8 @@
 
 //constants
 // debug
-#define _DEBUG 0
 #define _CURSES 1
-#define _NOLOG 0
+#define _LOG 1
 
 // commands and options/modes
 #define _UTMPDUMP "utmpdump"
@@ -114,10 +113,13 @@ const std::vector<int> sortByUSER
  */
 int main()
 {
+
+  
   //  ## create log system ##
-  Log logFile("./log/", "log", 1, ".log");
   time_t rawtime;
   struct tm* timeinfo;
+#if _LOG    
+  Log logFile("./log/", "log", 1, ".log");  
   std::ofstream log;
 
   //  get time info
@@ -156,7 +158,7 @@ int main()
       log << "LOG Started" << std::endl;
       log << "Time and Date: " << asctime(timeinfo) << std::endl;
     }
-
+#endif
   // process related vars
   MemInfo memInfo;
   CPUInfo cpuInfo;
@@ -623,7 +625,9 @@ int main()
 		
 		if(getpwuid_r(uidt, &userData, buff, sizeof(buff), &userDataPtr))
 		  {
+#if _LOG		    
 		    log << "Failed to call getpwuid_r()" << std::endl;
+#endif		    
 		  }
 		else
 		  {
