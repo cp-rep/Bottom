@@ -40,6 +40,7 @@
 #include "VIRTWindow.hpp"
 #include "COMMANDWindow.hpp"
 #include "cpuWindow.hpp"
+#include "cpuInfo.hpp"
 #include "memWindow.hpp"
 #include "NIWindow.hpp"
 #include "percentCPUWindow.hpp"
@@ -139,8 +140,9 @@ int main()
     }
 
   // process related vars
-  MemInfo mInfo;
-  ProcessInfo* pInfo;
+  MemInfo memInfo;
+  CPUInfo cpuInfo;
+  ProcessInfo* processInfo;
   std::vector<int> pidNums; // to be populated with all current /proc/[pid] numbers
   std::unordered_map<int, ProcessInfo*> procData; // to be populated with /proc/[pid] data
   std::unordered_map<int, ProcessInfo*>::iterator procDataIt;
@@ -496,7 +498,8 @@ int main()
   // ## run the main program loop ##
   do{
     std::vector<std::string> parsedLine;
-    std::vector <std::string> outLines;
+    //    std::vector <std::string> outLines;
+    std::string outLine;
     std::string tempLine;
     std::string fileLine;
     int val = 0;
@@ -542,7 +545,7 @@ int main()
     tempLine.append(parsedLine.at(1));
     tempLine.append(" ");
     tempLine.append(parsedLine.at(2));
-    outLines.push_back(tempLine);
+    //    outLines.push_back(tempLine);
     tempLine.clear();
     
     /*
@@ -600,8 +603,8 @@ int main()
 	// if process is new, allocate it
 	if(procData.count(pidNums.at(i)) == 0)
 	  {
-	    pInfo = new ProcessInfo();
-	    procData.insert(std::make_pair(pidNums.at(i), pInfo));
+	    processInfo = new ProcessInfo();
+	    procData.insert(std::make_pair(pidNums.at(i), processInfo));
 	  }
 	    std::string filePath;
 	    std::string lineString;
@@ -731,51 +734,22 @@ int main()
 	    
 	    // ## get %CPU ##
 	    const double ticks = (double)sysconf(_SC_CLK_TCK);
-	    double avgUs = 0;
-	    double avgSy = 0;
-	    double avgNi = 0;
-	    double avgId = 0;
-	    double avgWa = 0;
-	    double avgHi = 0;
-	    double avgSi = 0;
-	    double avgSt = 0;
-	    double totalJiffs = 0;
-	    double us = 0;
-	    double ni = 0;
-	    double sy = 0;
-	    double id = 0;
-	    double wa = 0;
-	    double irq = 0;
-	    double sirq = 0;
-	    double hi = 0;
-	    double si = 0;
-	    double st = 0;
-	    double gu = 0;
-	    double gun = 0;
 	    filePath = "/proc/stat";
 	    lineString = returnFileLineByNumber(filePath, 1);
 	    parsedLine = parseLine(lineString);
-	    us = convertToInt(parsedLine.at(1));
-	    ni = convertToInt(parsedLine.at(2));
-	    sy = convertToInt(parsedLine.at(3));
-	    id = convertToInt(parsedLine.at(4));
-	    wa = convertToInt(parsedLine.at(5));
-	    irq = convertToInt(parsedLine.at(6));
-	    sirq = convertToInt(parsedLine.at(7));
-	    st = convertToInt(parsedLine.at(8));
-	    gu = convertToInt(parsedLine.at(9));
-	    gun = convertToInt(parsedLine.at(10));
-	    totalJiffs = us + ni + sy + id + wa + irq + sirq + st + gu + gun;
-	    //	    avgUs = (ticks * us)/totalJiffs;
-	    avgSy = (ticks * sy)/totalJiffs;
-	    avgNi = (ticks * ni)/totalJiffs;
-	    avgId = (ticks * id)/totalJiffs;
-	    avgWa = (ticks * wa)/totalJiffs;
-	    avgSt = (ticks * st)/totalJiffs;
-	    avgUs = 100 - (avgId);
-	    // avgHi = (100 * hi)/totalJiffs;
+	    cpuInfo.setUs(convertToInt(parsedLine.at(1)));
+	    cpuInfo.setNi(convertToInt(parsedLine.at(2)));
+	    cpuInfo.setSy(convertToInt(parsedLine.at(3)));
+	    cpuInfo.setId(convertToInt(parsedLine.at(4)));
+	    cpuInfo.setWa(convertToInt(parsedLine.at(5)));
+	    cpuInfo.setIrq(convertToInt(parsedLine.at(6)));
+	    cpuInfo.setSirq(convertToInt(parsedLine.at(7)));
+	    cpuInfo.setSt(convertToInt(parsedLine.at(8)));
+	    cpuInfo.setGu(convertToInt(parsedLine.at(9)));
+	    cpuInfo.setGun(convertToInt(parsedLine.at(10)));
+	    cpuInfo.setJiffs(cpuInfo.calculateJiffs());
 
-	    
+	    /*
 	    tempLine = "%CPU(s): ";
 	    tempLine.append(doubleToStr(avgUs, 1));
 	    tempLine.append(" us, ");
@@ -793,7 +767,7 @@ int main()
 	    tempLine.append(" st, ");
 	    outLines.push_back(tempLine);
 	    tempLine.clear();
-	    
+	    */
 	    /*
 #if _CURSES
 	    mvwaddstr(cpuWin.getWindow(),
@@ -803,42 +777,42 @@ int main()
 #endif
 	    */
 	    
-	    // mInfo data from /proc/meminfo
+	    // memInfo data from /proc/meminfo
 	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
 	    parsedLine = parseLine(fileLine);
-	    mInfo.setMemTotal(convertToInt(parsedLine.at(1)));
+	    memInfo.setMemTotal(convertToInt(parsedLine.at(1)));
 	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 2);
 	    parsedLine = parseLine(fileLine);
-	    mInfo.setMemFree(convertToInt(parsedLine.at(1)));
+	    memInfo.setMemFree(convertToInt(parsedLine.at(1)));
 	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 3);
 	    parsedLine = parseLine(fileLine);
-	    mInfo.setMemAvailable(convertToInt(parsedLine.at(1)));
+	    memInfo.setMemAvailable(convertToInt(parsedLine.at(1)));
 	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 4);
 	    parsedLine = parseLine(fileLine);
-	    mInfo.setBuffers(convertToInt(parsedLine.at(1)));
+	    memInfo.setBuffers(convertToInt(parsedLine.at(1)));
 	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 5);
 	    parsedLine = parseLine(fileLine);
-	    mInfo.setCached(convertToInt(parsedLine.at(1)));
+	    memInfo.setCached(convertToInt(parsedLine.at(1)));
 	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 15);
 	    parsedLine = parseLine(fileLine);
-	    mInfo.setSwapTotal(convertToInt(parsedLine.at(1)));
+	    memInfo.setSwapTotal(convertToInt(parsedLine.at(1)));
 	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 16);
 	    parsedLine = parseLine(fileLine);
-	    mInfo.setSwapFree(convertToInt(parsedLine.at(1)));
+	    memInfo.setSwapFree(convertToInt(parsedLine.at(1)));
 	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 26);
 	    parsedLine = parseLine(fileLine);
-	    mInfo.setSReclaimable(convertToInt(parsedLine.at(1)));
-	    mInfo.setMemUsed(mInfo.calculateMemUsed());
-	    mInfo.setSwapUsed(mInfo.calculateSwapUsed());
-	    mInfo.setBuffCache(mInfo.calculateBuffCache());
-	    allWins.at(_MEMWIN)->setStringMiB(doubleToStr(KiBToMiB(mInfo.getMemTotal()), 1),
-					      doubleToStr(KiBToMiB(mInfo.getMemFree()), 1),
-					      doubleToStr(KiBToMiB(mInfo.getMemUsed()), 1),
-					      doubleToStr(KiBToMiB(mInfo.getBuffCache()), 1));
-	    allWins.at(_MEMWIN)->setStringSwap(doubleToStr(KiBToMiB(mInfo.getSwapTotal()), 1),
-					       doubleToStr(KiBToMiB(mInfo.getSwapFree()), 1),
-					       doubleToStr(KiBToMiB(mInfo.getSwapUsed()), 1),
-					       doubleToStr(KiBToMiB(mInfo.getMemAvailable()), 1));
+	    memInfo.setSReclaimable(convertToInt(parsedLine.at(1)));
+	    memInfo.setMemUsed(memInfo.calculateMemUsed());
+	    memInfo.setSwapUsed(memInfo.calculateSwapUsed());
+	    memInfo.setBuffCache(memInfo.calculateBuffCache());
+	    allWins.at(_MEMWIN)->setStringMiB(doubleToStr(KiBToMiB(memInfo.getMemTotal()), 1),
+					      doubleToStr(KiBToMiB(memInfo.getMemFree()), 1),
+					      doubleToStr(KiBToMiB(memInfo.getMemUsed()), 1),
+					      doubleToStr(KiBToMiB(memInfo.getBuffCache()), 1));
+	    allWins.at(_MEMWIN)->setStringSwap(doubleToStr(KiBToMiB(memInfo.getSwapTotal()), 1),
+					       doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1),
+					       doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1),
+					       doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1));
 	    /*
 #if _CURSES
 	    // print memWin data to window
@@ -852,6 +826,7 @@ int main()
 		      memWin.getSwap().c_str());
 #endif
 	    */
+	    
 	    // ## get process state count ##
 	    unsigned int running = 0;
 	    unsigned int unSleep = 0;
@@ -893,6 +868,7 @@ int main()
 	    // output the "tasks" line
 	    sleeping = inSleep + unSleep + idle;
 	    total = running + sleeping;
+	    /*
 	    outLines = "Tasks: ";
 	    outLines.append(std::to_string(total));
 	    outLines.append(" total, ");
@@ -910,9 +886,10 @@ int main()
 		      0,
 		      outLines.c_str());
 #endif
+	    */
       }
-    
-    pInfo = nullptr;
+
+    processInfo = nullptr;
     pidNumsOld.clear();
 
     // ## get user input ##
@@ -1124,7 +1101,7 @@ int main()
 #endif
     
   } while(true);
-
+    
   endwin();
   
   return 0;
@@ -1148,7 +1125,7 @@ int main()
 
   Output:
   None
- */
+*/
 void printWindowToLog(std::ofstream& log, const CursesWindow& win)
 {
   log << "m_windowName: " << win.getWindowName() << std::endl;
