@@ -16,14 +16,16 @@ public:
 	    const short& startX = 0);
 
   void defineCPULine(const std::string& avgUs,
-		     const std::string avgNi,
-		     const std::string avgId,
-		     const std::string avgWa,
-		     const std::string avgSt)
+		     const std::string& avgSy,
+		     const std::string& avgNi,
+		     const std::string& avgId,
+		     const std::string& avgWa,
+		     const std::string& avgSt)
   {
     m_cpuLine = "%CPU(s): ";
     m_cpuLine.append(avgUs);
     m_cpuLine.append(" us, ");
+    m_cpuLine.append(avgSy);
     m_cpuLine.append(" sy, ");
     m_cpuLine.append(avgNi);
     m_cpuLine.append(" ni, ");
