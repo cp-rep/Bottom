@@ -9,7 +9,6 @@
 #include <unordered_map>
 #include <sys/stat.h>
 #include <dirent.h>
-#include "log.hpp"
 
 
 
@@ -590,7 +589,7 @@ int direntNoRecurse(const struct dirent *name)
      const std::vector<int>
                         - the list of found numeric directories
  */
-const std::vector<int> findNumericDirs(const std::string& dirPath, std::ofstream& log)
+const std::vector<int> findNumericDirs(const std::string& dirPath)
 {
   struct dirent **dirNames;
   std::vector<int> tempDirs;

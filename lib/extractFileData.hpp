@@ -38,7 +38,7 @@ const std::string returnLineFromPipe(const std::string& comm,
 				     const int& lineNum);
 const std::string listDirContents();
 const std::vector<int> findNumericDirsPipe(const std::string& dirPath);
-const std::vector<int> findNumericDirs(const std::string& dirPath, std::ofstream& log);
+const std::vector<int> findNumericDirs(const std::string& dirPath);
 int direntNoRecurse(const struct dirent *name);
 
 // create strings
