@@ -50,35 +50,6 @@ public:
   void setNumCols(const int& numCols);
   void setStartY(const int& startY);
   void setStartX(const int& startX);
-
-  // virtual functions
-  // memWindow.hpp
-  virtual void setStringMiB(const std::string& memTotal,
-			    const std::string& memFree,
-			    const std::string& memUsed,
-			    const std::string& buffCache) {}
-  virtual void setStringSwap(const std::string& swapTotal,
-			     const std::string& swapFree,
-			     const std::string& swapUsed,
-			     const std::string& memAvailable) {}
-  // cpuWindow.hpp
-  virtual void defineCPULine(const std::string& avgUs,
-			     const std::string& avgSy,
-			     const std::string& avgNi,
-			     const std::string& avgId,
-			     const std::string& avgWa,
-			     const std::string& avgSt){}
-  virtual const std::string& getCPULine(){}
-  virtual void setCPULine(const std::string& cpuLine){}
-
-  // topWindow.hpp
-  virtual void defineTopLine(const std::string& HHMMSS,
-			     const int& numDays,
-			     const int& numHours,
-			     const int& numMinutes,
-			     const std::vector<std::string> parsedLoadAvg) {}
-  virtual const std::string& getTopLine() {}
-  virtual void setTopLine(std::string& topLine) {}
   
 private:
   // member variables
