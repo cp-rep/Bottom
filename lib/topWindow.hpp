@@ -24,7 +24,7 @@ class TopWindow : public CursesWindow {
 		     const int& numDays,
 		     const int& numHours,
 		     const int& numMinutes,
-		     const std::vector<std::string> parsedLoadAvg);
+		     const std::vector<std::string>& parsedLoadAvg);
   
   // getters
   const std::string& getTopLine();
@@ -36,6 +36,5 @@ class TopWindow : public CursesWindow {
   // member data
   std::string m_topLine;
 };
-
 
 #endif

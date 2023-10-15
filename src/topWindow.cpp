@@ -6,6 +6,7 @@
    The implementation of the topWindow.hpp class functions.
 */
 #include "topWindow.hpp"
+#include <iostream>
 
 
 
@@ -96,12 +97,11 @@ void TopWindow::defineTopLine(const std::string& HHMMSS,
 			      const int& numDays,
 			      const int& numHours,
 			      const int& numMinutes,
-			      const std::vector<std::string> parsedLoadAvg)
+			      const std::vector<std::string>& parsedLoadAvg)
 {
   m_topLine.clear();
   m_topLine.append("top -");
   m_topLine.append(HHMMSS);
-  
   
   if(numDays == 1)
     {
