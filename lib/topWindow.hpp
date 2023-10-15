@@ -13,20 +13,28 @@ class TopWindow : public CursesWindow {
  public:
   // constructors
   TopWindow(WINDOW* win = nullptr,
-	    const std::string windowName = "",	      
+	    const std::string windowName = "",
 	    const short& numLines = 0,
 	    const short& numCols = 0,
 	    const short& startY = 0,
 	    const short& startX = 0);
-  // getters
-  const std::string& getUptime();
+
+  // member functions
+  void defineTopLine(const std::string& HHMMSS,
+		     const int& numDays,
+		     const int& numHours,
+		     const int& numMinutes,
+		     const std::vector<std::string> parsedLoadAvg);
   
+  // getters
+  const std::string& getTopLine();
+
   // setters
-  void setUptime(const std::string& uptime);
+  void setTopLine(const std::string& topLine);
 
  private:
   // member data
-  std::string m_uptime;
+  std::string m_topLine;
 };
 
 

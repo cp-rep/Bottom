@@ -1,5 +1,6 @@
 /*
-  File: topWindow.cpp
+  File: 
+   topWindow.cpp
 
   Description:
    The implementation of the topWindow.hpp class functions.
@@ -10,16 +11,11 @@
 
 /*
   Function:
-  TopWindow Default Constructor
+   TopWindow Default Constructor
    
   Description:
 
   Input:
-  windowName      -
-  numLines        -
-  numCols         -
-  startY          -
-  startX          -
 
   Output:
   NONE
@@ -36,50 +32,97 @@ TopWindow::TopWindow(WINDOW* win,
 							 startY,
 							 startX)
 {
-  m_uptime = "";
+  m_topLine = "";
 } // end of "TopWindow Default Constructor"
 
 
 
 /*
   Function:
-  getUptime
+   getTopLine
 
   Description:
-  Returns the m_uptime member variable.
+   Returns the m_topLine member variable.
 
   Input:
-  NONE
+   NONE
 
   Output:
-  m_uptime               - a const reference to the m_uptime
-                           member variable.
+   m_topLine               - a const reference to the m_topLine
+                             member variable.
 */
-const std::string& TopWindow::getUptime()
+const std::string& TopWindow::getTopLine()
 {
-  return m_uptime;
-} // end of "getUptime"
+  return m_topLine;
+} // end of "getTopLine"
 
 
 
 /*
   Function:
-  setUptime
+   setTopLine
 
   Description:
-  Clears and sets the m_uptime member variable making it
-  "display ready" for output to the screen in Top program
-  format.
+   Defines the m_topLine member variable with the incoming string parameter.
 
   Input:
-  NONE
+   NONE
 
   Output:
-  NONE
+   NONE
 */
-void TopWindow::setUptime(const std::string& uptime)
+void TopWindow::setTopLine(const std::string& topLine)
 {
-  m_uptime.clear();
-  m_uptime.append("top -");
-  m_uptime.append(uptime);
-} // end of "setUptime"
+  m_topLine = topLine;
+} // end of "setTopLine"
+
+
+
+
+/*
+  Function:
+   defineTopLine
+
+  Description:
+   Clears and defines the m_topLine member variable.
+
+  Input:
+   NONE
+
+  Output:
+   NONE
+*/
+void TopWindow::defineTopLine(const std::string& HHMMSS,
+			      const int& numDays,
+			      const int& numHours,
+			      const int& numMinutes,
+			      const std::vector<std::string> parsedLoadAvg)
+{
+  m_topLine.clear();
+  m_topLine.append("top -");
+  m_topLine.append(HHMMSS);
+  
+  
+  if(numDays == 1)
+    {
+      m_topLine.append(std::to_string(numDays));
+      m_topLine.append(" day, ");
+    }
+  else
+    {
+      m_topLine.append(std::to_string(numDays));      
+      m_topLine.append(" days, ");
+    }
+
+    m_topLine.append(std::to_string(numHours));
+    m_topLine.append(":");
+    m_topLine.append(std::to_string(numMinutes));
+    m_topLine.append(", ");
+    m_topLine.append("0");
+    m_topLine.append(" users, load average: ");
+    m_topLine.append(parsedLoadAvg.at(0));
+    m_topLine.append(" ");
+    m_topLine.append(parsedLoadAvg.at(1));
+    m_topLine.append(" ");
+    m_topLine.append(parsedLoadAvg.at(2));
+} // end of "defineTopLine"
