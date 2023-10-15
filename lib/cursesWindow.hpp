@@ -6,6 +6,7 @@
 #define CURSESWINDOW_HPP
 #include <curses.h>
 #include <string>
+#include <vector>
 
 class CursesWindow {
 public:
@@ -60,6 +61,24 @@ public:
 			     const std::string& swapFree,
 			     const std::string& swapUsed,
 			     const std::string& memAvailable) {}
+  // cpuWindow.hpp
+  virtual void defineCPULine(const std::string& avgUs,
+			     const std::string& avgSy,
+			     const std::string& avgNi,
+			     const std::string& avgId,
+			     const std::string& avgWa,
+			     const std::string& avgSt){}
+  virtual const std::string& getCPULine(){}
+  virtual void setCPULine(const std::string& cpuLine){}
+
+  // topWindow.hpp
+  virtual void defineTopLine(const std::string& HHMMSS,
+			     const int& numDays,
+			     const int& numHours,
+			     const int& numMinutes,
+			     const std::vector<std::string> parsedLoadAvg) {}
+  virtual const std::string& getTopLine() {}
+  virtual void setTopLine(std::string& topLine) {}
   
 private:
   // member variables
