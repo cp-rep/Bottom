@@ -85,7 +85,7 @@
 //constants
 // debug
 #define _DEBUG 0
-#define _CURSES 0
+#define _CURSES 1
 #define _NOLOG 0
 
 // commands and options/modes
@@ -533,17 +533,12 @@ int main()
     fileLine = returnFileLineByNumber("/proc/loadavg", 1);
     parsedLine = parseLine(fileLine);
 #if _CURSES    
-    allWins.at(_TOPWIN)->defineTopLine(tempLine,
-				       uptime.getHours()/24,
-				       uptime.getHours() % 24,
-				       uptime.getMinutes(),
-				       parsedLine);
-
-
-    // fileLine = returnLineFromPipe("users", _READ, 1);
-    // parsedLine = parseLine(fileLine);
-    // tempLine.append(std::to_string(parsedLine.size()));
-    outLines.push_back(allWins.at(_TOPWIN)->getTopLine());
+    topWin.defineTopLine(tempLine,
+			 uptime.getHours()/24,
+			 uptime.getHours() % 24,
+			 uptime.getMinutes(),
+			 parsedLine);
+    outLines.push_back(topWin.getTopLine());    
 #endif    
     
     tempLine.clear();
@@ -742,14 +737,14 @@ int main()
 	    cpuInfo.setTicks(ticks);
 	    cpuInfo.setJiffs(cpuInfo.calculateJiffs());
 #if _CURSES	    
-	    allWins.at(_CPUWIN)->defineCPULine(doubleToStr(cpuInfo.getAvgUs(), 1),
-					      doubleToStr(cpuInfo.getAvgSy(), 1),
-					      doubleToStr(cpuInfo.getAvgNi(), 1),
-					      doubleToStr(cpuInfo.getAvgId(), 1),
-					      doubleToStr(cpuInfo.getAvgWa(), 1),
-					      doubleToStr(cpuInfo.getAvgSt(), 1));
+	    cpuWin.defineCPULine(doubleToStr(cpuInfo.getAvgUs(), 1),
+				 doubleToStr(cpuInfo.getAvgSy(), 1),
+				 doubleToStr(cpuInfo.getAvgNi(), 1),
+				 doubleToStr(cpuInfo.getAvgId(), 1),
+				 doubleToStr(cpuInfo.getAvgWa(), 1),
+				 doubleToStr(cpuInfo.getAvgSt(), 1));
 #endif	    
-	    // outLines.push_back(allWins.at(cpuWin)->getCPULine());
+	    // outLines.push_back(memWin.getCPULine());
 
 	    // memInfo data from /proc/meminfo
 	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
@@ -781,15 +776,15 @@ int main()
 	    memInfo.setMemUsed(memInfo.calculateMemUsed());
 	    memInfo.setSwapUsed(memInfo.calculateSwapUsed());
 	    memInfo.setBuffCache(memInfo.calculateBuffCache());
-	    allWins.at(_MEMWIN)->setStringMiB(doubleToStr(KiBToMiB(memInfo.getMemTotal()), 1),
-					      doubleToStr(KiBToMiB(memInfo.getMemFree()), 1),
-					      doubleToStr(KiBToMiB(memInfo.getMemUsed()), 1),
-					      doubleToStr(KiBToMiB(memInfo.getBuffCache()), 1));
-	    allWins.at(_MEMWIN)->setStringSwap(doubleToStr(KiBToMiB(memInfo.getSwapTotal()), 1),
-					       doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1),
-					       doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1),
-					       doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1));
-#endif	    
+	    memWin.setStringMiB(doubleToStr(KiBToMiB(memInfo.getMemTotal()), 1),
+				doubleToStr(KiBToMiB(memInfo.getMemFree()), 1),
+				doubleToStr(KiBToMiB(memInfo.getMemUsed()), 1),
+				doubleToStr(KiBToMiB(memInfo.getBuffCache()), 1));
+	    memWin.setStringSwap(doubleToStr(KiBToMiB(memInfo.getSwapTotal()), 1),
+				 doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1),
+				 doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1),
+				 doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1));
+#endif
 	    
 	    // ## get process state count ##
 	    unsigned int running = 0;
@@ -832,19 +827,19 @@ int main()
 	    // output the "tasks" line
 	    sleeping = inSleep + unSleep + idle;
 	    total = running + sleeping;
-	    /*
-	    outLine = "Tasks: ";
-	    outLine.append(std::to_string(total));
-	    outLine.append(" total, ");
-	    outLine.append(std::to_string(running));
-	    outLine.append(" running, ");
-	    outLine.append(std::to_string(sleeping));
-	    outLine.append(" sleeping, ");
-	    outLine.append(std::to_string(stopped));
-	    outLine.append(" stopped, ");
-	    outLine.append(std::to_string(zombie));
-	    outLine.append(" zombie");
-	    */
+	    tempLine.clear();
+	    tempLine = "Tasks: ";
+	    tempLine.append(std::to_string(total));
+	    tempLine.append(" total, ");
+	    tempLine.append(std::to_string(running));
+	    tempLine.append(" running, ");
+	    tempLine.append(std::to_string(sleeping));
+	    tempLine.append(" sleeping, ");
+	    tempLine.append(std::to_string(stopped));
+	    tempLine.append(" stopped, ");
+	    tempLine.append(std::to_string(zombie));
+	    tempLine.append(" zombie");
+	    outLines.push_back(tempLine);
      }
     
     processInfo = nullptr;
