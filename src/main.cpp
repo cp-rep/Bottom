@@ -739,6 +739,7 @@ int main()
 	    lineString = returnFileLineByNumber(filePath, 1);
 	    parsedLine = parseLine(lineString);
 	    cpuInfo.setUs(convertToInt(parsedLine.at(1)));
+	    log << cpuInfo.getUs() << std::endl;
 	    cpuInfo.setNi(convertToInt(parsedLine.at(2)));
 	    cpuInfo.setSy(convertToInt(parsedLine.at(3)));
 	    cpuInfo.setId(convertToInt(parsedLine.at(4)));
@@ -748,6 +749,7 @@ int main()
 	    cpuInfo.setSt(convertToInt(parsedLine.at(8)));
 	    cpuInfo.setGu(convertToInt(parsedLine.at(9)));
 	    cpuInfo.setGun(convertToInt(parsedLine.at(10)));
+	    cpuInfo.setTicks(ticks);
 	    cpuInfo.setJiffs(cpuInfo.calculateJiffs());
 	    cpuWin.defineCPULine(doubleToStr(cpuInfo.getAvgUs(), 1),
 				 doubleToStr(cpuInfo.getAvgSy(), 1),
@@ -755,7 +757,7 @@ int main()
 				 doubleToStr(cpuInfo.getAvgId(), 1),
 				 doubleToStr(cpuInfo.getAvgWa(), 1),
 				 doubleToStr(cpuInfo.getAvgSt(), 1));
-	    //	    outLines.push_back(cpuWin.getCPULine());
+	    // outLines.push_back(cpuWin.getCPULine());
 	    outLine = cpuWin.getCPULine();
 	    
 	    /*
