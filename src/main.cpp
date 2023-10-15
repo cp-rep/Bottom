@@ -81,8 +81,8 @@
 void printWindowToLog(std::ofstream& log,
 		      const CursesWindow& win);
 const std::vector<int> sortByUSER
-  (const std::vector<int>& pidNums,
-   std::unordered_map<int, ProcessInfo*>& procData);
+(const std::vector<int>& pidNums,
+ std::unordered_map<int, ProcessInfo*>& procData);
 
 
 
@@ -532,7 +532,7 @@ int main()
     outLine.append(":");
     outLine.append(std::to_string(uptime.getMinutes()));
     outLine.append(", ");
-    //    fileLine = returnLineFromPipe("users", _READ, 1);
+    // fileLine = returnLineFromPipe("users", _READ, 1);
     parsedLine = parseLine(fileLine);
     outLine.append(std::to_string(parsedLine.size()));
     outLine.append(" users, load average: ");
@@ -559,7 +559,7 @@ int main()
 
     // get new process list
     pidNums.clear();
-    pidNums = findNumericDirs(_PROC, log);
+    pidNums = findNumericDirs(_PROC);
     std::sort(pidNums.begin(), pidNums.end());
     
     // find any dead processes
@@ -588,7 +588,6 @@ int main()
 	if(procData.count(pidNumsDead.at(i)) > 0)
 	  {
 	    delete(procData[pidNumsDead.at(i)]);
-	    // log << "Deleted Process With PID: " << pidNumsDead.at(i) << std::endl;
 	    procData.erase(pidNumsDead.at(i));
 	  }
       }
@@ -609,14 +608,12 @@ int main()
 	    
 	    // set pid
 	    procData[pidNums.at(i)]->setPID(pidNums.at(i));
-	    // log << std::endl << "PID: " << pidNums.at(i) << std::endl;
 
 	    // get command
 	    filePath = currProc;
 	    filePath.append(_COMM);
 	    lineString = returnFileLineByNumber(filePath, 1);
 	    procData[pidNums.at(i)]->setCOMMAND(lineString);
-	    // log << "COMM: " << procData[pidNums.at(i)]->getCOMMAND() << std::endl;
 
  	    // get USER
 	    filePath = currProc;
@@ -936,9 +933,9 @@ int main()
 	      {
 		wattroff(allWins.at(sortState)->getWindow(),
 			 A_BOLD);
-		sortState--;
-		wattron(allWins.at(sortState)->getWindow(),
-			A_BOLD);
+	    	sortState--;
+	    	wattron(allWins.at(sortState)->getWindow(),
+	    		A_BOLD);
 	      }
 	    else
 	      {
@@ -1002,7 +999,7 @@ int main()
 	break;
       case _PRWIN:
 	outList = sortByPR(procData,
-			   pidNums);	
+			   pidNums);
 	break;
       case _NIWIN:
 	outList = sortByNI(procData,
@@ -1041,7 +1038,7 @@ int main()
       case _COMMANDWIN:
 	outList = sortByCOMMAND(procData,
 				pidNums);
-	break;	
+	break;
       default:
 	break;
       }
@@ -1056,7 +1053,7 @@ int main()
 	  }
 	break;
       case KEY_DOWN:
-	if(std::abs(shiftY) < procData.size() - 1)
+	if(abs(shiftY) < outList.size() - 2)
 	  {
 	    shiftY--;
 	  }
@@ -1093,7 +1090,6 @@ int main()
 	wattroff(allWins.at(highlightIndex)->getWindow(),
 		 A_BOLD);
       }
-      
     printProcs(shiftY,
 	       shiftX,
 	       outList,
