@@ -499,7 +499,7 @@ int main()
   do{
     std::vector<std::string> parsedLine;
     //    std::vector <std::string> outLines;
-    std::string outLine;
+        std::string outLine;
     std::string tempLine;
     std::string fileLine;
     int val = 0;
@@ -545,18 +545,19 @@ int main()
     tempLine.append(parsedLine.at(1));
     tempLine.append(" ");
     tempLine.append(parsedLine.at(2));
-    //    outLines.push_back(tempLine);
+    //outLines.push_back(tempLine);
+    outLine = tempLine;
     tempLine.clear();
     
-    /*
+
     // print topWin data window
 #if _CURSES
     mvwaddstr(allWins.at(_TOPWIN)->getWindow(),	      
 	      0,
 	      0,
-	      outLines.c_str());
+	      outLine.c_str());
 #endif
-    */
+
     // ## find running processes and update the list if needed ##
     // store old process list
     std::vector<int> pidNumsOld(pidNums);
@@ -748,7 +749,15 @@ int main()
 	    cpuInfo.setGu(convertToInt(parsedLine.at(9)));
 	    cpuInfo.setGun(convertToInt(parsedLine.at(10)));
 	    cpuInfo.setJiffs(cpuInfo.calculateJiffs());
-
+	    cpuWin.defineCPULine(doubleToStr(cpuInfo.getAvgUs(), 1),
+				 doubleToStr(cpuInfo.getAvgSy(), 1),
+				 doubleToStr(cpuInfo.getAvgNi(), 1),
+				 doubleToStr(cpuInfo.getAvgId(), 1),
+				 doubleToStr(cpuInfo.getAvgWa(), 1),
+				 doubleToStr(cpuInfo.getAvgSt(), 1));
+	    //	    outLines.push_back(cpuWin.getCPULine());
+	    outLine = cpuWin.getCPULine();
+	    
 	    /*
 	    tempLine = "%CPU(s): ";
 	    tempLine.append(doubleToStr(avgUs, 1));
@@ -768,14 +777,13 @@ int main()
 	    outLines.push_back(tempLine);
 	    tempLine.clear();
 	    */
-	    /*
+
 #if _CURSES
 	    mvwaddstr(cpuWin.getWindow(),
 		      0,
 		      0,
-		      outLines.c_str());
+		      outLine.c_str());
 #endif
-	    */
 	    
 	    // memInfo data from /proc/meminfo
 	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
@@ -813,7 +821,7 @@ int main()
 					       doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1),
 					       doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1),
 					       doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1));
-	    /*
+
 #if _CURSES
 	    // print memWin data to window
 	    mvwaddstr(allWins.at(_MEMWIN)->getWindow(),
@@ -825,7 +833,7 @@ int main()
 		      0,
 		      memWin.getSwap().c_str());
 #endif
-	    */
+
 	    
 	    // ## get process state count ##
 	    unsigned int running = 0;
@@ -868,25 +876,26 @@ int main()
 	    // output the "tasks" line
 	    sleeping = inSleep + unSleep + idle;
 	    total = running + sleeping;
-	    /*
-	    outLines = "Tasks: ";
-	    outLines.append(std::to_string(total));
-	    outLines.append(" total, ");
-	    outLines.append(std::to_string(running));
-	    outLines.append(" running, ");
-	    outLines.append(std::to_string(sleeping));
-	    outLines.append(" sleeping, ");
-	    outLines.append(std::to_string(stopped));
-	    outLines.append(" stopped, ");
-	    outLines.append(std::to_string(zombie));
-	    outLines.append(" zombie");
+
+	    outLine = "Tasks: ";
+	    outLine.append(std::to_string(total));
+	    outLine.append(" total, ");
+	    outLine.append(std::to_string(running));
+	    outLine.append(" running, ");
+	    outLine.append(std::to_string(sleeping));
+	    outLine.append(" sleeping, ");
+	    outLine.append(std::to_string(stopped));
+	    outLine.append(" stopped, ");
+	    outLine.append(std::to_string(zombie));
+	    outLine.append(" zombie");
+
 #if _CURSES
 	    mvwaddstr(tasksWin.getWindow(),
 		      0,
 		      0,
-		      outLines.c_str());
+		      outLine.c_str());
 #endif
-	    */
+
       }
 
     processInfo = nullptr;
