@@ -17,15 +17,3 @@ PercentCPUWindow::PercentCPUWindow(WINDOW* win,
 								       startX)
 {
 }
-
-
-
-const std::string percentCPUWindow::getPercentCPULine()
-{
-} // end of "getPercentCPULine"
-
-
-
-void percentCPUWindow::setPercentCPULine()
-{
-} // end of "setPercentCPULine"

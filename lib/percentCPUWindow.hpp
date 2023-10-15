@@ -14,12 +14,7 @@ public:
 		   const short& numCols = 0,
 		   const short& startY = 0,
 		   const short& startX = 0);
-
-  const std::string getPercentCPULine();
-  void setPercentCPULine();
-  
 private:
-  std::string percentCPULine;
 };
 
 #endif
