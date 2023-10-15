@@ -131,15 +131,15 @@ int main()
       // check if log exists      
       if(inFile.is_open())
 	{
-	  // increment the log number and close the open file	  
+	  // increment the log number and close the open file
 	  logFile.incrementFileName();
-	  inFile.close();	  
+	  inFile.close();
 	}
       // log doesn't exist, create the new log file
       else
 	{
 	  log.open(logFile.getFullPath());
-	  break;	  
+	  break;
 	}
     }
 
@@ -153,7 +153,7 @@ int main()
     {
       // output start of log session
       log << "LOG Started" << std::endl;
-      log << "Time and Date: " << asctime(timeinfo) << std::endl;      
+      log << "Time and Date: " << asctime(timeinfo) << std::endl;
     }
 
   // process related vars
@@ -199,7 +199,7 @@ int main()
     {
       start_color();
       init_pair(_WHITE_TEXT, COLOR_WHITE, COLOR_BLACK);
-      init_pair(_BLACK_TEXT, COLOR_BLACK, COLOR_WHITE);      
+      init_pair(_BLACK_TEXT, COLOR_BLACK, COLOR_WHITE);
     }
 
   noecho();
@@ -212,7 +212,7 @@ int main()
   // define topWindow
   numLines = 1;
   numCols = numCols;
-  startY = _YOFFSET - 6;  
+  startY = _YOFFSET - 6;
   startX = 0;
   TopWindow topWin(newwin(numLines,
 			  numCols,
@@ -223,6 +223,7 @@ int main()
 		   numCols,
 		   startY,
 		   startX);
+  topWin.getTopLine();
   // define tasks window
   numLines = 1;
   numCols = numCols;
@@ -509,7 +510,6 @@ int main()
   progStates.insert(std::make_pair(_PROGSTATEHELP, 1)); // open help menu
   progStates.insert(std::make_pair(_PROGSTATEQUIT, 1)); // quit
   progStates.insert(std::make_pair(_PROGSTATEHL, 1)); // highlight column
-  
 #endif
 
   // ## run the main program loop ##
@@ -530,20 +530,23 @@ int main()
     tempLine = uptime.returnHHMMSS(timeinfo->tm_hour,
 				   timeinfo->tm_min,
 				   timeinfo->tm_sec);
-    val = uptime.getHours()/24;
     fileLine = returnFileLineByNumber("/proc/loadavg", 1);
     parsedLine = parseLine(fileLine);
+#if _CURSES    
     allWins.at(_TOPWIN)->defineTopLine(tempLine,
 				       uptime.getHours()/24,
 				       uptime.getHours() % 24,
 				       uptime.getMinutes(),
 				       parsedLine);
+
+
     // fileLine = returnLineFromPipe("users", _READ, 1);
     // parsedLine = parseLine(fileLine);
     // tempLine.append(std::to_string(parsedLine.size()));
-    outLines.push_back(allWins.at(_TOPWIN)->getCPULine());
+    outLines.push_back(allWins.at(_TOPWIN)->getTopLine());
+#endif    
+    
     tempLine.clear();
-
     // ## find running processes and update the list if needed ##
     // store old process list
     std::vector<int> pidNumsOld(pidNums);
@@ -573,7 +576,7 @@ int main()
 	    pidNumsDead.push_back(pidNumsOld.at(i));
 	  }
       }
-    
+
     // remove dead processes from the process umap
     for(int i = 0; i < pidNumsDead.size(); i++)
       {
@@ -583,7 +586,7 @@ int main()
 	    procData.erase(pidNumsDead.at(i));
 	  }
       }
-    
+
     // update processes data
     for(int i = 0; i < pidNums.size(); i++)
       {
@@ -597,7 +600,7 @@ int main()
 	    std::string lineString;
 	    const std::string currProc = _PROC + std::to_string(pidNums.at(i));
 	    unsigned int value = 0;
-	    
+
 	    // set pid
 	    procData[pidNums.at(i)]->setPID(pidNums.at(i));
 
@@ -667,7 +670,7 @@ int main()
 	    filePath = currProc;
 	    filePath.append(_STAT);
 	    lineString = returnFileLineByNumber(filePath, 1);
-	    
+
 	    if(lineString != "-1")
 	      {
 		double utime = 0;
@@ -719,7 +722,7 @@ int main()
 		    procData[pidNums.at(i)]->setCPUUsage(0);
 		  }
 	      }
-	    
+
 	    // ## get %CPU ##
 	    const double ticks = (double)sysconf(_SC_CLK_TCK);
 	    filePath = _PROC;
@@ -738,14 +741,16 @@ int main()
 	    cpuInfo.setGun(convertToInt(parsedLine.at(10)));
 	    cpuInfo.setTicks(ticks);
 	    cpuInfo.setJiffs(cpuInfo.calculateJiffs());
+#if _CURSES	    
 	    allWins.at(_CPUWIN)->defineCPULine(doubleToStr(cpuInfo.getAvgUs(), 1),
 					      doubleToStr(cpuInfo.getAvgSy(), 1),
 					      doubleToStr(cpuInfo.getAvgNi(), 1),
 					      doubleToStr(cpuInfo.getAvgId(), 1),
 					      doubleToStr(cpuInfo.getAvgWa(), 1),
 					      doubleToStr(cpuInfo.getAvgSt(), 1));
+#endif	    
 	    // outLines.push_back(allWins.at(cpuWin)->getCPULine());
-	    	    
+
 	    // memInfo data from /proc/meminfo
 	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
 	    parsedLine = parseLine(fileLine);
@@ -770,6 +775,8 @@ int main()
 	    memInfo.setSwapFree(convertToInt(parsedLine.at(1)));
 	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 26);
 	    parsedLine = parseLine(fileLine);
+
+#if _CURSES	    
 	    memInfo.setSReclaimable(convertToInt(parsedLine.at(1)));
 	    memInfo.setMemUsed(memInfo.calculateMemUsed());
 	    memInfo.setSwapUsed(memInfo.calculateSwapUsed());
@@ -782,6 +789,7 @@ int main()
 					       doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1),
 					       doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1),
 					       doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1));
+#endif	    
 	    
 	    // ## get process state count ##
 	    unsigned int running = 0;
@@ -851,9 +859,10 @@ int main()
     int input = 0;
     int moveVal = 0;
     int previousSortState = sortState;
-
+#if _CURSES
     moveVal = input = getch();
     flushinp();
+#endif    
 
     if(input != -1)
       {
@@ -1000,16 +1009,20 @@ int main()
       case KEY_LEFT:
 	if(shiftX > _PIDWIN)
 	  {
+#if _CURSES	    
 	    shiftBottomWinsRight(allWins,
 				 shiftX);
+#endif	    
 	    shiftX--;
 	  }
 	break;
       case KEY_RIGHT:
 	if(shiftX < _COMMANDWIN)
 	  {
+#if _CURSES	    
 	    shiftBottomWinsLeft(allWins,
 				shiftX);
+#endif	    
 	    shiftX++;
 	  }
 	break;
