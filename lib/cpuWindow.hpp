@@ -15,7 +15,12 @@ public:
 	    const short& startY = 0,
 	    const short& startX = 0);
 
+  //  const std::string& getCPULine();
+
+  //  void setCPULine(const std::string& cpuLine) { m_cpuLine = cpuLine; };
+  
 private:
+  //  std::string m_cpuLine;
 };
 
 
