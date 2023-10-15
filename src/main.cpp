@@ -1,6 +1,9 @@
 /*
-  File: main.cpp
-  Version: V0.1
+  File: 
+   main.cpp
+
+  Version: 
+   V0.1
 
   Program Description: 
     A rendition of the Top program using C++. It is currently
@@ -14,7 +17,21 @@
   - the '<' and '>' keys change how the columns are sorted.
 
   Changes Needed:
-  - highlight row when a change happens in the sorted value type
+  - get correct user count
+  - get/calculate TIME+ window
+  - fix %CPU value calculations
+  - get/calculate %MEM value
+  - determine how Top decides what processes/users have priority in the sort 
+    list to come first
+  - remove SecondsToTime class and put related functions in a new file called
+    calculateTime.hpp/cpp
+  - create a docker image that comes with all the modules necessary for building
+    Bottom and GTests for easier/safe testing for interested parties.
+  - Find why Top's %CPU calculation updates faster for processes that are
+    allocated after Bottom is already running
+  - add function that takes a vector parameter that determines which lines are
+    desired for output on the Top Windows
+  - fix the printing order so that the smear no longer occurs
 */
 #include <iostream>
 #include <ctime>
@@ -498,8 +515,7 @@ int main()
   // ## run the main program loop ##
   do{
     std::vector<std::string> parsedLine;
-    //    std::vector <std::string> outLines;
-        std::string outLine;
+    std::vector <std::string> outLines;
     std::string tempLine;
     std::string fileLine;
     int val = 0;
@@ -509,54 +525,25 @@ int main()
     parsedLine = parseLine(fileLine);
     val = convertToInt(parsedLine.at(0));
     SecondsToTime uptime(val);
-    tempLine = "top - ";
     time(&rawtime);
     timeinfo = localtime(&rawtime);
-    tempLine.append(uptime.returnHHMMSS(timeinfo->tm_hour,
-					timeinfo->tm_min,
-					timeinfo->tm_sec));
-    tempLine.append(" up ");
+    tempLine = uptime.returnHHMMSS(timeinfo->tm_hour,
+				   timeinfo->tm_min,
+				   timeinfo->tm_sec);
     val = uptime.getHours()/24;
-    
-    if(val == 1)
-      {
-	tempLine.append(std::to_string(val));
-	tempLine.append(" day, ");
-      }
-    else if (val > 1)
-      {
-	val = uptime.getHours()/24;
-	tempLine.append(std::to_string(val));
-	tempLine.append(" days, ");
-      }
-
-    tempLine.append(std::to_string(uptime.getHours() % 24));
-    tempLine.append(":");
-    tempLine.append(std::to_string(uptime.getMinutes()));
-    tempLine.append(", ");
-    // fileLine = returnLineFromPipe("users", _READ, 1);
-    parsedLine = parseLine(fileLine);
-    tempLine.append(std::to_string(parsedLine.size()));
-    tempLine.append(" users, load average: ");
     fileLine = returnFileLineByNumber("/proc/loadavg", 1);
     parsedLine = parseLine(fileLine);
-    tempLine.append(parsedLine.at(0));
-    tempLine.append(" ");
-    tempLine.append(parsedLine.at(1));
-    tempLine.append(" ");
-    tempLine.append(parsedLine.at(2));
-    //outLines.push_back(tempLine);
-    outLine = tempLine;
-    tempLine.clear();
     
-
-    // print topWin data window
-#if _CURSES
-    mvwaddstr(allWins.at(_TOPWIN)->getWindow(),	      
-	      0,
-	      0,
-	      outLine.c_str());
-#endif
+    allWins.at(_TOPWIN)->defineTopLine(tempLine,
+				       uptime.getHours()/24,
+				       uptime.getHours() % 24,
+				       uptime.getMinutes(),
+				       parsedLine);
+    // fileLine = returnLineFromPipe("users", _READ, 1);
+    // parsedLine = parseLine(fileLine);
+    // tempLine.append(std::to_string(parsedLine.size()));
+    outLines.push_back(allWins.at(_TOPWIN)->getCPULine());
+    tempLine.clear();
 
     // ## find running processes and update the list if needed ##
     // store old process list
@@ -681,6 +668,7 @@ int main()
 	    filePath = currProc;
 	    filePath.append(_STAT);
 	    lineString = returnFileLineByNumber(filePath, 1);
+	    
 	    if(lineString != "-1")
 	      {
 		double utime = 0;
@@ -735,11 +723,11 @@ int main()
 	    
 	    // ## get %CPU ##
 	    const double ticks = (double)sysconf(_SC_CLK_TCK);
-	    filePath = "/proc/stat";
+	    filePath = _PROC;
+	    filePath.append(_STAT);
 	    lineString = returnFileLineByNumber(filePath, 1);
 	    parsedLine = parseLine(lineString);
 	    cpuInfo.setUs(convertToInt(parsedLine.at(1)));
-	    log << cpuInfo.getUs() << std::endl;
 	    cpuInfo.setNi(convertToInt(parsedLine.at(2)));
 	    cpuInfo.setSy(convertToInt(parsedLine.at(3)));
 	    cpuInfo.setId(convertToInt(parsedLine.at(4)));
@@ -751,42 +739,14 @@ int main()
 	    cpuInfo.setGun(convertToInt(parsedLine.at(10)));
 	    cpuInfo.setTicks(ticks);
 	    cpuInfo.setJiffs(cpuInfo.calculateJiffs());
-	    cpuWin.defineCPULine(doubleToStr(cpuInfo.getAvgUs(), 1),
-				 doubleToStr(cpuInfo.getAvgSy(), 1),
-				 doubleToStr(cpuInfo.getAvgNi(), 1),
-				 doubleToStr(cpuInfo.getAvgId(), 1),
-				 doubleToStr(cpuInfo.getAvgWa(), 1),
-				 doubleToStr(cpuInfo.getAvgSt(), 1));
-	    // outLines.push_back(cpuWin.getCPULine());
-	    outLine = cpuWin.getCPULine();
-	    
-	    /*
-	    tempLine = "%CPU(s): ";
-	    tempLine.append(doubleToStr(avgUs, 1));
-	    tempLine.append(" us, ");
-	    tempLine.append(doubleToStr(avgSy, 1));
-	    tempLine.append(" sy, ");
-	    tempLine.append(doubleToStr(avgNi, 1));
-	    tempLine.append(" ni, ");
-	    tempLine.append(doubleToStr(avgId, 1));
-	    tempLine.append(" id, ");
-	    tempLine.append(doubleToStr(avgWa, 1));
-	    tempLine.append(" wa, ");
-	    tempLine.append("N/A");
-	    tempLine.append(" si, ");
-	    tempLine.append(doubleToStr(avgSt, 1));
-	    tempLine.append(" st, ");
-	    outLines.push_back(tempLine);
-	    tempLine.clear();
-	    */
-
-#if _CURSES
-	    mvwaddstr(cpuWin.getWindow(),
-		      0,
-		      0,
-		      outLine.c_str());
-#endif
-	    
+	    allWins.at(_CPUWIN)->defineCPULine(doubleToStr(cpuInfo.getAvgUs(), 1),
+					      doubleToStr(cpuInfo.getAvgSy(), 1),
+					      doubleToStr(cpuInfo.getAvgNi(), 1),
+					      doubleToStr(cpuInfo.getAvgId(), 1),
+					      doubleToStr(cpuInfo.getAvgWa(), 1),
+					      doubleToStr(cpuInfo.getAvgSt(), 1));
+	    // outLines.push_back(allWins.at(cpuWin)->getCPULine());
+	    	    
 	    // memInfo data from /proc/meminfo
 	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
 	    parsedLine = parseLine(fileLine);
@@ -823,19 +783,7 @@ int main()
 					       doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1),
 					       doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1),
 					       doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1));
-
-#if _CURSES
-	    // print memWin data to window
-	    mvwaddstr(allWins.at(_MEMWIN)->getWindow(),
-		      0,
-		      0,
-		      memWin.getMiB().c_str());
-	    mvwaddstr(allWins.at(_MEMWIN)->getWindow(),
-		      1,
-		      0,
-		      memWin.getSwap().c_str());
-#endif
-
+	    // outStrings.push_back(allWins.at(
 	    
 	    // ## get process state count ##
 	    unsigned int running = 0;
@@ -878,7 +826,7 @@ int main()
 	    // output the "tasks" line
 	    sleeping = inSleep + unSleep + idle;
 	    total = running + sleeping;
-
+	    /*
 	    outLine = "Tasks: ";
 	    outLine.append(std::to_string(total));
 	    outLine.append(" total, ");
@@ -890,16 +838,9 @@ int main()
 	    outLine.append(" stopped, ");
 	    outLine.append(std::to_string(zombie));
 	    outLine.append(" zombie");
-
-#if _CURSES
-	    mvwaddstr(tasksWin.getWindow(),
-		      0,
-		      0,
-		      outLine.c_str());
-#endif
-
+	    */
       }
-
+    
     processInfo = nullptr;
     pidNumsOld.clear();
 
@@ -1145,4 +1086,3 @@ void printWindowToLog(std::ofstream& log, const CursesWindow& win)
   log << "m_startY: " << win.getStartY() << std::endl;
   log << "m_startX: " << win.getStartX() << std::endl;
 } // end of "printWindowToLog"
-
