@@ -37,5 +37,6 @@ enum _WINS {
 
 // window count constants
 #define _BOTTOMWINTOTAL 12
+#define _YOFFSET 6
 
 #endif

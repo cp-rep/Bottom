@@ -83,17 +83,13 @@
 #include "sortProcessLists.hpp"
 #include "taskInfo.hpp"
 
-//constants
-// debug
+// debug constants
 #define _CURSES 1
 #define _LOG 1
 
-// commands and options/modes
+// commands and options/modes constants
 #define _UTMPDUMP "utmpdump"
 #define _READ "r"
-
-// other WINDOW constants
-#define _YOFFSET 6
 
 // function prototypes
 void printWindowToLog(std::ofstream& log,
