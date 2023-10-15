@@ -85,7 +85,7 @@
 //constants
 // debug
 #define _DEBUG 0
-#define _CURSES 1
+#define _CURSES 0
 #define _NOLOG 0
 
 // commands and options/modes
@@ -533,7 +533,6 @@ int main()
     val = uptime.getHours()/24;
     fileLine = returnFileLineByNumber("/proc/loadavg", 1);
     parsedLine = parseLine(fileLine);
-    
     allWins.at(_TOPWIN)->defineTopLine(tempLine,
 				       uptime.getHours()/24,
 				       uptime.getHours() % 24,
@@ -574,7 +573,7 @@ int main()
 	    pidNumsDead.push_back(pidNumsOld.at(i));
 	  }
       }
-
+    
     // remove dead processes from the process umap
     for(int i = 0; i < pidNumsDead.size(); i++)
       {
@@ -584,7 +583,7 @@ int main()
 	    procData.erase(pidNumsDead.at(i));
 	  }
       }
-
+    
     // update processes data
     for(int i = 0; i < pidNums.size(); i++)
       {
@@ -783,7 +782,6 @@ int main()
 					       doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1),
 					       doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1),
 					       doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1));
-	    // outStrings.push_back(allWins.at(
 	    
 	    // ## get process state count ##
 	    unsigned int running = 0;
@@ -839,7 +837,7 @@ int main()
 	    outLine.append(std::to_string(zombie));
 	    outLine.append(" zombie");
 	    */
-      }
+     }
     
     processInfo = nullptr;
     pidNumsOld.clear();
@@ -868,11 +866,13 @@ int main()
 	  {
 	    if(highlight == true)
 	      {
+#if _CURSES		
 		wattroff(allWins.at(sortState)->getWindow(),
 			 A_BOLD);
 	    	sortState--;
 	    	wattron(allWins.at(sortState)->getWindow(),
 	    		A_BOLD);
+#endif	      
 	      }
 	    else
 	      {
@@ -883,11 +883,13 @@ int main()
 	  {
 	    if(highlight == true)
 	      {
+#if _CURSES		
 		wattroff(allWins.at(sortState)->getWindow(),
 			 A_BOLD);
 		sortState++;
 		wattron(allWins.at(sortState)->getWindow(),
 			A_BOLD);
+#endif		
 	      }
 	    else
 	      {
@@ -1053,8 +1055,11 @@ int main()
 #endif
     
   } while(true);
-    
+
+
+#if _CURSES  
   endwin();
+#endif
   
   return 0;
 } // end of "main"
