@@ -49,14 +49,23 @@ void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins)
  */
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
-
-  for(int i = 0; i < wins.size(); i++)
-    {
-      if(wins.at(i)->getWindow() != nullptr)
-	{
-	  werase(wins.at(i)->getWindow());
-	}
-    }
+  werase(wins.at(_MAINWIN)->getWindow());
+  werase(wins.at(_TOPWIN)->getWindow());
+  werase(wins.at(_TASKSWIN)->getWindow());
+  werase(wins.at(_CPUWIN)->getWindow());
+  werase(wins.at(_MEMWIN)->getWindow());
+  werase(wins.at(_PIDWIN)->getWindow());
+  werase(wins.at(_USERWIN)->getWindow());
+  werase(wins.at(_PRWIN)->getWindow());
+  werase(wins.at(_NIWIN)->getWindow());
+  werase(wins.at(_VIRTWIN)->getWindow());
+  werase(wins.at(_RESWIN)->getWindow());
+  werase(wins.at(_SHRWIN)->getWindow());
+  werase(wins.at(_SWIN)->getWindow());
+  werase(wins.at(_PROCCPUWIN)->getWindow());
+  werase(wins.at(_PROCMEMWIN)->getWindow());
+  werase(wins.at(_PROCTIMEWIN)->getWindow());
+  werase(wins.at(_COMMANDWIN)->getWindow());
 }
 
 
@@ -162,6 +171,44 @@ void attroffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
   wattroff(wins.at(_USERWIN)->getWindow(), COLOR_PAIR(attrs));
   wattroff(wins.at(_PIDWIN)->getWindow(), COLOR_PAIR(attrs));
 }
+
+
+
+/*
+  Function:
+   printTopWins
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
+		  const std::vector<std::string> outLines)
+{
+  mvwaddstr(wins.at(_TOPWIN)->getWindow(),
+	    0,
+	    0,
+	    outLines.at(0).c_str());
+  mvwaddstr(wins.at(_TASKSWIN)->getWindow(),
+	    0,
+	    0,
+	    outLines.at(1).c_str());
+  mvwaddstr(wins.at(_CPUWIN)->getWindow(),
+	    0,
+	    0,
+	    outLines.at(2).c_str());
+  mvwaddstr(wins.at(_MEMWIN)->getWindow(),
+	    0,
+	    0,
+	    outLines.at(3).c_str());
+  mvwaddstr(wins.at(_MEMWIN)->getWindow(),
+	    1,
+	    0,
+	    outLines.at(4).c_str());
+}
+
 
 
 
@@ -521,17 +568,6 @@ void printColorLine(const std::unordered_map<int, CursesWindow*>& wins,
 		    const int& row,
 		    const int& attrs)
 {
-  /*
-  for(int i = 0; i < winNums.size(); i++)
-    {
-      wattron(wins.at(winNums.at(i))->getWindow(), COLOR_PAIR(attrs));
-      mvwaddstr(wins.at(winNums.at(i))->getWindow(),
-		row,
-		0,
-		colorLine.c_str());
-      wattroff(wins.at(winNums.at(i))->getWindow(), COLOR_PAIR(attrs));    
-    }
- */
   wattron(wins.at(_MAINWIN)->getWindow(), COLOR_PAIR(attrs));
   mvwaddstr(wins.at(_MAINWIN)->getWindow(),
 	    row,

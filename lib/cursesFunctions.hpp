@@ -13,6 +13,7 @@
 #include "_progStateConsts.hpp"
 #include "_cursesWinConsts.hpp"
 
+
 void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins);
@@ -20,7 +21,10 @@ void attronBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
 		      int attrs);
 void attroffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
 		       int attrs);
+void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearBottomWins(const std::unordered_map<int, CursesWindow*>& wins);
+void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
+		  const std::vector<std::string> outLines);
 void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins);
 void printProcs(const int& shiftY,
 		const int& shiftX,
