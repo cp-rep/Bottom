@@ -8,9 +8,10 @@
 
    The current solution sorts by the list type (PID, USER, PR...).  The algorithms
    determine the significant values and places them in descending order.  If there
-   is a duplicate value, it sorts those by PID in descending order. This pattern
-   is repeated until all the lists are sorted(although the algorithm doesn't 
-   necessarily operate systematically by that pattern, it is the result).
+   is a duplicate value, it sorts those by PID in ascending order. This pattern
+   is repeated until all lists are sorted(although the algorithm doesn't 
+   necessarily operate systematically by the described  pattern, it is the
+   result).
 */
 #include "sortProcessLists.hpp"
 
