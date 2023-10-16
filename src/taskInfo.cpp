@@ -3,7 +3,7 @@
    taskInfo.hpp
  
   Description:
-   Class implementation for the TaskInfo class.
+   The class implementation for the TaskInfo class.
 */
 #include "taskInfo.hpp"
 
@@ -18,38 +18,38 @@
    initializing related class data.
 
   Input:
-   running              - a reference to a const unsigned int
+   running              - A reference to a const unsigned int
                           value that represents the state "R"
 			  for a current running process.
 
-   unSleep              - a reference to a const unsigned int
+   unSleep              - A reference to a const unsigned int
                           value that represents the
 			  uninteruptible sleep state "D" of a
 			  process.
 
-   inSleep              - a reference to a const unsigned int
+   inSleep              - A reference to a const unsigned int
                           value that represents the
 			  interuptible sleep state "S" of a
 			  process.
 
-   sleeping             - a reference to a const unsigned int
+   sleeping             - A reference to a const unsigned int
                           value that represents the total amount
 			  of sleeping processes.
 
 
-   stopped              - a reference to a const unsigned int
+   stopped              - A reference to a const unsigned int
                           value that represents the
 			  stopped/traced state "T" of a process.
 
-   zombie               - a reference to a const unsigned int
+   zombie               - A reference to a const unsigned int
                           value that represents the
 			  zombie state "Z" of a process.
 			  
-   idle                 - a reference to a const unsigned int
+   idle                 - A reference to a const unsigned int
                           value that represents the
 			  idle state "I" of a process.
 
-   total                - a reference to a const unsigned int
+   total                - A reference to a const unsigned int
                           value that represents the total amount
 			  of allocated process in the process list.
 			  
