@@ -26,12 +26,11 @@
   - remove SecondsToTime class and put related functions in a new file called
     calculateTime.hpp/cpp
   - create a docker image that comes with all the modules necessary for building
-    Bottom and GTests for easier/safe testing for interested parties.
+    Bottom and GTests for easier/"safer" testing for interested parties.
   - Find why Top's %CPU calculation updates faster for processes that are
     allocated after Bottom is already running
   - add function that takes a vector parameter that determines which lines are
     desired for output on the Top Windows
-  - fix the printing order so that the smear no longer occurs
 */
 #include <iostream>
 #include <ctime>
@@ -102,10 +101,10 @@ const std::vector<int> sortByUSER
 
 /*
   Function:
-  main
+   main
 
   Description:
-  The main driver function for the Bottom program.
+   The main driver function for the Bottom program.
  */
 int main()
 {
@@ -394,7 +393,7 @@ int main()
 	       numCols,
 	       startY,
 	       startX);
-  // define PercentCPU window
+  // define %CPU window
   numCols = 5;
   startY = memWin.getStartY() + _YOFFSET - 3;
   startX = PIDWin.getNumCols() +
@@ -414,7 +413,7 @@ int main()
 				 numCols,
 				 startY,
 				 startX);
-  // define PercentMEM window
+  // define %MEM window
   numCols = 5;
   startY = memWin.getStartY() + _YOFFSET - 3;
   startX = PIDWin.getNumCols() +
@@ -435,7 +434,7 @@ int main()
 				 numCols,
 				 startY,
 				 startX);
-  // define TIME window
+  // define TIME+ window
   numCols = 9;
   startY = memWin.getStartY() + _YOFFSET - 3;
   startX = PIDWin.getNumCols() +
@@ -538,7 +537,7 @@ int main()
 #endif    
     
     tempLine.clear();
-    // ## find running processes and update the list if needed ##
+    // ## get running processes and update the list ##
     // store old process list
     std::vector<int> pidNumsOld(pidNums);
     std::vector<int> pidNumsDead;
@@ -548,7 +547,7 @@ int main()
     pidNums = findNumericDirs(_PROC);
     std::sort(pidNums.begin(), pidNums.end());
     
-    // find any dead processes
+    // find any dead processes in old list
     for(int i = 0; i < pidNumsOld.size(); i++)
       {
 	bool exists = false;
@@ -568,7 +567,7 @@ int main()
 	  }
       }
 
-    // remove dead processes from the process umap
+    // remove dead processes from the procData unordered map
     for(int i = 0; i < pidNumsDead.size(); i++)
       {
 	if(procData.count(pidNumsDead.at(i)) > 0)
@@ -578,15 +577,16 @@ int main()
 	  }
       }
 
-    // update processes data
+    // update running process data
     for(int i = 0; i < pidNums.size(); i++)
       {
-	// if process is new, allocate it
+	// if new process was found, allocate it
 	if(procData.count(pidNums.at(i)) == 0)
 	  {
 	    processInfo = new ProcessInfo();
 	    procData.insert(std::make_pair(pidNums.at(i), processInfo));
 	  }
+	
 	    std::string filePath;
 	    std::string lineString;
 	    const std::string currProc = _PROC + std::to_string(pidNums.at(i));
@@ -742,7 +742,7 @@ int main()
 				 doubleToStr(cpuInfo.getAvgWa(), 1),
 				 doubleToStr(cpuInfo.getAvgSt(), 1));
 #endif	    
-	    // memInfo data from /proc/meminfo
+	    // ## get MiB Mem  and MiB Swap ##
 	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
 	    parsedLine = parseLine(fileLine);
 	    memInfo.setMemTotal(convertToInt(parsedLine.at(1)));
@@ -819,7 +819,7 @@ int main()
 		}
 	      }
 
-	    // save task data in object in case we want to use later
+	    // save process state data in object in case we want to use later
 	    taskInfo.setRunning(running);
 	    taskInfo.setUnSleep(unSleep);
 	    taskInfo.setInSleep(inSleep);
@@ -899,7 +899,7 @@ int main()
       }
 
     // ## update states ##
-    // change process state
+    // program state
     switch(progState)
       {
       case _PROGSTATEHELP: // help
@@ -924,7 +924,7 @@ int main()
 
     highlightIndex = sortState;
     
-    // change sort state
+    // process info sort state
     switch(sortState)
       {
       case _PIDWIN:
@@ -1078,15 +1078,16 @@ int main()
 
 /*
   Function:
-  printWindowToLog
+   printWindowToLog
 
   Description:
-  A debugging function that prints a CursesWindow object's current data members
+   A debugging function that prints a CursesWindow object's current data members
    to the log file.
 
   Input:
   log             - a reference to an output file stream object, the
                     log file in the /Bottom/log/ folder
+		    
   win             - A const reference to a CursesWindow object that will
                     be used to print it's member data to the log file.
 
