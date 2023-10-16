@@ -1,12 +1,13 @@
 /*
-  File: processInfo.hpp
+  File:
+   processInfo.hpp
   
   Description:
-  The ProcessInfo class is used to store information about processes found
-  from the "/proc/" folder and its subdirectories.
+   The ProcessInfo class is used to store information about processes found
+   from the "/proc/" folder and its subdirectories.
  */
-#ifndef PROCESSWINDOW_HPP
-#define PROCESSWINDOW_HPP
+#ifndef PROCESSINFO_HPP
+#define PROCESSINFO_HPP
 #include <string>
 
 class ProcessInfo{
