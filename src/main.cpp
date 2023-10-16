@@ -19,16 +19,10 @@
   Changes/Fixes Needed:
   - get correct user count
   - get/calculate TIME+ window
-  - fix %CPU value calculations
-  - get/calculate %MEM value
   - determine how Top decides what processes/users have priority in the sort 
     list to come first
   - create a docker image that comes with all the modules necessary for building
     Bottom and GTests for easier/"safer" testing for interested parties.
-  - Find why Top's %CPU calculation updates faster for processes that are
-    allocated after Bottom is already running
-  - add function that takes a vector parameter that determines which lines are
-    desired for output on the Top Windows
 */
 #include <iostream>
 #include <ctime>
@@ -47,6 +41,7 @@
 #include <dirent.h>
 #include <algorithm>
 #include <set>
+#include <cmath>
 #include "log.hpp"
 #include "cursesWindow.hpp"
 #include "mainWindow.hpp"
@@ -154,8 +149,8 @@ int main()
   MemInfo memInfo;
   CPUInfo cpuInfo;
   TaskInfo taskInfo;
-  ProcessInfo* processInfo;
-  std::vector<int> pidNums; // to be populated with all current /proc/[pid] numbers
+  ProcessInfo* processInfo; // to be populated with all process output data
+  std::vector<int> pidNums; // all currently allocated process PIDs
   std::unordered_map<int, ProcessInfo*> procData; // to be populated with /proc/[pid] data
 
   // window related vars
@@ -589,6 +584,44 @@ int main()
 	    const std::string currProc = _PROC + std::to_string(pidNums.at(i));
 	    unsigned int value = 0;
 
+	    // ## get MiB Mem  and MiB Swap ##
+	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
+	    parsedLine = parseLine(fileLine);
+	    memInfo.setMemTotal(convertToInt(parsedLine.at(1)));
+	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 2);
+	    parsedLine = parseLine(fileLine);
+	    memInfo.setMemFree(convertToInt(parsedLine.at(1)));
+	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 3);
+	    parsedLine = parseLine(fileLine);
+	    memInfo.setMemAvailable(convertToInt(parsedLine.at(1)));
+	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 4);
+	    parsedLine = parseLine(fileLine);
+	    memInfo.setBuffers(convertToInt(parsedLine.at(1)));
+	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 5);
+	    parsedLine = parseLine(fileLine);
+	    memInfo.setCached(convertToInt(parsedLine.at(1)));
+	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 15);
+	    parsedLine = parseLine(fileLine);
+	    memInfo.setSwapTotal(convertToInt(parsedLine.at(1)));
+	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 16);
+	    parsedLine = parseLine(fileLine);
+	    memInfo.setSwapFree(convertToInt(parsedLine.at(1)));
+	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 26);
+	    parsedLine = parseLine(fileLine);
+#if _CURSES	    
+	    memInfo.setSReclaimable(convertToInt(parsedLine.at(1)));
+	    memInfo.setMemUsed(memInfo.calculateMemUsed());
+	    memInfo.setSwapUsed(memInfo.calculateSwapUsed());
+	    memInfo.setBuffCache(memInfo.calculateBuffCache());
+	    memWin.setStringMiB(doubleToStr(KiBToMiB(memInfo.getMemTotal()), 1),
+				doubleToStr(KiBToMiB(memInfo.getMemFree()), 1),
+				doubleToStr(KiBToMiB(memInfo.getMemUsed()), 1),
+				doubleToStr(KiBToMiB(memInfo.getBuffCache()), 1));
+	    memWin.setStringSwap(doubleToStr(KiBToMiB(memInfo.getSwapTotal()), 1),
+				 doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1),
+				 doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1),
+				 doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1));
+#endif	    
 	    // set pid
 	    procData[pidNums.at(i)]->setPID(pidNums.at(i));
 
@@ -666,15 +699,14 @@ int main()
 		double utime = 0;
 		double cutime = 0;
 		double pstart = 0;
-		double newVal = 0;
-		int intPercentage = 0;
+		double percent = 0;
 		
 		// get uptime
 		fileLine = returnFileLineByNumber(_UPTIME, 1);
 		parsedLine = parseLine(fileLine);
-		newVal = stringToDouble(parsedLine.at(0));
-		uptime.setTotalSecs(newVal);
-		procData[pidNums.at(i)]->setCPUUsage(newVal);
+		percent = stringToDouble(parsedLine.at(0));
+		uptime.setTotalSecs(percent);
+		procData[pidNums.at(i)]->setCPUUsage(percent);
 
 		// get priority
 		lineString = fixStatLine(lineString);
@@ -689,31 +721,26 @@ int main()
 		// get S
 		procData[pidNums.at(i)]->setS(lineString.at(0));
 
-		// get %cpu for processes
+		// get %cpu for current process
 		// (utime - stime)/(system uptime - process start time)
 		// (col(14) - col(15))/(/proc/uptime(0) - col(22)
  		utime = convertToInt(parsedLine.at(11));
 		cutime = convertToInt(parsedLine.at(12));
 		pstart = convertToInt(parsedLine.at(19));
-		newVal = (utime + cutime)/(uptime.getTotalSecs() - (pstart/100));
+		percent = (utime + cutime)/(uptime.getTotalSecs() - (pstart/100));
+		percent = std::ceil(percent * 100);
+		percent = percent/100;
+		procData[pidNums.at(i)]->setCPUUsage(percent);
 
-		// modify cpu% to xx.x
-		newVal *= 10;
-		intPercentage = newVal;
-		
-		if(intPercentage != 0)
-		  {
-		    newVal = intPercentage;
-		    newVal = newVal/10;
-		    procData[pidNums.at(i)]->setCPUUsage(newVal);
-		  }
-		else
-		  {
-		    procData[pidNums.at(i)]->setCPUUsage(0);
-		  }
+		// ## get %MEM ##
+		percent = procData[pidNums.at(i)]->getRES();
+		percent = percent/(double)memInfo.getMemTotal();
+		percent = std::ceil(percent * 1000.0);
+		percent = percent/10;
+		procData[pidNums.at(i)]->setMEMUsage(percent);		    
 	      }
 
-	    // ## get %CPU ##
+	    // ## get %CPU  for process CPU win ##
 	    const double ticks = (double)sysconf(_SC_CLK_TCK);
 	    filePath = _PROC;
 	    filePath.append(_STAT);
@@ -738,47 +765,7 @@ int main()
 				 doubleToStr(cpuInfo.getAvgId(), 1),
 				 doubleToStr(cpuInfo.getAvgWa(), 1),
 				 doubleToStr(cpuInfo.getAvgSt(), 1));
-#endif	    
-	    // ## get MiB Mem  and MiB Swap ##
-	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
-	    parsedLine = parseLine(fileLine);
-	    memInfo.setMemTotal(convertToInt(parsedLine.at(1)));
-	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 2);
-	    parsedLine = parseLine(fileLine);
-	    memInfo.setMemFree(convertToInt(parsedLine.at(1)));
-	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 3);
-	    parsedLine = parseLine(fileLine);
-	    memInfo.setMemAvailable(convertToInt(parsedLine.at(1)));
-	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 4);
-	    parsedLine = parseLine(fileLine);
-	    memInfo.setBuffers(convertToInt(parsedLine.at(1)));
-	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 5);
-	    parsedLine = parseLine(fileLine);
-	    memInfo.setCached(convertToInt(parsedLine.at(1)));
-	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 15);
-	    parsedLine = parseLine(fileLine);
-	    memInfo.setSwapTotal(convertToInt(parsedLine.at(1)));
-	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 16);
-	    parsedLine = parseLine(fileLine);
-	    memInfo.setSwapFree(convertToInt(parsedLine.at(1)));
-	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 26);
-	    parsedLine = parseLine(fileLine);
-
-#if _CURSES	    
-	    memInfo.setSReclaimable(convertToInt(parsedLine.at(1)));
-	    memInfo.setMemUsed(memInfo.calculateMemUsed());
-	    memInfo.setSwapUsed(memInfo.calculateSwapUsed());
-	    memInfo.setBuffCache(memInfo.calculateBuffCache());
-	    memWin.setStringMiB(doubleToStr(KiBToMiB(memInfo.getMemTotal()), 1),
-				doubleToStr(KiBToMiB(memInfo.getMemFree()), 1),
-				doubleToStr(KiBToMiB(memInfo.getMemUsed()), 1),
-				doubleToStr(KiBToMiB(memInfo.getBuffCache()), 1));
-	    memWin.setStringSwap(doubleToStr(KiBToMiB(memInfo.getSwapTotal()), 1),
-				 doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1),
-				 doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1),
-				 doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1));
 #endif
-	    
 	    // ## get process state count ##
 	    unsigned int running = 0;
 	    unsigned int unSleep = 0;
@@ -851,7 +838,7 @@ int main()
 #if _CURSES
     moveVal = input = getch();
     flushinp();
-#endif    
+#endif
 
     if(input != -1)
       {
@@ -959,13 +946,12 @@ int main()
 			  pidNums);
 	break;
       case _PROCCPUWIN:
-	outPids = sortByCPUUSAGE(procData,
+	outPids = sortByCPUUsage(procData,
 				 pidNums);	
 	break;
       case _PROCMEMWIN:
-	outPids = pidNums;
-	std::sort(outPids.begin(),
-		  outPids.end());
+	outPids = sortByMEMUsage(procData,
+				 pidNums);
 	break;
       case _PROCTIMEWIN:
 	outPids = pidNums;
