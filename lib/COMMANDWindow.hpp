@@ -1,6 +1,9 @@
 /*
-  File: COMMANDWindow.hpp
+  File: 
+   COMMANDWindow.hpp
+
   Description:
+   The class definition for the COMMANDWindow derived class.
  */
 #ifndef COMMANDWINDOW_HPP
 #define COMMANDWINDOW_HPP
