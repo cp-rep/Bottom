@@ -1,6 +1,9 @@
 /*
-  File: SWindow.hpp
+  File:
+   SWindow.hpp
+   
   Description:
+   The class definition for the SWindow class(the state window).
  */
 #ifndef SWINDOW_HPP
 #define SWINDOW_HPP

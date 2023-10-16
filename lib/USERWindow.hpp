@@ -1,6 +1,9 @@
 /*
-  File: USERWindow.hpp
+  File:
+   USERWindow.hpp
+   
   Description:
+   The class definition for the USERWindow class.
  */
 #ifndef USERWINDOW_HPP
 #define USERWINDOW_HPP

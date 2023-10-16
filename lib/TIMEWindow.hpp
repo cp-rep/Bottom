@@ -1,6 +1,9 @@
 /*
-  File: TIMEWindow.hpp
+  File:
+   TIMEWindow.hpp
+   
   Description:
+   The class definition for the USERWindow class.
  */
 #ifndef TIMEWINDOW_HPP
 #define TIMEWINDOW_HPP

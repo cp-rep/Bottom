@@ -16,7 +16,7 @@
    
   Description:
    The class constructor for creating TopWindow objects and 
-   initializing related calling object data.
+   initializing related object data.
 
   Input:
    win                  - a pointer to a NCurses window that contains the 

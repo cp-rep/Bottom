@@ -1,7 +1,10 @@
 /*
-  File: VIRTWindow.hpp
+  File:
+   VIRTWindow.hpp
+   
   Description:
- */
+   The class definition for the VIRTWindow class.
+*/
 #ifndef VIRTWINDOW_HPP
 #define VIRTWINDOW_HPP
 #include "cursesWindow.hpp"
@@ -17,7 +20,5 @@ public:
 
 private:
 };
-
-
 
 #endif

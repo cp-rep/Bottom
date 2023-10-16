@@ -3,8 +3,9 @@
    tasksWindow.hpp
 
   Description:
-   Represents the Tasks window of the Top program for the output line
-   "Tasks: XXX total, XXX running, XXX sleeping..."
+   The class definition for the TasksWindow class.
+   
+   For output "Tasks: XXX total, XXX running, XXX sleeping...".
  */
 #ifndef TASKSWINDOW_HPP
 #define TASKSWINDOW_HPP

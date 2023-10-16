@@ -3,8 +3,9 @@
    taskInfo.hpp
   
   Description:
-   The TaskInfo class is used to store and calcualte running "task" values read from
-   "/proc/" directory files.
+   The class definition for the TaskInfo class.
+
+   The TaskInfo class is used to store and calcualte process state values.
 */
 #ifndef TASKINFO_HPP
 #define TASKINFO_HPP
@@ -19,17 +20,11 @@ public:
 	   const unsigned int& stopped = 0,
 	   const unsigned int& zombie = 0,
 	   const unsigned int& idle = 0,
-	   const unsigned int& total = 0)
-  {
-    m_running = running;
-    m_unSleep = unSleep;
-    m_inSleep = inSleep;
-    m_sleeping = sleeping;
-    m_stopped = stopped;
-    m_zombie = zombie;
-    m_idle = idle;
-    m_total = total;
-  }
+	   const unsigned int& total = 0);
+
+  // member functions
+  const unsigned int calcSleeping() { return m_inSleep + m_unSleep + m_idle; }
+  const unsigned int calcTotal() { return m_running + m_sleeping; }
 
   // getters
   const unsigned int& getRunning() { return m_running; }

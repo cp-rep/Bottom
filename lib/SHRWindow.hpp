@@ -1,7 +1,10 @@
 /*
-  File: SHRWindow.hpp
+  File:
+   SHRWindow.hpp
+   
   Description:
- */
+   The class definition for the SHRWindow class.
+*/
 #ifndef SHRWINDOW_HPP
 #define SHRWINDOW_HPP
 #include "cursesWindow.hpp"

@@ -1,6 +1,13 @@
 /*
   File: secondsToTime.hpp
- */
+
+  Description:
+   Class definition for the SecondsToTime class.
+
+   SecondsToTime creates objects with the ability to do conversions on time
+   data such as converting hours to seconds, or minutes to seconds. It can
+   also return formated time data for output.
+*/
 #ifndef SECONDSTOTIME_HPP
 #define SECONDSTOTIME_HPP
 #include <string>
