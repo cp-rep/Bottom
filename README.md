@@ -4,13 +4,13 @@
 The Bottom program is an exploration in Linux and NCurses through creating a Top-like program from the GNU Core Utilities using C++.  It is not meant to be Top but a side project for learning and experimental features.
 
 ## How to Build Bottom
-Bottom uses the "CMake" utility for building the base program. Use all commands from the ./Bottom working directory.
+Bottom uses the Make utility for building the base program. Use all commands from the ./Bottom working directory.
 - Enter "make dirs" to create necessary directories.
 - Enter "make" to build the program.
 - Enter "make clean" to remove all build files.
 
 ## How to Build Unit Tests
-GTest uses the "CMake" utility and Python3 for building GTest files and directories. Use all commands from the ./Bottom working directory unless directed otherwise.
+GTest uses the CMake utility and Python3 for building GTest files and directories. Use all commands from the ./Bottom working directory unless directed otherwise.
 - Enter "cmake -S. -B [output directory name]" to build GTest testing interface.
 - Enter "cmake --build [output directory name used above]" to build test files.
 - Enter "ctest" from ./Bottom/[output directory] or execute the "unit_tests" program from the ./Bottom/[output directory]/bin/unit_tests file path to start tests.
