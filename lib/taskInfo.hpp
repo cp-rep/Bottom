@@ -12,8 +12,7 @@
 
 class TaskInfo {
 public:
-  TaskInfo(const std::string taskLine = "",
-	   const unsigned int& running = 0,
+  TaskInfo(const unsigned int& running = 0,
 	   const unsigned int& unSleep = 0,
 	   const unsigned int& inSleep = 0,
 	   const unsigned int& sleeping = 0,
@@ -22,7 +21,6 @@ public:
 	   const unsigned int& idle = 0,
 	   const unsigned int& total = 0)
   {
-    m_taskLine = taskLine;
     m_running = running;
     m_unSleep = unSleep;
     m_inSleep = inSleep;
@@ -33,11 +31,7 @@ public:
     m_total = total;
   }
 
-  // member functions
-  void defineTaskLine();
-  
   // getters
-  const std::string& getTaskLine() { return m_taskLine; }
   const unsigned int& getRunning() { return m_running; }
   const unsigned int& getUnSleep() { return m_unSleep; }
   const unsigned int& getInSleep() { return m_inSleep; }
@@ -47,7 +41,6 @@ public:
   const unsigned int& getTotal() { return m_total; }
   
   // setters
-  void setTaskLine(const std::string& taskLine) { m_taskLine = taskLine; }  
   void setRunning(const unsigned int& running) { m_running = running; }
   void setUnSleep(const unsigned int& unSleep) { m_unSleep = unSleep; }
   void setInSleep(const unsigned int& inSleep) { m_inSleep = inSleep; }
@@ -58,7 +51,6 @@ public:
   void setTotal(const unsigned int& total) { m_total = total; }
   
 private:
-  std::string m_taskLine;
   unsigned int m_running;
   unsigned int m_unSleep;
   unsigned int m_inSleep;
