@@ -157,7 +157,6 @@ int main()
   ProcessInfo* processInfo;
   std::vector<int> pidNums; // to be populated with all current /proc/[pid] numbers
   std::unordered_map<int, ProcessInfo*> procData; // to be populated with /proc/[pid] data
-  std::unordered_map<int, ProcessInfo*>::iterator procDataIt;
 
   // window related vars
   std::unordered_map<int, CursesWindow*> allWins;
@@ -497,14 +496,14 @@ int main()
   allWins.insert(std::make_pair(_PROCTIMEWIN, &TIMEWin));
   allWins.insert(std::make_pair(_COMMANDWIN, &COMMANDWin));
 
-  // ## create colorLine ##
-  std::string colorLine;
-  colorLine = createColorLine(mainWin.getNumCols());
-
-  // ## define program states ##
+  // ## define the main program states ##
   progStates.insert(std::make_pair(_PROGSTATEHELP, 1)); // open help menu
   progStates.insert(std::make_pair(_PROGSTATEQUIT, 1)); // quit
   progStates.insert(std::make_pair(_PROGSTATEHL, 1)); // highlight column
+
+  // ## create the color line for MainWindow output ##
+  std::string colorLine;
+  colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
 #endif
 
   // ## run the main program loop ##
@@ -1041,20 +1040,21 @@ int main()
     clearAllWins(allWins);
     printTopWins(allWins,
 		 outLines);
-    printProcs(shiftY,
-	       shiftX,
+    printProcs(allWins,
+	       procData,	       
 	       outPids,
-	       procData,
-	       allWins);
+	       shiftY,
+	       shiftX);
     attronBottomWins(allWins,
 		     _BLACK_TEXT);
     printWindowNames(allWins);
     attroffBottomWins(allWins,
 		      _BLACK_TEXT);
     printColorLine(allWins,
-		   colorLine,
 		   _YOFFSET,
-		   _BLACK_TEXT);
+		   _BLACK_TEXT,
+		   _MAINWIN,
+		   colorLine);
     refreshAllWins(allWins);
     doupdate();
     
