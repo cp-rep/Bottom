@@ -1,8 +1,10 @@
 /*
-  File: sortProcessLists.hpp
+  File:
+   sortProcessLists.hpp
   
   Description:
-  Header file for function declarations for PID list sorting functions
+   Header file containing function declarations for sorting allocated process
+   data.
  */
 #ifndef SORTPROCESSLISTS_HPP
 #define SORTPROCESSLISTS_HPP
@@ -27,9 +29,10 @@ const std::vector<int> sortBySHR(const std::unordered_map<int, ProcessInfo*>& pr
 				 const std::vector<int>& pidNums);
 const std::vector<int> sortByS(std::unordered_map<int, ProcessInfo*>& procData,
 			       const std::vector<int>& pidNums);
-const std::vector<int> sortByCPUUSAGE(const std::unordered_map<int, ProcessInfo*>& procData,
+const std::vector<int> sortByCPUUsage(const std::unordered_map<int, ProcessInfo*>& procData,
+				      const std::vector<int>& pidNums);
+const std::vector<int> sortByMEMUsage(const std::unordered_map<int, ProcessInfo*>& procData,
 				      const std::vector<int>& pidNums);
 const std::vector<int> sortByCOMMAND(std::unordered_map<int, ProcessInfo*>& procData,
 				     const std::vector<int>& pidNums);
-
 #endif

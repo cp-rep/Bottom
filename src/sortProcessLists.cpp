@@ -2,7 +2,9 @@
   File: sortProcessLists.cpp
   
   Description:
-   These are a temporary brute force solution for sorting the process data until it
+   Function definitions for the sortProcessLists.hpp file.
+  
+   These are temporary brute force solutions for sorting the process data until it
    is better understood how the TOP program determines the priority for some of the
    operating system processes in sorting order.
 
@@ -491,7 +493,7 @@ const std::vector<int> sortBySHR(const std::unordered_map<int, ProcessInfo*>& pr
    sortByS
 
   Description:
-   Sorts the pid list by S. Complexity O(N^2)
+   Sorts the pid list by S.
 
   Input:
    procData             - all stored process data that will be traversed in
@@ -568,10 +570,11 @@ const std::vector<int> sortByS(std::unordered_map<int, ProcessInfo*>& procData,
 
 /*
   Function:
-   sortByCPUUSAGE
+   sortByCPUUsage
 
   Description:
-   Sorts the pid list by COMMAND. Complexity O(N^2)
+   Sorts the pid list by in descending order of the highest current CPU usage of
+   the allocated processes.
 
   Input:
    procData             - all stored process data that will be traversed in
@@ -584,65 +587,148 @@ const std::vector<int> sortByS(std::unordered_map<int, ProcessInfo*>& procData,
    const std::vector<int>
                         - the sorted list of PIDs
 */
-const std::vector<int> sortByCPUUSAGE(const std::unordered_map<int, ProcessInfo*>& procData,
+const std::vector<int> sortByCPUUsage(const std::unordered_map<int, ProcessInfo*>& procData,
 				      const std::vector<int>& pidNums)
 {
-  std::vector<std::pair<double,int>> procCPUUSAGE;
+  std::vector<std::pair<double,int>> procCPUUsage;
   std::set<double> intTypes;
   std::vector<double> types;
   std::vector<int> tempPIDs;
   
-  // get all std::pairs of <CPUUSAGE, pid> and store them in vector
+  // get all std::pairs of <CPUUsage, pid> and store them in vector
   for(int i = 0, j = 0; i < procData.size(); i++)
     {
-      procCPUUSAGE.push_back(std::make_pair(procData.at(pidNums.at(i))->getCPUUsage(),
+      procCPUUsage.push_back(std::make_pair(procData.at(pidNums.at(i))->getCPUUsage(),
 					    pidNums.at(i)));
 
-      // get the different CPUUSAGE types (repeated values for separating later)
-      if(intTypes.count(procCPUUSAGE.at(i).first) == 0)
+      // get the different CPUUsage types (repeated values for separating later)
+      if(intTypes.count(procCPUUsage.at(i).first) == 0)
 	{
-	  intTypes.insert(procCPUUSAGE.at(i).first);
+	  intTypes.insert(procCPUUsage.at(i).first);
 	}
     }
 
-  // save CPUUSAGE types as vector of double for later use
+  // save CPUUsage types as vector of double for later use
   for(std::set<double>::iterator it = intTypes.begin();
       it != intTypes.end(); it++)
     {
       types.push_back(*it);
     }
   
-  // store all PIDS as a vector of vector of std::pair<PID, CPUUSAGE>
-  std::vector<std::vector<std::pair<int, double>>> sortedByCPUUSAGETypePID(types.size());
-  for(int i = 0; i < procCPUUSAGE.size(); i++)
+  // store all PIDS as a vector of vector of std::pair<PID, CPUUsage>
+  std::vector<std::vector<std::pair<int, double>>> sortedByCPUUsageTypePID(types.size());
+  for(int i = 0; i < procCPUUsage.size(); i++)
     {
       for(int j = 0; j < types.size(); j++)
 	{
-	  if(types.at(j) == procCPUUSAGE.at(i).first)
+	  if(types.at(j) == procCPUUsage.at(i).first)
 	    {
-	      sortedByCPUUSAGETypePID[j].push_back(std::make_pair(procCPUUSAGE.at(i).second,
-							      procCPUUSAGE.at(i).first));
+	      sortedByCPUUsageTypePID[j].push_back(std::make_pair(procCPUUsage.at(i).second,
+							      procCPUUsage.at(i).first));
 	    }
 	}
     }
   
-  // sort each CPUUSAGE types list by PID
-  for(int i = 0; i < sortedByCPUUSAGETypePID.size(); i++)
+  // sort each CPUUsage types list by PID
+  for(int i = 0; i < sortedByCPUUsageTypePID.size(); i++)
     {
-      std::sort(sortedByCPUUSAGETypePID.at(i).begin(), sortedByCPUUSAGETypePID.at(i).end());
+      std::sort(sortedByCPUUsageTypePID.at(i).begin(), sortedByCPUUsageTypePID.at(i).end());
     }
 
   // store the list of sorted PIDs to vector<int> to return to caller 
-  for(int i = sortedByCPUUSAGETypePID.size() - 1; i >= 0; i--)    
+  for(int i = sortedByCPUUsageTypePID.size() - 1; i >= 0; i--)    
     {
-      for(int j = 0; j < sortedByCPUUSAGETypePID.at(i).size(); j++)
+      for(int j = 0; j < sortedByCPUUsageTypePID.at(i).size(); j++)
 	{
-	  tempPIDs.push_back(sortedByCPUUSAGETypePID.at(i).at(j).first);
+	  tempPIDs.push_back(sortedByCPUUsageTypePID.at(i).at(j).first);
 	}
     }
   
   return tempPIDs;
-} // end of "sortByCPUUSAGE"
+} // end of "sortByCPUUsage"
+
+
+
+/*
+  Function:
+   sortByMEMUsage
+
+  Description:
+   Sorts the pid list by in descending order of the highest current memory usage of
+   the allocated processes.  
+
+
+  Input:
+   procData             - all stored process data that will be traversed in
+                          ordere to retrieve desired sort state values
+
+   pidNums              - a const reference to a PID list representing all running
+                          processes
+
+  Output:
+   const std::vector<int>
+                        - the sorted list of PIDs
+*/
+const std::vector<int> sortByMEMUsage(const std::unordered_map<int, ProcessInfo*>& procData,
+				      const std::vector<int>& pidNums)
+{
+  std::vector<std::pair<double,int>> procMEMUsage;
+  std::set<double> intTypes;
+  std::vector<double> types;
+  std::vector<int> tempPIDs;
+  
+  // get all std::pairs of <MEMUsage, pid> and store them in vector
+  for(int i = 0, j = 0; i < procData.size(); i++)
+    {
+      procMEMUsage.push_back(std::make_pair(procData.at(pidNums.at(i))->getMEMUsage(),
+					    pidNums.at(i)));
+
+      // get the different MEMUsage types (repeated values for separating later)
+      if(intTypes.count(procMEMUsage.at(i).first) == 0)
+	{
+	  intTypes.insert(procMEMUsage.at(i).first);
+	}
+    }
+
+  // save MEMUsage types as vector of double for later use
+  for(std::set<double>::iterator it = intTypes.begin();
+      it != intTypes.end(); it++)
+    {
+      types.push_back(*it);
+    }
+  
+  // store all PIDS as a vector of vector of std::pair<PID, MEMUsage>
+  std::vector<std::vector<std::pair<int, double>>> sortedByMEMUsageTypePID(types.size());
+  for(int i = 0; i < procMEMUsage.size(); i++)
+    {
+      for(int j = 0; j < types.size(); j++)
+	{
+	  if(types.at(j) == procMEMUsage.at(i).first)
+	    {
+	      sortedByMEMUsageTypePID[j].push_back(std::make_pair(procMEMUsage.at(i).second,
+							      procMEMUsage.at(i).first));
+	    }
+	}
+    }
+  
+  // sort each MEMUsage types list by PID
+  for(int i = 0; i < sortedByMEMUsageTypePID.size(); i++)
+    {
+      std::sort(sortedByMEMUsageTypePID.at(i).begin(), sortedByMEMUsageTypePID.at(i).end());
+    }
+
+  // store the list of sorted PIDs to vector<int> to return to caller 
+  for(int i = sortedByMEMUsageTypePID.size() - 1; i >= 0; i--)    
+    {
+      for(int j = 0; j < sortedByMEMUsageTypePID.at(i).size(); j++)
+	{
+	  tempPIDs.push_back(sortedByMEMUsageTypePID.at(i).at(j).first);
+	}
+    }
+  
+  return tempPIDs;
+} // end of "sortByMEMUsage"
+
 
 
 
@@ -651,7 +737,7 @@ const std::vector<int> sortByCPUUSAGE(const std::unordered_map<int, ProcessInfo*
    sortByCOMMAND
 
   Description:
-   Sorts the pid list by COMMAND. Complexity O(N^2)
+   Sorts the pid list by COMMAND.
 
   Input:
    procData             - all stored process data that will be traversed in
