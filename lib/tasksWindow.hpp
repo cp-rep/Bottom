@@ -1,6 +1,10 @@
 /*
-  File: tasksWindow.hpp
+  File: 
+   tasksWindow.hpp
+
   Description:
+   Represents the Tasks window of the Top program for the output line
+   "Tasks: XXX total, XXX running, XXX sleeping..."
  */
 #ifndef TASKSWINDOW_HPP
 #define TASKSWINDOW_HPP

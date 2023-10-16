@@ -1,6 +1,11 @@
 /*
-  File: cpuWindow.hpp
+  File: 
+   cpuWindow.hpp
+  
   Description:
+   Represents the %CPU(s) window of the Top program for the output line
+   "%CPU(s): - X.X us, X.X sy, X.X ni..."
+   
  */
 #ifndef CPUWINDOW_HPP
 #define CPUWINDOW_HPP
@@ -38,6 +43,7 @@ public:
     m_cpuLine.append(avgSt);
     m_cpuLine.append(" st, ");
   }
+  
   const std::string& getCPULine() { return m_cpuLine; }
   void setCPULine(const std::string& cpuLine) { m_cpuLine = cpuLine; };
   
