@@ -151,10 +151,13 @@ void TopWindow::defineTopLine(const std::string& HHMMSS,
       else
 	{
 	  m_topLine.append(std::to_string(numHours));
-	      m_topLine.append(std::to_string(numHours));
-	      m_topLine.append(":");
-	      m_topLine.append(std::to_string(numMinutes));
-	      m_topLine.append(", ");
+	  m_topLine.append(":"); 
+	  if(numMinutes < 10)
+	    {
+	      m_topLine.append("0");
+	    }
+	  m_topLine.append(std::to_string(numMinutes));
+	  m_topLine.append(", ");
 
 	}
     }
