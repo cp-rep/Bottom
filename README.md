@@ -16,7 +16,7 @@ Bottom uses GTest for its unit testing.  GTest requires the GTest package and us
 - Enter "ctest" from ./Bottom/[output directory] or execute the "unit_tests" program from the ./Bottom/[output directory]/bin/unit_tests file path to start tests.
 
 ## Current Features and How to Use Them
-- The arrow keys allow scrolling left right up and down shifting the windows.
+- The arrow keys allow shifting the window's left, right, up, and down.
 - The '<' and '>' keys determine which column to sort by.
 - The 'x' key allows highlighting a particular column.
 
