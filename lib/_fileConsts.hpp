@@ -5,7 +5,7 @@
 #define _FILECONSTS_HPP
 
 // paths
-#define _PROC "/proc"
+#define _PROC "/proc/"
 #define _COMM "/comm"
 #define _STAT "/stat"
 #define _STATUS "/status"
