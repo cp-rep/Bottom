@@ -1,5 +1,12 @@
 /*
-  File: cursesFunctions.cpp
+  File:
+   cursesFunctions.cpp
+
+  Description:
+   A collection of function declarations for manipulating CursesWindow objects.
+   This includes creating, deleting, moving, and sorting the WINDOWs or their
+   data.  Some functions for making necessary related calculations are
+   also included.  
  */
 #include "cursesFunctions.hpp"
 #include <algorithm>
@@ -11,7 +18,7 @@
   refreshAllWins
 
   Description:
- */
+*/
 void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
   std::unordered_map<int, CursesWindow*>::const_iterator it = wins.begin();
@@ -46,7 +53,7 @@ void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins)
   clearAllWins
 
   Description:
- */
+*/
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
   werase(wins.at(_MAINWIN)->getWindow());
@@ -75,7 +82,7 @@ void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins)
   clearTopWins
 
   Description:
- */
+*/
 void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
     werase(wins.at(_TOPWIN)->getWindow());
@@ -94,7 +101,7 @@ void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins)
   Input:
 
   Output:
- */
+*/
 void clearBottomWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
     werase(wins.at(_COMMANDWIN)->getWindow());
@@ -126,7 +133,7 @@ void clearBottomWins(const std::unordered_map<int, CursesWindow*>& wins)
   Input:
 
   Output:
- */
+*/
 void attronBottomWins(const std::unordered_map<int, CursesWindow*>& wins, int attrs)
 {  
   wattron(wins.at(_COMMANDWIN)->getWindow(), COLOR_PAIR(attrs));
@@ -154,7 +161,7 @@ void attronBottomWins(const std::unordered_map<int, CursesWindow*>& wins, int at
   Input:
 
   Output:
- */
+*/
 void attroffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
 		       int attrs)
 {
@@ -221,7 +228,7 @@ void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
   Input:
 
   Output:
- */
+*/
 void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins)
 {
   std::string outString;
@@ -304,17 +311,17 @@ void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins)
 
 /*
   Function:
-  printSortedProcsReverse
+   printSortedProcsReverse
 
   Description:
-
+  
   Input:
-
+  
   Output:
- */
+*/
 void printSortedProcsReverse(const int& startLine,
 			     const std::vector<std::pair<double, int>>& sortedOut,
-			     const std::unordered_map<int, ProcessInfo*>& pUmap,
+			     const std::unordered_map<int, ProcessInfo*>& procData,
 			     const std::unordered_map<int, CursesWindow*>& wins)
 {
   for(int k = sortedOut.size() - 1, g = startLine; k >= 0; k--, g++)
@@ -323,47 +330,47 @@ void printSortedProcsReverse(const int& startLine,
       mvwaddstr(wins.at(_PIDWIN)->getWindow(),
 		g,
 		0,
-		std::to_string(pUmap.at(sortedOut.at(k).second)->getPID()).c_str());
+		std::to_string(procData.at(sortedOut.at(k).second)->getPID()).c_str());
       // USER
       mvwaddstr(wins.at(_USERWIN)->getWindow(),
 		g,
 		0,
-		pUmap.at(sortedOut.at(k).second)->getUSER().c_str());
+		procData.at(sortedOut.at(k).second)->getUSER().c_str());
       // PR
       mvwaddstr(wins.at(_PRWIN)->getWindow(),
 		g,
 		0,
-		std::to_string(pUmap.at(sortedOut.at(k).second)->getPR()).c_str());
+		std::to_string(procData.at(sortedOut.at(k).second)->getPR()).c_str());
       // NI
       mvwaddstr(wins.at(_NIWIN)->getWindow(),
 		g,
 		0,
-		std::to_string(pUmap.at(sortedOut.at(k).second)->getNI()).c_str());
+		std::to_string(procData.at(sortedOut.at(k).second)->getNI()).c_str());
       // VIRT
       mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
 		g,
 		0,
-		std::to_string(pUmap.at(sortedOut.at(k).second)->getVIRT()).c_str());
+		std::to_string(procData.at(sortedOut.at(k).second)->getVIRT()).c_str());
       // RES
       mvwaddstr(wins.at(_RESWIN)->getWindow(),
 		g,
 		0,
-		std::to_string(pUmap.at(sortedOut.at(k).second)->getRES()).c_str());
+		std::to_string(procData.at(sortedOut.at(k).second)->getRES()).c_str());
       // SHR
       mvwaddstr(wins.at(_SHRWIN)->getWindow(),
 		g,
 		0,
-		std::to_string(pUmap.at(sortedOut.at(k).second)->getSHR()).c_str());
+		std::to_string(procData.at(sortedOut.at(k).second)->getSHR()).c_str());
       // S
       mvwaddch(wins.at(_SWIN)->getWindow(), 
 	       g,
 	       0,
-	       pUmap.at(sortedOut.at(k).second)->getS());
+	       procData.at(sortedOut.at(k).second)->getS());
       // %CPU
       mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
 		g,
 		0,
-		doubleToStr(pUmap.at(sortedOut.at(k).second)->getCPUUsage(), 1).c_str());
+		doubleToStr(procData.at(sortedOut.at(k).second)->getCPUUsage(), 1).c_str());
       // %MEM
       mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
 		g,
@@ -378,7 +385,7 @@ void printSortedProcsReverse(const int& startLine,
       mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
 		g,
 		0,
-		pUmap.at(sortedOut.at(k).second)->getCOMMAND().c_str());
+		procData.at(sortedOut.at(k).second)->getCOMMAND().c_str());
     }
   
 } // end of "printSortedProcsReverse"
@@ -387,31 +394,67 @@ void printSortedProcsReverse(const int& startLine,
 
 /*
   Function:
-  printProcs
+   printProcs
 
   Description:
+   Prints the bottom windows that contain process related data to the screen
+   (PID, USER, PR, NI...). The control structures ensure that all printing is
+   done in allocated screen space for the CursesWindow objects, both in
+   "row/column" screen position as well as memory.
 
+   A simple loop is used to iterate over all the CursesWindow objects to
+   print their data.
+   
   Input:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+			  to all currently allocated CursesWindow objects
+			  that can be indexed by values 0-16, or the
+			  constants in file _cursesWinConsts.hpp.
 
+   procData             - A reference to a constant unordered map
+                          <int, ProcessInfo*> type. procData contains
+			  pointers to objects that contain the data for
+			  all currently allocated processes. This data
+			  can be indexed by the incoming pidList.
+
+   pidList              - A reference to a constant vector<int> type that
+                          is a list of the PIDs for all currently allocated
+			  processes.
+
+   shiftY               - A reference to a constant integer that represents
+                          the window row position to print the next line to
+			  the screen. It continually gets incremented until
+			  all incoming PIDs have been traversed and printed.
+
+   shiftX               - A reference to a constant ingeger that represents
+                          the current shift state position of the bottom
+			  windows. It is used as a control structure to
+			  ensure only the currently allocated windows
+			  are printed and in their correct row/col positions
+			  to the MainWindow.
   Output:
- */
-void printProcs(const int& shiftY,
-		const int& shiftX,
+   NONE
+*/
+void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
+		const std::unordered_map<int, ProcessInfo*>& procData,
 		const std::vector<int>& pidList,
-		const std::unordered_map<int, ProcessInfo*>& pUmap,
-		const std::unordered_map<int, CursesWindow*>& wins)
+		const int& shiftY,
+		const int& shiftX)
 {
   std::string outString;
 
   for(int i = 0; i < pidList.size(); i++)
     {
       int posY = i + shiftY;
+
+      // ensure nothing is printed over the column titles
       if(posY != 0)
       	{
 	  // PID
 	  if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr)
 	    {
-	      outString = std::to_string(pUmap.at(pidList.at(i))->getPID());
+	      outString = std::to_string(procData.at(pidList.at(i))->getPID());
 	      mvwaddstr(wins.at(_PIDWIN)->getWindow(),
 			posY,
 			wins.at(_PIDWIN)->getNumCols() - outString.length(),
@@ -420,7 +463,7 @@ void printProcs(const int& shiftY,
 	  // USER      
 	  if(shiftX <= _USERWIN && wins.at(_USERWIN)->getWindow() != nullptr)
 	    {
-	      outString = pUmap.at(pidList.at(i))->getUSER();
+	      outString = procData.at(pidList.at(i))->getUSER();
 	      mvwaddstr(wins.at(_USERWIN)->getWindow(),
 			posY,
 			0,
@@ -429,7 +472,7 @@ void printProcs(const int& shiftY,
 	  // PR
 	  if(shiftX <= _PRWIN && wins.at(_PRWIN)->getWindow() != nullptr)
 	    {
-	      const int tempPRVal = pUmap.at(pidList.at(i))->getPR();
+	      const int tempPRVal = procData.at(pidList.at(i))->getPR();
 	      if(tempPRVal == -100)
 		{
 		  outString = "rt";
@@ -446,7 +489,7 @@ void printProcs(const int& shiftY,
 	  // NI
 	  if(shiftX <= _NIWIN && wins.at(_NIWIN)->getWindow() != nullptr)
 	    {
-	      outString = std::to_string(pUmap.at(pidList.at(i))->getNI());
+	      outString = std::to_string(procData.at(pidList.at(i))->getNI());
 	      mvwaddstr(wins.at(_NIWIN)->getWindow(),
 			posY,
 			wins.at(_NIWIN)->getNumCols() - outString.length(),
@@ -455,7 +498,7 @@ void printProcs(const int& shiftY,
 	  // VIRT
 	  if(shiftX <= _VIRTWIN && wins.at(_VIRTWIN)->getWindow() != nullptr)
 	    {
-	      outString = std::to_string(pUmap.at(pidList.at(i))->getVIRT());
+	      outString = std::to_string(procData.at(pidList.at(i))->getVIRT());
 	      mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
 			posY,
 			wins.at(_VIRTWIN)->getNumCols() - outString.length(),
@@ -464,7 +507,7 @@ void printProcs(const int& shiftY,
 	  // RES
 	  if(shiftX <= _RESWIN && wins.at(_RESWIN)->getWindow() != nullptr)
 	    {
-	      outString = std::to_string(pUmap.at(pidList.at(i))->getRES());
+	      outString = std::to_string(procData.at(pidList.at(i))->getRES());
 	      mvwaddstr(wins.at(_RESWIN)->getWindow(),
 			posY,
 			wins.at(_RESWIN)->getNumCols() - outString.length(),
@@ -473,7 +516,7 @@ void printProcs(const int& shiftY,
 	  // SHR
 	  if(shiftX <= _SHRWIN && wins.at(_SHRWIN)->getWindow() != nullptr)
 	    {
-	      outString = std::to_string(pUmap.at(pidList.at(i))->getSHR());
+	      outString = std::to_string(procData.at(pidList.at(i))->getSHR());
 	      mvwaddstr(wins.at(_SHRWIN)->getWindow(),
 			posY,
 			wins.at(_SHRWIN)->getNumCols() - outString.length(),
@@ -485,13 +528,13 @@ void printProcs(const int& shiftY,
 	      mvwaddch(wins.at(_SWIN)->getWindow(),
 		       posY,
 		       0,
-		       pUmap.at(pidList.at(i))->getS());
+		       procData.at(pidList.at(i))->getS());
 	    }
 
 	  // %CPU
 	  if(shiftX <= _PROCCPUWIN && wins.at(_PROCCPUWIN)->getWindow() != nullptr)
 	    {
-	      outString = doubleToStr(pUmap.at(pidList.at(i))->getCPUUsage(), 1);
+	      outString = doubleToStr(procData.at(pidList.at(i))->getCPUUsage(), 1);
 	      mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
 			posY,
 			wins.at(_PROCCPUWIN)->getNumCols() - outString.length(),
@@ -500,7 +543,7 @@ void printProcs(const int& shiftY,
 	  // %MEM
 	  if(shiftX <= _PROCMEMWIN && wins.at(_PROCMEMWIN)->getWindow() != nullptr)
 	    {
-	      outString = doubleToStr(pUmap.at(pidList.at(i))->getMEMUsage(), 1);
+	      outString = doubleToStr(procData.at(pidList.at(i))->getMEMUsage(), 1);
 	      mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
 			posY,
 			wins.at(_PROCMEMWIN)->getNumCols() - outString.length(),
@@ -509,7 +552,7 @@ void printProcs(const int& shiftY,
 	  // TIME+
 	  if(shiftX <= _PROCTIMEWIN && wins.at(_PROCTIMEWIN)->getWindow() != nullptr)
 	    {
-	      outString = pUmap.at(pidList.at(i))->getProcessCPUTime();
+	      outString = procData.at(pidList.at(i))->getProcessCPUTime();
 	      mvwaddstr(wins.at(_PROCTIMEWIN)->getWindow(),
 			posY,
 			wins.at(_PROCTIMEWIN)->getNumCols() - outString.length(),
@@ -518,7 +561,7 @@ void printProcs(const int& shiftY,
 	  // COMMAND
 	  if(shiftX <= _COMMANDWIN && wins.at(_COMMANDWIN)->getWindow() != nullptr)
 	    {
-	      outString = pUmap.at(pidList.at(i))->getCOMMAND();
+	      outString = procData.at(pidList.at(i))->getCOMMAND();
 	      mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
 			posY,
 			0,
@@ -532,14 +575,20 @@ void printProcs(const int& shiftY,
 
 /*
   Function:
-  createLine
+   createColorLine
 
   Description:
-
+   Creates a string of white space chacaters with length of the incoming
+   parameter and returns it to the caller.
+   
   Input:
+   len                  - A reference to a constant integer type which holds
+                          the total length of whitespace characters to
+			  define.
 
   Output:
- */
+   const std::string    - The resulting string of whitespace characters.
+*/
 const std::string createColorLine(const int& len)
 {
   std::string temp;
@@ -549,44 +598,80 @@ const std::string createColorLine(const int& len)
     }
 
   return temp;
-} // end of "createLine"
+} // end of "createColorLine"
 
 
 
 /*
   Function:
-  printColorLine
+   printColorLine
 
   Description:
-
+   Prints a solid color line at the position of the incoming "row" variable's
+   position to the incoming CursesWindow indexed by the incoming "window"
+   variable.
+   
   Input:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+			  to all currently allocated CursesWindow objects
+			  that can be indexed by values 0-16, or the
+			  constants in file _cursesWinConsts.hpp.
 
+   row                  - A reference to a constant integer that holds
+                          the Y-Position to print the color line to the
+			  desired CursesWindow object's window.
+
+   attr                 - A reference to a constant integer that holds the
+                          color combination to print.
+
+   window               - A reference to a constant integer that holds the
+                          index value of the CursesWindow object to print
+			  the color line to.
+
+   colorLine            - A reference to a constant string object which is
+                          a string of whitespaces that should be the
+			  total number of columns of the window to print
+			  it to.
+			  
   Output:
- */
+   NONE
+*/
 void printColorLine(const std::unordered_map<int, CursesWindow*>& wins,
-		    const std::string& colorLine,
 		    const int& row,
-		    const int& attrs)
+		    const int& attrs,
+		    const int& window,
+		    const std::string& colorLine)
 {
-  wattron(wins.at(_MAINWIN)->getWindow(), COLOR_PAIR(attrs));
-  mvwaddstr(wins.at(_MAINWIN)->getWindow(),
+  wattron(wins.at(window)->getWindow(), COLOR_PAIR(attrs));
+  mvwaddstr(wins.at(window)->getWindow(),
 	    row,
 	    0,
 	    colorLine.c_str());
-  wattroff(wins.at(_MAINWIN)->getWindow(), COLOR_PAIR(attrs));
+  wattroff(wins.at(window)->getWindow(), COLOR_PAIR(attrs));
 } // end of "printColorLine"
 
 
 
 /*
   Function:
-  shiftBottomWinsLeft
+   shiftBottomWinsLeft
 
   Description:
+   Shifts all the bottom windows left one shift aligning the new first
+   window at the leftmost column of the MainWindow screen.
 
   Input:
-
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+			  to all currently allocated CursesWindow objects
+			  that can be indexed by values 0-16, or the
+			  constants in file _cursesWinConsts.hpp.
+			  
+   shiftX               - The current shift state of the bottom windows.
+			  
   Output:
+   NONE  
 */
 void shiftBottomWinsLeft(std::unordered_map<int, CursesWindow*>& wins,
 			 const int& shiftX)
@@ -595,10 +680,11 @@ void shiftBottomWinsLeft(std::unordered_map<int, CursesWindow*>& wins,
   int currWin = shiftX;
   int startX = 0;
 
-  // delete the current window at x-position 0
+  // delete the current window at x-position "0" freeing it from memory
   wins.at(currWin)->deleteWindow();
 
-  // move the window index forward to the first window that needs moving
+  // move the window index forward to the first window that that needs moving
+  // starting at the X-Position of the previously deleted window
   currWin++;
 
   // get the total number of needed right shifts
@@ -632,13 +718,23 @@ void shiftBottomWinsLeft(std::unordered_map<int, CursesWindow*>& wins,
 
 /*
   Function:
-  shiftBottomWinsRight
+   shiftBottomWinsRight
 
   Description:
+   Shifts all the bottom windows right one shift aligning the new first
+   window at the leftmost column of the MainWindow screen.
 
   Input:
-
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+			  to all currently allocated CursesWindow objects
+			  that can be indexed by values 0-16, or the
+			  constants in file _cursesWinConsts.hpp.  
+			  
+   shiftX               - The current shift state of the bottom windows.
+			  
   Output:
+   NONE
 */
 void shiftBottomWinsRight(std::unordered_map<int, CursesWindow*>& wins,
 			  const int& shiftX)
@@ -646,11 +742,11 @@ void shiftBottomWinsRight(std::unordered_map<int, CursesWindow*>& wins,
   int currWin = shiftX;
   int totalShifts = 0;
   
-  // set the data for the new starting window at x-position 0
+  // delete the current window at x-position "0" freeing it from memory  
   wins.at(shiftX - 1)->setStartX(0);
 
   // get the total number of needed shifts
-  totalShifts = _COMMANDWIN - shiftX + 1; // = getTotalShifts(wins, currWin);
+  totalShifts = _COMMANDWIN - shiftX + 1;
 
   // shift the windows
   for(int i = 0; i < totalShifts; i++, currWin++)
@@ -676,44 +772,22 @@ void shiftBottomWinsRight(std::unordered_map<int, CursesWindow*>& wins,
 
 /*
   Function:
-  getTotalShifts
+   drawBoxes
 
   Description:
+   Draws a box for every "WINDOW" that is currently initialized and stored
+   in the "wins" object.
 
   Input:
-
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+			  to all currently allocated CursesWindow objects
+			  that can be indexed by values 0-16, or the
+			  constants in file _cursesWinConsts.hpp.  
   Output:
-
+   NONE
 */
-int getTotalShifts(const std::unordered_map<int, CursesWindow*>& wins,
-		   const int& winStartPos)
-{
-  int totalShifts = 0;
-  
-  for(int i = winStartPos; i < wins.size(); i++)
-    {
-      totalShifts++;
-    }
-
-  return totalShifts;
-} // end of "getTotalShifts"
-
-
-
-/*
-  Function:
-  drawBoxes
-
-  Description:
-  Draws a box for every "WINDOW" that is currently initialized.
-
-  Input:
-
-  Output:
-
-*/
-void drawBoxes(const std::unordered_map<int, CursesWindow*>& wins,
-	       const int& shiftX)
+void drawBoxes(const std::unordered_map<int, CursesWindow*>& wins)
 {
   char val = 'a';
   for(int i = 0; i < wins.size(); i++, val++)
