@@ -1,9 +1,9 @@
 /*
-  File: topWindow.hpp
+  File: 
+   topWindow.hpp
 
   Description:
-   Represents the very top window of the Top program for the output line
-   "top - xx:xx:xx up XX:XX, X users, load average: xxxx, xxxx, xxxx"
+   The class definition for the TopWindow class.
 */
 #ifndef TOPWINDOW_HPP
 #define TOPWINDOW_HPP

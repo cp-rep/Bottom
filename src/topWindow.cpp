@@ -3,7 +3,7 @@
    topWindow.cpp
 
   Description:
-   The implementation of the topWindow.hpp class functions.
+   Class implementation for the TopWindow class.
 */
 #include "topWindow.hpp"
 #include <iostream>
@@ -12,11 +12,30 @@
 
 /*
   Function:
-   TopWindow Default Constructor
+   TopWindow Constructor
    
   Description:
+   The class constructor for creating TopWindow objects and 
+   initializing related calling object data.
 
   Input:
+   win                  - a pointer to a NCurses window that contains the 
+                          address to the newly created Window.
+
+   windowName           - a const reference to the name to be stored in
+                          Window's private member variable m_window.
+
+   numLines             - a const int reference to the max number of lines of the
+                          created Window.
+
+   numCols              - a const int reference to the max number of columns of
+                          the created Window.
+ 
+   startY               - a const int reference that defines the logical starting
+                          line number of the Window.
+
+   startX               - a const int reference that defines the logical starting
+                          column number of the Window.
 
   Output:
   NONE
@@ -34,7 +53,7 @@ TopWindow::TopWindow(WINDOW* win,
 							 startX)
 {
   m_topLine = "";
-} // end of "TopWindow Default Constructor"
+} // end of "TopWindow Constructor"
 
 
 
@@ -67,7 +86,8 @@ const std::string& TopWindow::getTopLine()
    Defines the m_topLine member variable with the incoming string parameter.
 
   Input:
-   NONE
+   topLine              - a const string reference that is used to set
+                          the calling object's member data.
 
   Output:
    NONE
@@ -88,8 +108,25 @@ void TopWindow::setTopLine(const std::string& topLine)
    Clears and defines the m_topLine member variable.
 
   Input:
-   NONE
+   HHMMSS               - a const string reference to the hours, minutes, and
+                          seconds to be appended to topWindow's output line.
+   
+   numDays              - a const int reference to the number of days the
+                          computer has been running to be appended to
+                          topWindow's output line.
+     
+ 
+   numHours             - a const int reference to the number of hours the
+                          computer has been running to be appended to
+                          topWindow's output line.
 
+   numMinutes           - a const int reference to the number of minutes the
+                          computer has been running to be appended to
+                          topWindow's output line.
+
+   parsedLoadAvg        - a reference to a const vector of string objects
+                          that contained the computer's parsed current load
+                          average.
   Output:
    NONE
 */
@@ -100,7 +137,7 @@ void TopWindow::defineTopLine(const std::string& HHMMSS,
 			      const std::vector<std::string>& parsedLoadAvg)
 {
   m_topLine.clear();
-  m_topLine.append("top -");
+  m_topLine.append("top - ");
   m_topLine.append(HHMMSS);
   
   if(numDays == 1)
