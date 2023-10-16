@@ -1,6 +1,10 @@
 /*
-  File: cursesWindow.hpp
+  File: 
+   cursesWindow.hpp
+
   Description:
+   The class definition for the CursesWindow class. It serves as the base class
+   for derived classes of CursesWindow.
 */
 #ifndef CURSESWINDOW_HPP
 #define CURSESWINDOW_HPP
