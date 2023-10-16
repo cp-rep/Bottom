@@ -783,14 +783,14 @@ int main()
 #endif
 	    
 	    // ## get process state count ##
-	    unsigned int running;
-	    unsigned int unSleep;
-	    unsigned int inSleep;
-	    unsigned int sleeping;
-	    unsigned int stopped;
-	    unsigned int zombie;
-	    unsigned int idle;
-	    unsigned int total;
+	    unsigned int running = 0;
+	    unsigned int unSleep = 0;
+	    unsigned int inSleep = 0;
+	    unsigned int sleeping = 0;
+	    unsigned int stopped = 0;
+	    unsigned int zombie = 0;
+	    unsigned int idle = 0;
+	    unsigned int total = 0;
  	    for(std::unordered_map<int, ProcessInfo*>::iterator it = procData.begin();
 		it != procData.end(); it++)
 	      {
