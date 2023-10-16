@@ -158,6 +158,7 @@ int main()
   // process related vars
   MemInfo memInfo;
   CPUInfo cpuInfo;
+  TaskInfo taskInfo;
   ProcessInfo* processInfo;
   std::vector<int> pidNums; // to be populated with all current /proc/[pid] numbers
   std::unordered_map<int, ProcessInfo*> procData; // to be populated with /proc/[pid] data
@@ -788,15 +789,14 @@ int main()
 #endif
 	    
 	    // ## get process state count ##
-	    unsigned int running = 0;
-	    unsigned int unSleep = 0;
-	    unsigned int inSleep = 0;
-	    unsigned int sleeping = 0;
-	    unsigned int stopped = 0;
-	    unsigned int zombie = 0;
-	    unsigned int idle = 0;
-	    unsigned int total = 0;
-
+	    unsigned int running;
+	    unsigned int unSleep;
+	    unsigned int inSleep;
+	    unsigned int sleeping;
+	    unsigned int stopped;
+	    unsigned int zombie;
+	    unsigned int idle;
+	    unsigned int total;
  	    for(std::unordered_map<int, ProcessInfo*>::iterator it = procData.begin();
 		it != procData.end(); it++)
 	      {
@@ -825,22 +825,24 @@ int main()
 		}
 	      }
 
-	    // output the "tasks" line
+	    // save task data in object in case we want to use later
+	    taskInfo.setRunning(running);
+	    taskInfo.setUnSleep(unSleep);
+	    taskInfo.setInSleep(inSleep);
+	    taskInfo.setStopped(stopped);
+	    taskInfo.setZombie(zombie);
+	    taskInfo.setIdle(idle);
 	    sleeping = inSleep + unSleep + idle;
 	    total = running + sleeping;
-	    tempLine.clear();
-	    tempLine = "Tasks: ";
-	    tempLine.append(std::to_string(total));
-	    tempLine.append(" total, ");
-	    tempLine.append(std::to_string(running));
-	    tempLine.append(" running, ");
-	    tempLine.append(std::to_string(sleeping));
-	    tempLine.append(" sleeping, ");
-	    tempLine.append(std::to_string(stopped));
-	    tempLine.append(" stopped, ");
-	    tempLine.append(std::to_string(zombie));
-	    tempLine.append(" zombie");
-	    outLines.push_back(tempLine);
+	    taskInfo.setSleeping(sleeping);
+	    taskInfo.setTotal(total);
+	    // define the window line
+	    tasksWin.defineTasksWindow(total,
+				       running,
+				       sleeping,
+				       stopped,
+				       zombie);
+	    outLines.push_back(tasksWin.getTasksLine());
      }
     
     processInfo = nullptr;
