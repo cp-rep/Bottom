@@ -16,15 +16,13 @@
   - the arrow keys allow shifting the windows left and right.
   - the '<' and '>' keys change how the columns are sorted.
 
-  Changes Needed:
+  Changes/Fixes Needed:
   - get correct user count
   - get/calculate TIME+ window
   - fix %CPU value calculations
   - get/calculate %MEM value
   - determine how Top decides what processes/users have priority in the sort 
     list to come first
-  - remove SecondsToTime class and put related functions in a new file called
-    calculateTime.hpp/cpp
   - create a docker image that comes with all the modules necessary for building
     Bottom and GTests for easier/"safer" testing for interested parties.
   - Find why Top's %CPU calculation updates faster for processes that are
@@ -819,18 +817,19 @@ int main()
 		}
 	      }
 
-	    // save process state data in object in case we want to use later
+	    // store task data for later use if needed
 	    taskInfo.setRunning(running);
 	    taskInfo.setUnSleep(unSleep);
 	    taskInfo.setInSleep(inSleep);
 	    taskInfo.setStopped(stopped);
 	    taskInfo.setZombie(zombie);
 	    taskInfo.setIdle(idle);
-	    sleeping = inSleep + unSleep + idle;
-	    total = running + sleeping;
+	    sleeping = taskInfo.calcSleeping();
+	    total = taskInfo.calcTotal();
 	    taskInfo.setSleeping(sleeping);
 	    taskInfo.setTotal(total);
-	    // define the window line
+
+	    // define the tasks window output data
 	    tasksWin.defineTasksWindow(total,
 				       running,
 				       sleeping,
