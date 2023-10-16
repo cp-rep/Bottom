@@ -109,8 +109,6 @@ const std::vector<int> sortByUSER
  */
 int main()
 {
-
-  
   //  ## create log system ##
   time_t rawtime;
   struct tm* timeinfo;
@@ -515,7 +513,6 @@ int main()
   // ## run the main program loop ##
   do{
     std::vector<std::string> parsedLine;
-    std::vector <std::string> outLines;
     std::string tempLine;
     std::string fileLine;
     int val = 0;
@@ -538,7 +535,6 @@ int main()
 			 uptime.getHours() % 24,
 			 uptime.getMinutes(),
 			 parsedLine);
-    outLines.push_back(topWin.getTopLine());    
 #endif    
     
     tempLine.clear();
@@ -746,8 +742,6 @@ int main()
 				 doubleToStr(cpuInfo.getAvgWa(), 1),
 				 doubleToStr(cpuInfo.getAvgSt(), 1));
 #endif	    
-	    // outLines.push_back(memWin.getCPULine());
-
 	    // memInfo data from /proc/meminfo
 	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
 	    parsedLine = parseLine(fileLine);
@@ -842,7 +836,6 @@ int main()
 				       sleeping,
 				       stopped,
 				       zombie);
-	    outLines.push_back(tasksWin.getTasksLine());
      }
     
     processInfo = nullptr;
@@ -852,7 +845,7 @@ int main()
     std::vector<std::pair<double, int>> sortedByDouble;
     std::vector<std::pair<std::string, int>> procStrings;
     std::vector<std::pair<int, int>> sortedByInt;
-    std::vector<int> outList;
+    std::vector<int> outPids;
     int highlightIndex = 0;
     int input = 0;
     int moveVal = 0;
@@ -935,54 +928,54 @@ int main()
     switch(sortState)
       {
       case _PIDWIN:
-	outList = pidNums;
-	std::sort(outList.begin(),
-		  outList.end());
+	outPids = pidNums;
+	std::sort(outPids.begin(),
+		  outPids.end());
 	break;
       case _USERWIN:
-	outList = sortByUSER(procData,
+	outPids = sortByUSER(procData,
 			     pidNums);
 	break;
       case _PRWIN:
-	outList = sortByPR(procData,
+	outPids = sortByPR(procData,
 			   pidNums);
 	break;
       case _NIWIN:
-	outList = sortByNI(procData,
+	outPids = sortByNI(procData,
 			   pidNums);
 	break;
       case _VIRTWIN:
-	outList = sortByVIRT(procData,
+	outPids = sortByVIRT(procData,
 			     pidNums);
 	break;
       case _RESWIN:
-	outList = sortByRES(procData,
+	outPids = sortByRES(procData,
 			    pidNums);
 	break;
       case _SHRWIN:
-	outList = sortBySHR(procData,
+	outPids = sortBySHR(procData,
 			    pidNums);
 	break;
       case _SWIN:
-	outList = sortByS(procData,
+	outPids = sortByS(procData,
 			  pidNums);
 	break;
       case _PROCCPUWIN:
-	outList = sortByCPUUSAGE(procData,
+	outPids = sortByCPUUSAGE(procData,
 				 pidNums);	
 	break;
       case _PROCMEMWIN:
-	outList = pidNums;
-	std::sort(outList.begin(),
-		  outList.end());
+	outPids = pidNums;
+	std::sort(outPids.begin(),
+		  outPids.end());
 	break;
       case _PROCTIMEWIN:
-	outList = pidNums;
-	std::sort(outList.begin(),
-		  outList.end());	
+	outPids = pidNums;
+	std::sort(outPids.begin(),
+		  outPids.end());	
 	break;
       case _COMMANDWIN:
-	outList = sortByCOMMAND(procData,
+	outPids = sortByCOMMAND(procData,
 				pidNums);
 	break;
       default:
@@ -999,7 +992,7 @@ int main()
 	  }
 	break;
       case KEY_DOWN:
-	if(abs(shiftY) < outList.size() - 2)
+	if(abs(shiftY) < outPids.size() - 2)
 	  {
 	    shiftY--;
 	  }
@@ -1040,10 +1033,18 @@ int main()
 	wattroff(allWins.at(highlightIndex)->getWindow(),
 		 A_BOLD);
       }
-    
+    std::vector<std::string> outLines;
+    outLines.push_back(topWin.getTopLine());
+    outLines.push_back(tasksWin.getTasksLine());
+    outLines.push_back(cpuWin.getCPULine());
+    outLines.push_back(memWin.getMiB());
+    outLines.push_back(memWin.getSwap());
+    clearAllWins(allWins);
+    printTopWins(allWins,
+		 outLines);
     printProcs(shiftY,
 	       shiftX,
-	       outList,
+	       outPids,
 	       procData,
 	       allWins);
     attronBottomWins(allWins,
@@ -1051,11 +1052,6 @@ int main()
     printWindowNames(allWins);
     attroffBottomWins(allWins,
 		      _BLACK_TEXT);
-    werase(mainWin.getWindow());
-    printColorLine(allWins,
-		   colorLine,
-		   PIDWin.getStartY(),
-		   _BLACK_TEXT);
     refreshAllWins(allWins);
     doupdate();
     
@@ -1066,7 +1062,6 @@ int main()
 #endif
     
   } while(true);
-
 
 #if _CURSES  
   endwin();
