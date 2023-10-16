@@ -25,7 +25,8 @@
 			  
    buffers              - The total amount of main memory in use by the OS.
 
-   cached               - Memory readily available to the OS to improve I/O.
+   cached               - Cached memory readily available to the OS that improve
+                          operation speed when utilized.
 
    sreclaimable         - The amount of allocated by teh Slab that is currently
                           reclaimable.
@@ -399,7 +400,6 @@ void MemInfo::setCached(const int& cached)
 {
   m_cached = cached;
 } // end of "setCached"
-
 
 
 
