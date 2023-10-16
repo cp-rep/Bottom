@@ -139,8 +139,26 @@ void TopWindow::defineTopLine(const std::string& HHMMSS,
   m_topLine.clear();
   m_topLine.append("top - ");
   m_topLine.append(HHMMSS);
-  
-  if(numDays == 1)
+  m_topLine.append(" up ");
+
+  if(numDays < 1)
+    {
+      if(numHours < 1)
+	{
+	  m_topLine.append(std::to_string(numMinutes));
+	  m_topLine.append(" min, ");
+	}
+      else
+	{
+	  m_topLine.append(std::to_string(numHours));
+	      m_topLine.append(std::to_string(numHours));
+	      m_topLine.append(":");
+	      m_topLine.append(std::to_string(numMinutes));
+	      m_topLine.append(", ");
+
+	}
+    }
+  else if(numDays == 1)
     {
       m_topLine.append(std::to_string(numDays));
       m_topLine.append(" day, ");
@@ -150,11 +168,6 @@ void TopWindow::defineTopLine(const std::string& HHMMSS,
       m_topLine.append(std::to_string(numDays));      
       m_topLine.append(" days, ");
     }
-
-    m_topLine.append(std::to_string(numHours));
-    m_topLine.append(":");
-    m_topLine.append(std::to_string(numMinutes));
-    m_topLine.append(", ");
     m_topLine.append("0");
     m_topLine.append(" users, load average: ");
     m_topLine.append(parsedLoadAvg.at(0));
