@@ -5,6 +5,7 @@
    The class implementation for the MemInfo class.
  */
 #include "memInfo.hpp"
+#include <algorithm>
 
 
 
@@ -105,7 +106,8 @@ const int MemInfo::calculateBuffCache() const
 */
 const int MemInfo::calculateMemUsed() const
 {
-  return m_memTotal - m_memFree - m_buffers - m_cached - m_sreclaimable;
+  const unsigned int mem = std::max(m_memTotal, m_swapTotal);
+  return mem - m_memAvailable;
 } // end of "calculateMemUsed"
 
 
