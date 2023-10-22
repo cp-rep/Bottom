@@ -724,14 +724,24 @@ int main()
 		// get %cpu for current process
 		// (utime - stime)/(system uptime - process start time)
 		// (col(14) - col(15))/(/proc/uptime(0) - col(22)
+		// (col(11) - col(12))/(/proc/uptime(0) - col(19));
  		utime = convertToInt(parsedLine.at(11));
 		cutime = convertToInt(parsedLine.at(12));
 		pstart = convertToInt(parsedLine.at(19));
-		percent = (utime + cutime)/(uptime.getTotalSecs() - (pstart/100));
+		percent = (utime + cutime)/(uptime.getTotalSecs() -
+					    (pstart/(double)sysconf(_SC_CLK_TCK)));
 		percent = std::ceil(percent * 100);
 		percent = percent/100;
 		procData[pidNums.at(i)]->setCPUUsage(percent);
 
+		// get TIME+
+		procData[pidNums.at(i)]->setCpuRawTime(utime + cutime);
+		SecondsToTime timePlus((utime + cutime)/((double)sysconf(_SC_CLK_TCK)));
+		std::string timePlusString = timePlus.returnHHMMSS(timePlus.getHours(),
+								   timePlus.getMinutes(),
+								   timePlus.getSeconds());
+		procData.at(pidNums.at(i))->setProcessCPUTime(timePlusString);
+		
 		// ## get %MEM ##
 		percent = procData[pidNums.at(i)]->getRES();
 		percent = percent/(double)memInfo.getMemTotal();
@@ -954,9 +964,8 @@ int main()
 				 pidNums);
 	break;
       case _PROCTIMEWIN:
-	outPids = pidNums;
-	std::sort(outPids.begin(),
-		  outPids.end());	
+	outPids = sortByCpuTime(procData,
+				pidNums);
 	break;
       case _COMMANDWIN:
 	outPids = sortByCOMMAND(procData,
