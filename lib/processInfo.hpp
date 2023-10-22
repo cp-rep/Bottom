@@ -37,6 +37,7 @@ public:
   const char& getS() { return m_s; }
   const double& getCPUUsage() { return m_cpuUsage; }
   const double& getMEMUsage() { return m_memUsage; }
+  const double& getCpuRawTime() { return m_cpuRawTime; }
   const std::string& getProcessCPUTime() { return m_processCPUTime; }
   const std::string& getCOMMAND() { return m_command; }
   
@@ -51,6 +52,7 @@ public:
   void setS(const char& s) { m_s = s; }
   void setCPUUsage(const double& cpuUsage) { m_cpuUsage = cpuUsage; }
   void setMEMUsage(const double& memUsage) { m_memUsage = memUsage; }
+  void setCpuRawTime(const double& cpuRawTime) { m_cpuRawTime = cpuRawTime; }
   void setProcessCPUTime(const std::string processCPUTime)
   { m_processCPUTime = processCPUTime; }
   void setCOMMAND(const std::string& command) { m_command = command; }
@@ -66,6 +68,7 @@ private:
   char m_s;
   double m_cpuUsage;
   double m_memUsage;
+  double m_cpuRawTime;
   std::string m_processCPUTime;
   std::string m_command;
   bool m_changed;
