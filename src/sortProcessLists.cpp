@@ -573,7 +573,7 @@ const std::vector<int> sortByS(std::unordered_map<int, ProcessInfo*>& procData,
    sortByCPUUsage
 
   Description:
-   Sorts the pid list by in descending order of the highest current CPU usage of
+   Sorts the pid list in descending order of the highest current CPU usage of
    the allocated processes.
 
   Input:
@@ -654,7 +654,7 @@ const std::vector<int> sortByCPUUsage(const std::unordered_map<int, ProcessInfo*
    sortByMEMUsage
 
   Description:
-   Sorts the pid list by in descending order of the highest current memory usage of
+   Sorts the pid list in descending order of the highest current memory usage of
    the allocated processes.  
 
 
@@ -729,6 +729,85 @@ const std::vector<int> sortByMEMUsage(const std::unordered_map<int, ProcessInfo*
   return tempPIDs;
 } // end of "sortByMEMUsage"
 
+
+
+/*
+  Function:
+   sortByCpuTime
+
+  Description:
+   Sorts the pid list in descending order of process CPU time.
+
+  Input:
+   procData             - all stored process data that will be traversed in
+                          ordere to retrieve desired sort state values
+
+   pidNums              - a const reference to a PID list representing all running
+                          processes
+
+  Output:
+   const std::vector<int>
+                        - the sorted list of PIDs
+ */
+const std::vector<int> sortByCpuTime(const std::unordered_map<int, ProcessInfo*>& procData,
+				      const std::vector<int>& pidNums)
+{
+  std::vector<std::pair<double,int>> procCpuTime;
+  std::set<double> doubleTypes;
+  std::vector<int> types;
+  std::vector<int> tempPIDs;
+  
+  // get all std::pairs of <CpuTime, pid> and store them in vector
+  for(int i = 0, j = 0; i < procData.size(); i++)
+    {
+      procCpuTime.push_back(std::make_pair(procData.at(pidNums.at(i))->getCpuRawTime(),
+					pidNums.at(i)));
+
+      // get the different CpuTime types (repeated values for separating later)
+      if(doubleTypes.count(procCpuTime.at(i).first) == 0)
+	{
+	  doubleTypes.insert(procCpuTime.at(i).first);
+	}
+    }
+
+  // save CpuTime types as vector of string for later use
+  for(std::set<double>::iterator it = doubleTypes.begin();
+      it != doubleTypes.end(); it++)
+    {
+      types.push_back(*it);
+    }
+  
+  // store all PIDS as a vector of vector of std::pair<PID, CpuTime>
+  std::vector<std::vector<std::pair<int, int>>> sortedByCpuTimeTypePID(types.size());
+  for(int i = 0; i < procCpuTime.size(); i++)
+    {
+      for(int j = 0; j < types.size(); j++)
+	{
+	  if(types.at(j) == procCpuTime.at(i).first)
+	    {
+	      sortedByCpuTimeTypePID[j].push_back(std::make_pair(procCpuTime.at(i).second,
+							      procCpuTime.at(i).first));
+	    }
+	}
+    }
+  
+  // sort each CpuTime type list by PID
+  for(int i = 0; i < sortedByCpuTimeTypePID.size(); i++)
+    {
+      std::sort(sortedByCpuTimeTypePID.at(i).begin(), sortedByCpuTimeTypePID.at(i).end());
+    }
+
+  // store the list of sorted PIDs to vector<int> to return to caller 
+  for(int i = sortedByCpuTimeTypePID.size() - 1; i >= 0; i--)    
+    {
+      for(int j = 0; j < sortedByCpuTimeTypePID.at(i).size(); j++)
+	{
+	  tempPIDs.push_back(sortedByCpuTimeTypePID.at(i).at(j).first);
+	}
+    }
+  
+  return tempPIDs;
+} // end of "sortByCpuTime"
 
 
 

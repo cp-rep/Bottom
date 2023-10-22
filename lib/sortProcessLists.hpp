@@ -33,6 +33,8 @@ const std::vector<int> sortByCPUUsage(const std::unordered_map<int, ProcessInfo*
 				      const std::vector<int>& pidNums);
 const std::vector<int> sortByMEMUsage(const std::unordered_map<int, ProcessInfo*>& procData,
 				      const std::vector<int>& pidNums);
+const std::vector<int> sortByCpuTime(const std::unordered_map<int, ProcessInfo*>& procData,
+				     const std::vector<int>& pidNums);
 const std::vector<int> sortByCOMMAND(std::unordered_map<int, ProcessInfo*>& procData,
 				     const std::vector<int>& pidNums);
 #endif
