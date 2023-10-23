@@ -47,8 +47,16 @@
 #include "byteConverter.hpp"
 #include "changeProgramStates.hpp"
 #include "COMMANDWindow.hpp"
-#include "cpuWindow.hpp"
+#include "cpuHiWindow.hpp"
+#include "cpuIdWindow.hpp"
 #include "cpuInfo.hpp"
+#include "cpuNiWindow.hpp"
+#include "cpuSiWindow.hpp"
+#include "cpuStWindow.hpp"
+#include "cpuSyWindow.hpp"
+#include "cpuUsWindow.hpp"
+#include "cpuWaWindow.hpp"
+#include "cpuWindow.hpp"
 #include "cursesColors.hpp"
 #include "cursesFunctions.hpp"
 #include "cursesWindow.hpp"
@@ -188,8 +196,16 @@ int main()
   TasksStoppedWindow tasksStoppedWin;
   TasksSleepingWindow tasksSleepingWin;
   TasksZombieWindow tasksZombieWin;
-
-
+  /*
+  CpuUsWindow cpuUsWin;
+  CpuSyWindow cpuSyWin;
+  CpuNiWindow cpuNiWin;
+  CpuIdWindow cpuIdWin;
+  CpuWaWindow cpuWaWin;
+  CpuHiWindow cpuHiWin;
+  CpuSiWindow cpuSiWin;
+  CpuStWindow cpuStWin;
+  */
   // state related vars
   int progState = 0;
   int prevState = 0;
@@ -301,6 +317,7 @@ int main()
 			     memInfo,
 			     uptime,
 			     pids.at(i));
+	
 	// extract COMMAND
 	extractProcComm(allProcessInfo,
 			pids.at(i));
@@ -309,12 +326,11 @@ int main()
 	// "Tasks: XXX total, X running..."
 	extractProcessStateCount(allProcessInfo,
 				 taskInfo);
-
+	
 	// store line for output
 	defineTasksLine(taskInfo,
 			allTopLines);
       }
-
 
     // ## get user input ##
     std::vector<std::pair<double, int>> sortedByDouble;
