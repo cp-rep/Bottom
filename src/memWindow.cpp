@@ -1,11 +1,40 @@
 /*
   File: memWindow.cpp
   Description:
- */
+*/
 #include "memWindow.hpp"
 
 
 
+/*
+  Function:
+   MemWindow Constructor
+
+  Description:
+   The class constructor for creating MemWindow objects and 
+   initializing related object data.
+
+  Input:
+   win                  - a pointer to a NCurses window that contains the 
+                          address to the newly created Window.
+
+   windowName           - a const reference to the name to be stored in
+                          Window's private member variable m_window.
+
+   numLines             - a const int reference to the max number of lines of the
+                          created Window.
+
+   numCols              - a const int reference to the max number of columns of
+                          the created Window.
+ 
+   startY               - a const int reference that defines the logical starting
+                          line number of the Window.
+
+   startX               - a const int reference that defines the logical starting
+                          column number of the Window.
+  Output:
+   NONE
+*/
 MemWindow::MemWindow(WINDOW* win,
 		     const std::string& windowName,	      
 		     const short& numLines,
@@ -17,16 +46,27 @@ MemWindow::MemWindow(WINDOW* win,
 							 numCols,
 							 startY,
 							 startX)
-{ 
-} // end of "MemWindow Default Constructor"
+{
+} // end of "MemWindow Constructor"
 
 
 
+/*
+  Function:
+   setStringMiB
+
+  Description:
+
+  Input:
+
+  Output:
+*/
 void MemWindow::setStringMiB(const std::string& memTotal,
 			     const std::string& memFree,
 			     const std::string& memUsed,
 			     const std::string& buffCache)
 {
+  std::lock_guard<std::mutex> lock(m_MiBMutex);
   m_MiB.clear();
   m_MiB.append("MiB Mem: ");
   m_MiB.append(memTotal);
@@ -37,14 +77,25 @@ void MemWindow::setStringMiB(const std::string& memTotal,
   m_MiB.append(" used, ");
   m_MiB.append(buffCache);
   m_MiB.append(" buff/cache");
-} // end of "setMiB"
+} // end of "setStringMiB"
 
 
+
+/*
+  Function:
+   setStringSwap
+  Description:
+
+  Input:
+
+  Output:
+*/
 void MemWindow::setStringSwap(const std::string& swapTotal,
 			      const std::string& swapFree,
 			      const std::string& swapUsed,
 			      const std::string& memAvailable)
 {
+  std::lock_guard<std::mutex> lock(m_swapMutex);
   m_swap.clear();
   m_swap.append("MiB Swap: ");
   m_swap.append(swapTotal);
@@ -55,8 +106,37 @@ void MemWindow::setStringSwap(const std::string& swapTotal,
   m_swap.append(" used, ");
   m_swap.append(memAvailable);
   m_swap.append(" avail/mem");
-
 } // end of "setStringSwap"
 
 
 
+/*
+  Function:
+   getMiB
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+const std::string& MemWindow::getMiB() const
+{
+  return m_MiB;
+} // end of "getMiB"
+
+
+
+/*
+  Function:
+   getSwap
+  Description:
+
+  Input:
+
+  Output:
+*/
+const std::string& MemWindow::getSwap() const
+{
+  return m_swap;
+} // end of "getSwap"
