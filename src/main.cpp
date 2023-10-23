@@ -87,8 +87,8 @@
 void printWindowToLog(std::ofstream& log,
 		      const CursesWindow& win);
 const std::vector<int> sortByUSER
-(const std::vector<int>& pidNums,
- std::unordered_map<int, ProcessInfo*>& procData);
+(const std::vector<int>& pids,
+ std::unordered_map<int, ProcessInfo*>& allProcessInfo);
 
 
 
@@ -149,9 +149,11 @@ int main()
   MemInfo memInfo;
   CPUInfo cpuInfo;
   TaskInfo taskInfo;
-  ProcessInfo* processInfo; // to be populated with all process output data
-  std::vector<int> pidNums; // all currently allocated process PIDs
-  std::unordered_map<int, ProcessInfo*> procData; // to be populated with /proc/[pid] data
+  ProcessInfo* process; // to be populated with all process output data
+  std::vector<int> pids; // all currently allocated process PIDs
+  std::vector<int> pidsOld; // previously found active PID
+  std::vector<int> pidsDead; // PIDs that closed during loop
+  std::unordered_map<int, ProcessInfo*> allProcessInfo; // to be populated with /proc/[pid] data
 
   // window related vars
   std::unordered_map<int, CursesWindow*> allWins;
@@ -171,670 +173,133 @@ int main()
   std::unordered_map<char, int> progStates;
   
   // ## initialize and setup curses ##
-#if _CURSES  
-  MainWindow mainWin(initscr(),
-		     "Main",
-		     0,
-		     0,
-		     0,
-		     0);
-  getmaxyx(mainWin.getWindow(), numLines, numCols);
-  mainWin.setNumLines(numLines);
-  mainWin.setNumCols(numCols);
-  mainWin.setStartX(0);
-  mainWin.setStartY(0);
+  MainWindow mainWin;
+  TopWindow topWin;
+  TasksWindow tasksWin;
+  CpuWindow cpuWin;
+  MemWindow memWin;
+  PIDWindow PIDWin;
+  USERWindow USERWin;
+  PRWindow PRWin;
+  NIWindow NIWin;
+  VIRTWindow VIRTWin;
+  RESWindow RESWin;
+  SHRWindow SHRWin;
+  SWindow SWin;
+  PercentCPUWindow PercentCPUWin;
+  PercentMEMWindow PercentMEMWin;
+  TIMEWindow TIMEWin;
+  COMMANDWindow COMMANDWin;
+
+  initializeCurses();
+  initializeWindows(allWins,
+		    mainWin,
+		    topWin,
+		    tasksWin,
+		    cpuWin,
+		    memWin,
+		    PIDWin,
+		    USERWin,
+		    PRWin,
+		    NIWin,
+		    VIRTWin,
+		    RESWin,
+		    SHRWin,
+		    SWin,
+		    PercentCPUWin,
+		    PercentMEMWin,
+		    TIMEWin,
+		    COMMANDWin);
+
+  initializeProgramStates(progStates);
+
+  // loop variables
+  SecondsToTime uptime;
+  std::vector<std::string> allTopLines;
+  std::vector<std::string> parsedLine;
+  std::string filePath;
+  std::string fileLine;
+  std::string tempLine;
   
-  if(has_colors())
-    {
-      start_color();
-      init_pair(_WHITE_TEXT, COLOR_WHITE, COLOR_BLACK);
-      init_pair(_BLACK_TEXT, COLOR_BLACK, COLOR_WHITE);
-    }
-
-  noecho();
-  cbreak();
-  curs_set(false);
-  keypad(mainWin.getWindow(), true);
-  nodelay(mainWin.getWindow(), true);
-
-  // ## define windows ##
-  // define topWindow
-  numLines = 1;
-  numCols = numCols;
-  startY = _YOFFSET - 6;
-  startX = 0;
-  TopWindow topWin(newwin(numLines,
-			  numCols,
-			  startY,
-			  startX),
-		   "top",
-		   numLines,
-		   numCols,
-		   startY,
-		   startX);
-  topWin.getTopLine();
-  // define tasks window
-  numLines = 1;
-  numCols = numCols;
-  startY = _YOFFSET - 5;
-  startX = 0;
-  TasksWindow tasksWin(newwin(numLines,
-			      numCols,
-			      startY,
-			      startX),
-		       "Tasks",
-		       numLines,
-		       numCols,
-		       startY,
-		       startX);
-  // define cpu window
-  numLines = 1;
-  numCols = numCols;
-  startY = _YOFFSET - 4;
-  startX = 0;
-  CpuWindow cpuWin(newwin(numLines,
-			  numCols,
-			  startY,
-			  startX),
-		   "CPU",
-		   numLines,
-		   numCols,
-		   startY,
-		   startX);
-  // define mem window
-  numLines = 2;
-  numCols = numCols;
-  startY = _YOFFSET - 3;
-  startX = 0;  
-  MemWindow memWin(newwin(numLines,
-			  numCols,
-			  startY,
-			  startX),
-		   "MEM",
-		   numLines,
-		   numCols,
-		   startY,
-		   startX);
-  // define PID window
-  numLines = mainWin.getNumLines() -
-    memWin.getNumLines() -
-    cpuWin.getNumLines() -
-    tasksWin.getNumLines() -
-    topWin.getNumLines() - 1;
-  numCols = 7;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = 0;
-  PIDWindow PIDWin(newwin(numLines,
-			  numCols,
-			  startY,
-			  startX),
-		   "    PID",
-		   numLines,
-		   numCols,
-		   startY,
-		   startX);
-  // define USER window
-  numCols = 8;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() + 1;
-  USERWindow USERWin(newwin(numLines,
-			    numCols,
-			    startY,
-			    startX),
-		     "USER    ",
-		     numLines,
-		     numCols,
-		     startY,
-		     startX);
-  // define PR window
-  numCols = 3;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() + 2;
-  PRWindow PRWin(newwin(numLines,
-			numCols,
-			startY,
-			startX),
-		 " PR",
-		 numLines,
-		 numCols,
-		 startY,
-		 startX);
-  // define NI window
-  numCols = 3;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() +
-    PRWin.getNumCols() + 3;
-  NIWindow NIWin(newwin(numLines,
-			numCols,
-			startY,
-			startX),
-		 " NI",
-		 numLines,
-		 numCols,
-		 startY,
-		 startX);
-  // define VIRT window
-  numCols = 7;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() +
-    PRWin.getNumCols() +
-    NIWin.getNumCols() + 4;
-  VIRTWindow VIRTWin(newwin(numLines,
-			    numCols,
-			    startY,
-			    startX),
-		     "   VIRT",
-		     numLines,
-		     numCols,
-		     startY,
-		     startX);
-  // define RES window
-  numCols = 6;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() +
-    PRWin.getNumCols() +
-    NIWin.getNumCols() +
-    VIRTWin.getNumCols() + 5;
-  RESWindow RESWin(newwin(numLines,
-			  numCols,
-			  startY,
-			  startX),
-		   "   RES",
-		   numLines,
-		   numCols,
-		   startY,
-		   startX);
-  // define SHR window
-  numCols = 6;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() +
-    PRWin.getNumCols() +
-    NIWin.getNumCols() +
-    VIRTWin.getNumCols() +
-    RESWin.getNumCols() + 6;
-  SHRWindow SHRWin(newwin(numLines,
-			  numCols,
-			  startY,
-			  startX),
-		   "   SHR",
-		   numLines,
-		   numCols,
-		   startY,
-		   startX);
-  // define S window
-  numCols = 1;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() +
-    PRWin.getNumCols() +
-    NIWin.getNumCols() +
-    VIRTWin.getNumCols() +
-    RESWin.getNumCols() +
-    SHRWin.getNumCols() + 7;
-  SWindow SWin(newwin(numLines,
-		      numCols,
-		      startY,
-		      startX),
-	       "S",
-	       numLines,
-	       numCols,
-	       startY,
-	       startX);
-  // define %CPU window
-  numCols = 5;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() +
-    PRWin.getNumCols() +
-    NIWin.getNumCols() +
-    VIRTWin.getNumCols() +
-    RESWin.getNumCols() +
-    SHRWin.getNumCols() + 
-    SWin.getNumCols() + 8;
-  PercentCPUWindow PercentCPUWin(newwin(numLines,
-				  numCols,
-				  startY,
-				  startX),
-				 " %CPU",
-				 numLines,
-				 numCols,
-				 startY,
-				 startX);
-  // define %MEM window
-  numCols = 5;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() +
-    PRWin.getNumCols() +
-    NIWin.getNumCols() +
-    VIRTWin.getNumCols() +
-    RESWin.getNumCols() +
-    SHRWin.getNumCols() + 
-    SWin.getNumCols() +
-    PercentCPUWin.getNumCols() + 9;
-  PercentMEMWindow PercentMEMWin(newwin(numLines,
-				  numCols,
-				  startY,
-				  startX),
-				 " %MEM",
-				 numLines,
-				 numCols,
-				 startY,
-				 startX);
-  // define TIME+ window
-  numCols = 9;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() +
-    PRWin.getNumCols() +
-    NIWin.getNumCols() +
-    VIRTWin.getNumCols() +
-    RESWin.getNumCols() +
-    SHRWin.getNumCols() + 
-    SWin.getNumCols() +
-    PercentCPUWin.getNumCols() + 
-    PercentMEMWin.getNumCols() + 10;  
-  TIMEWindow TIMEWin(newwin(numLines,
-			    numCols,
-			    startY,
-			    startX),
-		     "    TIME+",
-		     numLines,
-		     numCols,
-		     startY,
-		     startX);
-  // define COMMAND window
-  numCols = 48;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() +
-    PRWin.getNumCols() +
-    NIWin.getNumCols() +
-    VIRTWin.getNumCols() +
-    RESWin.getNumCols() +
-    SHRWin.getNumCols() + 
-    SWin.getNumCols() +
-    PercentCPUWin.getNumCols() + 
-    PercentMEMWin.getNumCols() +
-    TIMEWin.getNumCols() + 11;
-  COMMANDWindow COMMANDWin(newwin(numLines,
-				  numCols,
-				  startY,
-				  startX), 
-			   "COMMAND",
-			   numLines,
-			   numCols,
-			   startY,
-			   startX);
   
-  // ## store all startup windows ##
-  allWins.insert(std::make_pair(_MAINWIN,&mainWin));
-  allWins.insert(std::make_pair(_TOPWIN, &topWin));
-  allWins.insert(std::make_pair(_TASKSWIN, &tasksWin));
-  allWins.insert(std::make_pair(_CPUWIN, &cpuWin));
-  allWins.insert(std::make_pair(_MEMWIN, &memWin));
-  allWins.insert(std::make_pair(_PIDWIN, &PIDWin));
-  allWins.insert(std::make_pair(_USERWIN, &USERWin));
-  allWins.insert(std::make_pair(_PRWIN, &PRWin));
-  allWins.insert(std::make_pair(_NIWIN, &NIWin));
-  allWins.insert(std::make_pair(_VIRTWIN, &VIRTWin));
-  allWins.insert(std::make_pair(_RESWIN, &RESWin));
-  allWins.insert(std::make_pair(_SHRWIN, &SHRWin));
-  allWins.insert(std::make_pair(_SWIN, &SWin));
-  allWins.insert(std::make_pair(_PROCCPUWIN, &PercentCPUWin));
-  allWins.insert(std::make_pair(_PROCMEMWIN, &PercentMEMWin));
-  allWins.insert(std::make_pair(_PROCTIMEWIN, &TIMEWin));
-  allWins.insert(std::make_pair(_COMMANDWIN, &COMMANDWin));
-
-  // ## define the main program states ##
-  progStates.insert(std::make_pair(_PROGSTATEHELP, 1)); // open help menu
-  progStates.insert(std::make_pair(_PROGSTATEQUIT, 1)); // quit
-  progStates.insert(std::make_pair(_PROGSTATEHL, 1)); // highlight column
-
-  // ## create the color line for MainWindow output ##
-  std::string colorLine;
-  colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
-#endif
-
-  // ## run the main program loop ##
   do{
-    std::vector<std::string> parsedLine;
-    std::string tempLine;
-    std::string fileLine;
-    int val = 0;
+    allTopLines.clear();
+    pidsOld = pids;
+    pids.clear();
+    process = nullptr;
 
-    // get topWin data
-    fileLine = returnFileLineByNumber(_UPTIME, 1);
-    parsedLine = parseLine(fileLine);
-    val = convertToInt(parsedLine.at(0));
-    SecondsToTime uptime(val);
-    time(&rawtime);
-    timeinfo = localtime(&rawtime);
-    tempLine = uptime.returnHHMMSS(timeinfo->tm_hour,
-				   timeinfo->tm_min,
-				   timeinfo->tm_sec);
-    fileLine = returnFileLineByNumber("/proc/loadavg", 1);
-    parsedLine = parseLine(fileLine);
-#if _CURSES    
-    topWin.defineTopLine(tempLine,
-			 uptime.getHours()/24,
-			 uptime.getHours() % 24,
-			 uptime.getMinutes(),
-			 parsedLine);
-#endif    
-    
-    tempLine.clear();
-    // ## get running processes and update the list ##
-    // store old process list
-    std::vector<int> pidNumsOld(pidNums);
-    std::vector<int> pidNumsDead;
+    // get current active PIDS
+    pids = findNumericDirs(_PROC);
 
-    // get new process list
-    pidNums.clear();
-    pidNums = findNumericDirs(_PROC);
-    std::sort(pidNums.begin(), pidNums.end());
-    
-    // find any dead processes in old list
-    for(int i = 0; i < pidNumsOld.size(); i++)
+    // find any processes that died during previous loop
+    if(findDeadProcesses(pids, pidsOld, pidsDead))
       {
-	bool exists = false;
-	
-	for(int j = 0; j < pidNums.size(); j++)
-	  {
-	    if(pidNumsOld.at(i) == pidNums.at(j))
-	      {
-		exists = true;
-		break;
-	      }
-	  }
-
-	if(exists == false)
-	  {
-	    pidNumsDead.push_back(pidNumsOld.at(i));
-	  }
+	// free if any found
+	removeDeadProcesses(allProcessInfo, pidsDead);
       }
 
-    // remove dead processes from the procData unordered map
-    for(int i = 0; i < pidNumsDead.size(); i++)
-      {
-	if(procData.count(pidNumsDead.at(i)) > 0)
-	  {
-	    delete(procData[pidNumsDead.at(i)]);
-	    procData.erase(pidNumsDead.at(i));
-	  }
-      }
+    // extract data from uptime for very top window
+    // "current time, # users, load avg"
+    extractProcUptimeLoadavg(uptime,
+			     allTopLines);
 
-    // update running process data
-    for(int i = 0; i < pidNums.size(); i++)
+    // update/add process data for still running and new found processes
+    for(int i = 0; i < pids.size(); i++)
       {
 	// if new process was found, allocate it
-	if(procData.count(pidNums.at(i)) == 0)
+	if(allProcessInfo.count(pids.at(i)) == 0)
 	  {
-	    processInfo = new ProcessInfo();
-	    procData.insert(std::make_pair(pidNums.at(i), processInfo));
+	    process = new ProcessInfo();
+	    allProcessInfo.insert(std::make_pair(pids.at(i), process));
 	  }
-	
-	    std::string filePath;
-	    std::string lineString;
-	    const std::string currProc = _PROC + std::to_string(pidNums.at(i));
-	    unsigned int value = 0;
 
-	    // ## get MiB Mem  and MiB Swap ##
-	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
-	    parsedLine = parseLine(fileLine);
-	    memInfo.setMemTotal(convertToInt(parsedLine.at(1)));
-	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 2);
-	    parsedLine = parseLine(fileLine);
-	    memInfo.setMemFree(convertToInt(parsedLine.at(1)));
-	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 3);
-	    parsedLine = parseLine(fileLine);
-	    memInfo.setMemAvailable(convertToInt(parsedLine.at(1)));
-	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 4);
-	    parsedLine = parseLine(fileLine);
-	    memInfo.setBuffers(convertToInt(parsedLine.at(1)));
-	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 5);
-	    parsedLine = parseLine(fileLine);
-	    memInfo.setCached(convertToInt(parsedLine.at(1)));
-	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 15);
-	    parsedLine = parseLine(fileLine);
-	    memInfo.setSwapTotal(convertToInt(parsedLine.at(1)));
-	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 16);
-	    parsedLine = parseLine(fileLine);
-	    memInfo.setSwapFree(convertToInt(parsedLine.at(1)));
-	    fileLine = returnFileLineByNumber(_PROC_MEMINFO, 26);
-	    parsedLine = parseLine(fileLine);
-#if _CURSES	    
-	    memInfo.setSReclaimable(convertToInt(parsedLine.at(1)));
-	    memInfo.setMemUsed(memInfo.calculateMemUsed());
-	    memInfo.setSwapUsed(memInfo.calculateSwapUsed());
-	    memInfo.setBuffCache(memInfo.calculateBuffCache());
-	    memWin.setStringMiB(doubleToStr(KiBToMiB(memInfo.getMemTotal()), 1),
-				doubleToStr(KiBToMiB(memInfo.getMemFree()), 1),
-				doubleToStr(KiBToMiB(memInfo.getMemUsed()), 1),
-				doubleToStr(KiBToMiB(memInfo.getBuffCache()), 1));
-	    memWin.setStringSwap(doubleToStr(KiBToMiB(memInfo.getSwapTotal()), 1),
-				 doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1),
-				 doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1),
-				 doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1));
-#endif	    
-	    // set pid
-	    procData[pidNums.at(i)]->setPID(pidNums.at(i));
 
-	    // get command
-	    filePath = currProc;
-	    filePath.append(_COMM);
-	    lineString = returnFileLineByNumber(filePath, 1);
-	    procData[pidNums.at(i)]->setCOMMAND(lineString);
+	// extract data for CPU Line
+	// "%Cpu(s): x.x us, x.x sy..."
+	extractProcStatData(cpuInfo);
 
- 	    // get USER
-	    filePath = currProc;
-	    filePath.append(_STATUS);
-	    lineString = returnPhraseLine(filePath, "Gid");
+	// store line for output
+	defineCPULine(cpuInfo,
+		      allTopLines);
 
-	    if(lineString != "-1")
-	      {
-		struct passwd userData;
-		struct passwd* userDataPtr;
-		uid_t uidt;
-		char buff[1024];		
-		
-		parsedLine = parseLine(lineString);
-		uidt = convertToInt(parsedLine.at(1));
-		
-		if(getpwuid_r(uidt, &userData, buff, sizeof(buff), &userDataPtr))
-		  {
-#if _LOG		    
-		    log << "Failed to call getpwuid_r()" << std::endl;
-#endif		    
-		  }
-		else
-		  {
-		    procData[pidNums.at(i)]->setUSER(userData.pw_name);		    
-		  }
-	      }
-	    else
-	      {
-		procData[pidNums.at(i)]->setUSER("-1");
-	      }
+	// extract data for MiB Mem and MiB swap
+	// "MiB Mem: xxxx.xx total, xxxx.xx Free..."
+	extractMemInfoData(memInfo);
 
-	    // get VIRT
-	    lineString = returnFileLineByPhrase(filePath, "VmSize");
-	    if(lineString != "-1")
-	      {
-		parsedLine = parseLine(lineString);
-		value = convertToInt(parsedLine.at(1));
-		procData[pidNums.at(i)]->setVIRT(value);
-	      }
+	// store lines for output
+	allTopLines.push_back
+	  (setStringMiB(doubleToStr(KiBToMiB(memInfo.getMemTotal()), 1),
+			doubleToStr(KiBToMiB(memInfo.getMemFree()), 1),
+			doubleToStr(KiBToMiB(memInfo.getMemUsed()), 1),
+			doubleToStr(KiBToMiB(memInfo.getBuffCache()), 1)));
+	allTopLines.push_back
+	  (setStringSwap(doubleToStr(KiBToMiB(memInfo.getSwapTotal()), 1),
+			 doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1),
+			 doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1),
+			 doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1)));
 
-	    // get RES
-	    lineString = returnFileLineByPhrase(filePath, "VmRSS");
-	    if(lineString != "-1")
-	      {
-		parsedLine = parseLine(lineString);
-		value = convertToInt(parsedLine.at(1));
-		procData[pidNums.at(i)]->setRes(value);
-	      }
+	// get pid of current process
+	allProcessInfo[pids.at(i)]->setPID(pids.at(i));
 
-	    // get SHR
-	    lineString = returnFileLineByPhrase(filePath, "RssFile");
-	    if(lineString != "-1")
-	      {
-		parsedLine = parseLine(lineString);
-		value = convertToInt(parsedLine.at(1));
-		procData[pidNums.at(i)]->setSHR(value);
-	      }
+	// extract per process data (USER, PR, VIRT...)
+	extractProcPidStatus(allProcessInfo,
+			     memInfo,
+			     uptime,
+			     pids.at(i));
+	// extract COMMAND
+	extractProcComm(allProcessInfo,
+			pids.at(i));
 
- 	    // get PR
-	    filePath = currProc;
-	    filePath.append(_STAT);
-	    lineString = returnFileLineByNumber(filePath, 1);
+	// extract and count process states for task window
+	// "Tasks: XXX total, X running..."
+	extractProcessStateCount(allProcessInfo,
+				 taskInfo);
 
-	    if(lineString != "-1")
-	      {
-		double utime = 0;
-		double cutime = 0;
-		double pstart = 0;
-		double percent = 0;
-		
-		// get uptime
-		fileLine = returnFileLineByNumber(_UPTIME, 1);
-		parsedLine = parseLine(fileLine);
-		percent = stringToDouble(parsedLine.at(0));
-		uptime.setTotalSecs(percent);
-		procData[pidNums.at(i)]->setCPUUsage(percent);
+	// store line for output
+	defineTasksLine(taskInfo,
+			allTopLines);
+      }
 
-		// get priority
-		lineString = fixStatLine(lineString);
-		parsedLine = parseLine(lineString);
-		value = convertToInt(parsedLine.at(15));
-		procData[pidNums.at(i)]->setPR(value);
-
-		// get NI
-		value = convertToInt(parsedLine.at(16));
-		procData[pidNums.at(i)]->setNI(value);
-
-		// get S
-		procData[pidNums.at(i)]->setS(lineString.at(0));
-
-		// get %cpu for current process
-		// (utime - stime)/(system uptime - process start time)
-		// (col(14) - col(15))/(/proc/uptime(0) - col(22)
-		// (col(11) - col(12))/(/proc/uptime(0) - col(19));
- 		utime = convertToInt(parsedLine.at(11));
-		cutime = convertToInt(parsedLine.at(12));
-		pstart = convertToInt(parsedLine.at(19));
-		percent = (utime + cutime)/(uptime.getTotalSecs() -
-					    (pstart/(double)sysconf(_SC_CLK_TCK)));
-		percent = std::ceil(percent * 100);
-		percent = percent/100;
-		procData[pidNums.at(i)]->setCPUUsage(percent);
-
-		// get TIME+
-		procData[pidNums.at(i)]->setCpuRawTime(utime + cutime);
-		SecondsToTime timePlus((utime + cutime)/((double)sysconf(_SC_CLK_TCK)));
-		std::string timePlusString = timePlus.returnHHMMSS(timePlus.getHours(),
-								   timePlus.getMinutes(),
-								   timePlus.getSeconds());
-		procData.at(pidNums.at(i))->setProcessCPUTime(timePlusString);
-		
-		// ## get %MEM ##
-		percent = procData[pidNums.at(i)]->getRES();
-		percent = percent/(double)memInfo.getMemTotal();
-		percent = std::ceil(percent * 1000.0);
-		percent = percent/10;
-		procData[pidNums.at(i)]->setMEMUsage(percent);		    
-	      }
-
-	    // ## get %CPU  for process CPU win ##
-	    const double ticks = (double)sysconf(_SC_CLK_TCK);
-	    filePath = _PROC;
-	    filePath.append(_STAT);
-	    lineString = returnFileLineByNumber(filePath, 1);
-	    parsedLine = parseLine(lineString);
-	    cpuInfo.setUs(convertToInt(parsedLine.at(1)));
-	    cpuInfo.setNi(convertToInt(parsedLine.at(2)));
-	    cpuInfo.setSy(convertToInt(parsedLine.at(3)));
-	    cpuInfo.setId(convertToInt(parsedLine.at(4)));
-	    cpuInfo.setWa(convertToInt(parsedLine.at(5)));
-	    cpuInfo.setIrq(convertToInt(parsedLine.at(6)));
-	    cpuInfo.setSirq(convertToInt(parsedLine.at(7)));
-	    cpuInfo.setSt(convertToInt(parsedLine.at(8)));
-	    cpuInfo.setGu(convertToInt(parsedLine.at(9)));
-	    cpuInfo.setGun(convertToInt(parsedLine.at(10)));
-	    cpuInfo.setTicks(ticks);
-	    cpuInfo.setJiffs(cpuInfo.calculateJiffs());
-#if _CURSES	    
-	    cpuWin.defineCPULine(doubleToStr(cpuInfo.getAvgUs(), 1),
-				 doubleToStr(cpuInfo.getAvgSy(), 1),
-				 doubleToStr(cpuInfo.getAvgNi(), 1),
-				 doubleToStr(cpuInfo.getAvgId(), 1),
-				 doubleToStr(cpuInfo.getAvgWa(), 1),
-				 doubleToStr(cpuInfo.getAvgSt(), 1));
-#endif
-	    // ## get process state count ##
-	    unsigned int running = 0;
-	    unsigned int unSleep = 0;
-	    unsigned int inSleep = 0;
-	    unsigned int sleeping = 0;
-	    unsigned int stopped = 0;
-	    unsigned int zombie = 0;
-	    unsigned int idle = 0;
-	    unsigned int total = 0;
- 	    for(std::unordered_map<int, ProcessInfo*>::iterator it = procData.begin();
-		it != procData.end(); it++)
-	      {
-		switch(it->second->getS())
-		  {
-		  case 'S':
-		    inSleep++;
-		    break;
-		  case 'I':
-		    idle++;
-		    break;
-		  case 'T':
-		    stopped++;
-		    break;
-		  case 'D':
-		    unSleep++;
-		    break;
-		  case 'R':
-		    running++;
-		    break;
-		  case 'Z':
-		    zombie++;
-		    break;
-		  default:
-		    break;
-		}
-	      }
-
-	    // store task data for later use if needed
-	    taskInfo.setRunning(running);
-	    taskInfo.setUnSleep(unSleep);
-	    taskInfo.setInSleep(inSleep);
-	    taskInfo.setStopped(stopped);
-	    taskInfo.setZombie(zombie);
-	    taskInfo.setIdle(idle);
-	    sleeping = taskInfo.calcSleeping();
-	    total = taskInfo.calcTotal();
-	    taskInfo.setSleeping(sleeping);
-	    taskInfo.setTotal(total);
-
-	    // define the tasks window output data
-	    tasksWin.defineTasksWindow(total,
-				       running,
-				       sleeping,
-				       stopped,
-				       zombie);
-     }
-    
-    processInfo = nullptr;
-    pidNumsOld.clear();
 
     // ## get user input ##
     std::vector<std::pair<double, int>> sortedByDouble;
@@ -845,10 +310,9 @@ int main()
     int input = 0;
     int moveVal = 0;
     int previousSortState = sortState;
-#if _CURSES
+
     moveVal = input = getch();
     flushinp();
-#endif
 
     if(input != -1)
       {
@@ -923,53 +387,53 @@ int main()
     switch(sortState)
       {
       case _PIDWIN:
-	outPids = pidNums;
+	outPids = pids;
 	std::sort(outPids.begin(),
 		  outPids.end());
 	break;
       case _USERWIN:
-	outPids = sortByUSER(procData,
-			     pidNums);
+	outPids = sortByUSER(allProcessInfo,
+			     pids);
 	break;
       case _PRWIN:
-	outPids = sortByPR(procData,
-			   pidNums);
+	outPids = sortByPR(allProcessInfo,
+			   pids);
 	break;
       case _NIWIN:
-	outPids = sortByNI(procData,
-			   pidNums);
+	outPids = sortByNI(allProcessInfo,
+			   pids);
 	break;
       case _VIRTWIN:
-	outPids = sortByVIRT(procData,
-			     pidNums);
+	outPids = sortByVIRT(allProcessInfo,
+			     pids);
 	break;
       case _RESWIN:
-	outPids = sortByRES(procData,
-			    pidNums);
+	outPids = sortByRES(allProcessInfo,
+			    pids);
 	break;
       case _SHRWIN:
-	outPids = sortBySHR(procData,
-			    pidNums);
+	outPids = sortBySHR(allProcessInfo,
+			    pids);
 	break;
       case _SWIN:
-	outPids = sortByS(procData,
-			  pidNums);
+	outPids = sortByS(allProcessInfo,
+			  pids);
 	break;
       case _PROCCPUWIN:
-	outPids = sortByCPUUsage(procData,
-				 pidNums);	
+	outPids = sortByCPUUsage(allProcessInfo,
+				 pids);	
 	break;
       case _PROCMEMWIN:
-	outPids = sortByMEMUsage(procData,
-				 pidNums);
+	outPids = sortByMEMUsage(allProcessInfo,
+				 pids);
 	break;
       case _PROCTIMEWIN:
-	outPids = sortByCpuTime(procData,
-				pidNums);
+	outPids = sortByCpuTime(allProcessInfo,
+				pids);
 	break;
       case _COMMANDWIN:
-	outPids = sortByCOMMAND(procData,
-				pidNums);
+	outPids = sortByCOMMAND(allProcessInfo,
+				pids);
 	break;
       default:
 	break;
@@ -1027,16 +491,12 @@ int main()
 		 A_BOLD);
       }
     std::vector<std::string> outLines;
-    outLines.push_back(topWin.getTopLine());
-    outLines.push_back(tasksWin.getTasksLine());
-    outLines.push_back(cpuWin.getCPULine());
-    outLines.push_back(memWin.getMiB());
-    outLines.push_back(memWin.getSwap());
+
     clearAllWins(allWins);
     printTopWins(allWins,
-		 outLines);
+		 allTopLines);
     printProcs(allWins,
-	       procData,	       
+	       allProcessInfo,	       
 	       outPids,
 	       shiftY,
 	       shiftX);
@@ -1045,20 +505,46 @@ int main()
     printWindowNames(allWins);
     attroffBottomWins(allWins,
 		      _BLACK_TEXT);
+    refreshAllWins(allWins);
+    doupdate();
+
+    
+    /*
+    outLines.push_back(topWin.getTopLine());
+    outLines.push_back(tasksWin.getTasksLine());
+    outLines.push_back(cpuWin.getCPULine());
+    outLines.push_back(memWin.getMiB());
+    outLines.push_back(memWin.getSwap());
+
+    clearAllWins(allWins);
+    printTopWins(allWins,
+		 outLines);
+    printProcs(allWins,
+	       allProcessInfo,	       
+	       outPids,
+	       shiftY,
+	       shiftX);
+    attronBottomWins(allWins,
+		     _BLACK_TEXT);
+    printWindowNames(allWins);
+    attroffBottomWins(allWins,
+		      _BLACK_TEXT);
+
     printColorLine(allWins,
 		   _YOFFSET,
 		   _BLACK_TEXT,
 		   _MAINWIN,
 		   colorLine);
+
     refreshAllWins(allWins);
     doupdate();
-    
+    */
     if(quit)
       {
 	break;
       }
 #endif
-    
+
   } while(true);
 
 #if _CURSES  
