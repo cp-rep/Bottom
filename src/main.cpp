@@ -28,7 +28,7 @@
 #include <ctime>
 #include <chrono>
 #include <fstream>
-#include <curses.h>
+#include <ncurses.h>
 #include <climits>
 #include <limits>
 #include <iomanip>
@@ -56,6 +56,7 @@
 #include "percentCPUWindow.hpp"
 #include "percentMEMWindow.hpp"
 #include "PIDWindow.hpp"
+#include "changeProgramStates.hpp"
 #include "PRWindow.hpp"
 #include "RESWindow.hpp"
 #include "SHRWindow.hpp"
@@ -253,7 +254,6 @@ int main()
 	    allProcessInfo.insert(std::make_pair(pids.at(i), process));
 	  }
 
-
 	// extract data for CPU Line
 	// "%Cpu(s): x.x us, x.x sy..."
 	extractProcStatData(cpuInfo);
@@ -307,177 +307,43 @@ int main()
     std::vector<std::pair<int, int>> sortedByInt;
     std::vector<int> outPids;
     int highlightIndex = 0;
-    int input = 0;
-    int moveVal = 0;
+    int userInput = 0;
+    int shiftState = 0;
     int previousSortState = sortState;
 
-    moveVal = input = getch();
+    shiftState = userInput = getch();
     flushinp();
 
-    if(input != -1)
-      {
-	if(progStates[input])
-	  {
-	    prevState = progState;
-	    progState = input;
-	  }
-	else if(input == '<' && sortState > _PIDWIN)
-	  {
-	    if(highlight == true)
-	      {
-#if _CURSES		
-		wattroff(allWins.at(sortState)->getWindow(),
-			 A_BOLD);
-	    	sortState--;
-	    	wattron(allWins.at(sortState)->getWindow(),
-	    		A_BOLD);
-#endif	      
-	      }
-	    else
-	      {
-		sortState--;
-	      }
-	  }
-	else if(input == '>' && sortState < _COMMANDWIN)
-	  {
-	    if(highlight == true)
-	      {
-#if _CURSES		
-		wattroff(allWins.at(sortState)->getWindow(),
-			 A_BOLD);
-		sortState++;
-		wattron(allWins.at(sortState)->getWindow(),
-			A_BOLD);
-#endif		
-	      }
-	    else
-	      {
-		sortState++;
-	      }
-	  }
-      }
+    // update state values from user input
+    updateStateValues(allWins,
+		      progStates,
+		      userInput,
+		      sortState,
+		      prevState,
+		      progState,
+		      highlight,
+		      highlightIndex);
 
     // ## update states ##
     // program state
-    switch(progState)
-      {
-      case _PROGSTATEHELP: // help
-	break;
-      case _PROGSTATEQUIT: // quit
-	quit = true;
-	break;
-      case _PROGSTATEHL: // highlight
-	if(highlight == true)
-	  {
-	    highlight = false;
-	  }
-	else if(highlight == false)
-	  {
-	    highlight = true;
-	  }
-	progState = prevState;
-	break;
-      default:
-	break;
-      }
+    changeProgramState(progState,
+		       prevState,
+		       quit,
+		       highlight);
+    
+    // change the processes sort state from '<' and '>' user input
+    bottomWinsProcSortState(allProcessInfo,
+			   pids,
+			   outPids,
+			   sortState);
 
-    highlightIndex = sortState;
-    
-    // process info sort state
-    switch(sortState)
-      {
-      case _PIDWIN:
-	outPids = pids;
-	std::sort(outPids.begin(),
-		  outPids.end());
-	break;
-      case _USERWIN:
-	outPids = sortByUSER(allProcessInfo,
-			     pids);
-	break;
-      case _PRWIN:
-	outPids = sortByPR(allProcessInfo,
-			   pids);
-	break;
-      case _NIWIN:
-	outPids = sortByNI(allProcessInfo,
-			   pids);
-	break;
-      case _VIRTWIN:
-	outPids = sortByVIRT(allProcessInfo,
-			     pids);
-	break;
-      case _RESWIN:
-	outPids = sortByRES(allProcessInfo,
-			    pids);
-	break;
-      case _SHRWIN:
-	outPids = sortBySHR(allProcessInfo,
-			    pids);
-	break;
-      case _SWIN:
-	outPids = sortByS(allProcessInfo,
-			  pids);
-	break;
-      case _PROCCPUWIN:
-	outPids = sortByCPUUsage(allProcessInfo,
-				 pids);	
-	break;
-      case _PROCMEMWIN:
-	outPids = sortByMEMUsage(allProcessInfo,
-				 pids);
-	break;
-      case _PROCTIMEWIN:
-	outPids = sortByCpuTime(allProcessInfo,
-				pids);
-	break;
-      case _COMMANDWIN:
-	outPids = sortByCOMMAND(allProcessInfo,
-				pids);
-	break;
-      default:
-	break;
-      }
-    
-    // shift windows
-    switch(moveVal)
-      {
-      case KEY_UP:
-	if(shiftY < 1)
-	  {
-	    shiftY++;
-	  }
-	break;
-      case KEY_DOWN:
-	if(abs(shiftY) < outPids.size() - 2)
-	  {
-	    shiftY--;
-	  }
-	break;
-      case KEY_LEFT:
-	if(shiftX > _PIDWIN)
-	  {
-#if _CURSES	    
-	    shiftBottomWinsRight(allWins,
-				 shiftX);
-#endif	    
-	    shiftX--;
-	  }
-	break;
-      case KEY_RIGHT:
-	if(shiftX < _COMMANDWIN)
-	  {
-#if _CURSES	    
-	    shiftBottomWinsLeft(allWins,
-				shiftX);
-#endif	    
-	    shiftX++;
-	  }
-	break;
-      default:
-	break;
-      }
-    
+    // shift windows up down left or right from arrow key input
+    bottomWinsShiftState(allWins,
+			shiftState,
+			shiftY,
+			shiftX,
+			outPids.size() - 3);
+
 #if _CURSES
     // ## print process windows ##
     if(highlight == true)
@@ -490,13 +356,12 @@ int main()
 	wattroff(allWins.at(highlightIndex)->getWindow(),
 		 A_BOLD);
       }
-    std::vector<std::string> outLines;
 
     clearAllWins(allWins);
     printTopWins(allWins,
 		 allTopLines);
     printProcs(allWins,
-	       allProcessInfo,	       
+	       allProcessInfo,
 	       outPids,
 	       shiftY,
 	       shiftX);
@@ -507,7 +372,6 @@ int main()
 		      _BLACK_TEXT);
     refreshAllWins(allWins);
     doupdate();
-
     
     /*
     outLines.push_back(topWin.getTopLine());
