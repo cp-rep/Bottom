@@ -11,12 +11,13 @@
 #include <curses.h>
 #include <string>
 #include <vector>
+#include <mutex>
 
 class CursesWindow {
 public:
   // constructors
   CursesWindow(WINDOW* win = nullptr,
-	       const std::string windowName = "",	      
+	       const std::string& windowName = "",	      
 	       const int& numLines = 0,
 	       const int& numCols = 0,
 	       const int& startY = 0,
@@ -27,7 +28,7 @@ public:
 
   // member functions
   void defineWindow(WINDOW* win,
-		    const std::string windowName,
+		    const std::string& windowName,
 		    const int& numLines,
 		    const int& numCols,
 		    const int& startY,
@@ -37,10 +38,11 @@ public:
 		    const int& startY,
 		    const int& startX);
   void deleteWindow();
+  WINDOW* createWindow();
   
   // getters
   WINDOW* getWindow();
-  const std::string& getWindowName() const;
+  const std::string getWindowName() const;
   const int& getNumCols() const;
   const int& getNumLines() const;
   const int& getStartY() const;
@@ -48,8 +50,7 @@ public:
   
   // setters
   void setWindow(WINDOW* window);
-  WINDOW* createWindow();
-  void setWindowName(const std::string winName);
+  void setWindowName(const std::string& winName);
   void setNumLines(const int& numLines);
   void setNumCols(const int& numCols);
   void setStartY(const int& startY);
