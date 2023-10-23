@@ -46,13 +46,31 @@ void extractProcComm(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 
   Output:
 */
-void defineTasksLine(const TaskInfo& taskInfo,
-		     std::vector<std::string>& allTopLines)
+void defineTasksLine(std::vector<std::string>& allTopLines)
 {
   std::string tasksLine;
   tasksLine = "Tasks:     total,     running,     sleeping,     stopped,     zombie";
   allTopLines.push_back(tasksLine);
 } // end of "defineTasksLine"
+
+
+
+/*
+  Function:
+   defineCpusLine
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void defineCpusLine(std::vector<std::string>& allTopLines)
+{
+  std::string cpusLine;
+  cpusLine = "%Cpu(s):      us,      sy,      ni,      id,      wa,      hi,      si,      st";
+  allTopLines.push_back(cpusLine);
+} // end of "cpusLine"
 
 
 
@@ -115,42 +133,6 @@ void extractProcessStateCount(const std::unordered_map<int, ProcessInfo*>& allPr
   taskInfo.setSleeping(sleeping);
   taskInfo.setTotal(total);
 } // end of "extractProcessStateCount"
-
-
-
-/*
-  Function:
-   defineCPULine
-
-  Description:
-
-  Input:
-
-  Output:
- */
-void defineCPULine(const CPUInfo& cpuInfo,
-		   std::vector<std::string>& allTopLines)
-{
-  std::string cpuLine;
-
-  cpuLine = "%CPU(s): ";
-  cpuLine.append(doubleToStr(cpuInfo.getAvgUs(), 1));
-  cpuLine.append(" us,  ");
-  cpuLine.append(doubleToStr(cpuInfo.getAvgSy(), 1));
-  cpuLine.append(" sy,  ");
-  cpuLine.append(doubleToStr(cpuInfo.getAvgNi(), 1));  
-  cpuLine.append(" ni, ");
-  cpuLine.append(doubleToStr(cpuInfo.getAvgId(), 1));    
-  cpuLine.append(" id,  ");
-  cpuLine.append(doubleToStr(cpuInfo.getAvgWa(), 1));      
-  cpuLine.append(" wa,  ");
-  cpuLine.append("    hi,  ");
-  
-  cpuLine.append("  si,  ");
-  cpuLine.append(doubleToStr(cpuInfo.getAvgSt(), 1));  
-  cpuLine.append(" st");
-  allTopLines.push_back(cpuLine);
-} // end of "defineCPULine"
 
 
 

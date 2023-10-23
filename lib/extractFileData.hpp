@@ -82,12 +82,10 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			  SecondsToTime& uptime,
 			  const int currentPid);
 void extractProcStatData(CPUInfo& cpuInfo);
-void defineCPULine(const CPUInfo& cpuInfo,
-		   std::vector<std::string>& allTopLines);
+void defineCpusLine(std::vector<std::string>& allTopLines);
 void extractProcessStateCount(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			      TaskInfo& taskInfo);
-void defineTasksLine(const TaskInfo& taskInfo,
-		     std::vector<std::string>& allTopLines);
+void defineTasksLine(std::vector<std::string>& allTopLines);
 void extractProcComm(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		     const int pid);
 #endif
