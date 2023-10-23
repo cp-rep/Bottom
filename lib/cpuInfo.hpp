@@ -25,14 +25,14 @@ public:
 	  const double& gun = 0);
 
   // member functions
-  const double& calculateJiffs() const;
-  const double& getAvgUs() const;
-  const double& getAvgHi() const;
-  const double& getAvgSy() const;
-  const double& getAvgNi() const;
-  const double& getAvgId() const;
-  const double& getAvgWa() const;
-  const double& getAvgSt() const;
+  const double calculateJiffs() const;
+  const double getAvgUs() const;
+  const double getAvgHi() const;
+  const double getAvgSy() const;
+  const double getAvgNi() const;
+  const double getAvgId() const;
+  const double getAvgWa() const;
+  const double getAvgSt() const;
   //const double getAvgUs() { return (100 - getAvgId()); }
   
   // setters

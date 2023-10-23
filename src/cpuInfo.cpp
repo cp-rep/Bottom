@@ -60,7 +60,7 @@ CPUInfo::CPUInfo(const double& ticks,
 
   Output:
  */
-const double& CPUInfo::calculateJiffs() const
+const double CPUInfo::calculateJiffs() const
 {
   return
     getUs() +
@@ -86,7 +86,7 @@ const double& CPUInfo::calculateJiffs() const
 
   Output:
  */
-const double& CPUInfo::getAvgUs() const
+const double CPUInfo::getAvgUs() const
 {
   return (getTicks() * getUs())/getJiffs();
 } // end of "getAvgUs"
@@ -103,7 +103,7 @@ const double& CPUInfo::getAvgUs() const
 
   Output:
  */
-const double& CPUInfo::getAvgHi() const
+const double CPUInfo::getAvgHi() const
 {
   return (100 * getHi())/getJiffs();
 } // end of "getAvgHi"
@@ -120,7 +120,7 @@ const double& CPUInfo::getAvgHi() const
 
   Output:
  */
-const double& CPUInfo::getAvgSy() const
+const double CPUInfo::getAvgSy() const
 {
   return (getTicks() * getSy())/getJiffs();  
 } // end of "getAvgSy"
@@ -137,7 +137,7 @@ const double& CPUInfo::getAvgSy() const
 
   Output:
  */
-const double& CPUInfo::getAvgNi() const
+const double CPUInfo::getAvgNi() const
 {
   return (getTicks() * getNi())/getJiffs();
 } // end of "getAvgNi"
@@ -154,7 +154,7 @@ const double& CPUInfo::getAvgNi() const
 
   Output:
  */
-const double& CPUInfo::getAvgId() const
+const double CPUInfo::getAvgId() const
 {
   return (getTicks() * getId())/getJiffs();
 } // end of "getAvgId"
@@ -171,7 +171,7 @@ const double& CPUInfo::getAvgId() const
 
   Output:
  */
-const double& CPUInfo::getAvgWa() const
+const double CPUInfo::getAvgWa() const
 {
   return (getTicks() * getWa())/getJiffs();
 } // end of "getAvgWa"
@@ -188,7 +188,7 @@ const double& CPUInfo::getAvgWa() const
 
   Output:
  */
-const double& CPUInfo::getAvgSt() const
+const double CPUInfo::getAvgSt() const
 {
   return (getTicks() * getSt())/getJiffs();
 } // end of "getAvgSt"
