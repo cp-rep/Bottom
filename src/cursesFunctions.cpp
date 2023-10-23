@@ -358,20 +358,6 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 } // end of "initializeWindows"
 
 
-/*
-  Function:
-   initializeProgramStates
-
-  Description:
-*/
-void initializeProgramStates(std::unordered_map<char, int>& progStates)
-{
-  progStates.insert(std::make_pair(_PROGSTATEHELP, 1)); // open help menu
-  progStates.insert(std::make_pair(_PROGSTATEQUIT, 1)); // quit
-  progStates.insert(std::make_pair(_PROGSTATEHL, 1)); // highlight column
-} // end of "initializeProgramStates"
-
-
 
 /*
   Function:
@@ -809,147 +795,130 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 
   for(int i = 0; i < pidList.size() - 1; i++)
     {
-      // int posY = i + shiftY;
-      int posY = i + 1;
+      int posY = i + shiftY;
 
       // ensure nothing is printed over the column titles
-      // if(posY != 0)
-      //      	{
-      // PID
-      //if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr)
-      //{
-
-      outString = std::to_string(procData.at(pidList.at(i))->getPID());
-      mvwaddstr(wins.at(_PIDWIN)->getWindow(),
-		posY,
-		wins.at(_PIDWIN)->getNumCols() - outString.length(),
-		outString.c_str());	
-
-      // }
-
-      // USER      
-      //      if(shiftX <= _USERWIN && wins.at(_USERWIN)->getWindow() != nullptr)
-	//	{
-
-      outString = procData.at(pidList.at(i))->getUSER();
-      mvwaddstr(wins.at(_USERWIN)->getWindow(),
-		posY,
-		0,
-		outString.c_str());
-
-	  //	}
-      // PR
-
-      //      if(shiftX <= _PRWIN && wins.at(_PRWIN)->getWindow() != nullptr)
-      //	{
-      const int tempPRVal = procData.at(pidList.at(i))->getPR();
-	  if(tempPRVal == -100)
+      if(posY != 0)
+	{
+	  // PID
+	  if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr)
 	    {
-	      outString = "rt";
+	      outString = std::to_string(procData.at(pidList.at(i))->getPID());
+	      mvwaddstr(wins.at(_PIDWIN)->getWindow(),
+			posY,
+			wins.at(_PIDWIN)->getNumCols() - outString.length(),
+			outString.c_str());	
 	    }
-	  else
+	  // USER      
+	  if(shiftX <= _USERWIN && wins.at(_USERWIN)->getWindow() != nullptr)
 	    {
-	      outString = std::to_string(tempPRVal);
+	      outString = procData.at(pidList.at(i))->getUSER();
+	      mvwaddstr(wins.at(_USERWIN)->getWindow(),
+			posY,
+			0,
+			outString.c_str());
 	    }
+	  // PR
+	  if(shiftX <= _PRWIN && wins.at(_PRWIN)->getWindow() != nullptr)
+	    {
+	      const int tempPRVal = procData.at(pidList.at(i))->getPR();
+	      if(tempPRVal == -100)
+		{
+		  outString = "rt";
+		}
+	      else
+		{
+		  outString = std::to_string(tempPRVal);
+		}
 
-	  mvwaddstr(wins.at(_PRWIN)->getWindow(),
-		    posY,
-		    wins.at(_PRWIN)->getNumCols() - outString.length(),
-		    outString.c_str());
-	  //      }	  
+	      mvwaddstr(wins.at(_PRWIN)->getWindow(),
+			posY,
+			wins.at(_PRWIN)->getNumCols() - outString.length(),
+			outString.c_str());
+	    }	  
+	  // NI
+	  if(shiftX <= _NIWIN && wins.at(_NIWIN)->getWindow() != nullptr)
+            {
+	      outString = std::to_string(procData.at(pidList.at(i))->getNI());
+	      mvwaddstr(wins.at(_NIWIN)->getWindow(),
+			posY,
+			wins.at(_NIWIN)->getNumCols() - outString.length(),
+			outString.c_str());
+            }
+	  // VIRT
+	  if(shiftX <= _VIRTWIN && wins.at(_VIRTWIN)->getWindow() != nullptr)
+            {
+	      outString = std::to_string(procData.at(pidList.at(i))->getVIRT());
+	      mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
+			posY,
+			wins.at(_VIRTWIN)->getNumCols() - outString.length(),
+			outString.c_str());
+            }
+	  // RES
+	  if(shiftX <= _RESWIN && wins.at(_RESWIN)->getWindow() != nullptr)
+            {
+	      outString = std::to_string(procData.at(pidList.at(i))->getRES());
+	      mvwaddstr(wins.at(_RESWIN)->getWindow(),
+			posY,
+			wins.at(_RESWIN)->getNumCols() - outString.length(),
+			outString.c_str());
+            }
+	  // SHR
+	  if(shiftX <= _SHRWIN && wins.at(_SHRWIN)->getWindow() != nullptr)
+            {
+	      outString = std::to_string(procData.at(pidList.at(i))->getSHR());
+	      mvwaddstr(wins.at(_SHRWIN)->getWindow(),
+			posY,
+			wins.at(_SHRWIN)->getNumCols() - outString.length(),
+			outString.c_str());
+            }
+	  // S
+	  if(shiftX <= _SWIN && wins.at(_SWIN)->getWindow() != nullptr)
+	    {
+	      mvwaddch(wins.at(_SWIN)->getWindow(),
+		       posY,
+		       0,
+		       procData.at(pidList.at(i))->getS());
+            }
+	  // %CPU
+	  if(shiftX <= _PROCCPUWIN && wins.at(_PROCCPUWIN)->getWindow() != nullptr)
+            {
 
-      // NI
-      //      if(shiftX <= _NIWIN && wins.at(_NIWIN)->getWindow() != nullptr)
-      //      {
-      outString = std::to_string(procData.at(pidList.at(i))->getNI());
-      mvwaddstr(wins.at(_NIWIN)->getWindow(),
-		posY,
-		wins.at(_NIWIN)->getNumCols() - outString.length(),
-		outString.c_str());
-      //      }
-
-      // VIRT
-      //      if(shiftX <= _VIRTWIN && wins.at(_VIRTWIN)->getWindow() != nullptr)
-      //      {
-      outString = std::to_string(procData.at(pidList.at(i))->getVIRT());
-      mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
-      posY,
-      wins.at(_VIRTWIN)->getNumCols() - outString.length(),
-      outString.c_str());
-      //      }
-      // RES
-      //      if(shiftX <= _RESWIN && wins.at(_RESWIN)->getWindow() != nullptr)
-      //      {
-      outString = std::to_string(procData.at(pidList.at(i))->getRES());
-      mvwaddstr(wins.at(_RESWIN)->getWindow(),
-      posY,
-      wins.at(_RESWIN)->getNumCols() - outString.length(),
-      outString.c_str());
-      //      }
-      // SHR
-      //      if(shiftX <= _SHRWIN && wins.at(_SHRWIN)->getWindow() != nullptr)
-      //      {
-      outString = std::to_string(procData.at(pidList.at(i))->getSHR());
-      mvwaddstr(wins.at(_SHRWIN)->getWindow(),
-      posY,
-      wins.at(_SHRWIN)->getNumCols() - outString.length(),
-      outString.c_str());
-      //      }
-      // S
-
-      //      if(shiftX <= _SWIN && wins.at(_SWIN)->getWindow() != nullptr)
-	//      {
-      mvwaddch(wins.at(_SWIN)->getWindow(),
-	       posY,
-	       0,
-	       procData.at(pidList.at(i))->getS());
-      //      }
-
-      // %CPU
-      //      if(shiftX <= _PROCCPUWIN && wins.at(_PROCCPUWIN)->getWindow() != nullptr)
-      //      {
-
-      outString = doubleToStr(procData.at(pidList.at(i))->getCPUUsage(), 1);
-      mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
-      posY,
-      wins.at(_PROCCPUWIN)->getNumCols() - outString.length(),
-      outString.c_str());
-
-      //      }
-      // %MEM
-      //      if(shiftX <= _PROCMEMWIN && wins.at(_PROCMEMWIN)->getWindow() != nullptr)
-      //      {
-
-      outString = doubleToStr(procData.at(pidList.at(i))->getMEMUsage(), 1);
-      mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
-      posY,
-      wins.at(_PROCMEMWIN)->getNumCols() - outString.length(),
-      outString.c_str());
-
-      //      }
-      // TIME+
-
-      //      if(shiftX <= _PROCTIMEWIN && wins.at(_PROCTIMEWIN)->getWindow() != nullptr)
-	//      {
-      outString = procData.at(pidList.at(i))->getProcessCPUTime();
-      mvwaddstr(wins.at(_PROCTIMEWIN)->getWindow(),
-      posY,
-      wins.at(_PROCTIMEWIN)->getNumCols() - outString.length(),
-      outString.c_str());
-      //      }
-
-      // COMMAND
-      //      if(shiftX <= _COMMANDWIN && wins.at(_COMMANDWIN)->getWindow() != nullptr)
-      //      {
-      outString = procData.at(pidList.at(i))->getCOMMAND();
-      mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
-		posY,
-		0,
-		outString.c_str());
-      //      } 
-      // }
+	      outString = doubleToStr(procData.at(pidList.at(i))->getCPUUsage(), 1);
+	      mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
+			posY,
+			wins.at(_PROCCPUWIN)->getNumCols() - outString.length(),
+			outString.c_str());
+            }
+	  // %MEM
+	  if(shiftX <= _PROCMEMWIN && wins.at(_PROCMEMWIN)->getWindow() != nullptr)
+            {
+	      outString = doubleToStr(procData.at(pidList.at(i))->getMEMUsage(), 1);
+	      mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
+			posY,
+			wins.at(_PROCMEMWIN)->getNumCols() - outString.length(),
+			outString.c_str());
+            }
+	  // TIME+
+	  if(shiftX <= _PROCTIMEWIN && wins.at(_PROCTIMEWIN)->getWindow() != nullptr)
+	    {
+	      outString = procData.at(pidList.at(i))->getProcessCPUTime();
+	      mvwaddstr(wins.at(_PROCTIMEWIN)->getWindow(),
+			posY,
+			wins.at(_PROCTIMEWIN)->getNumCols() - outString.length(),
+			outString.c_str());
+            }
+	  // COMMAND
+	  if(shiftX <= _COMMANDWIN && wins.at(_COMMANDWIN)->getWindow() != nullptr)
+            {
+	      outString = procData.at(pidList.at(i))->getCOMMAND();
+	      mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
+			posY,
+			0,
+			outString.c_str());
+            } 
+	}
     }
-
 } // end of "printProcs"
 
 
