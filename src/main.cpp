@@ -33,7 +33,6 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
-#include "log.hpp"
 #include <ncurses.h>
 #include <pwd.h>
 #include <unordered_map>
@@ -54,6 +53,7 @@
 #include "cursesFunctions.hpp"
 #include "cursesWindow.hpp"
 #include "extractFileData.hpp"
+#include "log.hpp"
 #include "mainWindow.hpp"
 #include "memInfo.hpp"
 #include "memWindow.hpp"
@@ -82,10 +82,6 @@
 // commands and options/modes constants
 #define _UTMPDUMP "utmpdump"
 #define _READ "r"
-
-// function prototypes
-void printWindowToLog(std::ofstream& log,
-		      const CursesWindow& win);
 
 
 
@@ -154,22 +150,6 @@ int main()
 
   // window related vars
   std::unordered_map<int, CursesWindow*> allWins;
-  short numLines = 0;
-  short numCols = 0;
-  short startY = 0;
-  short startX = 0;
-
-  // state related vars
-  int progState = 0;
-  int prevState = 0;
-  int sortState = _PROCCPUWIN;
-  bool highlight = false;
-  bool quit = false;
-  int shiftY = 1;
-  int shiftX = _PIDWIN;
-  std::unordered_map<char, int> progStates;
-  
-  // ## initialize and setup curses ##
   MainWindow mainWin;
   TopWindow topWin;
   TasksWindow tasksWin;
@@ -188,6 +168,17 @@ int main()
   TIMEWindow TIMEWin;
   COMMANDWindow COMMANDWin;
 
+  // state related vars
+  int progState = 0;
+  int prevState = 0;
+  int sortState = _PROCCPUWIN;
+  bool highlight = false;
+  bool quit = false;
+  int shiftY = 1;
+  int shiftX = _PIDWIN;
+  std::unordered_map<char, int> progStates;
+  
+  // ## initialize and setup curses ##
   initializeCurses();
   initializeWindows(allWins,
 		    mainWin,
@@ -391,32 +382,3 @@ int main()
   
   return 0;
 } // end of "main"
-
-
-
-/*
-  Function:
-   printWindowToLog
-
-  Description:
-   A debugging function that prints a CursesWindow object's current data members
-   to the log file.
-
-  Input:
-  log             - a reference to an output file stream object, the
-                    log file in the /Bottom/log/ folder
-		    
-  win             - A const reference to a CursesWindow object that will
-                    be used to print it's member data to the log file.
-
-  Output:
-  None
-*/
-void printWindowToLog(std::ofstream& log, const CursesWindow& win)
-{
-  log << "m_windowName: " << win.getWindowName() << std::endl;
-  log << "m_numLines: " << win.getNumLines() << std::endl;
-  log << "m_numCols: " << win.getNumCols() << std::endl;
-  log << "m_startY: " << win.getStartY() << std::endl;
-  log << "m_startX: " << win.getStartX() << std::endl;
-} // end of "printWindowToLog"
