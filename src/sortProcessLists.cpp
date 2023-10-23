@@ -27,7 +27,7 @@
    Sorts the pid list by USER.
 
   Input:
-   procData             - all stored process data that will be traversed in
+   allProcessInfo             - all stored process data that will be traversed in
                           ordere to retrieve desired sort state values
 
    pidNums              - a const reference to a PID list representing all running
@@ -37,7 +37,7 @@
    const std::vector<int>
                         - the sorted list of PIDs
  */
-const std::vector<int> sortByUSER(std::unordered_map<int, ProcessInfo*>& procData,
+const std::vector<int> sortByUSER(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 				  const std::vector<int>& pidNums)
 {
   std::vector<std::pair<std::string,int>> procUSERStrings;
@@ -46,9 +46,9 @@ const std::vector<int> sortByUSER(std::unordered_map<int, ProcessInfo*>& procDat
   std::vector<int> tempPIDs;
   
   // get all std::pairs of <user, pid> and store them in vector
-  for(int i = 0, j = 0; i < procData.size(); i++)
+  for(int i = 0, j = 0; i < allProcessInfo.size(); i++)
     {
-      procUSERStrings.push_back(std::make_pair(procData.at(pidNums.at(i))->getUSER(),
+      procUSERStrings.push_back(std::make_pair(allProcessInfo.at(pidNums.at(i))->getUSER(),
 					       pidNums.at(i)));
 
       // get the different user types (repeated values for separating later)
@@ -107,7 +107,7 @@ const std::vector<int> sortByUSER(std::unordered_map<int, ProcessInfo*>& procDat
    Sorts the pid list by PR
 
   Input:
-   procData             - all stored process data that will be traversed in
+   allProcessInfo             - all stored process data that will be traversed in
                           ordere to retrieve desired sort state values
 
    pidNums              - a const reference to a PID list representing all running
@@ -117,7 +117,7 @@ const std::vector<int> sortByUSER(std::unordered_map<int, ProcessInfo*>& procDat
    const std::vector<int>
                         - the sorted list of PIDs
 */
-const std::vector<int> sortByPR(const std::unordered_map<int, ProcessInfo*>& procData,
+const std::vector<int> sortByPR(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 				const std::vector<int>& pidNums)
 {
   std::vector<std::pair<int,int>> procPR;
@@ -126,9 +126,9 @@ const std::vector<int> sortByPR(const std::unordered_map<int, ProcessInfo*>& pro
   std::vector<int> tempPIDs;
   
   // get all std::pairs of <PR, pid> and store them in vector
-  for(int i = 0, j = 0; i < procData.size(); i++)
+  for(int i = 0, j = 0; i < allProcessInfo.size(); i++)
     {
-      procPR.push_back(std::make_pair(procData.at(pidNums.at(i))->getPR(),
+      procPR.push_back(std::make_pair(allProcessInfo.at(pidNums.at(i))->getPR(),
 				      pidNums.at(i)));
 
       // get the different PR types (repeated values for separating later)
@@ -187,7 +187,7 @@ const std::vector<int> sortByPR(const std::unordered_map<int, ProcessInfo*>& pro
    Sorts and returns the PID list by NI.
 
   Input:
-   procData             - a const reference to the entire list of processes and their data.
+   allProcessInfo             - a const reference to the entire list of processes and their data.
 
    pidNums              - a const reference to a PID list representing all running
                           processes
@@ -195,7 +195,7 @@ const std::vector<int> sortByPR(const std::unordered_map<int, ProcessInfo*>& pro
   Output:
    vector<int>          - the resulting merged list of process IDs
 */
-const std::vector<int> sortByNI(const std::unordered_map<int, ProcessInfo*>& procData,
+const std::vector<int> sortByNI(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 				const std::vector<int>& pidNums)
 {
   std::vector<std::pair<int,int>> procNI;
@@ -204,9 +204,9 @@ const std::vector<int> sortByNI(const std::unordered_map<int, ProcessInfo*>& pro
   std::vector<int> tempPIDs;
   
   // get all std::pairs of <NI, pid> and store them in vector
-  for(int i = 0, j = 0; i < procData.size(); i++)
+  for(int i = 0, j = 0; i < allProcessInfo.size(); i++)
     {
-      procNI.push_back(std::make_pair(procData.at(pidNums.at(i))->getNI(),
+      procNI.push_back(std::make_pair(allProcessInfo.at(pidNums.at(i))->getNI(),
 				      pidNums.at(i)));
 
       // get the different NI types(repeated values for separating later)
@@ -265,12 +265,12 @@ const std::vector<int> sortByNI(const std::unordered_map<int, ProcessInfo*>& pro
    Sorts and returns the PID list by VIRT.
   
   Input:
-   procData             - a const reference to the entire list of processes and their data.
+   allProcessInfo             - a const reference to the entire list of processes and their data.
 
   Output:
    vector<int>          - the resulting merged list of process IDs
  */
-const std::vector<int> sortByVIRT(const std::unordered_map<int, ProcessInfo*>& procData,
+const std::vector<int> sortByVIRT(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 				  const std::vector<int>& pidNums)
 {
   std::vector<std::pair<int,int>> procVIRT;
@@ -279,9 +279,9 @@ const std::vector<int> sortByVIRT(const std::unordered_map<int, ProcessInfo*>& p
   std::vector<int> tempPIDs;
   
   // get all std::pairs of <VIRT, pid> and store them in vector
-  for(int i = 0, j = 0; i < procData.size(); i++)
+  for(int i = 0, j = 0; i < allProcessInfo.size(); i++)
     {
-      procVIRT.push_back(std::make_pair(procData.at(pidNums.at(i))->getVIRT(),
+      procVIRT.push_back(std::make_pair(allProcessInfo.at(pidNums.at(i))->getVIRT(),
 				      pidNums.at(i)));
 
       // get the different VIRT types (repeated values for separating later)
@@ -340,7 +340,7 @@ const std::vector<int> sortByVIRT(const std::unordered_map<int, ProcessInfo*>& p
    Sorts and returns the PID list by RES.
   
   Input:
-   procData             - a const reference to the entire list of processes and their data.
+   allProcessInfo             - a const reference to the entire list of processes and their data.
 
    pidNums              - a const reference to a PID list representing all running
                           processes
@@ -348,7 +348,7 @@ const std::vector<int> sortByVIRT(const std::unordered_map<int, ProcessInfo*>& p
   Output:
    vector<int>          - the resulting merged list of process IDs
  */
-const std::vector<int> sortByRES(const std::unordered_map<int, ProcessInfo*>& procData,
+const std::vector<int> sortByRES(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 				 const std::vector<int>& pidNums)
 {
   std::vector<std::pair<int,int>> procRES;
@@ -357,9 +357,9 @@ const std::vector<int> sortByRES(const std::unordered_map<int, ProcessInfo*>& pr
   std::vector<int> tempPIDs;
   
   // get all std::pairs of <RES, pid> and store them in vector
-  for(int i = 0, j = 0; i < procData.size(); i++)
+  for(int i = 0, j = 0; i < allProcessInfo.size(); i++)
     {
-      procRES.push_back(std::make_pair(procData.at(pidNums.at(i))->getRES(),
+      procRES.push_back(std::make_pair(allProcessInfo.at(pidNums.at(i))->getRES(),
 				      pidNums.at(i)));
 
       // get the different RES types (repeated values for separating later)
@@ -418,7 +418,7 @@ const std::vector<int> sortByRES(const std::unordered_map<int, ProcessInfo*>& pr
    Sorts and returns the PID list by SHR.
   
   Input:
-   procData             - a const reference to the entire list of processes and their data.
+   allProcessInfo             - a const reference to the entire list of processes and their data.
 
    pidNums              - a const reference to a PID list representing all running
                           processes
@@ -426,7 +426,7 @@ const std::vector<int> sortByRES(const std::unordered_map<int, ProcessInfo*>& pr
   Output:
    vector<int>          - the resulting merged list of process IDs
  */
-const std::vector<int> sortBySHR(const std::unordered_map<int, ProcessInfo*>& procData,
+const std::vector<int> sortBySHR(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 				 const std::vector<int>& pidNums)
 {
   std::vector<std::pair<int,int>> procSHR;
@@ -435,9 +435,9 @@ const std::vector<int> sortBySHR(const std::unordered_map<int, ProcessInfo*>& pr
   std::vector<int> tempPIDs;
   
   // get all std::pairs of <SHR, pid> and store them in vector
-  for(int i = 0, j = 0; i < procData.size(); i++)
+  for(int i = 0, j = 0; i < allProcessInfo.size(); i++)
     {
-      procSHR.push_back(std::make_pair(procData.at(pidNums.at(i))->getSHR(),
+      procSHR.push_back(std::make_pair(allProcessInfo.at(pidNums.at(i))->getSHR(),
 				      pidNums.at(i)));
 
       // get the different SHR types (repeated values for separating later)
@@ -496,7 +496,7 @@ const std::vector<int> sortBySHR(const std::unordered_map<int, ProcessInfo*>& pr
    Sorts the pid list by S.
 
   Input:
-   procData             - all stored process data that will be traversed in
+   allProcessInfo             - all stored process data that will be traversed in
                           ordere to retrieve desired sort state values
 
    pidNums              - a const reference to a PID list representing all running
@@ -506,7 +506,7 @@ const std::vector<int> sortBySHR(const std::unordered_map<int, ProcessInfo*>& pr
    const std::vector<int>
                         - the sorted list of PIDs
 */
-const std::vector<int> sortByS(std::unordered_map<int, ProcessInfo*>& procData,
+const std::vector<int> sortByS(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			       const std::vector<int>& pidNums)
 {
   std::vector<std::pair<std::string,int>> procStrings;
@@ -515,9 +515,9 @@ const std::vector<int> sortByS(std::unordered_map<int, ProcessInfo*>& procData,
   std::vector<int> tempPIDs;
   
   // get all std::pairs of <S, pid> and store them in vector
-  for(int i = 0, j = 0; i < procData.size(); i++)
+  for(int i = 0, j = 0; i < allProcessInfo.size(); i++)
     {
-      procStrings.push_back(std::make_pair(std::to_string(procData.at(pidNums.at(i))->getS()),
+      procStrings.push_back(std::make_pair(std::to_string(allProcessInfo.at(pidNums.at(i))->getS()),
 					   pidNums.at(i)));
 
       // get the different S types (repeated values for separating later)
@@ -577,7 +577,7 @@ const std::vector<int> sortByS(std::unordered_map<int, ProcessInfo*>& procData,
    the allocated processes.
 
   Input:
-   procData             - all stored process data that will be traversed in
+   allProcessInfo             - all stored process data that will be traversed in
                           ordere to retrieve desired sort state values
 
    pidNums              - a const reference to a PID list representing all running
@@ -587,7 +587,7 @@ const std::vector<int> sortByS(std::unordered_map<int, ProcessInfo*>& procData,
    const std::vector<int>
                         - the sorted list of PIDs
 */
-const std::vector<int> sortByCPUUsage(const std::unordered_map<int, ProcessInfo*>& procData,
+const std::vector<int> sortByCPUUsage(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 				      const std::vector<int>& pidNums)
 {
   std::vector<std::pair<double,int>> procCPUUsage;
@@ -596,9 +596,9 @@ const std::vector<int> sortByCPUUsage(const std::unordered_map<int, ProcessInfo*
   std::vector<int> tempPIDs;
   
   // get all std::pairs of <CPUUsage, pid> and store them in vector
-  for(int i = 0, j = 0; i < procData.size(); i++)
+  for(int i = 0, j = 0; i < allProcessInfo.size(); i++)
     {
-      procCPUUsage.push_back(std::make_pair(procData.at(pidNums.at(i))->getCPUUsage(),
+      procCPUUsage.push_back(std::make_pair(allProcessInfo.at(pidNums.at(i))->getCPUUsage(),
 					    pidNums.at(i)));
 
       // get the different CPUUsage types (repeated values for separating later)
@@ -659,7 +659,7 @@ const std::vector<int> sortByCPUUsage(const std::unordered_map<int, ProcessInfo*
 
 
   Input:
-   procData             - all stored process data that will be traversed in
+   allProcessInfo             - all stored process data that will be traversed in
                           ordere to retrieve desired sort state values
 
    pidNums              - a const reference to a PID list representing all running
@@ -669,7 +669,7 @@ const std::vector<int> sortByCPUUsage(const std::unordered_map<int, ProcessInfo*
    const std::vector<int>
                         - the sorted list of PIDs
 */
-const std::vector<int> sortByMEMUsage(const std::unordered_map<int, ProcessInfo*>& procData,
+const std::vector<int> sortByMEMUsage(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 				      const std::vector<int>& pidNums)
 {
   std::vector<std::pair<double,int>> procMEMUsage;
@@ -678,9 +678,9 @@ const std::vector<int> sortByMEMUsage(const std::unordered_map<int, ProcessInfo*
   std::vector<int> tempPIDs;
   
   // get all std::pairs of <MEMUsage, pid> and store them in vector
-  for(int i = 0, j = 0; i < procData.size(); i++)
+  for(int i = 0, j = 0; i < allProcessInfo.size(); i++)
     {
-      procMEMUsage.push_back(std::make_pair(procData.at(pidNums.at(i))->getMEMUsage(),
+      procMEMUsage.push_back(std::make_pair(allProcessInfo.at(pidNums.at(i))->getMEMUsage(),
 					    pidNums.at(i)));
 
       // get the different MEMUsage types (repeated values for separating later)
@@ -739,7 +739,7 @@ const std::vector<int> sortByMEMUsage(const std::unordered_map<int, ProcessInfo*
    Sorts the pid list in descending order of process CPU time.
 
   Input:
-   procData             - all stored process data that will be traversed in
+   allProcessInfo             - all stored process data that will be traversed in
                           ordere to retrieve desired sort state values
 
    pidNums              - a const reference to a PID list representing all running
@@ -749,7 +749,7 @@ const std::vector<int> sortByMEMUsage(const std::unordered_map<int, ProcessInfo*
    const std::vector<int>
                         - the sorted list of PIDs
  */
-const std::vector<int> sortByCpuTime(const std::unordered_map<int, ProcessInfo*>& procData,
+const std::vector<int> sortByCpuTime(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 				      const std::vector<int>& pidNums)
 {
   std::vector<std::pair<double,int>> procCpuTime;
@@ -758,9 +758,9 @@ const std::vector<int> sortByCpuTime(const std::unordered_map<int, ProcessInfo*>
   std::vector<int> tempPIDs;
   
   // get all std::pairs of <CpuTime, pid> and store them in vector
-  for(int i = 0, j = 0; i < procData.size(); i++)
+  for(int i = 0, j = 0; i < allProcessInfo.size(); i++)
     {
-      procCpuTime.push_back(std::make_pair(procData.at(pidNums.at(i))->getCpuRawTime(),
+      procCpuTime.push_back(std::make_pair(allProcessInfo.at(pidNums.at(i))->getCpuRawTime(),
 					pidNums.at(i)));
 
       // get the different CpuTime types (repeated values for separating later)
@@ -819,7 +819,7 @@ const std::vector<int> sortByCpuTime(const std::unordered_map<int, ProcessInfo*>
    Sorts the pid list by COMMAND.
 
   Input:
-   procData             - all stored process data that will be traversed in
+   allProcessInfo             - all stored process data that will be traversed in
                           ordere to retrieve desired sort state values
 
    pidNums              - a const reference to a PID list representing all running
@@ -829,7 +829,7 @@ const std::vector<int> sortByCpuTime(const std::unordered_map<int, ProcessInfo*>
    const std::vector<int>
                         - the sorted list of PIDs
 */
-const std::vector<int> sortByCOMMAND(std::unordered_map<int, ProcessInfo*>& procData,
+const std::vector<int> sortByCOMMAND(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 				     const std::vector<int>& pidNums)
 {
   std::vector<std::pair<std::string,int>> procStrings;
@@ -838,9 +838,9 @@ const std::vector<int> sortByCOMMAND(std::unordered_map<int, ProcessInfo*>& proc
   std::vector<int> tempPIDs;
   
   // get all std::pairs of <COMMAND, pid> and store them in vector
-  for(int i = 0, j = 0; i < procData.size(); i++)
+  for(int i = 0, j = 0; i < allProcessInfo.size(); i++)
     {
-      procStrings.push_back(std::make_pair(procData.at(pidNums.at(i))->getCOMMAND(),
+      procStrings.push_back(std::make_pair(allProcessInfo.at(pidNums.at(i))->getCOMMAND(),
 					   pidNums.at(i)));
 
       // get the different COMMAND types (repeated values for separating later)
