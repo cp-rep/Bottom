@@ -1,0 +1,353 @@
+/*
+  File:
+   changeProgramStates.hpp
+
+   Description:
+    Contains function definitions for functions in programStates.hpp that
+    use user input to switch the current state of the Bottom program.
+*/
+#include "changeProgramStates.hpp"
+
+
+
+/*
+  Function:
+   initializeProgramStates
+
+  Description:
+   Defines the program states that will operable via user input.
+   
+  Input:
+   progStates           - A reference to an unordered_map<char, int> object
+                          that is addressable via a character key from the
+			  _progStateConsts.hpp file upon definition.
+  Output:
+   NONE
+*/
+void initializeProgramStates(std::unordered_map<char, int>& progStates)
+{
+  progStates.insert(std::make_pair(_PROGSTATEHELP, 1)); // open help menu
+  progStates.insert(std::make_pair(_PROGSTATEQUIT, 1)); // quit
+  progStates.insert(std::make_pair(_PROGSTATEHL, 1)); // highlight column
+} // end of "initializeProgramStates"
+
+
+
+/*
+  Function:
+   updateStateValues
+
+  Description:
+   Updates the values that will be used in further function calls
+   to change the running program state.
+  
+  Input:
+   allWins              - A reference to a constant object that is an
+                          un ordered map containing all the allocated
+			  curses windows addressable by the hash key
+			  PID number.
+			  
+   progStates           - A reference to a constant object that is
+                          an unordered map containing the main program
+			  states such as highlight, help, and quit. It
+			  is addressable from the hash keys via
+			  _progStateConsts.hpp.
+
+   userInput            - A reference to a const int that contains the
+                          inputed user value that is used as the
+			  switch state control expression.
+
+   sortState            - A reference to an int that contains the current
+                          sort state value to be used in further state
+			  related function calls.
+
+   prevState            - A reference to an int that contains the
+                          previous sortState from the last loop iteration.
+
+   progState            - A reference to an int that is used to
+                          update the program state in further function
+			  calls.
+
+   highlight            - A reference to a constant bool object that
+                          is used in a control expression to determine
+			  if the highlight state should be updated.
+
+   highlightIndex       - A reference to an int that contains the index
+                          determining which column to highlight.
+
+  Output:
+   NONE
+*/
+void updateStateValues(std::unordered_map<int, CursesWindow*>& allWins,
+		       std::unordered_map<char, int>& progStates,
+		       const int& userInput,
+		       int& sortState,
+		       int& prevState,
+		       int& progState,
+		       const bool& highlight,
+		       int& highlightIndex)
+{
+  if(userInput != -1)
+    {
+      if(progStates[userInput])
+	{
+	  prevState = progState;
+	  progState = userInput;
+	}
+      else if(userInput == '<' && sortState > _PIDWIN)
+	{
+	  if(highlight == true)
+	    {
+	      wattroff(allWins.at(sortState)->getWindow(),
+		       A_BOLD);
+	      sortState--;
+	      wattron(allWins.at(sortState)->getWindow(),
+		      A_BOLD);
+	    }
+	  else
+	    {
+	      sortState--;
+	    }
+	}
+      else if(userInput == '>' && sortState < _COMMANDWIN)
+	{
+	  if(highlight == true)
+	    {
+	      wattroff(allWins.at(sortState)->getWindow(),
+		       A_BOLD);
+	      sortState++;
+	      wattron(allWins.at(sortState)->getWindow(),
+		      A_BOLD);
+	    }
+	  else
+	    {
+	      sortState++;
+	    }
+	}
+    }
+  highlightIndex = sortState;
+} // end of "updateStateValues"
+
+
+
+/*
+  Function:
+   changeProgramState
+
+  Description:
+   Updates the current main program state through a switch control
+   structure dependent on previous state values and user input.
+
+  Input:
+   progState            - A reference to a int that is used to
+                          update the program state.
+			  
+   prevState            - A reference to a constant int that contains the
+                          previously update program state value.
+
+   quit                 - A reference to a bool object that determines if
+                          the program should end.
+
+   highlight            - A reference to a bool object that
+                          is used to update the current state value
+			  for turning on or off highlighting of a
+			  column.
+
+  Output:
+   NONE
+*/
+void changeProgramState(int& progState,
+			const int& prevState,
+			bool& quit,
+			bool& highlight)
+{
+  switch(progState)
+    {
+    case _PROGSTATEHELP: // help
+      break;
+    case _PROGSTATEQUIT: // quit
+      quit = true;
+      break;
+    case _PROGSTATEHL: // highlight
+      if(highlight == true)
+	{
+	  highlight = false;
+	}
+      else if(highlight == false)
+	{
+	  highlight = true;
+	}
+      progState = prevState;
+      break;
+    default:
+      break;
+    }
+} // changeProgramState
+
+
+
+/*
+  Function:
+   bottomWinsProcSortState
+
+  Description:
+   Sorts a vector of integer objects containing PID numbers that will be sorted
+   based upon the selected user input for outputing sorted process data.
+  
+  Input:
+   allProcessInfo       - A reference to an unordered_map<int, ProcessInfo*> object
+                          that contains all currently extracted process data from
+			  the current PID list.
+
+   pids                 - A reference to a vector<int> object containing the PID
+                          numbers of the currently allocated processes.
+
+   outPids              - A reference to a vector<int> object that will be used
+                          as output list of sorted PID values.
+
+   userInput            - A reference to a constant integer that holds the last
+                          entered userInput value.
+			  
+  Output:
+   NONE
+ */
+void bottomWinsProcSortState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+			     std::vector<int>& pids,
+			     std::vector<int>& outPids,
+			     const int& userInput)
+{
+  switch(userInput)
+    {
+    case _PIDWIN:
+      outPids = pids;
+      std::sort(outPids.begin(),
+		outPids.end());
+      break;
+    case _USERWIN:
+      outPids = sortByUSER(allProcessInfo,
+			   pids);
+      break;
+    case _PRWIN:
+      outPids = sortByPR(allProcessInfo,
+			 pids);
+      break;
+    case _NIWIN:
+      outPids = sortByNI(allProcessInfo,
+			 pids);
+      break;
+    case _VIRTWIN:
+      outPids = sortByVIRT(allProcessInfo,
+			   pids);
+      break;
+    case _RESWIN:
+      outPids = sortByRES(allProcessInfo,
+			  pids);
+      break;
+    case _SHRWIN:
+      outPids = sortBySHR(allProcessInfo,
+			  pids);
+      break;
+    case _SWIN:
+      outPids = sortByS(allProcessInfo,
+			pids);
+      break;
+    case _PROCCPUWIN:
+      outPids = sortByCPUUsage(allProcessInfo,
+			       pids);	
+      break;
+    case _PROCMEMWIN:
+      outPids = sortByMEMUsage(allProcessInfo,
+			       pids);
+      break;
+    case _PROCTIMEWIN:
+      outPids = sortByCpuTime(allProcessInfo,
+			      pids);
+      break;
+    case _COMMANDWIN:
+      outPids = sortByCOMMAND(allProcessInfo,
+			      pids);
+      break;
+    default:
+      break;
+    }  
+} // end of "bottomWinProcSortState"
+
+
+
+/*
+  Function:
+   bottomWinsShiftState
+
+  Description:
+   Uses a switch control structure to determine the shift state of the
+   windows and process data in the bottom windows.  Shifting left and right
+   will allocate or deallocate the windows from memory.  Shifting up and down
+   simply determine the starting and ending values of process datato be
+   outputed.
+
+  Input:
+   allWins              - A reference to a constant object that is an
+                          un ordered map containing all the allocated
+			  curses windows addressable by the hash key
+			  PID number.
+			  
+  shiftState            - A reference to a constant integer that contains
+                          the current shift state used in a switch control
+			  structure that can be updated vai the up, down, left,
+			  and right arrow keys.
+
+  shiftY                - A reference to an integer value that reprensents
+                          the current amount to shift the process list data
+			  vertically.
+
+  shiftX		- A reference to an integer value that represents
+                          the current amount of windows that are "shifted"
+			  in or out of the bottom window list horizontally.
+
+  shiftDownMax          - A constant integer that contains the max amount
+                          the process data can be shifted down in the output
+			  window.
+  Output:
+   NONE
+ */
+void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& allWins,
+			  const int& shiftState,
+			  int& shiftY,
+			  int& shiftX,
+			  const int shiftDownMax)			 
+{
+  switch(shiftState)
+    {
+    case KEY_UP:
+      if(shiftY < 1)
+	{
+	  shiftY++;
+	}
+      break;
+    case KEY_DOWN:
+      if(abs(shiftY) < shiftDownMax)
+	{
+	  shiftY--;
+	}
+      break;
+    case KEY_LEFT:
+      if(shiftX > _PIDWIN)
+	{
+	  shiftBottomWinsRight(allWins,
+			       shiftX);
+	  shiftX--;
+	}
+      break;
+    case KEY_RIGHT:
+      if(shiftX < _COMMANDWIN)
+	{
+	  shiftBottomWinsLeft(allWins,
+			      shiftX);
+	  shiftX++;
+	}
+      break;
+    default:
+      break;
+    }
+} // end of "bottomWinShiftState"
+
