@@ -58,8 +58,7 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 		       PercentMEMWindow& PercentMEMWin,
 		       TIMEWindow& TIMEWin,
 		       COMMANDWindow& COMMANDWin);
-
-void initializeProgramStates(std::unordered_map<int, int>& progStates);
+void initializeProgramStates(std::unordered_map<char, int>& progStates);
 void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins);

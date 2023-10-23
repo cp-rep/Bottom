@@ -364,7 +364,7 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 
   Description:
 */
-void initializeProgramStates(std::unordered_map<int, int>& progStates)
+void initializeProgramStates(std::unordered_map<char, int>& progStates)
 {
   progStates.insert(std::make_pair(_PROGSTATEHELP, 1)); // open help menu
   progStates.insert(std::make_pair(_PROGSTATEQUIT, 1)); // quit
