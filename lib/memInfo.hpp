@@ -31,10 +31,11 @@ public:
   // getters
   const int& getMemTotal() const;
   const int& getMemFree() const;
-  const int& getMemUsed() const {  return m_memUsed; }
+  const int& getMemUsed() const;
   const int& getBuffers() const;
   const int& getCached() const;
   const int& getBuffCache() const;
+  const int& getSReclaimable() const;
   const int& getSwapTotal() const;
   const int& getSwapFree() const;
   const int& getSwapUsed() const;
@@ -43,14 +44,14 @@ public:
   // setters
   void setMemTotal(const int& memTotal);
   void setMemFree(const int& memFree);
-  void setMemUsed(const int& memUsed){ m_memUsed = memUsed; }
+  void setMemUsed(const int& memUsed);
   void setBuffers(const int& buffers);
   void setCached(const int& cached);
   void setBuffCache(const int& buffCache);  
   void setSReclaimable(const int& sreclaimable);
   void setSwapTotal(const int& swapTotal);
   void setSwapFree(const int& swapFree);
-  void setSwapUsed(const int& swapUsed){ m_swapUsed = swapUsed;}
+  void setSwapUsed(const int& swapUsed);
   void setMemAvailable(const int& memAvailable);
   
 private:
@@ -67,5 +68,4 @@ private:
   int m_swapUsed;
   int m_memAvailable;
 };
-
 #endif

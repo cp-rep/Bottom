@@ -55,17 +55,17 @@ MemInfo::MemInfo(const int& memTotal,
 		 const int& swapUsed,
 		 const int& memAvailable)
 {
-  m_memTotal = memTotal;
-  m_memFree = memFree;
-  m_memUsed = memUsed;
-  m_buffers = buffers;
-  m_cached = cached;
-  m_buffCache = buffCache;
-  m_sreclaimable = sreclaimable;
-  m_swapTotal = swapTotal;
-  m_swapFree = swapFree;
-  m_swapUsed = swapUsed;
-  m_memAvailable = memAvailable;
+  setMemTotal(memTotal);
+  setMemFree(memFree);
+  setMemUsed(memUsed);
+  setBuffers(buffers);
+  setCached(cached);
+  setBuffCache(buffCache);
+  setSReclaimable(sreclaimable);
+  setSwapTotal(swapTotal);
+  setSwapFree(swapFree);
+  setSwapUsed(swapUsed);
+  setMemAvailable(memAvailable);
 } // end of "MemInfo Constructor"
 
 
@@ -86,7 +86,10 @@ MemInfo::MemInfo(const int& memTotal,
 */
 const int MemInfo::calculateBuffCache() const
 {
-  return m_buffers + m_cached + m_sreclaimable;
+  const int tempBuffers = getBuffers();
+  const int tempCached = getCached();
+  const int tempSReclaimable = getSReclaimable();
+  return tempBuffers + tempCached + tempSReclaimable;
 } // end of "calculateBuffCache"
 
 
@@ -107,8 +110,7 @@ const int MemInfo::calculateBuffCache() const
 */
 const int MemInfo::calculateMemUsed() const
 {
-  const unsigned int mem = std::max(m_memTotal, m_swapTotal);
-  return mem - m_memAvailable;
+  return getMemTotal() - (getMemFree() + getBuffCache());
 } // end of "calculateMemUsed"
 
 
@@ -128,7 +130,7 @@ const int MemInfo::calculateMemUsed() const
 */
 const int MemInfo::calculateSwapUsed() const
 {
-  return m_swapTotal - m_swapFree;
+  return getSwapTotal() - getSwapFree();
 } // end of "calculateSwapUsed"
 
 
@@ -172,6 +174,27 @@ const int& MemInfo::getMemFree() const
 {
   return m_memFree;
 } // end of "getMemFree"
+
+
+
+/*
+  Function:
+   getMemUsed
+
+  Description:
+   Returns the m_memUsed private member variable.
+
+  Input:
+   NONE
+
+  Output:  
+   m_memFree            - A constant reference to the m_memFree private
+                          member varible.
+*/
+const int& MemInfo::getMemUsed() const
+{
+  return m_memUsed;
+} // end of "getMemUsed"
 
 
 
@@ -236,6 +259,27 @@ const int& MemInfo::getBuffCache() const
 {
   return m_buffCache;
 } // end of "getBuffCache"
+
+
+
+/*
+  Function:
+   getSReclaimable
+
+  Description:
+   Returns the m_sreclaimable private member variable.
+
+  Input:
+   NONE
+
+  Output:  
+   m_sreclaimable       - A const reference to the m_buffCache private
+                          member variable.  
+*/
+const int& MemInfo::getSReclaimable() const
+{
+  return m_sreclaimable;
+} // end of "getSReclaimable"
 
 
 
@@ -363,6 +407,27 @@ void MemInfo::setMemFree(const int& memFree)
 
 
 
+
+/*
+  Function:
+   setMemUsed
+
+  Description:
+   Sets the m_memUsed private member variable.
+
+  Input:
+   NONE
+
+  Output:
+   NONE
+*/
+void MemInfo::setMemUsed(const int& memUsed)
+{
+  m_memUsed = memUsed;
+} // end of "setMemUsed"
+
+
+
 /*
   Function:
    setBuffers
@@ -479,6 +544,26 @@ void MemInfo::setSwapFree(const int& swapFree)
 {
   m_swapFree = swapFree;
 } // end of "setSwapFree"
+
+
+
+/*
+  Function:
+   setSwapUsed
+
+  Description:
+   Sets the m_swapUsed private member variable.
+
+  Input:
+   NONE
+
+  Output:
+   NONE
+*/
+void MemInfo::setSwapUsed(const int& swapUsed)
+{
+  m_swapUsed = swapUsed;
+} // end of "setSwapUsed"
 
 
 
