@@ -18,63 +18,62 @@
 
   Changes/Fixes Needed:
   - get correct user count
-  - get/calculate TIME+ window
   - determine how Top decides what processes/users have priority in the sort 
     list to come first
   - create a docker image that comes with all the modules necessary for building
-    Bottom and GTests for easier/"safer" testing for interested parties.
+    Bottom and GTests.
 */
-#include <iostream>
-#include <ctime>
+#include <algorithm>
 #include <chrono>
-#include <fstream>
-#include <ncurses.h>
 #include <climits>
-#include <limits>
+#include <cmath>
+#include <ctime>
+#include <dirent.h>
+#include <fstream>
 #include <iomanip>
-#include <unistd.h>
+#include <iostream>
+#include <limits>
+#include "log.hpp"
+#include <ncurses.h>
+#include <pwd.h>
 #include <unordered_map>
+#include <unistd.h>
+#include <set>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/param.h>
-#include <pwd.h>
-#include <dirent.h>
-#include <algorithm>
-#include <set>
-#include <cmath>
-#include "log.hpp"
-#include "cursesWindow.hpp"
-#include "mainWindow.hpp"
-#include "topWindow.hpp"
-#include "tasksWindow.hpp"
-#include "VIRTWindow.hpp"
+#include "_cursesWinConsts.hpp"
+#include "_fileConsts.hpp"
+#include "_progStateConsts.hpp"
+#include "byteConverter.hpp"
+#include "changeProgramStates.hpp"
 #include "COMMANDWindow.hpp"
 #include "cpuWindow.hpp"
 #include "cpuInfo.hpp"
+#include "cursesColors.hpp"
+#include "cursesFunctions.hpp"
+#include "cursesWindow.hpp"
+#include "extractFileData.hpp"
+#include "mainWindow.hpp"
+#include "memInfo.hpp"
 #include "memWindow.hpp"
 #include "NIWindow.hpp"
 #include "percentCPUWindow.hpp"
 #include "percentMEMWindow.hpp"
 #include "PIDWindow.hpp"
-#include "changeProgramStates.hpp"
+#include "processInfo.hpp"
 #include "PRWindow.hpp"
 #include "RESWindow.hpp"
-#include "SHRWindow.hpp"
-#include "SWindow.hpp"
-#include "TIMEWindow.hpp"
-#include "USERWindow.hpp"
-#include "extractFileData.hpp"
-#include "byteConverter.hpp"
-#include "memInfo.hpp"
-#include "processInfo.hpp"
 #include "secondsToTime.hpp"
-#include "cursesFunctions.hpp"
-#include "cursesColors.hpp"
-#include "_progStateConsts.hpp"
-#include "_cursesWinConsts.hpp"
-#include "_fileConsts.hpp"
+#include "SHRWindow.hpp"
 #include "sortProcessLists.hpp"
+#include "SWindow.hpp"
 #include "taskInfo.hpp"
+#include "tasksWindow.hpp"
+#include "TIMEWindow.hpp"
+#include "topWindow.hpp"
+#include "USERWindow.hpp"
+#include "VIRTWindow.hpp"
 
 // debug constants
 #define _CURSES 1
@@ -87,9 +86,6 @@
 // function prototypes
 void printWindowToLog(std::ofstream& log,
 		      const CursesWindow& win);
-const std::vector<int> sortByUSER
-(const std::vector<int>& pids,
- std::unordered_map<int, ProcessInfo*>& allProcessInfo);
 
 
 
@@ -222,6 +218,7 @@ int main()
   std::string fileLine;
   std::string tempLine;
   std::string colorLine;
+  
   colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
   
   do{
