@@ -7,7 +7,7 @@
 
 
 MemWindow::MemWindow(WINDOW* win,
-		     const std::string windowName,	      
+		     const std::string& windowName,	      
 		     const short& numLines,
 		     const short& numCols,
 		     const short& startY,
