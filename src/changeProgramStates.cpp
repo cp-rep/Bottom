@@ -29,6 +29,7 @@ void initializeProgramStates(std::unordered_map<char, int>& progStates)
   progStates.insert(std::make_pair(_PROGSTATEHELP, 1)); // open help menu
   progStates.insert(std::make_pair(_PROGSTATEQUIT, 1)); // quit
   progStates.insert(std::make_pair(_PROGSTATEHL, 1)); // highlight column
+  progStates.insert(std::make_pair(_PROGSTATEKILL, 1)); // highlight column
 } // end of "initializeProgramStates"
 
 
@@ -156,7 +157,8 @@ void updateStateValues(std::unordered_map<int, CursesWindow*>& allWins,
   Output:
    NONE
 */
-void changeProgramState(int& progState,
+void changeProgramState(const std::unordered_map<int, CursesWindow*>& allWins,
+			int& progState,
 			const int& prevState,
 			bool& quit,
 			bool& highlight)
@@ -179,11 +181,32 @@ void changeProgramState(int& progState,
 	}
       progState = prevState;
       break;
+    case _PROGSTATEKILL:
+      killState(allWins);
+      break;
     default:
       break;
     }
-} // changeProgramState
+} // end of "changeProgramState"
 
+
+
+void killState(const std::unordered_map<int, CursesWindow*>& allWins)
+{
+  std::string outString = "PID to signal/kill [default pid = xxxx] ";
+  wattron(allWins.at(_MAINWIN)->getWindow(),
+	  A_BOLD);
+  mvwaddstr(allWins.at(_MAINWIN)->getWindow(),
+	    _YOFFSET - 1,
+	    0,
+	    outString.c_str());
+
+  wattroff(allWins.at(_MAINWIN)->getWindow(),
+	   A_BOLD);
+  
+  wrefresh(allWins.at(_MAINWIN)->getWindow());
+  doupdate();
+}
 
 
 /*
@@ -350,4 +373,3 @@ void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& allWins,
       break;
     }
 } // end of "bottomWinShiftState"
-

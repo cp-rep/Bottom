@@ -9,6 +9,8 @@
 #ifndef CHANGEPROGRAMSTATES_HPP
 #define CHANGEPROGRAMSTATES_HPP
 #include <ncurses.h>
+#include <signal.h>
+#include <stdlib.h>
 #include <unordered_map>
 #include "_cursesWinConsts.hpp"
 #include "_progStateConsts.hpp"
@@ -38,5 +40,11 @@ void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& allWins,
 			  int& shiftY,
 			  int& shiftX,
 			  const int shiftDownMax);
-  		
+void changeProgramState(const std::unordered_map<int, CursesWindow*>& allWins,
+			int& progState,
+			const int& prevState,
+			bool& quit,
+			bool& highlight);
+
+void killState(const std::unordered_map<int, CursesWindow*>& allWins);
 #endif
