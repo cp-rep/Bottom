@@ -406,6 +406,10 @@ const std::string createTopLine(const std::string HHMMSS,
 	}
       else
 	{
+	  if(numHours < 10)
+	    {
+	      tempTopString.append(" ");
+	    }
 	  tempTopString.append(std::to_string(numHours));
 	  tempTopString.append(":"); 
 	  if(numMinutes < 10)
@@ -427,12 +431,12 @@ const std::string createTopLine(const std::string HHMMSS,
       tempTopString.append(std::to_string(numDays));      
       tempTopString.append(" days, ");
     }
-    tempTopString.append("0");
-    tempTopString.append(" users, load average: ");
+    tempTopString.append(" 0");
+    tempTopString.append(" users,  load average: ");
     tempTopString.append(parsedLoadAvg.at(0));
-    tempTopString.append(" ");
+    tempTopString.append(", ");
     tempTopString.append(parsedLoadAvg.at(1));
-    tempTopString.append(" ");
+    tempTopString.append(", ");
     tempTopString.append(parsedLoadAvg.at(2));
 
     return tempTopString;
