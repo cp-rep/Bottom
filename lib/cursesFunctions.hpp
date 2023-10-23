@@ -24,6 +24,11 @@
 #include "cpuWindow.hpp"
 #include "tasksWindow.hpp"
 #include "PRWindow.hpp"
+#include "tasksRunningWindow.hpp"
+#include "tasksSleepingWindow.hpp"
+#include "tasksStoppedWindow.hpp"
+#include "tasksTotalWindow.hpp"
+#include "tasksZombieWindow.hpp"
 #include "TIMEWindow.hpp"
 #include "memWindow.hpp"
 #include "RESWindow.hpp"
@@ -40,7 +45,7 @@
 #include <mutex>
 
 void initializeCurses();
-void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
+void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,		       
 		       MainWindow& mainWin,
 		       TopWindow& topWin,
 		       TasksWindow& tasksWin,
@@ -57,7 +62,12 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 		       PercentCPUWindow& PercentCPUWin,
 		       PercentMEMWindow& PercentMEMWin,
 		       TIMEWindow& TIMEWin,
-		       COMMANDWindow& COMMANDWin);
+		       COMMANDWindow& COMMANDWin,
+		       TasksTotalWindow& tasksTotalWin,
+		       TasksRunningWindow& tasksRunningWin,
+		       TasksStoppedWindow& tasksStoppedWin,
+		       TasksSleepingWindow& tasksSleepingWin,
+		       TasksZombieWindow& tasksZombieWin);
 void initializeProgramStates(std::unordered_map<char, int>& progStates);
 void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins);
@@ -67,6 +77,8 @@ void attronBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
 		      int attrs);
 void attroffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
 		       int attrs);
+void printTasksData(const std::unordered_map<int, CursesWindow*>& wins,
+		    const TaskInfo& taskinfo);
 void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
 		  const std::vector<std::string>& allTopLines);
 void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins);

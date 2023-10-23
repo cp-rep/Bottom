@@ -64,7 +64,12 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 		       PercentCPUWindow& PercentCPUWin,
 		       PercentMEMWindow& PercentMEMWin,
 		       TIMEWindow& TIMEWin,
-		       COMMANDWindow& COMMANDWin)
+		       COMMANDWindow& COMMANDWin,
+		       TasksTotalWindow& tasksTotalWin,
+		       TasksRunningWindow& tasksRunningWin,
+		       TasksStoppedWindow& tasksStoppedWin,
+		       TasksSleepingWindow& tasksSleepingWin,
+		       TasksZombieWindow& tasksZombieWin)
 {
   int numLines;
   int numCols;
@@ -350,7 +355,77 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 			  startY,
 			  startX);
   COMMANDWin.fixCOMMANDWinName();
-  
+  // define TasksTotalWindow
+  numCols = 4;
+  numLines = 1;
+  startY = 1;
+  startX = 6;
+  tasksTotalWin.defineWindow(newwin(numLines,
+				    numCols,
+				    startY,
+				    startX),
+			     "total",
+			     numLines,
+			     numCols,
+			     startY,
+			     startX);
+  // define TasksRunningWindow
+  numCols = 4;
+  numLines = 1;
+  startY = 1;
+  startX = 17;
+  tasksRunningWin.defineWindow(newwin(numLines,
+				    numCols,
+				    startY,
+				    startX),
+			     "running",
+			     numLines,
+			     numCols,
+			     startY,
+			     startX);
+  // define TasksSleepingWindow
+  numCols = 4;
+  numLines = 1;
+  startY = 1;
+  startX = 30;
+  tasksSleepingWin.defineWindow(newwin(numLines,
+				    numCols,
+				    startY,
+				    startX),
+			     "sleeping",
+			     numLines,
+			     numCols,
+			     startY,
+			     startX);
+  // define TasksStoppedWindow
+  numCols = 4;
+  numLines = 1;
+  startY = 1;
+  startX = 44;
+  tasksStoppedWin.defineWindow(newwin(numLines,
+				    numCols,
+				    startY,
+				    startX),
+			       "stopped",
+			       numLines,
+			       numCols,
+			       startY,
+			       startX);
+
+  // define TasksZombieWindow
+  numCols = 4;
+  numLines = 1;
+  startY = 1;
+  startX = 57;
+  tasksZombieWin.defineWindow(newwin(numLines,
+				       numCols,
+				       startY,
+				     startX),
+			      "zombie",
+			      numLines,
+			      numCols,
+			      startY,
+			      startX);
   wins.insert(std::make_pair(_MAINWIN,&mainWin));
   wins.insert(std::make_pair(_TOPWIN, &topWin));
   wins.insert(std::make_pair(_TASKSWIN, &tasksWin));
@@ -367,7 +442,12 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
   wins.insert(std::make_pair(_PROCCPUWIN, &PercentCPUWin));
   wins.insert(std::make_pair(_PROCMEMWIN, &PercentMEMWin));
   wins.insert(std::make_pair(_PROCTIMEWIN, &TIMEWin));
-  wins.insert(std::make_pair(_COMMANDWIN, &COMMANDWin));  
+  wins.insert(std::make_pair(_COMMANDWIN, &COMMANDWin));
+  wins.insert(std::make_pair(_TASKSTOTAL, &tasksTotalWin));
+  wins.insert(std::make_pair(_TASKSRUNNING, &tasksRunningWin));
+  wins.insert(std::make_pair(_TASKSSLEEPING,&tasksSleepingWin));
+  wins.insert(std::make_pair(_TASKSSTOPPED, &tasksStoppedWin));
+  wins.insert(std::make_pair(_TASKSZOMBIE, &tasksZombieWin));  
 } // end of "initializeWindows"
 
 
@@ -539,6 +619,21 @@ void attroffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
 }
 
 
+/*
+  Function:
+   printTasksData
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void printTasksData(const std::unordered_map<int, CursesWindow*>& wins,
+		    const TaskInfo& taskinfo)
+{
+} // end of "printTasksData"
+
 
 /*
   Function:
@@ -558,10 +653,12 @@ void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
 	    0,
 	    0,
 	    allTopLines.at(0).c_str());
+  /*
   mvwaddstr(wins.at(_TASKSWIN)->getWindow(),
 	    0,
 	    0,
 	    allTopLines.at(4).c_str());
+  */
   mvwaddstr(wins.at(_CPUWIN)->getWindow(),
 	    0,
 	    0,
@@ -1153,6 +1250,7 @@ void shiftBottomWinsRight(std::unordered_map<int, CursesWindow*>& wins,
 void drawBoxes(const std::unordered_map<int, CursesWindow*>& wins)
 {
   char val = 'a';
+
   for(int i = 0; i < wins.size(); i++, val++)
     {
       if(wins.at(i)->getWindow() != nullptr)
