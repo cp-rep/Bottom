@@ -78,6 +78,10 @@
 #include "tasksZombieWindow.hpp"
 #include "tasksWindow.hpp"
 #include "TIMEWindow.hpp"
+#include "topLoadWindow.hpp"
+#include "topTimeWindow.hpp"
+#include "topUpWindow.hpp"
+#include "topUsersWindow.hpp"
 #include "topWindow.hpp"
 #include "USERWindow.hpp"
 #include "VIRTWindow.hpp"
@@ -175,6 +179,10 @@ int main()
   TIMEWindow TIMEWin;
   COMMANDWindow COMMANDWin;
   HelpWindow helpWindow;
+  TopTimeWindow topTimeWin;
+  TopUpWindow topUpWin;
+  TopUsersWindow topUserWin;
+  TopLoadWindow topLoadWin;
   TasksTotalWindow tasksTotalWin;
   TasksRunningWindow tasksRunningWin;
   TasksStoppedWindow tasksStoppedWin;
@@ -364,10 +372,15 @@ int main()
 	wattroff(allWins.at(highlightIndex)->getWindow(),
 		 A_BOLD);
       }
-
     clearAllWins(allWins);
     printTopWins(allWins,
 		 allTopLines);
+    boldOnTasksWins(allWins,
+		    A_BOLD);
+    printTasksData(allWins,
+		   taskInfo);
+    boldOffTasksWins(allWins,
+		    A_BOLD);
     printProcs(allWins,
 	       allProcessInfo,
 	       outPids,
