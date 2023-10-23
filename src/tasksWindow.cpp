@@ -40,7 +40,7 @@
   NONE
 */
 TasksWindow::TasksWindow(WINDOW* win,
-			 const std::string windowName,	      
+			 const std::string& windowName,	      
 			 const short& numLines,
 			 const short& numCols,
 			 const short& startY,
@@ -54,3 +54,70 @@ TasksWindow::TasksWindow(WINDOW* win,
 } // end of "TasksWindow Constructor"
 
 
+
+/*
+  Function:
+   defineTasksLine
+   
+  Description:
+
+
+  Input:
+
+  Output
+   'NONE
+*/
+void TasksWindow::defineTasksLine(const unsigned int& total,
+				  const unsigned int& running,
+				  const unsigned int& sleeping,
+				  const unsigned int& stopped,
+				  const unsigned int& zombie)
+{
+  std::lock_guard<std::mutex> lock(m_tasksLineMutex);
+  m_tasksLine = "Tasks: ";
+  m_tasksLine.append(std::to_string(total));
+  m_tasksLine.append(" total, ");
+  m_tasksLine.append(std::to_string(running));
+  m_tasksLine.append(" running, ");
+  m_tasksLine.append(std::to_string(sleeping));
+  m_tasksLine.append(" sleeping, ");
+  m_tasksLine.append(std::to_string(stopped));
+  m_tasksLine.append(" stopped, ");
+  m_tasksLine.append(std::to_string(zombie));
+  m_tasksLine.append(" zombie");    
+} // end of "defineTasksLine"
+
+
+
+/*
+  Function:
+   
+  Description:
+
+  Input:
+
+  Output
+   'NONE
+*/
+const std::string& TasksWindow::getTasksLine()
+{
+  return m_tasksLine;
+} // end of "getTasksLine"
+
+
+
+/*
+  Function:
+   setTasksLine
+   
+  Description:
+
+  Input:
+
+  Output
+   'NONE
+*/
+void TasksWindow::setTasksLine(const std::string& tasksLine)
+{
+  m_tasksLine = tasksLine;
+} // end of "setTasksLine"
