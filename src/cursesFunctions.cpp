@@ -15,6 +15,366 @@
 
 /*
   Function:
+   initializeCurses
+
+  Description:
+*/
+void initializeCurses()
+{
+  initscr();
+  curs_set(0);
+  timeout(0);
+  noecho();
+  keypad(stdscr, true);
+} // end of "initializeCurses"
+
+
+
+/*
+  Function:
+   initializeWindows
+
+  Description:
+*/
+void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,		       
+		       MainWindow& mainWin,
+		       TopWindow& topWin,
+		       TasksWindow& tasksWin,
+		       CpuWindow& cpuWin,
+		       MemWindow& memWin,
+		       PIDWindow& PIDWin,
+		       USERWindow& USERWin,
+		       PRWindow& PRWin,
+		       NIWindow& NIWin,
+		       VIRTWindow& VIRTWin,
+		       RESWindow& RESWin,
+		       SHRWindow& SHRWin,
+		       SWindow& SWin,
+		       PercentCPUWindow& PercentCPUWin,
+		       PercentMEMWindow& PercentMEMWin,
+		       TIMEWindow& TIMEWin,
+		       COMMANDWindow& COMMANDWin)
+{
+  int numLines;
+  int numCols;
+  int startY = 0;
+  int startX = 0;
+  getmaxyx(stdscr, numLines, numCols);
+
+  mainWin.defineWindow(stdscr,
+		       "Main",
+		       numLines,
+		       numCols,
+		       startY,
+		       startX);
+  numLines = 1;
+  numCols = numCols;
+  startY = _YOFFSET - 6;
+  startX = 0;
+  topWin.defineWindow(newwin(numLines,
+			     numCols,
+			     startY,
+			     startX),
+		      "top",
+		      numLines,
+		      numCols,
+		      startY,
+		      startX);
+  // define tasks window
+  numLines = 1;
+  numCols = numCols;
+  startY = _YOFFSET - 5;
+  startX = 0;
+  tasksWin.defineWindow(newwin(numLines,
+			       numCols,
+			       startY,
+			       startX),
+			"Tasks",
+			numLines,
+			numCols,
+			startY,
+			startX);
+  // define cpu window
+  numLines = 1;
+  numCols = numCols;
+  startY = _YOFFSET - 4;
+  startX = 0;
+  cpuWin.defineWindow(newwin(numLines,
+			     numCols,
+			     startY,
+			     startX),
+		      "CPU",
+		      numLines,
+		      numCols,
+		      startY,
+		      startX);
+  // define mem window
+  numLines = 2;
+  numCols = numCols;
+  startY = _YOFFSET - 3;
+  startX = 0;  
+  memWin.defineWindow(newwin(numLines,
+			     numCols,
+			     startY,
+			     startX),
+		      "MEM",
+		      numLines,
+		      numCols,
+		      startY,
+		      startX);
+  // define PID window
+  numLines = mainWin.getNumLines() -
+    memWin.getNumLines() -
+    cpuWin.getNumLines() -
+    tasksWin.getNumLines() -
+    topWin.getNumLines() - 1;
+  numCols = 7;
+  startY = memWin.getStartY() + _YOFFSET - 3;
+  startX = 0;
+  PIDWin.defineWindow(newwin(numLines,
+			     numCols,
+			     startY,
+			     startX),
+		      "    PID",
+		      numLines,
+		      numCols,
+		      startY,
+		      startX);
+  // define USER window
+  numCols = 8;
+  startY = memWin.getStartY() + _YOFFSET - 3;
+  startX = PIDWin.getNumCols() + 1;
+  USERWin.defineWindow(newwin(numLines,
+			      numCols,
+			      startY,
+			      startX),
+		       "USER    ",
+		       numLines,
+		       numCols,
+		       startY,
+		       startX);
+  // define PR window
+  numCols = 3;
+  startY = memWin.getStartY() + _YOFFSET - 3;
+  startX = PIDWin.getNumCols() +
+    USERWin.getNumCols() + 2;
+  PRWin.defineWindow(newwin(numLines,
+			    numCols,
+			    startY,
+			    startX),
+		     " PR",
+		     numLines,
+		     numCols,
+		     startY,
+		     startX);
+  // define NI window
+  numCols = 3;
+  startY = memWin.getStartY() + _YOFFSET - 3;
+  startX = PIDWin.getNumCols() +
+    USERWin.getNumCols() +
+    PRWin.getNumCols() + 3;
+  NIWin.defineWindow(newwin(numLines,
+			    numCols,
+			    startY,
+			    startX),
+		     " NI",
+		     numLines,
+		     numCols,
+		     startY,
+		     startX);
+  // define VIRT window
+  numCols = 7;
+  startY = memWin.getStartY() + _YOFFSET - 3;
+  startX = PIDWin.getNumCols() +
+    USERWin.getNumCols() +
+    PRWin.getNumCols() +
+    NIWin.getNumCols() + 4;
+  VIRTWin.defineWindow(newwin(numLines,
+			      numCols,
+			      startY,
+			      startX),
+		       "   VIRT",
+		       numLines,
+		       numCols,
+		       startY,
+		       startX);
+  // define RES window
+  numCols = 6;
+  startY = memWin.getStartY() + _YOFFSET - 3;
+  startX = PIDWin.getNumCols() +
+    USERWin.getNumCols() +
+    PRWin.getNumCols() +
+    NIWin.getNumCols() +
+    VIRTWin.getNumCols() + 5;
+  RESWin.defineWindow(newwin(numLines,
+			     numCols,
+			     startY,
+			     startX),
+		      "   RES",
+		      numLines,
+		      numCols,
+		      startY,
+		      startX);
+  // define SHR window
+  numCols = 6;
+  startY = memWin.getStartY() + _YOFFSET - 3;
+  startX = PIDWin.getNumCols() +
+    USERWin.getNumCols() +
+    PRWin.getNumCols() +
+    NIWin.getNumCols() +
+    VIRTWin.getNumCols() +
+    RESWin.getNumCols() + 6;
+  SHRWin.defineWindow(newwin(numLines,
+			     numCols,
+			     startY,
+			     startX),
+		      "   SHR",
+		      numLines,
+		      numCols,
+		      startY,
+		      startX);
+  // define S window
+  numCols = 1;
+  startY = memWin.getStartY() + _YOFFSET - 3;
+  startX = PIDWin.getNumCols() +
+    USERWin.getNumCols() +
+    PRWin.getNumCols() +
+    NIWin.getNumCols() +
+    VIRTWin.getNumCols() +
+    RESWin.getNumCols() +
+    SHRWin.getNumCols() + 7;
+  SWin.defineWindow(newwin(numLines,
+			   numCols,
+			   startY,
+			   startX),
+		    "S",
+		    numLines,
+		    numCols,
+		    startY,
+		    startX);
+  // define %CPU window
+  numCols = 5;
+  startY = memWin.getStartY() + _YOFFSET - 3;
+  startX = PIDWin.getNumCols() +
+    USERWin.getNumCols() +
+    PRWin.getNumCols() +
+    NIWin.getNumCols() +
+    VIRTWin.getNumCols() +
+    RESWin.getNumCols() +
+    SHRWin.getNumCols() + 
+    SWin.getNumCols() + 8;
+  PercentCPUWin.defineWindow(newwin(numLines,
+				    numCols,
+				    startY,
+				    startX),
+			     " %CPU",
+			     numLines,
+			     numCols,
+			     startY,
+			     startX);
+  // define %MEM window
+  numCols = 5;
+  startY = memWin.getStartY() + _YOFFSET - 3;
+  startX = PIDWin.getNumCols() +
+    USERWin.getNumCols() +
+    PRWin.getNumCols() +
+    NIWin.getNumCols() +
+    VIRTWin.getNumCols() +
+    RESWin.getNumCols() +
+    SHRWin.getNumCols() + 
+    SWin.getNumCols() +
+    PercentCPUWin.getNumCols() + 9;
+  PercentMEMWin.defineWindow(newwin(numLines,
+				    numCols,
+				    startY,
+				    startX),
+			     " %MEM",
+			     numLines,
+			     numCols,
+			     startY,
+			     startX);
+  // define TIME+ window
+  numCols = 9;
+  startY = memWin.getStartY() + _YOFFSET - 3;
+  startX = PIDWin.getNumCols() +
+    USERWin.getNumCols() +
+    PRWin.getNumCols() +
+    NIWin.getNumCols() +
+    VIRTWin.getNumCols() +
+    RESWin.getNumCols() +
+    SHRWin.getNumCols() + 
+    SWin.getNumCols() +
+    PercentCPUWin.getNumCols() + 
+    PercentMEMWin.getNumCols() + 10;  
+  TIMEWin.defineWindow(newwin(numLines,
+			      numCols,
+			      startY,
+			      startX),
+		       "    TIME+",
+		       numLines,
+		       numCols,
+		       startY,
+		       startX);
+  // define COMMAND window
+  numCols = 48;
+  startY = memWin.getStartY() + _YOFFSET - 3;
+  startX = PIDWin.getNumCols() +
+    USERWin.getNumCols() +
+    PRWin.getNumCols() +
+    NIWin.getNumCols() +
+    VIRTWin.getNumCols() +
+    RESWin.getNumCols() +
+    SHRWin.getNumCols() + 
+    SWin.getNumCols() +
+    PercentCPUWin.getNumCols() + 
+    PercentMEMWin.getNumCols() +
+    TIMEWin.getNumCols() + 11;
+  COMMANDWin.defineWindow(newwin(numLines,
+				 numCols,
+				 startY,
+				 startX), 
+			  "COMMAND",
+			  numLines,
+			  numCols,
+			  startY,
+			  startX);
+  wins.insert(std::make_pair(_MAINWIN,&mainWin));
+  wins.insert(std::make_pair(_TOPWIN, &topWin));
+  wins.insert(std::make_pair(_TASKSWIN, &tasksWin));
+  wins.insert(std::make_pair(_CPUWIN, &cpuWin));
+  wins.insert(std::make_pair(_MEMWIN, &memWin));
+  wins.insert(std::make_pair(_PIDWIN, &PIDWin));
+  wins.insert(std::make_pair(_USERWIN, &USERWin));
+  wins.insert(std::make_pair(_PRWIN, &PRWin));
+  wins.insert(std::make_pair(_NIWIN, &NIWin));
+  wins.insert(std::make_pair(_VIRTWIN, &VIRTWin));
+  wins.insert(std::make_pair(_RESWIN, &RESWin));
+  wins.insert(std::make_pair(_SHRWIN, &SHRWin));
+  wins.insert(std::make_pair(_SWIN, &SWin));
+  wins.insert(std::make_pair(_PROCCPUWIN, &PercentCPUWin));
+  wins.insert(std::make_pair(_PROCMEMWIN, &PercentMEMWin));
+  wins.insert(std::make_pair(_PROCTIMEWIN, &TIMEWin));
+  wins.insert(std::make_pair(_COMMANDWIN, &COMMANDWin));  
+} // end of "initializeWindows"
+
+
+/*
+  Function:
+   initializeProgramStates
+
+  Description:
+*/
+void initializeProgramStates(std::unordered_map<int, int>& progStates)
+{
+  progStates.insert(std::make_pair(_PROGSTATEHELP, 1)); // open help menu
+  progStates.insert(std::make_pair(_PROGSTATEQUIT, 1)); // quit
+  progStates.insert(std::make_pair(_PROGSTATEHL, 1)); // highlight column
+} // end of "initializeProgramStates"
+
+
+
+/*
+  Function:
   refreshAllWins
 
   Description:
@@ -192,30 +552,33 @@ void attroffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
   Output:
 */
 void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
-		  const std::vector<std::string> outLines)
+		  const std::vector<std::string>& allTopLines)
+		  
 {
   mvwaddstr(wins.at(_TOPWIN)->getWindow(),
 	    0,
 	    0,
-	    outLines.at(0).c_str());
+	    allTopLines.at(0).c_str());
   mvwaddstr(wins.at(_TASKSWIN)->getWindow(),
 	    0,
 	    0,
-	    outLines.at(1).c_str());
+	    allTopLines.at(4).c_str());
   mvwaddstr(wins.at(_CPUWIN)->getWindow(),
 	    0,
 	    0,
-	    outLines.at(2).c_str());
+	    allTopLines.at(1).c_str());
+
+
   mvwaddstr(wins.at(_MEMWIN)->getWindow(),
 	    0,
 	    0,
-	    outLines.at(3).c_str());
+	    allTopLines.at(2).c_str());
   mvwaddstr(wins.at(_MEMWIN)->getWindow(),
 	    1,
 	    0,
-	    outLines.at(4).c_str());
-}
+	    allTopLines.at(3).c_str());
 
+} // end of "printTopWins"
 
 
 
@@ -439,136 +802,154 @@ void printSortedProcsReverse(const int& startLine,
 void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 		const std::unordered_map<int, ProcessInfo*>& procData,
 		const std::vector<int>& pidList,
-		const int& shiftY,
-		const int& shiftX)
+		const int shiftY,
+		const int shiftX)
 {
   std::string outString;
 
-  for(int i = 0; i < pidList.size(); i++)
+  for(int i = 0; i < pidList.size() - 1; i++)
     {
-      int posY = i + shiftY;
+      // int posY = i + shiftY;
+      int posY = i + 1;
 
       // ensure nothing is printed over the column titles
-      if(posY != 0)
-      	{
-	  // PID
-	  if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr)
+      // if(posY != 0)
+      //      	{
+      // PID
+      //if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr)
+      //{
+
+      outString = std::to_string(procData.at(pidList.at(i))->getPID());
+      mvwaddstr(wins.at(_PIDWIN)->getWindow(),
+		posY,
+		wins.at(_PIDWIN)->getNumCols() - outString.length(),
+		outString.c_str());	
+
+      // }
+
+      // USER      
+      //      if(shiftX <= _USERWIN && wins.at(_USERWIN)->getWindow() != nullptr)
+	//	{
+
+      outString = procData.at(pidList.at(i))->getUSER();
+      mvwaddstr(wins.at(_USERWIN)->getWindow(),
+		posY,
+		0,
+		outString.c_str());
+
+	  //	}
+      // PR
+
+      //      if(shiftX <= _PRWIN && wins.at(_PRWIN)->getWindow() != nullptr)
+      //	{
+      const int tempPRVal = procData.at(pidList.at(i))->getPR();
+	  if(tempPRVal == -100)
 	    {
-	      outString = std::to_string(procData.at(pidList.at(i))->getPID());
-	      mvwaddstr(wins.at(_PIDWIN)->getWindow(),
-			posY,
-			wins.at(_PIDWIN)->getNumCols() - outString.length(),
-			outString.c_str());
+	      outString = "rt";
 	    }
-	  // USER      
-	  if(shiftX <= _USERWIN && wins.at(_USERWIN)->getWindow() != nullptr)
+	  else
 	    {
-	      outString = procData.at(pidList.at(i))->getUSER();
-	      mvwaddstr(wins.at(_USERWIN)->getWindow(),
-			posY,
-			0,
-			outString.c_str());
-	    }
-	  // PR
-	  if(shiftX <= _PRWIN && wins.at(_PRWIN)->getWindow() != nullptr)
-	    {
-	      const int tempPRVal = procData.at(pidList.at(i))->getPR();
-	      if(tempPRVal == -100)
-		{
-		  outString = "rt";
-		}
-	      else
-		{
-		  outString = std::to_string(tempPRVal);
-		}
-	      mvwaddstr(wins.at(_PRWIN)->getWindow(),
-			posY,
-			wins.at(_PRWIN)->getNumCols() - outString.length(),
-			outString.c_str());
-	    }	  
-	  // NI
-	  if(shiftX <= _NIWIN && wins.at(_NIWIN)->getWindow() != nullptr)
-	    {
-	      outString = std::to_string(procData.at(pidList.at(i))->getNI());
-	      mvwaddstr(wins.at(_NIWIN)->getWindow(),
-			posY,
-			wins.at(_NIWIN)->getNumCols() - outString.length(),
-			outString.c_str());
-	    }
-	  // VIRT
-	  if(shiftX <= _VIRTWIN && wins.at(_VIRTWIN)->getWindow() != nullptr)
-	    {
-	      outString = std::to_string(procData.at(pidList.at(i))->getVIRT());
-	      mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
-			posY,
-			wins.at(_VIRTWIN)->getNumCols() - outString.length(),
-			outString.c_str());
-	    }
-	  // RES
-	  if(shiftX <= _RESWIN && wins.at(_RESWIN)->getWindow() != nullptr)
-	    {
-	      outString = std::to_string(procData.at(pidList.at(i))->getRES());
-	      mvwaddstr(wins.at(_RESWIN)->getWindow(),
-			posY,
-			wins.at(_RESWIN)->getNumCols() - outString.length(),
-			outString.c_str());
-	    }
-	  // SHR
-	  if(shiftX <= _SHRWIN && wins.at(_SHRWIN)->getWindow() != nullptr)
-	    {
-	      outString = std::to_string(procData.at(pidList.at(i))->getSHR());
-	      mvwaddstr(wins.at(_SHRWIN)->getWindow(),
-			posY,
-			wins.at(_SHRWIN)->getNumCols() - outString.length(),
-			outString.c_str());
-	    }
-	  // S
-	  if(shiftX <= _SWIN && wins.at(_SWIN)->getWindow() != nullptr)
-	    {
-	      mvwaddch(wins.at(_SWIN)->getWindow(),
-		       posY,
-		       0,
-		       procData.at(pidList.at(i))->getS());
+	      outString = std::to_string(tempPRVal);
 	    }
 
-	  // %CPU
-	  if(shiftX <= _PROCCPUWIN && wins.at(_PROCCPUWIN)->getWindow() != nullptr)
-	    {
-	      outString = doubleToStr(procData.at(pidList.at(i))->getCPUUsage(), 1);
-	      mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
-			posY,
-			wins.at(_PROCCPUWIN)->getNumCols() - outString.length(),
-			outString.c_str());
-	    }
-	  // %MEM
-	  if(shiftX <= _PROCMEMWIN && wins.at(_PROCMEMWIN)->getWindow() != nullptr)
-	    {
-	      outString = doubleToStr(procData.at(pidList.at(i))->getMEMUsage(), 1);
-	      mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
-			posY,
-			wins.at(_PROCMEMWIN)->getNumCols() - outString.length(),
-			outString.c_str());
-	    }
-	  // TIME+
-	  if(shiftX <= _PROCTIMEWIN && wins.at(_PROCTIMEWIN)->getWindow() != nullptr)
-	    {
-	      outString = procData.at(pidList.at(i))->getProcessCPUTime();
-	      mvwaddstr(wins.at(_PROCTIMEWIN)->getWindow(),
-			posY,
-			wins.at(_PROCTIMEWIN)->getNumCols() - outString.length(),
-			outString.c_str());
-	    }
-	  // COMMAND
-	  if(shiftX <= _COMMANDWIN && wins.at(_COMMANDWIN)->getWindow() != nullptr)
-	    {
-	      outString = procData.at(pidList.at(i))->getCOMMAND();
-	      mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
-			posY,
-			0,
-			outString.c_str());
-	    } 
+	  mvwaddstr(wins.at(_PRWIN)->getWindow(),
+		    posY,
+		    wins.at(_PRWIN)->getNumCols() - outString.length(),
+		    outString.c_str());
+	  //      }	  
+
+      // NI
+      //      if(shiftX <= _NIWIN && wins.at(_NIWIN)->getWindow() != nullptr)
+      //      {
+      outString = std::to_string(procData.at(pidList.at(i))->getNI());
+      mvwaddstr(wins.at(_NIWIN)->getWindow(),
+		posY,
+		wins.at(_NIWIN)->getNumCols() - outString.length(),
+		outString.c_str());
+      //      }
+
+      // VIRT
+      //      if(shiftX <= _VIRTWIN && wins.at(_VIRTWIN)->getWindow() != nullptr)
+      //      {
+      outString = std::to_string(procData.at(pidList.at(i))->getVIRT());
+      mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
+      posY,
+      wins.at(_VIRTWIN)->getNumCols() - outString.length(),
+      outString.c_str());
+      //      }
+      // RES
+      //      if(shiftX <= _RESWIN && wins.at(_RESWIN)->getWindow() != nullptr)
+      //      {
+      outString = std::to_string(procData.at(pidList.at(i))->getRES());
+      mvwaddstr(wins.at(_RESWIN)->getWindow(),
+      posY,
+      wins.at(_RESWIN)->getNumCols() - outString.length(),
+      outString.c_str());
+      //      }
+      // SHR
+      //      if(shiftX <= _SHRWIN && wins.at(_SHRWIN)->getWindow() != nullptr)
+      //      {
+      outString = std::to_string(procData.at(pidList.at(i))->getSHR());
+      mvwaddstr(wins.at(_SHRWIN)->getWindow(),
+      posY,
+      wins.at(_SHRWIN)->getNumCols() - outString.length(),
+      outString.c_str());
+      //      }
+      // S
+
+      //      if(shiftX <= _SWIN && wins.at(_SWIN)->getWindow() != nullptr)
+	//      {
+      mvwaddch(wins.at(_SWIN)->getWindow(),
+	       posY,
+	       0,
+	       procData.at(pidList.at(i))->getS());
+      //      }
+
+      // %CPU
+      //      if(shiftX <= _PROCCPUWIN && wins.at(_PROCCPUWIN)->getWindow() != nullptr)
+      //      {
+
+      outString = doubleToStr(procData.at(pidList.at(i))->getCPUUsage(), 1);
+      mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
+      posY,
+      wins.at(_PROCCPUWIN)->getNumCols() - outString.length(),
+      outString.c_str());
+
+      //      }
+      // %MEM
+      //      if(shiftX <= _PROCMEMWIN && wins.at(_PROCMEMWIN)->getWindow() != nullptr)
+      //      {
+
+      outString = doubleToStr(procData.at(pidList.at(i))->getMEMUsage(), 1);
+      mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
+      posY,
+      wins.at(_PROCMEMWIN)->getNumCols() - outString.length(),
+      outString.c_str());
+
+      //      }
+      // TIME+
+
+      //      if(shiftX <= _PROCTIMEWIN && wins.at(_PROCTIMEWIN)->getWindow() != nullptr)
+	//      {
+      outString = procData.at(pidList.at(i))->getProcessCPUTime();
+      mvwaddstr(wins.at(_PROCTIMEWIN)->getWindow(),
+      posY,
+      wins.at(_PROCTIMEWIN)->getNumCols() - outString.length(),
+      outString.c_str());
+      //      }
+
+      // COMMAND
+      //      if(shiftX <= _COMMANDWIN && wins.at(_COMMANDWIN)->getWindow() != nullptr)
+      //      {
+      outString = procData.at(pidList.at(i))->getCOMMAND();
+      mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
+		posY,
+		0,
+		outString.c_str());
+      //      } 
+      // }
     }
-    }
+
 } // end of "printProcs"
 
 
