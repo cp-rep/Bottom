@@ -196,7 +196,6 @@ int main()
   TasksStoppedWindow tasksStoppedWin;
   TasksSleepingWindow tasksSleepingWin;
   TasksZombieWindow tasksZombieWin;
-  /*
   CpuUsWindow cpuUsWin;
   CpuSyWindow cpuSyWin;
   CpuNiWindow cpuNiWin;
@@ -205,7 +204,7 @@ int main()
   CpuHiWindow cpuHiWin;
   CpuSiWindow cpuSiWin;
   CpuStWindow cpuStWin;
-  */
+
   // state related vars
   int progState = 0;
   int prevState = 0;
@@ -240,9 +239,17 @@ int main()
 		    tasksRunningWin,
 		    tasksStoppedWin,
 		    tasksSleepingWin,
-		    tasksZombieWin);
+		    tasksZombieWin,
+		    cpuUsWin,
+		    cpuSyWin,
+		    cpuNiWin,
+		    cpuIdWin,
+		    cpuWaWin,
+		    cpuHiWin,
+		    cpuSiWin,
+		    cpuStWin);
   initializeProgramStates(progStates);
-
+  
   // loop variables
   SecondsToTime uptime;
   std::vector<std::string> allTopLines;
@@ -290,8 +297,7 @@ int main()
 	extractProcStatData(cpuInfo);
 
 	// store line for output
-	defineCPULine(cpuInfo,
-		      allTopLines);
+	defineCpusLine(allTopLines);
 
 	// extract data for MiB Mem and MiB swap
 	// "MiB Mem: xxxx.xx total, xxxx.xx Free..."
@@ -328,8 +334,7 @@ int main()
 				 taskInfo);
 	
 	// store line for output
-	defineTasksLine(taskInfo,
-			allTopLines);
+	defineTasksLine(allTopLines);
       }
 
     // ## get user input ##
@@ -391,22 +396,33 @@ int main()
     clearAllWins(allWins);
     printTopWins(allWins,
 		 allTopLines);
+    
     boldOnTasksWins(allWins,
 		    A_BOLD);
     printTasksData(allWins,
 		   taskInfo);
     boldOffTasksWins(allWins,
 		    A_BOLD);
+
+    boldOnCpusWins(allWins,
+		   A_BOLD);
+    printCpusData(allWins,
+		  cpuInfo);
+    boldOffCpusWins(allWins,
+		    A_BOLD);
+    
     printProcs(allWins,
 	       allProcessInfo,
 	       outPids,
 	       shiftY,
 	       shiftX);
+    
     attronBottomWins(allWins,
 		     _BLACK_TEXT);
     printWindowNames(allWins);
     attroffBottomWins(allWins,
 		      _BLACK_TEXT);
+    
     printColorLine(allWins,
 		   _YOFFSET,
 		   _BLACK_TEXT,
