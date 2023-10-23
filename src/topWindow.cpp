@@ -41,7 +41,7 @@
   NONE
 */
 TopWindow::TopWindow(WINDOW* win,
-		     const std::string windowName,	      
+		     const std::string& windowName,	      
 		     const short& numLines,
 		     const short& numCols,
 		     const short& startY,
@@ -52,7 +52,7 @@ TopWindow::TopWindow(WINDOW* win,
 							 startY,
 							 startX)
 {
-  m_topLine = "";
+  setTopLine("");
 } // end of "TopWindow Constructor"
 
 
@@ -99,7 +99,6 @@ void TopWindow::setTopLine(const std::string& topLine)
 
 
 
-
 /*
   Function:
    defineTopLine
@@ -136,6 +135,7 @@ void TopWindow::defineTopLine(const std::string& HHMMSS,
 			      const int& numMinutes,
 			      const std::vector<std::string>& parsedLoadAvg)
 {
+  std::lock_guard<std::mutex> lock(m_topLineMutex);
   m_topLine.clear();
   m_topLine.append("top - ");
   m_topLine.append(HHMMSS);

@@ -13,7 +13,7 @@ class TopWindow : public CursesWindow {
  public:
   // constructors
   TopWindow(WINDOW* win = nullptr,
-	    const std::string windowName = "",
+	    const std::string& windowName = "",
 	    const short& numLines = 0,
 	    const short& numCols = 0,
 	    const short& startY = 0,
@@ -23,7 +23,7 @@ class TopWindow : public CursesWindow {
   void defineTopLine(const std::string& HHMMSS,
 		     const int& numDays,
 		     const int& numHours,
-		     const int& numMinutes,
+		     const int numMinutes,
 		     const std::vector<std::string>& parsedLoadAvg);
   
   // getters
