@@ -371,9 +371,9 @@ void extractProcUptimeLoadavg(SecondsToTime& uptime,
   fileLine = returnFileLineByNumber(_UPTIME, 1);
   parsedLine = parseLine(fileLine);
   tempInt = convertToInt(parsedLine.at(0));
-  uptime.setHours(tempInt);
-  uptime.setMinutes(tempInt);
-  uptime.setSeconds(tempInt);
+  uptime.setHours(uptime.convertToHours(tempInt));
+  uptime.setMinutes(uptime.convertToMinutes(tempInt));
+  uptime.setSeconds(uptime.findRemainingSeconds(tempInt));
   uptime.setTotalSeconds(tempInt);
   time(&rawtime);
   timeinfo = localtime(&rawtime);
