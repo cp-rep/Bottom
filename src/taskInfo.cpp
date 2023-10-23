@@ -65,12 +65,301 @@ TaskInfo::TaskInfo(const unsigned int& running,
 		   const unsigned int& idle,
 		   const unsigned int& total)
 {
-  m_running = running;
-  m_unSleep = unSleep;
-  m_inSleep = inSleep;
-  m_sleeping = sleeping;
-  m_stopped = stopped;
-  m_zombie = zombie;
-  m_idle = idle;
-  m_total = total;
+  setRunning(running);
+  setUnSleep(unSleep);
+  setInSleep(inSleep);
+  setSleeping(sleeping);
+  setStopped(stopped);
+  setZombie(zombie);
+  setIdle(idle);
+  setTotal(total);
 } // end of "TaskInfo Constructor"
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+const unsigned int TaskInfo::calcSleeping() const
+{
+  return getInSleep() + getUnSleep() + getIdle();
+} // end of "calcSleeping"
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+const unsigned int TaskInfo::calcTotal() const
+{
+  return getRunning() + getSleeping();
+} // end of "calcTotal"
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+const unsigned int& TaskInfo::getRunning() const
+{
+  return m_running;
+} // end of "getRunning"
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+const unsigned int& TaskInfo::getUnSleep() const
+{
+  return m_unSleep;
+} // end of "getUnSleep"
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+const unsigned int& TaskInfo::getInSleep() const
+{
+  return m_inSleep;
+} // end of "getInSleep"
+
+
+
+/*
+  Function:
+   getSleeping
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+const unsigned int& TaskInfo::getSleeping() const
+{
+  return m_sleeping;
+} // end of "getSleeping"
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+const unsigned int& TaskInfo::getStopped() const
+{
+  return m_stopped;
+} // end of "getStopped"
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+const unsigned int& TaskInfo::getZombie() const
+{
+  return m_zombie;
+} // end of "getZombie"
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+const unsigned int& TaskInfo::getIdle() const
+{
+  return m_idle;
+} // end of "getIdle"
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+const unsigned int& TaskInfo::getTotal() const
+{
+  return m_total;
+} // end of "getTotal"
+  
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void TaskInfo::setRunning(const unsigned int& running)
+{
+  m_running = running;
+} // end of "setRunning"
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void TaskInfo::setUnSleep(const unsigned int& unSleep)
+{
+  m_unSleep = unSleep;
+} // end of "setUnSleep"
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void TaskInfo::setInSleep(const unsigned int& inSleep)
+{
+  m_inSleep = inSleep;
+} // end of "setInSleep"
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void TaskInfo::setSleeping(const unsigned int& sleeping)
+{
+  m_sleeping = sleeping;
+} // end of "setSleeping"
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void TaskInfo::setStopped(const unsigned int& stopped)
+{
+  m_stopped = stopped;
+} // end of "setStopped"
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void TaskInfo::setZombie(const unsigned int& zombie)
+{
+  m_zombie = zombie;
+} // end of "setZombie"
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void TaskInfo::setIdle(const unsigned int& idle)
+{
+  m_idle = idle;
+} // end of "setIdle"
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void TaskInfo::setTotal(const unsigned int& total)
+{
+  m_total = total;
+} // end of "setTotal"

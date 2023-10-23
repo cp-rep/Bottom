@@ -23,27 +23,28 @@ public:
 	   const unsigned int& total = 0);
 
   // member functions
-  const unsigned int calcSleeping() { return m_inSleep + m_unSleep + m_idle; }
-  const unsigned int calcTotal() { return m_running + m_sleeping; }
+  const unsigned int calcSleeping() const;
+  const unsigned int calcTotal() const;
 
   // getters
-  const unsigned int& getRunning() { return m_running; }
-  const unsigned int& getUnSleep() { return m_unSleep; }
-  const unsigned int& getInSleep() { return m_inSleep; }
-  const unsigned int& getStopped() { return m_stopped; }
-  const unsigned int& getZombie() { return m_zombie; }
-  const unsigned int& getIdle() { return m_idle; }
-  const unsigned int& getTotal() { return m_total; }
+  const unsigned int& getRunning() const;
+  const unsigned int& getUnSleep() const;
+  const unsigned int& getInSleep() const;
+  const unsigned int& getStopped() const;
+  const unsigned int& getSleeping() const;
+  const unsigned int& getZombie() const;
+  const unsigned int& getIdle() const;
+  const unsigned int& getTotal() const;
   
   // setters
-  void setRunning(const unsigned int& running) { m_running = running; }
-  void setUnSleep(const unsigned int& unSleep) { m_unSleep = unSleep; }
-  void setInSleep(const unsigned int& inSleep) { m_inSleep = inSleep; }
-  void setSleeping(const unsigned int& sleeping) { m_sleeping = sleeping; }
-  void setStopped(const unsigned int& stopped) { m_stopped = stopped; }
-  void setZombie(const unsigned int& zombie) { m_zombie = zombie; }
-  void setIdle(const unsigned int& idle) { m_idle = idle; }
-  void setTotal(const unsigned int& total) { m_total = total; }
+  void setRunning(const unsigned int& running);
+  void setUnSleep(const unsigned int& unSleep);
+  void setInSleep(const unsigned int& inSleep);
+  void setSleeping(const unsigned int& sleeping);
+  void setStopped(const unsigned int& stopped);
+  void setZombie(const unsigned int& zombie);
+  void setIdle(const unsigned int& idle);
+  void setTotal(const unsigned int& total);
   
 private:
   unsigned int m_running;
