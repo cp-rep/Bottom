@@ -559,13 +559,53 @@ void clearBottomWins(const std::unordered_map<int, CursesWindow*>& wins)
 
 
 
+/*
+  Function:
+   boldOnTasksWins
 
+  Description:
+
+  Input:
+
+  Output:
+*/
+void boldOnTasksWins(std::unordered_map<int, CursesWindow*>& wins,
+		     int attrs)
+{  
+  wattron(wins.at(_TASKSRUNNING)->getWindow(), A_BOLD);
+  wattron(wins.at(_TASKSSLEEPING)->getWindow(), A_BOLD);
+  wattron(wins.at(_TASKSSTOPPED)->getWindow(), A_BOLD);
+  wattron(wins.at(_TASKSTOTAL)->getWindow(), A_BOLD);
+  wattron(wins.at(_TASKSZOMBIE)->getWindow(), A_BOLD);
+} // end of "boldOnTasksWins"
 
 
 
 /*
   Function:
-  attronBottomWins
+   boldOffTasksWins
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void boldOffTasksWins(const std::unordered_map<int, CursesWindow*>& wins,
+		      int attrs)
+{  
+  wattroff(wins.at(_TASKSRUNNING)->getWindow(), A_BOLD);
+  wattroff(wins.at(_TASKSSLEEPING)->getWindow(), A_BOLD);
+  wattroff(wins.at(_TASKSSTOPPED)->getWindow(), A_BOLD);
+  wattroff(wins.at(_TASKSTOTAL)->getWindow(), A_BOLD);
+  wattroff(wins.at(_TASKSZOMBIE)->getWindow(), A_BOLD);
+} // end of "boldOffTasksWins"
+
+
+
+/*
+  Function:
+   attronBottomWins
 
   Description:
 
@@ -616,7 +656,8 @@ void attroffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
   wattroff(wins.at(_PRWIN)->getWindow(), COLOR_PAIR(attrs));
   wattroff(wins.at(_USERWIN)->getWindow(), COLOR_PAIR(attrs));
   wattroff(wins.at(_PIDWIN)->getWindow(), COLOR_PAIR(attrs));
-}
+} // end of "atroffBottomWins"
+
 
 
 /*
@@ -630,9 +671,41 @@ void attroffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
   Output:
 */
 void printTasksData(const std::unordered_map<int, CursesWindow*>& wins,
-		    const TaskInfo& taskinfo)
+		    const TaskInfo& taskInfo)
 {
+  std::string outString;
+
+  outString = std::to_string(taskInfo.getTotal());
+  mvwaddstr(wins.at(_TASKSTOTAL)->getWindow(),
+	    0,
+	    wins.at(_TASKSTOTAL)->getNumCols() - outString.length(),
+	    outString.c_str());
+
+  outString = std::to_string(taskInfo.getRunning());
+  mvwaddstr(wins.at(_TASKSRUNNING)->getWindow(),
+	    0,
+	    wins.at(_TASKSRUNNING)->getNumCols() - outString.length(),
+	    outString.c_str());
+
+  outString = std::to_string(taskInfo.getSleeping());
+  mvwaddstr(wins.at(_TASKSSLEEPING)->getWindow(),
+	    0,
+	    wins.at(_TASKSSLEEPING)->getNumCols() - outString.length(),
+	    outString.c_str());
+
+  outString = std::to_string(taskInfo.getStopped());
+  mvwaddstr(wins.at(_TASKSSTOPPED)->getWindow(),
+	    0,
+	    wins.at(_TASKSSTOPPED)->getNumCols() - outString.length(),
+	    outString.c_str());
+
+  outString = std::to_string(taskInfo.getZombie());
+  mvwaddstr(wins.at(_TASKSZOMBIE)->getWindow(),
+	    0,
+	    wins.at(_TASKSZOMBIE)->getNumCols() - outString.length(),
+	    outString.c_str());
 } // end of "printTasksData"
+
 
 
 /*
@@ -647,18 +720,15 @@ void printTasksData(const std::unordered_map<int, CursesWindow*>& wins,
 */
 void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
 		  const std::vector<std::string>& allTopLines)
-		  
 {
   mvwaddstr(wins.at(_TOPWIN)->getWindow(),
 	    0,
 	    0,
 	    allTopLines.at(0).c_str());
-  /*
   mvwaddstr(wins.at(_TASKSWIN)->getWindow(),
 	    0,
 	    0,
 	    allTopLines.at(4).c_str());
-  */
   mvwaddstr(wins.at(_CPUWIN)->getWindow(),
 	    0,
 	    0,
@@ -673,7 +743,6 @@ void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
 	    1,
 	    0,
 	    allTopLines.at(3).c_str());
-
 } // end of "printTopWins"
 
 
