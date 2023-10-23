@@ -53,6 +53,7 @@
 #include "cursesFunctions.hpp"
 #include "cursesWindow.hpp"
 #include "extractFileData.hpp"
+#include "helpWindow.hpp"
 #include "log.hpp"
 #include "mainWindow.hpp"
 #include "manageProcesses.hpp"
@@ -173,9 +174,10 @@ int main()
   PercentMEMWindow PercentMEMWin;
   TIMEWindow TIMEWin;
   COMMANDWindow COMMANDWin;
-  TasksTotalWindow tasksTotalwin;
+  HelpWindow helpWindow;
+  TasksTotalWindow tasksTotalWin;
   TasksRunningWindow tasksRunningWin;
-  TasksStoppedWindow tasksStopppedWin;
+  TasksStoppedWindow tasksStoppedWin;
   TasksSleepingWindow tasksSleepingWin;
   TasksZombieWindow tasksZombieWin;
 
@@ -209,8 +211,12 @@ int main()
 		    PercentCPUWin,
 		    PercentMEMWin,
 		    TIMEWin,
-		    COMMANDWin);
-
+		    COMMANDWin,
+		    tasksTotalWin,
+		    tasksRunningWin,
+		    tasksStoppedWin,
+		    tasksSleepingWin,
+		    tasksZombieWin);
   initializeProgramStates(progStates);
 
   // loop variables
