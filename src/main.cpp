@@ -221,7 +221,8 @@ int main()
   std::string filePath;
   std::string fileLine;
   std::string tempLine;
-  
+  std::string colorLine;
+  colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
   
   do{
     allTopLines.clear();
@@ -360,6 +361,7 @@ int main()
     clearAllWins(allWins);
     printTopWins(allWins,
 		 allTopLines);
+
     printProcs(allWins,
 	       allProcessInfo,
 	       outPids,
@@ -370,39 +372,14 @@ int main()
     printWindowNames(allWins);
     attroffBottomWins(allWins,
 		      _BLACK_TEXT);
-    refreshAllWins(allWins);
-    doupdate();
-    
-    /*
-    outLines.push_back(topWin.getTopLine());
-    outLines.push_back(tasksWin.getTasksLine());
-    outLines.push_back(cpuWin.getCPULine());
-    outLines.push_back(memWin.getMiB());
-    outLines.push_back(memWin.getSwap());
-
-    clearAllWins(allWins);
-    printTopWins(allWins,
-		 outLines);
-    printProcs(allWins,
-	       allProcessInfo,	       
-	       outPids,
-	       shiftY,
-	       shiftX);
-    attronBottomWins(allWins,
-		     _BLACK_TEXT);
-    printWindowNames(allWins);
-    attroffBottomWins(allWins,
-		      _BLACK_TEXT);
-
     printColorLine(allWins,
 		   _YOFFSET,
 		   _BLACK_TEXT,
 		   _MAINWIN,
 		   colorLine);
-
     refreshAllWins(allWins);
     doupdate();
-    */
+    
     if(quit)
       {
 	break;
