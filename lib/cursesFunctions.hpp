@@ -21,6 +21,14 @@
 #include "COMMANDWindow.hpp"
 #include "PIDWindow.hpp"
 #include "SWindow.hpp"
+#include "cpuHiWindow.hpp"
+#include "cpuIdWindow.hpp"
+#include "cpuNiWindow.hpp"
+#include "cpuSiWindow.hpp"
+#include "cpuStWindow.hpp"
+#include "cpuSyWindow.hpp"
+#include "cpuUsWindow.hpp"
+#include "cpuWaWindow.hpp"
 #include "cpuWindow.hpp"
 #include "tasksWindow.hpp"
 #include "PRWindow.hpp"
@@ -42,7 +50,6 @@
 #include "extractFileData.hpp"
 #include "_progStateConsts.hpp"
 #include "_cursesWinConsts.hpp"
-#include <mutex>
 
 void initializeCurses();
 void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,		       
@@ -67,7 +74,15 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 		       TasksRunningWindow& tasksRunningWin,
 		       TasksStoppedWindow& tasksStoppedWin,
 		       TasksSleepingWindow& tasksSleepingWin,
-		       TasksZombieWindow& tasksZombieWin);
+		       TasksZombieWindow& tasksZombieWin,
+		       CpuUsWindow& cpuUsWin,
+		       CpuSyWindow& cpuSyWin,
+		       CpuNiWindow& cpuNiWin,
+		       CpuIdWindow& cpuIdWin,
+		       CpuWaWindow& cpuWaWin,
+		       CpuHiWindow& cpuHiWin,
+		       CpuSiWindow& cpuSiWin,
+		       CpuStWindow& cpuStWin);
 void initializeProgramStates(std::unordered_map<char, int>& progStates);
 void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins);
@@ -83,6 +98,12 @@ void attroffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
 		       int attrs);
 void printTasksData(const std::unordered_map<int, CursesWindow*>& wins,
 		    const TaskInfo& taskInfo);
+void printCpusData(const std::unordered_map<int, CursesWindow*>& wins,
+		   const CPUInfo& cpuInfo);
+void boldOnCpusWins(std::unordered_map<int, CursesWindow*>& wins,
+		    int attrs);
+void boldOffCpusWins(std::unordered_map<int, CursesWindow*>& wins,
+		     int attrs);
 void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
 		  const std::vector<std::string>& allTopLines);
 void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins);

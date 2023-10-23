@@ -69,7 +69,15 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 		       TasksRunningWindow& tasksRunningWin,
 		       TasksStoppedWindow& tasksStoppedWin,
 		       TasksSleepingWindow& tasksSleepingWin,
-		       TasksZombieWindow& tasksZombieWin)
+		       TasksZombieWindow& tasksZombieWin,
+		       CpuUsWindow& cpuUsWin,
+		       CpuSyWindow& cpuSyWin,
+		       CpuNiWindow& cpuNiWin,
+		       CpuIdWindow& cpuIdWin,
+		       CpuWaWindow& cpuWaWin,
+		       CpuHiWindow& cpuHiWin,
+		       CpuSiWindow& cpuSiWin,
+		       CpuStWindow& cpuStWin)
 {
   int numLines;
   int numCols;
@@ -411,7 +419,6 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 			       numCols,
 			       startY,
 			       startX);
-
   // define TasksZombieWindow
   numCols = 4;
   numLines = 1;
@@ -426,6 +433,120 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 			      numCols,
 			      startY,
 			      startX);
+  // define cpu user time window
+  numCols = 5;
+  numLines = 1;
+  startY = 2;
+  startX = 8;
+  cpuUsWin.defineWindow(newwin(numLines,
+			       numCols,
+			       startY,
+			       startX),
+			"us",
+			numLines,
+			numCols,
+			startY,
+			startX);
+  // define cpu system time window
+  numCols = 5;
+  numLines = 1;
+  startY = 2;
+  startX = 17;
+  cpuSyWin.defineWindow(newwin(numLines,
+			       numCols,
+			       startY,
+			       startX),
+			"sy",
+			numLines,
+			numCols,
+			startY,
+			startX);
+  // define cpu user nice time window
+  numCols = 5;
+  numLines = 1;
+  startY = 2;
+  startX = 26;
+  cpuNiWin.defineWindow(newwin(numLines,
+			       numCols,
+			       startY,
+			       startX),
+			"ni",
+			numLines,
+			numCols,
+			startY,
+			startX);
+  // define cpu idle time window
+  numCols = 5;
+  numLines = 1;
+  startY = 2;
+  startX = 35;
+  cpuIdWin.defineWindow(newwin(numLines,
+			       numCols,
+			       startY,
+			       startX),
+			"id",
+			numLines,
+			numCols,
+			startY,
+			startX);
+  // define cpu wait time window
+  numCols = 5;
+  numLines = 1;
+  startY = 2;
+  startX = 44;
+  cpuWaWin.defineWindow(newwin(numLines,
+			       numCols,
+			       startY,
+			       startX),
+			"wa",
+			numLines,
+			numCols,
+			startY,
+			startX);
+  // define cpu hardware interrupt time window
+  numCols = 5;
+  numLines = 1;
+  startY = 2;
+  startX = 53;
+  cpuHiWin.defineWindow(newwin(numLines,
+			       numCols,
+			       startY,
+			       startX),  
+			"hi",
+			numLines,
+			numCols,
+			startY,
+			startX);
+  // define cpu software interrupt time window
+  numCols = 5;
+  numLines = 1;
+  startY = 2;
+  startX = 62;
+  cpuSiWin.defineWindow(newwin(numLines,
+			       numCols,
+			       startY,
+			       startX),  
+			"Si",
+			numLines,
+			numCols,
+			startY,
+			startX);
+  // define cpu steal time window
+  numCols = 5;
+  numLines = 1;
+  startY = 2;
+  startX = 71;
+  cpuStWin.defineWindow(newwin(numLines,
+			       numCols,
+			       startY,
+			       startX),  
+			"St",
+			numLines,
+			numCols,
+			startY,
+			startX);
+
+  // store all windows in hash map
   wins.insert(std::make_pair(_MAINWIN,&mainWin));
   wins.insert(std::make_pair(_TOPWIN, &topWin));
   wins.insert(std::make_pair(_TASKSWIN, &tasksWin));
@@ -447,7 +568,15 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
   wins.insert(std::make_pair(_TASKSRUNNING, &tasksRunningWin));
   wins.insert(std::make_pair(_TASKSSLEEPING,&tasksSleepingWin));
   wins.insert(std::make_pair(_TASKSSTOPPED, &tasksStoppedWin));
-  wins.insert(std::make_pair(_TASKSZOMBIE, &tasksZombieWin));  
+  wins.insert(std::make_pair(_TASKSZOMBIE, &tasksZombieWin));
+  wins.insert(std::make_pair(_CPUUSWINDOW, &cpuUsWin));
+  wins.insert(std::make_pair(_CPUSYWINDOW, &cpuSyWin));
+  wins.insert(std::make_pair(_CPUNIWINDOW, &cpuNiWin));
+  wins.insert(std::make_pair(_CPUIDWINDOW, &cpuIdWin));
+  wins.insert(std::make_pair(_CPUWAWINDOW, &cpuWaWin));
+  wins.insert(std::make_pair(_CPUHIWINDOW, &cpuHiWin));
+  wins.insert(std::make_pair(_CPUSIWINDOW, &cpuSiWin));
+  wins.insert(std::make_pair(_CPUSTWINDOW, &cpuStWin));  
 } // end of "initializeWindows"
 
 
@@ -495,24 +624,12 @@ void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins)
 */
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
-  werase(wins.at(_MAINWIN)->getWindow());
-  werase(wins.at(_TOPWIN)->getWindow());
-  werase(wins.at(_TASKSWIN)->getWindow());
-  werase(wins.at(_CPUWIN)->getWindow());
-  werase(wins.at(_MEMWIN)->getWindow());
-  werase(wins.at(_PIDWIN)->getWindow());
-  werase(wins.at(_USERWIN)->getWindow());
-  werase(wins.at(_PRWIN)->getWindow());
-  werase(wins.at(_NIWIN)->getWindow());
-  werase(wins.at(_VIRTWIN)->getWindow());
-  werase(wins.at(_RESWIN)->getWindow());
-  werase(wins.at(_SHRWIN)->getWindow());
-  werase(wins.at(_SWIN)->getWindow());
-  werase(wins.at(_PROCCPUWIN)->getWindow());
-  werase(wins.at(_PROCMEMWIN)->getWindow());
-  werase(wins.at(_PROCTIMEWIN)->getWindow());
-  werase(wins.at(_COMMANDWIN)->getWindow());
-}
+
+  for(int i = _MAINWIN; i <= _TASKSZOMBIE; i++)
+    {
+      werase(wins.at(i)->getWindow());
+    }  
+} // end of "clearAllWins"
 
 
 
@@ -524,11 +641,12 @@ void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins)
 */
 void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
-    werase(wins.at(_TOPWIN)->getWindow());
-    werase(wins.at(_TASKSWIN)->getWindow());
-    werase(wins.at(_CPUWIN)->getWindow());
-    werase(wins.at(_MEMWIN)->getWindow());
+  for(int i = _TOPWIN; i <= _MEMWIN; i++)
+    {
+      werase(wins.at(i)->getWindow());
+    }  
 } // end of "clearBottomWins"
+
 
 
 /*
@@ -543,18 +661,10 @@ void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins)
 */
 void clearBottomWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
-    werase(wins.at(_COMMANDWIN)->getWindow());
-    werase(wins.at(_PROCTIMEWIN)->getWindow());
-    werase(wins.at(_PROCMEMWIN)->getWindow());
-    werase(wins.at(_PROCCPUWIN)->getWindow());
-    werase(wins.at(_SWIN)->getWindow());
-    werase(wins.at(_SHRWIN)->getWindow());    
-    werase(wins.at(_RESWIN)->getWindow());
-    werase(wins.at(_VIRTWIN)->getWindow());
-    werase(wins.at(_NIWIN)->getWindow());
-    werase(wins.at(_PRWIN)->getWindow());
-    werase(wins.at(_USERWIN)->getWindow());
-    werase(wins.at(_PIDWIN)->getWindow());
+  for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
+    {
+      werase(wins.at(i)->getWindow());
+    }
 } // end of "clearBottomWins"
 
 
@@ -571,13 +681,41 @@ void clearBottomWins(const std::unordered_map<int, CursesWindow*>& wins)
 */
 void boldOnTasksWins(std::unordered_map<int, CursesWindow*>& wins,
 		     int attrs)
-{  
-  wattron(wins.at(_TASKSRUNNING)->getWindow(), A_BOLD);
-  wattron(wins.at(_TASKSSLEEPING)->getWindow(), A_BOLD);
-  wattron(wins.at(_TASKSSTOPPED)->getWindow(), A_BOLD);
-  wattron(wins.at(_TASKSTOTAL)->getWindow(), A_BOLD);
-  wattron(wins.at(_TASKSZOMBIE)->getWindow(), A_BOLD);
+{
+  for(int i = _TASKSTOTAL; i <= _TASKSZOMBIE; i++)
+    {
+      wattron(wins.at(i)->getWindow(), A_BOLD);
+    }
 } // end of "boldOnTasksWins"
+
+
+
+/*
+
+ */
+void boldOnCpusWins(std::unordered_map<int, CursesWindow*>& wins,
+		     int attrs)
+{
+  for(int i = _CPUUSWINDOW; i <= _CPUSTWINDOW; i++)
+    {
+      wattron(wins.at(i)->getWindow(), A_BOLD);
+    }
+} // end of "boldOnCpusWindow""
+
+
+
+
+/*
+
+ */
+void boldOffCpusWins(std::unordered_map<int, CursesWindow*>& wins,
+		     int attrs)
+{
+  for(int i = _CPUUSWINDOW; i <= _CPUSTWINDOW; i++)
+    {
+      wattroff(wins.at(i)->getWindow(), A_BOLD);
+    }
+} // end of "boldOffCpusWindow"
 
 
 
@@ -593,12 +731,11 @@ void boldOnTasksWins(std::unordered_map<int, CursesWindow*>& wins,
 */
 void boldOffTasksWins(const std::unordered_map<int, CursesWindow*>& wins,
 		      int attrs)
-{  
-  wattroff(wins.at(_TASKSRUNNING)->getWindow(), A_BOLD);
-  wattroff(wins.at(_TASKSSLEEPING)->getWindow(), A_BOLD);
-  wattroff(wins.at(_TASKSSTOPPED)->getWindow(), A_BOLD);
-  wattroff(wins.at(_TASKSTOTAL)->getWindow(), A_BOLD);
-  wattroff(wins.at(_TASKSZOMBIE)->getWindow(), A_BOLD);
+{
+  for(int i = _TASKSTOTAL; i <= _TASKSZOMBIE; i++)
+    {
+      wattroff(wins.at(i)->getWindow(), A_BOLD);
+    }
 } // end of "boldOffTasksWins"
 
 
@@ -614,20 +751,12 @@ void boldOffTasksWins(const std::unordered_map<int, CursesWindow*>& wins,
   Output:
 */
 void attronBottomWins(const std::unordered_map<int, CursesWindow*>& wins, int attrs)
-{  
-  wattron(wins.at(_COMMANDWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(_PROCTIMEWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(_PROCMEMWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(_PROCCPUWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(_SWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(_SHRWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(_RESWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(_VIRTWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(_NIWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(_PRWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(_USERWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattron(wins.at(_PIDWIN)->getWindow(), COLOR_PAIR(attrs));
-}
+{
+  for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
+    {
+      wattron(wins.at(i)->getWindow(), COLOR_PAIR(attrs));
+    }
+} // end of "attronBottomWins"
 
 
 
@@ -644,18 +773,10 @@ void attronBottomWins(const std::unordered_map<int, CursesWindow*>& wins, int at
 void attroffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
 		       int attrs)
 {
-  wattroff(wins.at(_COMMANDWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(_PROCTIMEWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(_PROCMEMWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(_PROCCPUWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(_SWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(_SHRWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(_RESWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(_VIRTWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(_NIWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(_PRWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(_USERWIN)->getWindow(), COLOR_PAIR(attrs));
-  wattroff(wins.at(_PIDWIN)->getWindow(), COLOR_PAIR(attrs));
+  for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
+    {
+      wattroff(wins.at(i)->getWindow(), COLOR_PAIR(attrs));
+    }  
 } // end of "atroffBottomWins"
 
 
@@ -705,6 +826,74 @@ void printTasksData(const std::unordered_map<int, CursesWindow*>& wins,
 	    wins.at(_TASKSZOMBIE)->getNumCols() - outString.length(),
 	    outString.c_str());
 } // end of "printTasksData"
+
+
+
+/*
+  Function:
+   printCpusData
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void printCpusData(const std::unordered_map<int, CursesWindow*>& wins,
+		   const CPUInfo& cpuInfo)
+{
+  std::string outString;
+
+  outString = doubleToStr(cpuInfo.getAvgUs(), 1);
+  mvwaddstr(wins.at(_CPUUSWINDOW)->getWindow(),
+	    0,
+	    wins.at(_CPUUSWINDOW)->getNumCols() - outString.length(),
+	    outString.c_str());
+  
+  outString = doubleToStr(cpuInfo.getAvgSy(), 1);
+  mvwaddstr(wins.at(_CPUSYWINDOW)->getWindow(),
+	    0,
+	    wins.at(_CPUSYWINDOW)->getNumCols() - outString.length(),
+	    outString.c_str());
+
+  outString = doubleToStr(cpuInfo.getAvgNi(), 1);
+  mvwaddstr(wins.at(_CPUNIWINDOW)->getWindow(),
+	    0,
+	    wins.at(_CPUNIWINDOW)->getNumCols() - outString.length(),
+	    outString.c_str());
+
+  outString = doubleToStr(cpuInfo.getAvgId(), 1);
+  mvwaddstr(wins.at(_CPUIDWINDOW)->getWindow(),
+	    0,
+	    wins.at(_CPUIDWINDOW)->getNumCols() - outString.length(),
+	    outString.c_str());
+
+  outString = doubleToStr(cpuInfo.getAvgWa(), 1);
+  mvwaddstr(wins.at(_CPUWAWINDOW)->getWindow(),
+	    0,
+	    wins.at(_CPUWAWINDOW)->getNumCols() - outString.length(),
+	    outString.c_str());
+
+  
+  outString = doubleToStr(cpuInfo.getAvgHi(), 1);
+  mvwaddstr(wins.at(_CPUHIWINDOW)->getWindow(),
+	    0,
+	    wins.at(_CPUHIWINDOW)->getNumCols() - outString.length(),
+	    outString.c_str());
+
+  //outString = std::to_string(cpuInfo.getAvgSi());
+  outString = "0.0";
+  mvwaddstr(wins.at(_CPUSIWINDOW)->getWindow(),
+	    0,
+	    wins.at(_CPUSIWINDOW)->getNumCols() - outString.length(),
+	    outString.c_str());
+
+  outString = doubleToStr(cpuInfo.getAvgSt(), 1);
+  mvwaddstr(wins.at(_CPUSTWINDOW)->getWindow(),
+	    0,
+	    wins.at(_CPUSTWINDOW)->getNumCols() - outString.length(),
+	    outString.c_str());
+} // end of "printCpusData"
 
 
 
