@@ -183,7 +183,7 @@ const char& ProcessInfo::getS() const
 
   Output:
 */
-const double& ProcessInfo::getCPUUsage()
+const double& ProcessInfo::getCPUUsage() const
 {
   return m_cpuUsage;
 } // end of "getCPUUsage"
@@ -217,7 +217,7 @@ const double& ProcessInfo::getMEMUsage() const
 
   Output:
 */
-const double& ProcessInfo::getCpuRawTime()
+const double& ProcessInfo::getCpuRawTime() const
 {
   return m_cpuRawTime;
 } // end of "getCpuRawTime"

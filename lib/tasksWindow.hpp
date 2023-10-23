@@ -30,7 +30,7 @@ public:
   const std::string& getTasksLine();
 
   // setters
-  void setTasksLine(const std::string tasksLine);
+  void setTasksLine(const std::string& tasksLine);
   
 private:
   std::string m_tasksLine;

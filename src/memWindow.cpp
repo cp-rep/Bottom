@@ -66,7 +66,6 @@ void MemWindow::setStringMiB(const std::string& memTotal,
 			     const std::string& memUsed,
 			     const std::string& buffCache)
 {
-  std::lock_guard<std::mutex> lock(m_MiBMutex);
   m_MiB.clear();
   m_MiB.append("MiB Mem: ");
   m_MiB.append(memTotal);
@@ -95,7 +94,6 @@ void MemWindow::setStringSwap(const std::string& swapTotal,
 			      const std::string& swapUsed,
 			      const std::string& memAvailable)
 {
-  std::lock_guard<std::mutex> lock(m_swapMutex);
   m_swap.clear();
   m_swap.append("MiB Swap: ");
   m_swap.append(swapTotal);

@@ -135,7 +135,6 @@ void TopWindow::defineTopLine(const std::string& HHMMSS,
 			      const int& numMinutes,
 			      const std::vector<std::string>& parsedLoadAvg)
 {
-  std::lock_guard<std::mutex> lock(m_topLineMutex);
   m_topLine.clear();
   m_topLine.append("top - ");
   m_topLine.append(HHMMSS);

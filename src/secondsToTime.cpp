@@ -126,7 +126,7 @@ const int SecondsToTime::findRemainingSeconds(const int& seconds) const
    string               - A formatted string in the pattern HH:MM:SS.
   
 */
-std::string& SecondsToTime::returnHHMMSS(const int& hours,
+std::string SecondsToTime::returnHHMMSS(const int& hours,
 					 const int& minutes,
 					 const int& seconds) const
 {

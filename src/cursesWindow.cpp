@@ -41,7 +41,7 @@
    None
 */
 CursesWindow::CursesWindow(WINDOW* win,
-			   const std::string windowName,
+			   const std::string& windowName,
 			   const int& numLines,
 			   const int& numCols,
 			   const int& startY,
@@ -110,7 +110,7 @@ CursesWindow::~CursesWindow()
    NONE
 */
 void CursesWindow::defineWindow(WINDOW* win,
-				const std::string windowName,
+				const std::string& windowName,
 				const int& numLines,
 				const int& numCols,
 				const int& startY,
@@ -326,7 +326,7 @@ void CursesWindow::setWindow(WINDOW* window)
   Output:
    NONE
 */
-void CursesWindow::setWindowName(const std::string winName)
+void CursesWindow::setWindowName(const std::string& winName)
 {
   m_windowName = winName;
 } // end of "setWindowName"

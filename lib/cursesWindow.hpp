@@ -11,7 +11,6 @@
 #include <curses.h>
 #include <string>
 #include <vector>
-#include <mutex>
 
 class CursesWindow {
 public:
@@ -42,7 +41,7 @@ public:
   
   // getters
   WINDOW* getWindow();
-  const std::string getWindowName() const;
+  const std::string& getWindowName() const;
   const int& getNumCols() const;
   const int& getNumLines() const;
   const int& getStartY() const;

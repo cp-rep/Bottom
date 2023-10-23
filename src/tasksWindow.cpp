@@ -73,7 +73,6 @@ void TasksWindow::defineTasksLine(const unsigned int& total,
 				  const unsigned int& stopped,
 				  const unsigned int& zombie)
 {
-  std::lock_guard<std::mutex> lock(m_tasksLineMutex);
   m_tasksLine = "Tasks: ";
   m_tasksLine.append(std::to_string(total));
   m_tasksLine.append(" total, ");
