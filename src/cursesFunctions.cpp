@@ -22,10 +22,21 @@
 void initializeCurses()
 {
   initscr();
+
+  if(has_colors())
+    {
+      start_color();
+      init_pair(_WHITE_TEXT, COLOR_WHITE, COLOR_BLACK);
+      init_pair(_BLACK_TEXT, COLOR_BLACK, COLOR_WHITE);
+    }
+  
   curs_set(0);
   timeout(0);
   noecho();
   keypad(stdscr, true);
+  cbreak();
+  keypad(stdscr, true);
+  nodelay(stdscr, true);
 } // end of "initializeCurses"
 
 
@@ -338,6 +349,8 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 			  numCols,
 			  startY,
 			  startX);
+  COMMANDWin.fixCOMMANDWinName();
+  
   wins.insert(std::make_pair(_MAINWIN,&mainWin));
   wins.insert(std::make_pair(_TOPWIN, &topWin));
   wins.insert(std::make_pair(_TASKSWIN, &tasksWin));
