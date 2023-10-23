@@ -55,6 +55,7 @@
 #include "extractFileData.hpp"
 #include "log.hpp"
 #include "mainWindow.hpp"
+#include "manageProcesses.hpp"
 #include "memInfo.hpp"
 #include "memWindow.hpp"
 #include "NIWindow.hpp"
@@ -69,6 +70,11 @@
 #include "sortProcessLists.hpp"
 #include "SWindow.hpp"
 #include "taskInfo.hpp"
+#include "tasksRunningWindow.hpp"
+#include "tasksSleepingWindow.hpp"
+#include "tasksStoppedWindow.hpp"
+#include "tasksTotalWindow.hpp"
+#include "tasksZombieWindow.hpp"
 #include "tasksWindow.hpp"
 #include "TIMEWindow.hpp"
 #include "topWindow.hpp"
@@ -167,6 +173,12 @@ int main()
   PercentMEMWindow PercentMEMWin;
   TIMEWindow TIMEWin;
   COMMANDWindow COMMANDWin;
+  TasksTotalWindow tasksTotalwin;
+  TasksRunningWindow tasksRunningWin;
+  TasksStoppedWindow tasksStopppedWin;
+  TasksSleepingWindow tasksSleepingWin;
+  TasksZombieWindow tasksZombieWin;
+
 
   // state related vars
   int progState = 0;
@@ -315,7 +327,8 @@ int main()
 
     // ## update states ##
     // program state
-    changeProgramState(progState,
+    changeProgramState(allWins,
+		       progState,
 		       prevState,
 		       quit,
 		       highlight);
@@ -349,7 +362,6 @@ int main()
     clearAllWins(allWins);
     printTopWins(allWins,
 		 allTopLines);
-
     printProcs(allWins,
 	       allProcessInfo,
 	       outPids,
