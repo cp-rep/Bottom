@@ -50,19 +50,7 @@ void defineTasksLine(const TaskInfo& taskInfo,
 		     std::vector<std::string>& allTopLines)
 {
   std::string tasksLine;
-  
-  tasksLine = "Tasks: ";
-  tasksLine.append(std::to_string(taskInfo.getTotal()));
-  tasksLine.append(" total, ");
-  tasksLine.append(std::to_string(taskInfo.getRunning()));
-  tasksLine.append(" running, ");
-  tasksLine.append(std::to_string(taskInfo.getSleeping()));
-  tasksLine.append(" sleeping, ");
-  tasksLine.append(std::to_string(taskInfo.getStopped()));
-  tasksLine.append(" stopped, ");
-  tasksLine.append(std::to_string(taskInfo.getZombie()));
-  tasksLine.append(" zombie");
-
+  tasksLine = "Tasks:     total,     running,     sleeping,     stopped,     zombie";
   allTopLines.push_back(tasksLine);
 } // end of "defineTasksLine"
 
@@ -70,7 +58,7 @@ void defineTasksLine(const TaskInfo& taskInfo,
 
 /*
   Function:
-   defineCPULine
+   extractProcessStateCount
 
   Description:
 
@@ -147,19 +135,20 @@ void defineCPULine(const CPUInfo& cpuInfo,
 
   cpuLine = "%CPU(s): ";
   cpuLine.append(doubleToStr(cpuInfo.getAvgUs(), 1));
-  cpuLine.append(" us, ");
+  cpuLine.append(" us,  ");
   cpuLine.append(doubleToStr(cpuInfo.getAvgSy(), 1));
-  cpuLine.append(" sy, ");
+  cpuLine.append(" sy,  ");
   cpuLine.append(doubleToStr(cpuInfo.getAvgNi(), 1));  
   cpuLine.append(" ni, ");
   cpuLine.append(doubleToStr(cpuInfo.getAvgId(), 1));    
-  cpuLine.append(" id, ");
+  cpuLine.append(" id,  ");
   cpuLine.append(doubleToStr(cpuInfo.getAvgWa(), 1));      
-  cpuLine.append(" wa, ");
-  cpuLine.append("N/A");
-  cpuLine.append(" si, ");
+  cpuLine.append(" wa,  ");
+  cpuLine.append("    hi,  ");
+  
+  cpuLine.append("  si,  ");
   cpuLine.append(doubleToStr(cpuInfo.getAvgSt(), 1));  
-  cpuLine.append(" st, ");
+  cpuLine.append(" st");
   allTopLines.push_back(cpuLine);
 } // end of "defineCPULine"
 
