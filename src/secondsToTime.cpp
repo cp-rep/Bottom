@@ -27,12 +27,12 @@
   Output:
    NONE
 */
-SecondsToTime::SecondsToTime(const float seconds)
+SecondsToTime::SecondsToTime(const float& seconds)
 {
-  m_hours = convertToHours(seconds);
-  m_minutes = convertToMinutes(seconds);
-  m_seconds = findRemainingSeconds(seconds);
-  m_totalSecs = seconds;
+  setHours(convertToHours(seconds));
+  setMinutes(convertToMinutes(seconds));
+  setSeconds(findRemainingSeconds(seconds));
+  setTotalSeconds(seconds);
 } // end of "SecondsToTime Constructor"
 
 
@@ -45,16 +45,16 @@ SecondsToTime::SecondsToTime(const float seconds)
    Converts the incoming parameter of seconds to hours.
   
   Input:
-   secs                - A reference to a constant integer that should be
+   seconds                - A reference to a constant integer that should be
                          the amount of seconds the caller wants converted
 			 to hours.
   Output:
    const int           - The resulting calculation from seconds to
                          hours.
 */
-const int SecondsToTime::convertToHours(const int& secs) const
+const int SecondsToTime::convertToHours(const int& seconds) const
 {
-  return secs/(MINUTE * MINUTE);
+  return seconds/(MINUTE * MINUTE);
 } // end of "convertToHours"
 
 
@@ -67,16 +67,16 @@ const int SecondsToTime::convertToHours(const int& secs) const
    Converts the incoming parameter of seconds to minutes.
   
   Input:
-   secs                - A reference to a constant integer that should be
+   seconds                - A reference to a constant integer that should be
                          the amount of seconds the caller wants converted
 			 to minutes.
   Output:
    const int           - The resulting calculation from seconds to
                          hours.
 */
-const int SecondsToTime::convertToMinutes(const int& secs) const
+const int SecondsToTime::convertToMinutes(const int& seconds) const
 {
-  return (secs/MINUTE) % MINUTE;
+  return (seconds/MINUTE) % MINUTE;
 } // end of "convertToMinutes"
 
 
@@ -90,16 +90,16 @@ const int SecondsToTime::convertToMinutes(const int& secs) const
    incoming seconds provided by the calling object.
   
   Input:
-   secs                 - A reference to a constant integer that will
+   seconds                 - A reference to a constant integer that will
                           be calculated for a remainder of seconds if
 			  divided by a minute.
   Output:
    const int            - The calculated remainder of seconds.
   
 */
-const int SecondsToTime::findRemainingSeconds(const int& secs) const
+const int SecondsToTime::findRemainingSeconds(const int& seconds) const
 {
-  return secs % MINUTE;
+  return seconds % MINUTE;
 } // end of "findRemainingSeconds"
 
 
@@ -126,9 +126,9 @@ const int SecondsToTime::findRemainingSeconds(const int& secs) const
    string               - A formatted string in the pattern HH:MM:SS.
   
 */
-std::string SecondsToTime::returnHHMMSS(const int& hours,
-					const int& minutes,
-					const int& seconds) const
+std::string& SecondsToTime::returnHHMMSS(const int& hours,
+					 const int& minutes,
+					 const int& seconds) const
 {
   std::string hhmmss;
 
@@ -221,6 +221,23 @@ const unsigned int& SecondsToTime::getSeconds() const
 
 /*
   Function:
+   getTotalSeconds
+  
+  Description:
+  
+  Input:
+  
+  Output:
+*/
+const float& SecondsToTime::getTotalSeconds() const
+{
+  return m_totalSeconds;
+} // end of "m_totalSeconds"
+
+
+
+/*
+  Function:
    setHours
   
   Description:
@@ -282,3 +299,20 @@ void SecondsToTime::setSeconds(const unsigned int& seconds)
 {
   m_seconds = seconds;
 } // end of "setSeconds"
+
+
+
+/*
+  Function:
+   setTotalSeconds
+  
+  Description:
+  
+  Input:
+
+  Output:
+ */
+void SecondsToTime::setTotalSeconds(const float& totalSeconds)
+{
+  m_totalSeconds = totalSeconds;
+} // end of "setTotalSeconds"
