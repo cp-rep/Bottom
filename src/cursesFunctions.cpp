@@ -554,10 +554,10 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 			startX);
 
   // define MiB mem total window
-  numCols = 5;
+  numCols = 9;
   numLines = 1;
   startY = 3;
-  startX = 10;
+  startX = 9;
   miBMemTotalWin.defineWindow(newwin(numLines,
 				     numCols,
 				     startY,
@@ -571,7 +571,7 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
   numCols = 9;
   numLines = 1;
   startY = 3;
-  startX = 26;
+  startX = 25;
   miBMemFreeWin.defineWindow(newwin(numLines,
 				    numCols,
 				    startY,
@@ -585,7 +585,7 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
   numCols = 9;
   numLines = 1;
   startY = 3;
-  startX = 56;
+  startX = 40;
   miBMemUsedWin.defineWindow(newwin(numLines,
 			       numCols,
 			       startY,
@@ -599,7 +599,7 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
   numCols = 9;
   numLines = 1;
   startY = 3;
-  startX = 76;
+  startX = 55;
   miBBuffCacheWin.defineWindow(newwin(numLines,
 				      numCols,
 				      startY,
@@ -613,7 +613,7 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
   numCols = 9;
   numLines = 1;
   startY = 4;
-  startX = 10;
+  startX = 9;
   miBSwapTotalWin.defineWindow(newwin(numLines,
 				      numCols,
 				      startY,
@@ -627,7 +627,7 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
   numCols = 9;
   numLines = 1;
   startY = 4;
-  startX = 26;
+  startX = 25;
   miBSwapFreeWin.defineWindow(newwin(numLines,
 			       numCols,
 			       startY,
@@ -641,7 +641,7 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
   numCols = 9;
   numLines = 1;
   startY = 4;
-  startX = 56;
+  startX = 40;
   miBSwapUsedWin.defineWindow(newwin(numLines,
 			       numCols,
 			       startY,
@@ -655,7 +655,7 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
   numCols = 9;
   numLines = 1;
   startY = 4;
-  startX = 71;
+  startX = 55;
   miBMemAvailWin.defineWindow(newwin(numLines,
 				     numCols,
 				     startY,
@@ -1123,6 +1123,72 @@ void printCpusData(const std::unordered_map<int, CursesWindow*>& wins,
 	    wins.at(_CPUSTWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
 } // end of "printCpusData"
+
+
+
+/*
+  Function:
+   printMemMiBData
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void printMemMiBData(const std::unordered_map<int, CursesWindow*>& wins,
+		     const MemInfo& memInfo)
+{
+  std::string outString;
+  outString = doubleToStr(KiBToMiB(memInfo.getMemTotal()), 1);
+  mvwaddstr(wins.at(_MIBTOTALWIN)->getWindow(),
+	    0,
+	    wins.at(_MIBTOTALWIN)->getNumCols() - outString.length(),
+	    outString.c_str());
+  
+  outString = doubleToStr(KiBToMiB(memInfo.getMemFree()), 1);
+  mvwaddstr(wins.at(_MIBFREEWIN)->getWindow(),
+	    0,
+	    wins.at(_MIBFREEWIN)->getNumCols() - outString.length(),
+	    outString.c_str());
+
+  outString = doubleToStr(KiBToMiB(memInfo.getMemUsed()), 1);
+  mvwaddstr(wins.at(_MIBUSEDWIN)->getWindow(),
+	    0,
+	    wins.at(_MIBUSEDWIN)->getNumCols() - outString.length(),
+	    outString.c_str());
+
+  outString = doubleToStr(KiBToMiB(memInfo.getBuffCache()), 1);
+  mvwaddstr(wins.at(_MIBBUFFCACHEWIN)->getWindow(),
+	    0,
+	    wins.at(_MIBBUFFCACHEWIN)->getNumCols() - outString.length(),
+	    outString.c_str());
+
+  outString = doubleToStr(KiBToMiB(memInfo.getSwapTotal()), 1);
+  mvwaddstr(wins.at(_MIBSWAPTOTALWIN)->getWindow(),
+	    0,
+	    wins.at(_MIBSWAPTOTALWIN)->getNumCols() - outString.length(),
+	    outString.c_str());
+
+  
+  outString = doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1);
+  mvwaddstr(wins.at(_MIBSWAPFREEWIN)->getWindow(),
+	    0,
+	    wins.at(_MIBSWAPFREEWIN)->getNumCols() - outString.length(),
+	    outString.c_str());
+
+  outString = doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1);
+  mvwaddstr(wins.at(_MIBSWAPUSEDWIN)->getWindow(),
+	    0,
+	    wins.at(_MIBSWAPUSEDWIN)->getNumCols() - outString.length(),
+	    outString.c_str());
+
+  outString = doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1);
+  mvwaddstr(wins.at(_MIBMEMAVAILWIN)->getWindow(),
+	    0,
+	    wins.at(_MIBMEMAVAILWIN)->getNumCols() - outString.length(),
+	    outString.c_str());
+} // end of "printMemMiBData"
 
 
 

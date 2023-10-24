@@ -13,6 +13,7 @@
 #include <curses.h>
 #include <vector>
 #include <unordered_map>
+#include "byteConverter.hpp"
 #include "cursesColors.hpp"
 #include "cursesWindow.hpp"
 #include "mainWindow.hpp"
@@ -112,6 +113,8 @@ void printTasksData(const std::unordered_map<int, CursesWindow*>& wins,
 		    const TaskInfo& taskInfo);
 void printCpusData(const std::unordered_map<int, CursesWindow*>& wins,
 		   const CPUInfo& cpuInfo);
+void printMemMiBData(const std::unordered_map<int, CursesWindow*>& wins,
+		     const MemInfo& memInfo);
 void boldOnAllTopWins(std::unordered_map<int, CursesWindow*>& wins,
 		      int attrs);
 void boldOffAllTopWins(std::unordered_map<int, CursesWindow*>& wins,
