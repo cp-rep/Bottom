@@ -26,13 +26,11 @@ I wanted to write a small Linux process management utility that may be easier ex
 ## What is the state of the project?
 Bottom is currently memory leak free and the "main" branch will maintain this stable version.  It currently supports Arch Linux and Ubuntu.  The tested Kernel versions will soon be tagged to corresponding commits.
 
-## Current Challenges
-Determining how to retrieve every process or OS related data piece and making subsequent calculations for correct output.
+## Current Challenges/Known Issues
+Some information does not match one to one to Top.  One such example are the CPU User Time and System Time averages and related values.  These need to be measured over a duration to get the correct average usage rates.  These calculations will eventually be rectified in the threaded branch down the line.  Another example is the number of users logged into the system which are not correct and currently set to 0.  All Research has pointed towards that data being retrieved from the '/var/run/utmp' file which requires a UTMP dump or some other method to interface with it such as non-standard libraries like 'libutempter'.
 
 ## Short Term Fixes and Changes/Additions
 The following is a quick list of my most important upcoming short-term changes:
-- Cleaning up ugly code
-- Retrieving the few missing calculations
 - Basic process management
 - Adding an interruptable delay
 - Unit tests
