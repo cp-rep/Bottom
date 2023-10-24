@@ -283,7 +283,7 @@ int main()
   std::string fileLine;
   std::string tempLine;
   std::string colorLine;
-  
+
   colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
   
   do{
@@ -306,6 +306,10 @@ int main()
     // "current time, # users, load avg"
     extractProcUptimeLoadavg(uptime,
 			     allTopLines);
+    defineTasksLine(allTopLines);
+    defineCpusLine(allTopLines);
+    defineMemMiBLine(allTopLines);
+    defineMemSwapLine(allTopLines);
 
     // update/add process data for still running and new found processes
     for(int i = 0; i < pids.size(); i++)
@@ -321,25 +325,10 @@ int main()
 	// "%Cpu(s): x.x us, x.x sy..."
 	extractProcStatData(cpuInfo);
 
-	// store line for output
-	defineCpusLine(allTopLines);
-
 	// extract data for MiB Mem and MiB swap
 	// "MiB Mem: xxxx.xx total, xxxx.xx Free..."
 	extractMemInfoData(memInfo);
-
-	// store lines for output
-	allTopLines.push_back
-	  (setStringMiB(doubleToStr(KiBToMiB(memInfo.getMemTotal()), 1),
-			doubleToStr(KiBToMiB(memInfo.getMemFree()), 1),
-			doubleToStr(KiBToMiB(memInfo.getMemUsed()), 1),
-			doubleToStr(KiBToMiB(memInfo.getBuffCache()), 1)));
-	allTopLines.push_back
-	  (setStringSwap(doubleToStr(KiBToMiB(memInfo.getSwapTotal()), 1),
-			 doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1),
-			 doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1),
-			 doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1)));
-
+	
 	// get pid of current process
 	allProcessInfo[pids.at(i)]->setPID(pids.at(i));
 
@@ -357,9 +346,6 @@ int main()
 	// "Tasks: XXX total, X running..."
 	extractProcessStateCount(allProcessInfo,
 				 taskInfo);
-	
-	// store line for output
-	defineTasksLine(allTopLines);
       }
 
     // ## get user input ##
@@ -428,6 +414,8 @@ int main()
 		   taskInfo);
     printCpusData(allWins,
 		  cpuInfo);
+    printMemMiBData(allWins,
+		    memInfo);
     boldOffAllTopWins(allWins,
 		    A_BOLD);
     printProcs(allWins,
