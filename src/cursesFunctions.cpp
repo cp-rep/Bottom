@@ -1212,21 +1212,19 @@ void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
   mvwaddstr(wins.at(_TASKSWIN)->getWindow(),
 	    0,
 	    0,
-	    allTopLines.at(4).c_str());
-  mvwaddstr(wins.at(_CPUWIN)->getWindow(),
-	    0,
-	    0,
 	    allTopLines.at(1).c_str());
-
-
-  mvwaddstr(wins.at(_MEMWIN)->getWindow(),
+  mvwaddstr(wins.at(_CPUWIN)->getWindow(),
 	    0,
 	    0,
 	    allTopLines.at(2).c_str());
   mvwaddstr(wins.at(_MEMWIN)->getWindow(),
-	    1,
+	    0,
 	    0,
 	    allTopLines.at(3).c_str());
+  mvwaddstr(wins.at(_MEMWIN)->getWindow(),
+	    1,
+	    0,
+	    allTopLines.at(4).c_str());
 } // end of "printTopWins"
 
 
