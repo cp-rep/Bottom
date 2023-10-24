@@ -182,7 +182,7 @@ void changeProgramState(const std::unordered_map<int, CursesWindow*>& allWins,
       progState = prevState;
       break;
     case _PROGSTATEKILL:
-      killState(allWins);
+      //      killState(allWins);
       break;
     default:
       break;
