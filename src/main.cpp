@@ -422,32 +422,24 @@ int main()
     printTopWins(allWins,
 		 allTopLines);
     
-    boldOnTasksWins(allWins,
+    boldOnAllTopWins(allWins,
 		    A_BOLD);
     printTasksData(allWins,
 		   taskInfo);
-    boldOffTasksWins(allWins,
-		    A_BOLD);
-
-    boldOnCpusWins(allWins,
-		   A_BOLD);
     printCpusData(allWins,
 		  cpuInfo);
-    boldOffCpusWins(allWins,
+    boldOffAllTopWins(allWins,
 		    A_BOLD);
-    
     printProcs(allWins,
 	       allProcessInfo,
 	       outPids,
 	       shiftY,
 	       shiftX);
-    
     attronBottomWins(allWins,
 		     _BLACK_TEXT);
     printWindowNames(allWins);
     attroffBottomWins(allWins,
 		      _BLACK_TEXT);
-    
     printColorLine(allWins,
 		   _YOFFSET,
 		   _BLACK_TEXT,
