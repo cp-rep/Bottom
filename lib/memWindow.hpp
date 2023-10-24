@@ -21,14 +21,11 @@ public:
   const std::string& getSwap() const;
   
   // setters
-  void setStringMiB(const std::string& memTotal,
-		    const std::string& memFree,
-		    const std::string& memUsed,
-		    const std::string& buffCache);
-  void setStringSwap(const std::string& swapTotal,
-		     const std::string& swapFree,
-		     const std::string& swapUsed,
-		     const std::string& memAvailable);
+  void setStringMiB();
+  void setStringSwap();
+		     
+		     
+		     
 private:
   std::string m_MiB;
   std::string m_swap;

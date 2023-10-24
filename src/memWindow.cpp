@@ -61,21 +61,9 @@ MemWindow::MemWindow(WINDOW* win,
 
   Output:
 */
-void MemWindow::setStringMiB(const std::string& memTotal,
-			     const std::string& memFree,
-			     const std::string& memUsed,
-			     const std::string& buffCache)
+void MemWindow::setStringMiB()
 {
-  m_MiB.clear();
-  m_MiB.append("MiB Mem: ");
-  m_MiB.append(memTotal);
-  m_MiB.append(" total, ");
-  m_MiB.append(memFree);
-  m_MiB.append(" free, ");
-  m_MiB.append(memUsed);
-  m_MiB.append(" used, ");
-  m_MiB.append(buffCache);
-  m_MiB.append(" buff/cache");
+  m_MiB.append("MiB Mem :          total,          free,          used,          buff/cache");
 } // end of "setStringMiB"
 
 
@@ -89,21 +77,9 @@ void MemWindow::setStringMiB(const std::string& memTotal,
 
   Output:
 */
-void MemWindow::setStringSwap(const std::string& swapTotal,
-			      const std::string& swapFree,
-			      const std::string& swapUsed,
-			      const std::string& memAvailable)
+void MemWindow::setStringSwap()
 {
-  m_swap.clear();
-  m_swap.append("MiB Swap: ");
-  m_swap.append(swapTotal);
-  m_swap.append(" total, ");
-  m_swap.append(swapFree);
-  m_swap.append(" free, ");
-  m_swap.append(swapUsed);
-  m_swap.append(" used, ");
-  m_swap.append(memAvailable);
-  m_swap.append(" avail/mem");
+  m_swap = "MiB Swap:          total,          free,          used,          avail mem";
 } // end of "setStringSwap"
 
 
