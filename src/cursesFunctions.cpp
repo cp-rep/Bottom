@@ -33,7 +33,6 @@ void initializeCurses()
   curs_set(0);
   timeout(0);
   noecho();
-  keypad(stdscr, true);
   cbreak();
   keypad(stdscr, true);
   nodelay(stdscr, true);
@@ -601,15 +600,15 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
   numLines = 1;
   startY = 3;
   startX = 76;
-  cpuStWin.defineWindow(newwin(numLines,
+  miBBuffCacheWin.defineWindow(newwin(numLines,
+				      numCols,
+				      startY,
+				      startX),  
+			       "buff/cache",
+			       numLines,
 			       numCols,
 			       startY,
-			       startX),  
-			"buff/cache",
-			numLines,
-			numCols,
-			startY,
-			startX);
+			       startX);
   // define MiB swap total window
   numCols = 9;
   numLines = 1;
@@ -652,7 +651,7 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 			      numCols,
 			      startY,
 			      startX);
-    // define cpu steal time window
+  // define MiB Swap avail mem window
   numCols = 9;
   numLines = 1;
   startY = 4;
@@ -800,6 +799,48 @@ void clearBottomWins(const std::unordered_map<int, CursesWindow*>& wins)
 
 /*
   Function:
+   boldOnAllTopWins
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void boldOnAllTopWins(std::unordered_map<int, CursesWindow*>& wins,
+		     int attrs)
+{
+  for(int i = _TASKSTOTAL; i <= _MIBMEMAVAILWIN; i++)
+    {
+      wattron(wins.at(i)->getWindow(), A_BOLD);
+    }
+} // end of "boldOnAllTopWins"
+
+
+
+/*
+  Function:
+   boldOffAllTopWins
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void boldOffAllTopWins(std::unordered_map<int, CursesWindow*>& wins,
+		     int attrs)
+{
+  for(int i = _TASKSTOTAL; i <= _TASKSZOMBIE; i++)
+    {
+      wattron(wins.at(i)->getWindow(), A_BOLD);
+    }
+} // end of "boldOffAllTopWins"
+
+
+
+/*
+  Function:
    boldOnTasksWins
 
   Description:
@@ -816,35 +857,6 @@ void boldOnTasksWins(std::unordered_map<int, CursesWindow*>& wins,
       wattron(wins.at(i)->getWindow(), A_BOLD);
     }
 } // end of "boldOnTasksWins"
-
-
-
-/*
-
- */
-void boldOnCpusWins(std::unordered_map<int, CursesWindow*>& wins,
-		     int attrs)
-{
-  for(int i = _CPUUSWIN; i <= _CPUSTWIN; i++)
-    {
-      wattron(wins.at(i)->getWindow(), A_BOLD);
-    }
-} // end of "boldOnCpusWindow""
-
-
-
-
-/*
-
- */
-void boldOffCpusWins(std::unordered_map<int, CursesWindow*>& wins,
-		     int attrs)
-{
-  for(int i = _CPUUSWIN; i <= _CPUSTWIN; i++)
-    {
-      wattroff(wins.at(i)->getWindow(), A_BOLD);
-    }
-} // end of "boldOffCpusWindow"
 
 
 
@@ -866,6 +878,94 @@ void boldOffTasksWins(const std::unordered_map<int, CursesWindow*>& wins,
       wattroff(wins.at(i)->getWindow(), A_BOLD);
     }
 } // end of "boldOffTasksWins"
+
+
+
+/*
+  Function:
+   boldOnCpusWins
+
+  Description:
+
+  Input:
+
+  Output:
+ */
+void boldOnCpusWins(std::unordered_map<int, CursesWindow*>& wins,
+		     int attrs)
+{
+  for(int i = _CPUUSWIN; i <= _CPUSTWIN; i++)
+    {
+      wattron(wins.at(i)->getWindow(), A_BOLD);
+    }
+} // end of "boldOnCpusWins"
+
+
+
+
+/*
+
+  Function:
+   boldOffCpusWins
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void boldOffCpusWins(std::unordered_map<int, CursesWindow*>& wins,
+		     int attrs)
+{
+  for(int i = _CPUUSWIN; i <= _CPUSTWIN; i++)
+    {
+      wattroff(wins.at(i)->getWindow(), A_BOLD);
+    }
+} // end of "boldOffCpusWins
+
+
+
+
+/*
+  Function:
+   boldOnMemWins
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void boldOnMemWins(std::unordered_map<int, CursesWindow*>& wins,
+		     int attrs)
+{
+  for(int i = _MIBTOTALWIN; i <= _MIBMEMAVAILWIN; i++)
+    {
+      wattron(wins.at(i)->getWindow(), A_BOLD);
+    }
+} // end of "boldOnMemWins"
+
+
+
+
+/*
+  Function:
+   boldOffMemWins
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void boldOffMemWins(std::unordered_map<int, CursesWindow*>& wins,
+		     int attrs)
+{
+  for(int i = _MIBTOTALWIN; i <= _MIBMEMAVAILWIN; i++)
+    {
+      wattroff(wins.at(i)->getWindow(), A_BOLD);
+    }
+} // end of "boldOffMemWins"
 
 
 

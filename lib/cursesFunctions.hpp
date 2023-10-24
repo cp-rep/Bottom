@@ -104,10 +104,6 @@ void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearBottomWins(const std::unordered_map<int, CursesWindow*>& wins);
-void boldOnTasksWins(std::unordered_map<int, CursesWindow*>& wins,
-		     int attrs);
-void boldOffTasksWins(const std::unordered_map<int, CursesWindow*>& wins,
-		      int attrs);
 void attronBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
 		      int attrs);
 void attroffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
@@ -116,10 +112,22 @@ void printTasksData(const std::unordered_map<int, CursesWindow*>& wins,
 		    const TaskInfo& taskInfo);
 void printCpusData(const std::unordered_map<int, CursesWindow*>& wins,
 		   const CPUInfo& cpuInfo);
+void boldOnAllTopWins(std::unordered_map<int, CursesWindow*>& wins,
+		      int attrs);
+void boldOffAllTopWins(std::unordered_map<int, CursesWindow*>& wins,
+		       int attrs);
 void boldOnCpusWins(std::unordered_map<int, CursesWindow*>& wins,
 		    int attrs);
+void boldOnTasksWins(std::unordered_map<int, CursesWindow*>& wins,
+		     int attrs);
+void boldOffTasksWins(const std::unordered_map<int, CursesWindow*>& wins,
+		      int attrs);
 void boldOffCpusWins(std::unordered_map<int, CursesWindow*>& wins,
 		     int attrs);
+void boldOnMemWins(std::unordered_map<int, CursesWindow*>& wins,
+		   int attrs);
+void boldOffMemWins(std::unordered_map<int, CursesWindow*>& wins,
+		    int attrs);
 void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
 		  const std::vector<std::string>& allTopLines);
 void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins);
