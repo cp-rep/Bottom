@@ -169,7 +169,7 @@ int main()
   MemInfo memInfo;
   CPUInfo cpuInfo;
   TaskInfo taskInfo;
-  ProcessInfo* process; // to be populated with all process output data
+  ProcessInfo* process;
   std::vector<int> pids; // all currently allocated process PIDs
   std::vector<int> pidsOld; // previously found active PID
   std::vector<int> pidsDead; // PIDs that closed during loop
@@ -444,6 +444,14 @@ int main()
 
   } while(true);
 
+
+  // cleanup
+  for(std::unordered_map<int, ProcessInfo*>::iterator it = allProcessInfo.begin();
+      it != allProcessInfo.end(); it++)
+    {
+      delete(it->second);
+    }
+  
 #if _CURSES  
   endwin();
 #endif
