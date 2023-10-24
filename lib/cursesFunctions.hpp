@@ -30,8 +30,16 @@
 #include "cpuUsWindow.hpp"
 #include "cpuWaWindow.hpp"
 #include "cpuWindow.hpp"
-#include "tasksWindow.hpp"
+#include "miBBuffCacheWindow.hpp"
+#include "miBMemAvailWindow.hpp"
+#include "miBMemFreeWindow.hpp"
+#include "miBMemTotalWindow.hpp"
+#include "miBMemUsedWindow.hpp"
+#include "miBSwapFreeWindow.hpp"
+#include "miBSwapTotalWindow.hpp"
+#include "miBSwapUsedWindow.hpp"
 #include "PRWindow.hpp"
+#include "tasksWindow.hpp"
 #include "tasksRunningWindow.hpp"
 #include "tasksSleepingWindow.hpp"
 #include "tasksStoppedWindow.hpp"
@@ -82,7 +90,15 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 		       CpuWaWindow& cpuWaWin,
 		       CpuHiWindow& cpuHiWin,
 		       CpuSiWindow& cpuSiWin,
-		       CpuStWindow& cpuStWin);
+		       CpuStWindow& cpuStWin,
+		       MiBMemTotalWindow& miBMemTotalWin,
+		       MiBMemFreeWindow& miBMemFreeWin,
+		       MiBMemUsedWindow& miBMemUsedWin,
+		       MiBBuffCacheWindow& miBBuffCacheWin,
+		       MiBSwapTotalWindow& miBSwapTotalWin,
+		       MiBSwapFreeWindow& miBSwapFreeWin,
+		       MiBSwapUsedWindow& miBSwapUsedWin,
+		       MiBMemAvailWindow& miBMemAvailWin);
 void initializeProgramStates(std::unordered_map<char, int>& progStates);
 void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins);

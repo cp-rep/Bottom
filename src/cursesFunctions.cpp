@@ -44,7 +44,7 @@ void initializeCurses()
 /*
   Function:
    initializeWindows
-
+   
   Description:
 */
 void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,		       
@@ -77,7 +77,15 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 		       CpuWaWindow& cpuWaWin,
 		       CpuHiWindow& cpuHiWin,
 		       CpuSiWindow& cpuSiWin,
-		       CpuStWindow& cpuStWin)
+		       CpuStWindow& cpuStWin,
+		       MiBMemTotalWindow& miBMemTotalWin,
+		       MiBMemFreeWindow& miBMemFreeWin,
+		       MiBMemUsedWindow& miBMemUsedWin,
+		       MiBBuffCacheWindow& miBBuffCacheWin,
+		       MiBSwapTotalWindow& miBSwapTotalWin,
+		       MiBSwapFreeWindow& miBSwapFreeWin,
+		       MiBSwapUsedWindow& miBSwapUsedWin,
+		       MiBMemAvailWindow& miBMemAvailWin)
 {
   int numLines;
   int numCols;
@@ -546,6 +554,119 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 			startY,
 			startX);
 
+  // define MiB mem total window
+  numCols = 5;
+  numLines = 1;
+  startY = 3;
+  startX = 10;
+  miBMemTotalWin.defineWindow(newwin(numLines,
+				     numCols,
+				     startY,
+				     startX),  
+			      "total",
+			      numLines,
+			      numCols,
+			      startY,
+			      startX);
+  // define MiB mem free window
+  numCols = 9;
+  numLines = 1;
+  startY = 3;
+  startX = 26;
+  miBMemFreeWin.defineWindow(newwin(numLines,
+				    numCols,
+				    startY,
+				    startX),  
+			     "free",
+			     numLines,
+			     numCols,
+			     startY,
+			     startX);
+  // define MiB mem Used window
+  numCols = 9;
+  numLines = 1;
+  startY = 3;
+  startX = 56;
+  miBMemUsedWin.defineWindow(newwin(numLines,
+			       numCols,
+			       startY,
+			       startX),  
+			"used",
+			numLines,
+			numCols,
+			startY,
+			startX);
+  // define cpu steal time window
+  numCols = 9;
+  numLines = 1;
+  startY = 3;
+  startX = 76;
+  cpuStWin.defineWindow(newwin(numLines,
+			       numCols,
+			       startY,
+			       startX),  
+			"buff/cache",
+			numLines,
+			numCols,
+			startY,
+			startX);
+  // define MiB swap total window
+  numCols = 9;
+  numLines = 1;
+  startY = 4;
+  startX = 10;
+  miBSwapTotalWin.defineWindow(newwin(numLines,
+				      numCols,
+				      startY,
+				      startX),  
+			       "total",
+			       numLines,
+			       numCols,
+			       startY,
+			       startX);
+  // define MiB swap free window
+  numCols = 9;
+  numLines = 1;
+  startY = 4;
+  startX = 26;
+  miBSwapFreeWin.defineWindow(newwin(numLines,
+			       numCols,
+			       startY,
+			       startX),  
+			      "free",
+			      numLines,
+			      numCols,
+			      startY,
+			      startX);
+  // define MiB swap used window
+  numCols = 9;
+  numLines = 1;
+  startY = 4;
+  startX = 56;
+  miBSwapUsedWin.defineWindow(newwin(numLines,
+			       numCols,
+			       startY,
+			       startX),  
+			      "used",
+			      numLines,
+			      numCols,
+			      startY,
+			      startX);
+    // define cpu steal time window
+  numCols = 9;
+  numLines = 1;
+  startY = 4;
+  startX = 71;
+  miBMemAvailWin.defineWindow(newwin(numLines,
+				     numCols,
+				     startY,
+				     startX),  
+			      "avil Mem",
+			      numLines,
+			      numCols,
+			      startY,
+			      startX);
+
   // store all windows in hash map
   wins.insert(std::make_pair(_MAINWIN,&mainWin));
   wins.insert(std::make_pair(_TOPWIN, &topWin));
@@ -569,14 +690,22 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
   wins.insert(std::make_pair(_TASKSSLEEPING,&tasksSleepingWin));
   wins.insert(std::make_pair(_TASKSSTOPPED, &tasksStoppedWin));
   wins.insert(std::make_pair(_TASKSZOMBIE, &tasksZombieWin));
-  wins.insert(std::make_pair(_CPUUSWINDOW, &cpuUsWin));
-  wins.insert(std::make_pair(_CPUSYWINDOW, &cpuSyWin));
-  wins.insert(std::make_pair(_CPUNIWINDOW, &cpuNiWin));
-  wins.insert(std::make_pair(_CPUIDWINDOW, &cpuIdWin));
-  wins.insert(std::make_pair(_CPUWAWINDOW, &cpuWaWin));
-  wins.insert(std::make_pair(_CPUHIWINDOW, &cpuHiWin));
-  wins.insert(std::make_pair(_CPUSIWINDOW, &cpuSiWin));
-  wins.insert(std::make_pair(_CPUSTWINDOW, &cpuStWin));  
+  wins.insert(std::make_pair(_CPUUSWIN, &cpuUsWin));
+  wins.insert(std::make_pair(_CPUSYWIN, &cpuSyWin));
+  wins.insert(std::make_pair(_CPUNIWIN, &cpuNiWin));
+  wins.insert(std::make_pair(_CPUIDWIN, &cpuIdWin));
+  wins.insert(std::make_pair(_CPUWAWIN, &cpuWaWin));
+  wins.insert(std::make_pair(_CPUHIWIN, &cpuHiWin));
+  wins.insert(std::make_pair(_CPUSIWIN, &cpuSiWin));
+  wins.insert(std::make_pair(_CPUSTWIN, &cpuStWin));
+  wins.insert(std::make_pair(_MIBTOTALWIN, &miBMemTotalWin));
+  wins.insert(std::make_pair(_MIBFREEWIN, &miBMemFreeWin));
+  wins.insert(std::make_pair(_MIBUSEDWIN, &miBMemUsedWin));
+  wins.insert(std::make_pair(_MIBBUFFCACHEWIN, &miBBuffCacheWin));
+  wins.insert(std::make_pair(_MIBSWAPTOTALWIN, &miBSwapTotalWin));
+  wins.insert(std::make_pair(_MIBSWAPFREEWIN, &miBSwapFreeWin));
+  wins.insert(std::make_pair(_MIBSWAPUSEDWIN, &miBSwapUsedWin));
+  wins.insert(std::make_pair(_MIBMEMAVAILWIN, &miBMemAvailWin));  
 } // end of "initializeWindows"
 
 
@@ -696,7 +825,7 @@ void boldOnTasksWins(std::unordered_map<int, CursesWindow*>& wins,
 void boldOnCpusWins(std::unordered_map<int, CursesWindow*>& wins,
 		     int attrs)
 {
-  for(int i = _CPUUSWINDOW; i <= _CPUSTWINDOW; i++)
+  for(int i = _CPUUSWIN; i <= _CPUSTWIN; i++)
     {
       wattron(wins.at(i)->getWindow(), A_BOLD);
     }
@@ -711,7 +840,7 @@ void boldOnCpusWins(std::unordered_map<int, CursesWindow*>& wins,
 void boldOffCpusWins(std::unordered_map<int, CursesWindow*>& wins,
 		     int attrs)
 {
-  for(int i = _CPUUSWINDOW; i <= _CPUSTWINDOW; i++)
+  for(int i = _CPUUSWIN; i <= _CPUSTWIN; i++)
     {
       wattroff(wins.at(i)->getWindow(), A_BOLD);
     }
@@ -845,53 +974,53 @@ void printCpusData(const std::unordered_map<int, CursesWindow*>& wins,
   std::string outString;
 
   outString = doubleToStr(cpuInfo.getAvgUs(), 1);
-  mvwaddstr(wins.at(_CPUUSWINDOW)->getWindow(),
+  mvwaddstr(wins.at(_CPUUSWIN)->getWindow(),
 	    0,
-	    wins.at(_CPUUSWINDOW)->getNumCols() - outString.length(),
+	    wins.at(_CPUUSWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
   
   outString = doubleToStr(cpuInfo.getAvgSy(), 1);
-  mvwaddstr(wins.at(_CPUSYWINDOW)->getWindow(),
+  mvwaddstr(wins.at(_CPUSYWIN)->getWindow(),
 	    0,
-	    wins.at(_CPUSYWINDOW)->getNumCols() - outString.length(),
+	    wins.at(_CPUSYWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
 
   outString = doubleToStr(cpuInfo.getAvgNi(), 1);
-  mvwaddstr(wins.at(_CPUNIWINDOW)->getWindow(),
+  mvwaddstr(wins.at(_CPUNIWIN)->getWindow(),
 	    0,
-	    wins.at(_CPUNIWINDOW)->getNumCols() - outString.length(),
+	    wins.at(_CPUNIWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
 
   outString = doubleToStr(cpuInfo.getAvgId(), 1);
-  mvwaddstr(wins.at(_CPUIDWINDOW)->getWindow(),
+  mvwaddstr(wins.at(_CPUIDWIN)->getWindow(),
 	    0,
-	    wins.at(_CPUIDWINDOW)->getNumCols() - outString.length(),
+	    wins.at(_CPUIDWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
 
   outString = doubleToStr(cpuInfo.getAvgWa(), 1);
-  mvwaddstr(wins.at(_CPUWAWINDOW)->getWindow(),
+  mvwaddstr(wins.at(_CPUWAWIN)->getWindow(),
 	    0,
-	    wins.at(_CPUWAWINDOW)->getNumCols() - outString.length(),
+	    wins.at(_CPUWAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
 
   
   outString = doubleToStr(cpuInfo.getAvgHi(), 1);
-  mvwaddstr(wins.at(_CPUHIWINDOW)->getWindow(),
+  mvwaddstr(wins.at(_CPUHIWIN)->getWindow(),
 	    0,
-	    wins.at(_CPUHIWINDOW)->getNumCols() - outString.length(),
+	    wins.at(_CPUHIWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
 
   //outString = std::to_string(cpuInfo.getAvgSi());
   outString = "0.0";
-  mvwaddstr(wins.at(_CPUSIWINDOW)->getWindow(),
+  mvwaddstr(wins.at(_CPUSIWIN)->getWindow(),
 	    0,
-	    wins.at(_CPUSIWINDOW)->getNumCols() - outString.length(),
+	    wins.at(_CPUSIWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
 
   outString = doubleToStr(cpuInfo.getAvgSt(), 1);
-  mvwaddstr(wins.at(_CPUSTWINDOW)->getWindow(),
+  mvwaddstr(wins.at(_CPUSTWIN)->getWindow(),
 	    0,
-	    wins.at(_CPUSTWINDOW)->getNumCols() - outString.length(),
+	    wins.at(_CPUSTWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
 } // end of "printCpusData"
 
