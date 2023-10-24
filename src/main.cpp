@@ -67,6 +67,14 @@
 #include "manageProcesses.hpp"
 #include "memInfo.hpp"
 #include "memWindow.hpp"
+#include "miBBuffCacheWindow.hpp"
+#include "miBMemAvailWindow.hpp"
+#include "miBMemFreeWindow.hpp"
+#include "miBMemTotalWindow.hpp"
+#include "miBMemUsedWindow.hpp"
+#include "miBSwapFreeWindow.hpp"
+#include "miBSwapTotalWindow.hpp"
+#include "miBSwapUsedWindow.hpp"
 #include "NIWindow.hpp"
 #include "percentCPUWindow.hpp"
 #include "percentMEMWindow.hpp"
@@ -204,7 +212,15 @@ int main()
   CpuHiWindow cpuHiWin;
   CpuSiWindow cpuSiWin;
   CpuStWindow cpuStWin;
-
+  MiBMemTotalWindow miBMemTotalWin;
+  MiBMemFreeWindow  miBMemFreeWin;
+  MiBMemUsedWindow miBMemUsedWin;
+  MiBBuffCacheWindow miBBuffCacheWin;
+  MiBSwapTotalWindow miBSwapTotalWin;
+  MiBSwapFreeWindow miBSwapFreeWin;
+  MiBSwapUsedWindow miBSwapUsedWin;
+  MiBMemAvailWindow miBMemAvailWin;
+  
   // state related vars
   int progState = 0;
   int prevState = 0;
@@ -247,7 +263,16 @@ int main()
 		    cpuWaWin,
 		    cpuHiWin,
 		    cpuSiWin,
-		    cpuStWin);
+		    cpuStWin,
+		    miBMemTotalWin,
+		    miBMemFreeWin,
+		    miBMemUsedWin,
+		    miBBuffCacheWin,
+		    miBSwapTotalWin,
+		    miBSwapFreeWin,
+		    miBSwapUsedWin,
+		    miBMemAvailWin);
+  
   initializeProgramStates(progStates);
   
   // loop variables
