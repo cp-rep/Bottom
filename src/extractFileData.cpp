@@ -57,6 +57,44 @@ void defineTasksLine(std::vector<std::string>& allTopLines)
 
 /*
   Function:
+   defineMemMiBLine
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void defineMemMiBLine(std::vector<std::string>& allTopLines)
+{
+  std::string memLine;
+  memLine.append("MiB Mem :          total,          free,          used,          buff/cache");
+  allTopLines.push_back(memLine);
+} // end of "defineMemMiBLine"
+
+
+
+/*
+  Function:
+   defineMemSwapLine
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void defineMemSwapLine(std::vector<std::string>& allTopLines)
+{
+  std::string swapLine;
+  swapLine.append("MiB Swap:          total,          free,          used,          avail Mem");
+  allTopLines.push_back(swapLine);
+} // end of "defineMemSwapLine"
+
+
+
+/*
+  Function:
    defineCpusLine
 
   Description:
@@ -70,7 +108,7 @@ void defineCpusLine(std::vector<std::string>& allTopLines)
   std::string cpusLine;
   cpusLine = "%Cpu(s):      us,      sy,      ni,      id,      wa,      hi,      si,      st";
   allTopLines.push_back(cpusLine);
-} // end of "cpusLine"
+} // end of "defineCpusLine"
 
 
 

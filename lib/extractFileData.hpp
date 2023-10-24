@@ -83,6 +83,8 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			  const int currentPid);
 void extractProcStatData(CPUInfo& cpuInfo);
 void defineCpusLine(std::vector<std::string>& allTopLines);
+void defineMemSwapLine(std::vector<std::string>& allTopLines);
+void defineMemMiBLine(std::vector<std::string>& allTopLines);
 void extractProcessStateCount(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			      TaskInfo& taskInfo);
 void defineTasksLine(std::vector<std::string>& allTopLines);
