@@ -11,6 +11,7 @@
 #include <unordered_map>
 #include <sys/param.h>
 #include <sys/stat.h>
+#include <iostream>
 
 
 
@@ -332,9 +333,25 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       cutime = convertToInt(parsedLine.at(12));
       pstart = convertToInt(parsedLine.at(19));
       percent = (utime + cutime)/(uptime.getTotalSeconds() - (pstart/100));
+      /*
       percent = std::ceil(percent * 100);
       percent = percent /100;
-      allProcessInfo[currentPid]->setCPUUsage(percent);
+      */
+      double tempDouble = percent;
+      int tempInt;
+      tempDouble *= 10;
+      tempInt = tempDouble;
+
+      if(tempInt != 0)
+	{
+	  tempDouble = tempInt;
+	  tempDouble = tempDouble/10;
+	  allProcessInfo.at(currentPid)->setCPUUsage(tempDouble);
+	}
+      else
+	{
+	  allProcessInfo.at(currentPid)->setCPUUsage(0);
+	}
 
       // get TIME+ (CPU time)
       allProcessInfo[currentPid]->setCpuRawTime(utime + cutime);
