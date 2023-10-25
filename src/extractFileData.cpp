@@ -17,6 +17,67 @@
 
 /*
   Function:
+   makeDirectory
+
+  Description:
+   Makes a directory based on the incoming directory path provided the parameter.
+   If the directory path already exists, a return value of false is returned,
+   else, a directory is made at the incoming directory path and a value of
+   true is returned.
+
+  Input:
+
+  Output:
+*/
+bool makeDirectory(const std::string& dirPath)
+{
+  if(doesDirectoryExist(dirPath))
+    {
+      return false;
+    }
+  else
+    {
+      mkdir(dirPath.c_str(), 0755);
+      return true;
+    }
+} // end of "makeDirectory"
+
+
+
+/*
+  Function:
+   doesDirectoryExist
+
+  Description:
+   Checks if a directory exists based upon the incoming parameter directory path.
+   If the directory exists, a value of true is returned, else, a value of
+   false is returned.
+
+  Input:
+
+  Output:
+*/
+bool doesDirectoryExist(const std::string& dirPath)
+{
+  std::filesystem::path directoryPath(dirPath);
+  bool isDir = false;
+  
+  if(std::filesystem::exists(dirPath) && std::filesystem::is_directory(dirPath))
+    {
+      isDir = true;
+    }
+  else
+    {
+      isDir = false;
+    }
+
+  return isDir;
+} // end of "doesDirectoryExist"
+
+
+
+/*
+  Function:
    extractProcComm
 
   Description:
@@ -198,16 +259,16 @@ void extractProcStatData(CPUInfo& cpuInfo)
   filePath.append(_STAT);
   lineString = returnFileLineByNumber(filePath, 1);
   parsedLine = parseLine(lineString);
-  cpuInfo.setUs(convertToInt(parsedLine.at(1)));
-  cpuInfo.setNi(convertToInt(parsedLine.at(2)));
-  cpuInfo.setSy(convertToInt(parsedLine.at(3)));
-  cpuInfo.setId(convertToInt(parsedLine.at(4)));
-  cpuInfo.setWa(convertToInt(parsedLine.at(5)));
-  cpuInfo.setIrq(convertToInt(parsedLine.at(6)));
-  cpuInfo.setSirq(convertToInt(parsedLine.at(7)));
-  cpuInfo.setSt(convertToInt(parsedLine.at(8)));
-  cpuInfo.setGu(convertToInt(parsedLine.at(9)));
-  cpuInfo.setGun(convertToInt(parsedLine.at(10)));
+  cpuInfo.setUs(stringToInt(parsedLine.at(1)));
+  cpuInfo.setNi(stringToInt(parsedLine.at(2)));
+  cpuInfo.setSy(stringToInt(parsedLine.at(3)));
+  cpuInfo.setId(stringToInt(parsedLine.at(4)));
+  cpuInfo.setWa(stringToInt(parsedLine.at(5)));
+  cpuInfo.setIrq(stringToInt(parsedLine.at(6)));
+  cpuInfo.setSirq(stringToInt(parsedLine.at(7)));
+  cpuInfo.setSt(stringToInt(parsedLine.at(8)));
+  cpuInfo.setGu(stringToInt(parsedLine.at(9)));
+  cpuInfo.setGun(stringToInt(parsedLine.at(10)));
   cpuInfo.setTicks(ticks);
   cpuInfo.setJiffs(cpuInfo.calculateJiffs());
 } // end of "extractProcStatData"
@@ -249,7 +310,7 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       char buff[1024];
 
       parsedLine = parseLine(lineString);
-      uidt = convertToInt(parsedLine.at(1));
+      uidt = stringToInt(parsedLine.at(1));
 	      
       if(!(getpwuid_r(uidt, &userData, buff, sizeof(buff), &userDataPtr)))
 	{
@@ -271,7 +332,7 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   if(lineString != "-1")
     {
       parsedLine = parseLine(lineString);
-      tempInt = convertToInt(parsedLine.at(1));
+      tempInt = stringToInt(parsedLine.at(1));
       allProcessInfo[currentPid]->setVIRT(tempInt);
     }
 
@@ -281,7 +342,7 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   if(lineString != "-1")
     {
       parsedLine = parseLine(lineString);
-      tempInt = convertToInt(parsedLine.at(1));
+      tempInt = stringToInt(parsedLine.at(1));
       allProcessInfo[currentPid]->setRES(tempInt);
     }
 
@@ -291,7 +352,7 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   if(lineString != "-1")
     {
       parsedLine = parseLine(lineString);
-      tempInt = convertToInt(parsedLine.at(1));
+      tempInt = stringToInt(parsedLine.at(1));
       allProcessInfo[currentPid]->setSHR(tempInt);
     }
 
@@ -317,11 +378,11 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       // get priority
       lineString = fixStatLine(lineString);
       parsedLine = parseLine(lineString);
-      tempInt = convertToInt(parsedLine.at(15));
+      tempInt = stringToInt(parsedLine.at(15));
       allProcessInfo[currentPid]->setPR(tempInt);
 
       // get NI
-      tempInt = convertToInt(parsedLine.at(16));
+      tempInt = stringToInt(parsedLine.at(16));
       allProcessInfo[currentPid]->setNI(tempInt);
 
       // get S
@@ -329,9 +390,9 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 
       // get %CPU for current process
 
-      utime = convertToInt(parsedLine.at(11));
-      cutime = convertToInt(parsedLine.at(12));
-      pstart = convertToInt(parsedLine.at(19));
+      utime = stringToInt(parsedLine.at(11));
+      cutime = stringToInt(parsedLine.at(12));
+      pstart = stringToInt(parsedLine.at(19));
       percent = (utime + cutime)/(uptime.getTotalSeconds() - (pstart/100));
       /*
       percent = std::ceil(percent * 100);
@@ -396,7 +457,7 @@ void extractProcUptimeLoadavg(SecondsToTime& uptime,
 
   fileLine = returnFileLineByNumber(_UPTIME, 1);
   parsedLine = parseLine(fileLine);
-  tempInt = convertToInt(parsedLine.at(0));
+  tempInt = stringToInt(parsedLine.at(0));
   uptime.setHours(uptime.convertToHours(tempInt));
   uptime.setMinutes(uptime.convertToMinutes(tempInt));
   uptime.setSeconds(uptime.findRemainingSeconds(tempInt));
@@ -498,36 +559,36 @@ void extractMemInfoData(MemInfo& memInfo)
   
   fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
   parsedLine = parseLine(fileLine);
-  memInfo.setMemTotal(convertToInt(parsedLine.at(1)));
+  memInfo.setMemTotal(stringToInt(parsedLine.at(1)));
 
   fileLine = returnFileLineByNumber(_PROC_MEMINFO, 2);
   parsedLine = parseLine(fileLine);
-  memInfo.setMemFree(convertToInt(parsedLine.at(1)));
+  memInfo.setMemFree(stringToInt(parsedLine.at(1)));
 
   fileLine = returnFileLineByNumber(_PROC_MEMINFO, 3);
   parsedLine = parseLine(fileLine);
-  memInfo.setMemAvailable(convertToInt(parsedLine.at(1)));
+  memInfo.setMemAvailable(stringToInt(parsedLine.at(1)));
 
   fileLine = returnFileLineByNumber(_PROC_MEMINFO, 4);
   parsedLine = parseLine(fileLine);
-  memInfo.setBuffers(convertToInt(parsedLine.at(1)));	  
+  memInfo.setBuffers(stringToInt(parsedLine.at(1)));	  
 
   fileLine = returnFileLineByNumber(_PROC_MEMINFO, 5);
   parsedLine = parseLine(fileLine);
-  memInfo.setCached(convertToInt(parsedLine.at(1)));	  	  
+  memInfo.setCached(stringToInt(parsedLine.at(1)));	  	  
 
   fileLine = returnFileLineByNumber(_PROC_MEMINFO, 15);
   parsedLine = parseLine(fileLine);
-  memInfo.setSwapTotal(convertToInt(parsedLine.at(1)));
+  memInfo.setSwapTotal(stringToInt(parsedLine.at(1)));
 
   fileLine = returnFileLineByNumber(_PROC_MEMINFO, 16);
   parsedLine = parseLine(fileLine);
-  memInfo.setSwapFree(convertToInt(parsedLine.at(1)));
+  memInfo.setSwapFree(stringToInt(parsedLine.at(1)));
 
   fileLine = returnFileLineByNumber(_PROC_MEMINFO, 26);
   parsedLine = parseLine(fileLine);
 
-  memInfo.setSReclaimable(convertToInt(parsedLine.at(1)));
+  memInfo.setSReclaimable(stringToInt(parsedLine.at(1)));
   memInfo.setMemUsed(memInfo.calculateMemUsed());
   memInfo.setSwapUsed(memInfo.calculateSwapUsed());
   memInfo.setBuffCache(memInfo.calculateBuffCache());  
@@ -597,73 +658,6 @@ void removeDeadProcesses(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	}
     }  
 } // end of "removeDeadProcesses"
-
-
-
-
-
-/*
-  Function:
-   setStringMiB
-
-  Description:
-
-  Input:
-
-  Output:
-*/
-const std::string setStringMiB(const std::string memTotal,
-			       const std::string memFree,
-			       const std::string memUsed,
-			       const std::string buffCache)
-{
-  std::string tempMiB;
-  
-  tempMiB.append("MiB Mem: ");
-  tempMiB.append(memTotal);
-  tempMiB.append(" total, ");
-  tempMiB.append(memFree);
-  tempMiB.append(" free, ");
-  tempMiB.append(memUsed);
-  tempMiB.append(" used, ");
-  tempMiB.append(buffCache);
-  tempMiB.append(" buff/cache");
-
-  return tempMiB;
-} // end of "setStringMiB"
-
-
-
-/*
-  Function:
-   setStringSwap
-  Description:
-
-  Input:
-
-  Output:
-*/
-const std::string setStringSwap(const std::string swapTotal,
-				const std::string swapFree,
-				const std::string swapUsed,
-				const std::string memAvailable)
-{
-  std::string tempSwap;
-  
-  tempSwap.append("MiB Swap: ");
-  tempSwap.append(swapTotal);
-  tempSwap.append(" total, ");
-  tempSwap.append(swapFree);
-  tempSwap.append(" free, ");
-  tempSwap.append(swapUsed);
-  tempSwap.append(" used, ");
-  tempSwap.append(memAvailable);
-  tempSwap.append(" avail/mem");
-  
-  return tempSwap;
-} // end of "setStringSwap"
-
-
 
 
 
@@ -826,11 +820,11 @@ const std::string returnFileLineByNumber(const std::string& filePath,
 
 /*
   Function:
-  returnValByWhitespaceCount
+   returnValByWhitespaceCount
 
   Description:
-  Traverses a whitespace delimited string and retruns a preceding numeric
-  value based upon how many whitespaces have been counted.
+   Traverses a whitespace delimited string and retruns a preceding numeric
+   value based upon how many whitespaces have been counted.
 
   Input:
   line                   - a const string reference containing a comma
@@ -874,8 +868,13 @@ const int returnValByWhiteSpaceCount(const std::string& line,
 
 /*
   Function:
-  returnStringByWhiteSpaceCount
+   returnStringByWhiteSpaceCount
+
   Description:
+   Traverses an incoming string counting each whitespace character.  When the
+   count of whitespaces is reached, the next non whitespace elements are
+   appended to a new string until a new white space character is found.
+   That string is returned to the caller.
 
   Input:
 
@@ -953,43 +952,10 @@ const std::vector<std::string> getFileNames(const std::string& dirPath)
 
 /*
   Function:
-  getFolderPaths
+   testNumericDir
+
+  Description:
    
-  Description:
-  Searches the file path given from the parameter dirPath for files.
-  If the path exists and directories represented by only numeric
-  characters are found, their file names are converted to integers
-  and returned as a vector<int> type to the caller.
-
-  
-  Input:
-  dirPath                - a const string reference representing a file
-                           path to a directory.  
-  Output:
-  NONE
-*/
-const std::string getFolderPaths(const std::string& dirPath)
-{
-  struct stat dir;
-
-  if(stat(dirPath.c_str(), &dir) == 0 && S_ISDIR(dir.st_mode))
-    {
-      return "Yes";
-    }
-  else
-    {
-      return "No";
-    }
-} // end of "getNumberedFolders"
-
-
-
-/*
-  Function:
-  testNumericDir
-
-  Description:
-
   Input:
 
   Output:
@@ -1052,161 +1018,6 @@ std::vector<std::string> parseLine(const std::string& str)
 
 /*
   Function:
-  returnLineFromPipe
-  
-  Description:
-  
-  Input:
-  
-  Output:
-
- */
-const std::string returnLineFromPipe(const std::string& comm,
-				     const char* mode,
-				     const int& lineNum)
-{
-  FILE* pipe;
-  std::string line;;
-  char c = 0;
-
-  pipe = popen(comm.c_str(), mode);
-
-  if(pipe == nullptr)
-    {
-      perror("popen() failed to open users program.");
-      exit(EXIT_FAILURE);
-    }
-
-  for(int i = 0; i < lineNum - 1; i++)
-    {
-      while(fread(&c, sizeof c, 1, pipe))
-	{
-	  if(c == '\n')
-	    break;
-	}
-    }
-
-  while(fread(&c, sizeof c, 1, pipe))
-    {
-      if(c == '\n')
-	{
-	  break;
-	}
-      else
-	{
-	  line.push_back(c);
-	}
-    }
-
-  pclose(pipe);
-
-  return line;
-} // end of "returnLineFromPipe"
-
-
-
-/*
-  Function:
-  listDirContents
-
-  Description:
-
-  Input:
-
-  Output:
- */
-const std::string listDirContents()
-{
-  FILE* listFile;
-  std::string dirContents;
-  char c = 0;
-
-  listFile = popen("ls", "r");
-
-  if(listFile == nullptr)
-    {
-      perror("popen() failed to open ls program.");
-      exit(EXIT_FAILURE);
-    }
-
-  while(fread(&c, sizeof c, 1, listFile))
-    {
-      dirContents.push_back(c);
-    }
-
-  pclose(listFile);
-
-  return dirContents;
-} // end of "listDirContents"
-
-
-
-/*
-  Function:
-  findNumericDirsPipe
-
-  Description:
-
-  Input:
-
-  Output:
- */
-const std::vector<int> findNumericDirsPipe(const std::string& dirPath)
-{
-  FILE* pipe;
-  std::string command = "ls ";
-  std::vector<int> dirs;
-  std::string fullPath;
-  std::string numFolder;
-  std::unordered_map<int, int> pids;
-  char c = 0;
-
-  command.append(dirPath);
-  pipe = popen(command.c_str(), "r");
-
-  if(pipe == nullptr)
-    {
-      perror("popen() failed to open ls program.");
-      exit(EXIT_FAILURE);
-    }
-
-  while(fread(&c, sizeof c, 1, pipe))
-    {
-      if(c >= '0' && c <= '9')
-	{
-	  numFolder.push_back(c);
-	}
-      else if(c == '\n')
-	{
-	  fullPath.clear();
-	  fullPath.append(dirPath);
-	  fullPath.append(numFolder);
-
-	  if(true == testNumericDir(fullPath))
-	    {
-	      int val;
-	      std::stringstream container(numFolder);
-	      container >> val;
-
-	      if(pids[val] == 0)
-		{
-		  dirs.push_back(val);
-		  pids[val]++;
-		}
-	    }
-	  numFolder.clear();
-	}
-    }
-
-  pclose(pipe);
-  
-  return dirs;
-} // end of "findNumericDirsPipe"
-
-
-
-/*
-  Function:
    direntNoRecurse
 
    Description:
@@ -1223,7 +1034,7 @@ const std::vector<int> findNumericDirsPipe(const std::string& dirPath)
 int direntNoRecurse(const struct dirent *name)
 {
   return 1;
-}
+} // end of "direntNoRecurse"
   
 
 
@@ -1282,16 +1093,18 @@ const std::vector<int> findNumericDirs(const std::string& dirPath)
 
 /*
   Function:
-  convertToInt
+   stringToInt
 
   Description:
+   Converts an incoming string to an int type iff the string contains
+   only numeric characters.
 
   Input:
 
   Output:
   
  */
-const int convertToInt(const std::string str)
+const int stringToInt(const std::string str)
 {
   int val = 0;
   if(!str.empty())
@@ -1300,9 +1113,23 @@ const int convertToInt(const std::string str)
       container >> val;
     }
   return val;
-} // end of "convertToInt"
+} // end of "stringToInt"
 
 
+
+/*
+  Function:
+   stringToDouble
+
+  Description:
+   Converts an incoming string to a double type iff the string contains
+   only numeric contains (excluding the period).
+
+  Input:
+
+  Output:
+  
+ */
 const double stringToDouble(const std::string str)
 {
   double val = 0;
@@ -1312,25 +1139,28 @@ const double stringToDouble(const std::string str)
       container >> val;
     }
   return val;  
-}
+} // end of "stringToDouble"
 
 
 
 /*
   Function:
-  returnFileLineByPhrase
+   returnFileLineByPhrase
 
   Description:
-
+   Retrieves lines of text from a file line by line, saves that line to
+   a string, and then sends that string off to the phraseExists() function
+   to see if the incoming "phrase" parameter is contained in that line.
+   If the phrase is found, the file line string that contained the
+   parameter phrase is returned to the caller.
 
   Input:
 
   Output:
 
- */
+*/
 const std::string returnFileLineByPhrase(const std::string& filePath,
 					 const std::string& phrase)
-				     
 {
   struct stat file;
   std::string tempLine;
@@ -1368,15 +1198,16 @@ const std::string returnFileLineByPhrase(const std::string& filePath,
 
 /*
   Function:
-  phraseExists
+   phraseExists
 
   Description:
+   Scans an incoming string for a matching string dubbed "phrase".
 
   Input:
 
   Output:
   
- */
+*/
 bool phraseExists(const std::string& line, const std::string& phrase)
 {
   std::string temp;
@@ -1413,9 +1244,14 @@ bool phraseExists(const std::string& line, const std::string& phrase)
 
 /*
   Function:
-  fixStatLine
+   fixStatLine
 
   Description:
+   The incoming /proc/[pid]/stat needs to be parsed for process data.
+   The command is the second "value" delimited by whitespace.  The command
+   always ends in a ')', but sometimes the command itself contains parenthesese.
+   This function truncates the first portion of the string returning the first
+   element that is not a whitespace or a ')' character after the last ')' character.
 
   Input:
 
@@ -1454,9 +1290,12 @@ const std::string fixStatLine(const std::string& line)
 
 /*
   Function:
-  doubleToStr
+   doubleToStr
 
   Description:
+   Converts an incoming double type to a string.  The second parameter
+   determines the amount of "precision" there are in decimal places
+   to append.
 
   Input:
 
