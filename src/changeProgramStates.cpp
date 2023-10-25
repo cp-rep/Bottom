@@ -158,7 +158,8 @@ void updateStateValues(std::unordered_map<int, CursesWindow*>& allWins,
   Output:
    NONE
 */
-void changeProgramState(const std::unordered_map<int, CursesWindow*>& allWins,
+void changeProgramState(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,			
+			const std::unordered_map<int, CursesWindow*>& allWins,
 			int& progState,
 			const int& prevState,
 			bool& quit,
@@ -183,13 +184,12 @@ void changeProgramState(const std::unordered_map<int, CursesWindow*>& allWins,
       progState = prevState;
       break;
     case _PROGSTATEKILL:
-      //      killState(allWins);
+      // killState(allWins);
       break;
     case _PROGSTATECSV:
-      if(makeDirectory(_CSV) == -1)
-	{
-	  exit(EXIT_FAILURE);
-	}
+      makeDirectory(_CSV);
+      createFileCSV(allProcessInfo,
+		    _CSV);
       progState = 0;
       break;
     default:
