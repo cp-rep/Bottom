@@ -5,6 +5,7 @@ BUILDDIR=./build
 GTESTDIR=./gtest
 LOGDIR=./log
 LDIR=./lib
+CSVDIR=./csv
 ODIR=obj
 CC=g++
 CPPFLAGS=-I$(IDIR)
@@ -35,6 +36,7 @@ clean:
 	rm -rf $(BUILDDIR)/
 	rm -rf $(GTESTDIR)/*~
 	rm -rf $(LOGDIR)/*.log
+	rm -rf $(CSVDIR)/*.csv
 	rm -f ./*~
 
 dirs: ${BINDIR} ${LOGDIR} ${SRCDIR}/${ODIR}
@@ -44,6 +46,9 @@ ${BINDIR}:
 
 ${LOGDIR}:
 	${MKDIR_P} ${LOGDIR}
+
+${CSVDIR}:
+	${MKDIR_P} ${CSVDIR}
 
 ${SRCDIR}/${ODIR}:
 	${MKDIR_P} ${SRCDIR}/${ODIR}
