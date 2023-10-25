@@ -13,6 +13,7 @@
 #define _PROC_MEMINFO "/proc/meminfo"
 #define _UPTIME "/proc/uptime"
 #define _UTMP "/var/run/utmp"
+#define _CSV "./csv/"
 
 // in-file phrases
 #define _MEMTOTAL "MemTotal"
