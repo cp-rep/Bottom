@@ -29,7 +29,8 @@ void initializeProgramStates(std::unordered_map<char, int>& progStates)
   progStates.insert(std::make_pair(_PROGSTATEHELP, 1)); // open help menu
   progStates.insert(std::make_pair(_PROGSTATEQUIT, 1)); // quit
   progStates.insert(std::make_pair(_PROGSTATEHL, 1)); // highlight column
-  progStates.insert(std::make_pair(_PROGSTATEKILL, 1)); // highlight column
+  progStates.insert(std::make_pair(_PROGSTATEKILL, 1)); // enter kill pid state
+  progStates.insert(std::make_pair(_PROGSTATECSV, 1)); // make csv file
 } // end of "initializeProgramStates"
 
 
@@ -183,6 +184,13 @@ void changeProgramState(const std::unordered_map<int, CursesWindow*>& allWins,
       break;
     case _PROGSTATEKILL:
       //      killState(allWins);
+      break;
+    case _PROGSTATECSV:
+      if(makeDirectory(_CSV) == -1)
+	{
+	  exit(EXIT_FAILURE);
+	}
+      progState = 0;
       break;
     default:
       break;
