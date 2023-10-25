@@ -23,6 +23,8 @@
 #include "secondsToTime.hpp"
 
 
+void createFileCSV(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+		   const std::string& filePath);
 bool makeDirectory(const std::string& dirPath);
 bool doesDirectoryExist(const std::string& dirPath);
 const std::string returnPhraseLine(const std::string& fileName,

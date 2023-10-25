@@ -17,6 +17,37 @@
 
 /*
   Function:
+   CreateFileCSV
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void createFileCSV(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+		   const std::string& filePath)
+{
+  std::string tempPath = filePath;
+  tempPath.append("commands.csv");
+  std::ofstream csvOut;
+  std::string tempCommand;
+
+  csvOut.open(tempPath);
+
+  for(std::unordered_map<int, ProcessInfo*>::const_iterator it = allProcessInfo.begin();
+	it != allProcessInfo.end(); it++)
+    {
+      tempCommand = it->second->getCOMMAND();
+      csvOut << tempCommand;
+      csvOut << ", ";
+    }
+} // end of "createFileCSV"
+
+
+
+/*
+  Function:
    makeDirectory
 
   Description:
