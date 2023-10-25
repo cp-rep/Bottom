@@ -373,7 +373,8 @@ int main()
 
     // ## update states ##
     // program state
-    changeProgramState(allWins,
+    changeProgramState(allProcessInfo,
+		       allWins,
 		       progState,
 		       prevState,
 		       quit,
