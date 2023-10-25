@@ -99,7 +99,6 @@ void Log::incrementFileName()
   tempStr.append(std::to_string(m_fileNum));
   
   setFullPath(m_pathName, m_fileName, tempStr, m_fileType);
-  //  setFullPath(m_pathName, m_fileName, std::to_string(m_fileNum), m_fileType);  
 } // end of "Log::incrementFileName"
 
 
