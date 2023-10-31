@@ -5,17 +5,23 @@ add_library(Gtest)
 target_sources(Gtest
   PRIVATE
   # program source files
-  cursesWindow.cpp
+  byteConverter.cpp
+  cpuInfo.cpp  
   extractFileData.cpp
   memInfo.cpp
-  byteConverter.cpp
+  processInfo.cpp
+  secondsToTime.cpp
+  taskInfo.cpp
   
   PUBLIC
   # program library files
-  ../lib/cursesWindow.hpp
+  ../lib/byteConverter.hpp  
+  ../lib/cpuInfo.hpp  
   ../lib/extractFileData.hpp
   ../lib/memInfo.hpp
-  ../lib/byteConverter.hpp
+  ../lib/processInfo.hpp
+  ../lib/secondsToTime.hpp
+  ../lib/taskInfo.hpp
   )
 
 # direct the location of the files
