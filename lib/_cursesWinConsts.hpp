@@ -46,6 +46,13 @@ enum _WINS {
   _MIBMEMAVAILWIN // 37
 };
 
+// color pair values
+enum CursesColors {
+  none,
+  _WHITE_TEXT,
+  _BLACK_TEXT
+} ;
+
 // window count constants
 #define _BOTTOMWINTOTAL 12
 #define _YOFFSET 6
