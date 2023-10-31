@@ -6,22 +6,14 @@
    V0.1
 
   Program Description: 
-    A rendition of the Top program using C++. It is currently
-    tested in Ubuntu and ArchLinux.  Each have a branch that corresponds to the
-    working implementation.  The main branch contains a stable version that works
-    on both operating systems.
+    A rendition of the Top program using C++. It has been tested on Ubuntu and
+    Arch Linux.  Most if not all the current features should work on other Linux
+    distributions.
 
   Controls:
   - the 'x' key allows highlighting a particular column.
   - the arrow keys allow shifting the windows left and right.
   - the '<' and '>' keys change how the columns are sorted.
-
-  Changes/Fixes Needed:
-  - get correct user count
-  - determine how Top decides what processes/users have priority in the sort 
-    list to come first
-  - create a docker image that comes with all the modules necessary for building
-    Bottom and GTests.
 */
 #include <algorithm>
 #include <chrono>
