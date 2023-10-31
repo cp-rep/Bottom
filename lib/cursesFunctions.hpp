@@ -12,7 +12,6 @@
 #include <vector>
 #include <unordered_map>
 #include "byteConverter.hpp"
-#include "cursesColors.hpp"
 #include "cursesWindow.hpp"
 #include "mainWindow.hpp"
 #include "topWindow.hpp"

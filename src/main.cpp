@@ -49,7 +49,6 @@
 #include "cpuUsWindow.hpp"
 #include "cpuWaWindow.hpp"
 #include "cpuWindow.hpp"
-#include "cursesColors.hpp"
 #include "cursesFunctions.hpp"
 #include "cursesWindow.hpp"
 #include "extractFileData.hpp"
