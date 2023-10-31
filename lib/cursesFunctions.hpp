@@ -134,20 +134,12 @@ void boldOffMemWins(std::unordered_map<int, CursesWindow*>& wins,
 void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
 		  const std::vector<std::string>& allTopLines);
 void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins);
-void printSortedProcs(const std::vector<int>& pidList,
-		      const std::vector<std::pair<double, int>>& sortedOut,
-		      const std::unordered_map<int, ProcessInfo*>& pUmap,
-		      const std::unordered_map<int, CursesWindow*>& wins);
-void printSortedProcsReverse(const int& startLine,
-			     const std::vector<std::pair<double, int>>& sortedOut,
-			     const std::unordered_map<int, ProcessInfo*>& pUmap,
-			     const std::unordered_map<int, CursesWindow*>& wins);
-const std::string createColorLine(const int& len);
 void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 		const std::unordered_map<int, ProcessInfo*>& pUmap,
 		const std::vector<int>& pidList,
 		const int shiftY,
 		const int shiftX);
+const std::string createColorLine(const int& len);
 void printColorLine(const std::unordered_map<int, CursesWindow*>& wins,
 		    const int& row,
 		    const int& attrs,
