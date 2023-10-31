@@ -3,10 +3,7 @@
    cursesFunctions.cpp
 
   Description:
-   A collection of function declarations for manipulating CursesWindow objects.
-   This includes creating, deleting, moving, and sorting the WINDOWs or their
-   data.  Some functions for making necessary related calculations are
-   also included.  
+   Function implementations for the cursesFunctions.hpp header file.
  */
 #include "cursesFunctions.hpp"
 #include <algorithm>

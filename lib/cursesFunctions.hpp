@@ -3,10 +3,8 @@
    cursesFunctions.hpp
 
   Description:
-   A collection of function declarations for manipulating CursesWindow objects.
-   This includes creating, deleting, moving, and sorting the WINDOWs or their
-   data.  Some functions for making necessary related calculations are
-   also included.
+   Function declarations for manipulating CursesWindow objects. This includes printing,
+   turning on/off curses attributes, initializing, and refreshing curses windows.
 */
 #ifndef CURSESFUNCTIONS_HPP
 #define CURSESFUNCTIONS_HPP
