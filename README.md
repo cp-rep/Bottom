@@ -24,7 +24,7 @@ Bottom uses GTest for its unit testing.  GTest requires the GTest package and us
 I wanted to write a small Linux process management utility that may be easier expanded upon with experimental features. I don't have much interest in actually trying to submit this into any official Linux circles or ecosystems.
 
 ## What is the state of the project?
-Bottom is currently memory leak free and the "main" branch will maintain this stable version.  It currently supports Arch Linux and Ubuntu.  The tested Kernel versions will soon be tagged to corresponding commits.
+Bottom is currently memory leak free and the "main" branch will maintain this stable version.  It currently supports Arch Linux and Ubuntu which are the OS it has been tested on.  The tested Kernel versions will soon be tagged to corresponding commits.
 
 ## Current Challenges/Known Issues
 Some information does not match one to one to Top.  One such example are the CPU User Time and System Time averages and related values.  These need to be measured over a duration to get the correct average usage rates.  These calculations will eventually be rectified in the threaded branch down the line.  Another example is the number of users logged into the system which are not correct and currently set to 0.  All Research has pointed towards that data being retrieved from the '/var/run/utmp' file which requires a UTMP dump or some other method to interface with it such as non-standard libraries like 'libutempter'.
