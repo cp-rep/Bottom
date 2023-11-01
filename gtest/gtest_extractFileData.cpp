@@ -11,7 +11,6 @@
 #include "cpuInfo.hpp"
 #include "taskInfo.hpp"
 
-
 TEST(doesDirectoryExistFunction, DirectoryExistsTest)
 {
   std::string dir1 = "./";
@@ -22,6 +21,7 @@ TEST(doesDirectoryExistFunction, DirectoryExistsTest)
   EXPECT_NE(doesDirectoryExist(dir1), false);
   EXPECT_NE(doesDirectoryExist(dir2), false);    
 }
+
 
 
 TEST(doesDirectoryExistFunction, DirectoryDoesntExistTest)
@@ -56,7 +56,6 @@ TEST(extractProcCommFunction, ExtractCommandTest)
 
 
 
-
 TEST(removeDeadProcessesFunction, DeleteDeadProcessesTest)
 {
   std::unordered_map<int, ProcessInfo*> allProcessInfo;
@@ -81,4 +80,24 @@ TEST(removeDeadProcessesFunction, DeleteDeadProcessesTest)
   removeDeadProcesses(allProcessInfo, pids);
 
   EXPECT_EQ(allProcessInfo.size(), 0);
+}
+
+
+
+TEST(returnPhraseLineFunction, ReturnPhraseTest)
+{
+  const std::string filePath = "/home/cp/Git/cp-rep/Bottom/Bottom/gtest/meminfo.txt";
+  const std::string fileDoesntExist = "file.file";
+  const std::string phrase = "SwapCached";
+  const std::string fileLine = "SwapCached:            0 kB";
+  const std::string notInFile = "-2";
+  
+  EXPECT_EQ(returnPhraseLine(filePath, "phrase doesn't exist"), notInFile);
+  EXPECT_EQ(returnPhraseLine(filePath, phrase), fileLine);
+  EXPECT_EQ(returnPhraseLine(fileDoesntExist, phrase), "-1");
+
+
+  EXPECT_NE(returnPhraseLine(filePath, "phrase doesn't exist"), "-1");
+  EXPECT_NE(returnPhraseLine(filePath, "phrase doesn't exist"), fileLine);
+  EXPECT_NE(returnPhraseLine(fileDoesntExist, phrase), fileLine);    
 }
