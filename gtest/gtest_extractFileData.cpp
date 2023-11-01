@@ -53,3 +53,32 @@ TEST(extractProcCommFunction, ExtractCommandTest)
   delete allProcessInfo.at(1);
   allProcessInfo.erase(1);
 }
+
+
+
+
+TEST(removeDeadProcessesFunction, DeleteDeadProcessesTest)
+{
+  std::unordered_map<int, ProcessInfo*> allProcessInfo;
+  ProcessInfo* process1 = new ProcessInfo();
+  ProcessInfo* process2 = new ProcessInfo();
+  ProcessInfo* process3 = new ProcessInfo();
+  std::vector<int> pids;
+
+  pids.push_back(1);
+  pids.push_back(2);
+  pids.push_back(3);  
+
+  allProcessInfo.insert(std::make_pair(pids.at(0), process1));
+  allProcessInfo.insert(std::make_pair(pids.at(1), process2));
+  allProcessInfo.insert(std::make_pair(pids.at(2), process3));
+
+  EXPECT_EQ(allProcessInfo.size(), 3);
+  EXPECT_NE(allProcessInfo.at(pids.at(0)), nullptr);
+  EXPECT_NE(allProcessInfo.at(pids.at(1)), nullptr);
+  EXPECT_NE(allProcessInfo.at(pids.at(2)), nullptr);
+
+  removeDeadProcesses(allProcessInfo, pids);
+
+  EXPECT_EQ(allProcessInfo.size(), 0);
+}
