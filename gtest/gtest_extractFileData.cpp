@@ -86,7 +86,7 @@ TEST(removeDeadProcessesFunction, DeleteDeadProcessesTest)
 
 TEST(returnPhraseLineFunction, ReturnPhraseTest)
 {
-  const std::string filePath = "/home/cp/Git/cp-rep/Bottom/Bottom/gtest/meminfo.txt";
+  const std::string filePath = "./gtest/meminfo.txt";  
   const std::string fileDoesntExist = "file.file";
   const std::string phrase = "SwapCached";
   const std::string fileLine = "SwapCached:            0 kB";
@@ -96,8 +96,7 @@ TEST(returnPhraseLineFunction, ReturnPhraseTest)
   EXPECT_EQ(returnPhraseLine(filePath, phrase), fileLine);
   EXPECT_EQ(returnPhraseLine(fileDoesntExist, phrase), "-1");
 
-
   EXPECT_NE(returnPhraseLine(filePath, "phrase doesn't exist"), "-1");
   EXPECT_NE(returnPhraseLine(filePath, "phrase doesn't exist"), fileLine);
-  EXPECT_NE(returnPhraseLine(fileDoesntExist, phrase), fileLine);    
+  EXPECT_NE(returnPhraseLine(fileDoesntExist, phrase), fileLine);
 }
