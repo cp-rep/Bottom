@@ -685,6 +685,7 @@ void removeDeadProcesses(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       if(allProcessInfo.count(pidsDead.at(i)) > 0)
 	{
 	  delete(allProcessInfo[pidsDead.at(i)]);
+	  allProcessInfo[pidsDead.at(i)] = nullptr;
 	  allProcessInfo.erase(pidsDead.at(i));
 	}
     }  
@@ -694,21 +695,22 @@ void removeDeadProcesses(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 
 /*
   Function:
-  returnPhraseLine
+   returnPhraseLine
    
   Description:
-  Opens the file at the file path contained in the parameter fileName and
-  proceeds to read the file line by line looking for a string containing
-  the "phrase" from the parameter const std::string phrase.
+   Opens the file at the file path contained in the parameter fileName and
+   proceeds to read the file line by line looking for a string containing
+   the "phrase" from the parameter const std::string phrase. This function is
+   specific for reading a phrase from the /proc/meminfo file only.
 
   Input:
-  fileName                    - a const std::string of the file path for the
+   fileName                    - a const std::string of the file path for the
                                 file to open and read line by line.
-  phrase		      - a const std::string for the phrase to search
+   phrase		       - a const std::string for the phrase to search
                                 for in each line read.
   
   Output:
-  std::string                 - a const std::string containing the line which
+   std::string                 - a const std::string containing the line which
                                 the phrase was found.
 */
 const std::string returnPhraseLine(const std::string& fileName,
@@ -749,7 +751,15 @@ const std::string returnPhraseLine(const std::string& fileName,
 
   inFile.close();
 
-  return tempLine;
+  if(found == false)
+    {
+      return "-2";
+    }
+
+  else
+    {
+      return tempLine;
+    }
 
 } // end of "returnPhraseLine"
 
