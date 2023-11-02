@@ -228,3 +228,27 @@ TEST(extractProcessStateCountFunction, ExtractCountsTest)
   // test they cleaned up
   EXPECT_EQ(allProcessInfo.size(), 0);
 }
+
+
+
+TEST(extractProcStatDataFunction, ExtractProcStatDataTest)
+{
+  CPUInfo cpuInfo;
+  std::string filePath = "./gtest/stat.txt";
+
+  // extract the data from the file path
+  extractProcStatData(cpuInfo, filePath);
+
+  // test the values were extracted correctly
+  EXPECT_EQ(cpuInfo.getUs(), 11429);
+  EXPECT_EQ(cpuInfo.getNi(), 159);
+  EXPECT_EQ(cpuInfo.getSy(), 4336);
+  EXPECT_EQ(cpuInfo.getId(), 2230907);
+  EXPECT_EQ(cpuInfo.getWa(), 828);
+  EXPECT_EQ(cpuInfo.getIrq(), 2057);  
+  EXPECT_EQ(cpuInfo.getSirq(), 1780);  
+  EXPECT_EQ(cpuInfo.getSt(), 0);
+  EXPECT_EQ(cpuInfo.getGu(), 1);
+  EXPECT_EQ(cpuInfo.getGun(), 2);
+  EXPECT_EQ(cpuInfo.getJiffs(), 2251499);  
+}
