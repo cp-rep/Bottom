@@ -162,7 +162,6 @@ void extractProcComm(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 
 
 
-
 /*
   Function:
    defineTasksLine
@@ -344,7 +343,6 @@ void extractProcessStateCount(const std::unordered_map<int, ProcessInfo*>& allPr
    cpuInfo              - A CPUInfo object type that contains member functions
                           for storing, retrieving, and calculating extracted CPU
 			  related values.
-
   Output:
    NONE
 */
@@ -382,6 +380,7 @@ void extractProcStatData(CPUInfo& cpuInfo)
    extractProcPidStatus
 
   Description:
+   
 
   Input:
 
@@ -772,7 +771,9 @@ void removeDeadProcesses(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
    Opens the file at the file path contained in the parameter fileName and
    proceeds to read the file line by line looking for a string containing
    the "phrase" from the parameter const std::string phrase. This function is
-   specific for reading a phrase from the /proc/meminfo file only.
+   specific for reading a phrase from the /proc/meminfo and /proc/[pid]/status
+   files only (They require reaching a colon as a delimiter to successfully
+   extract data.)
 
   Input:
    fileName                    - a const std::string of the file path for the
