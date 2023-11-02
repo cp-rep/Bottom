@@ -94,7 +94,7 @@
 #include "VIRTWindow.hpp"
 
 // debug constants
-#define _CURSES 1
+#define _CURSES 0
 #define _LOG 1
 
 // commands and options/modes constants
@@ -221,9 +221,12 @@ int main()
   int shiftY = 1;
   int shiftX = _PIDWIN;
   std::unordered_map<char, int> progStates;
-  
+
+
+#if _CURSES    
   // ## initialize and setup curses ##
   initializeCurses();
+#endif
   initializeWindows(allWins,
 		    mainWin,
 		    topWin,
@@ -269,7 +272,6 @@ int main()
   // loop variables
   SecondsToTime uptime;
   std::vector<std::string> allTopLines;
-  std::vector<std::string> parsedLine;
   std::string filePath;
   std::string fileLine;
   std::string tempLine;
@@ -348,6 +350,7 @@ int main()
     shiftState = userInput = getch();
     flushinp();
 
+#if _CURSES    
     // update state values from user input
     updateStateValues(allWins,
 		      progStates,
@@ -380,7 +383,6 @@ int main()
 			shiftX,
 			outPids.size() - 3);
 
-#if _CURSES
     // ## print process windows ##
     if(highlight == true)
       {
@@ -423,12 +425,12 @@ int main()
 		   colorLine);
     refreshAllWins(allWins);
     doupdate();
-    
+
+#endif    
     if(quit)
       {
 	break;
       }
-#endif
 
   } while(true);
 
