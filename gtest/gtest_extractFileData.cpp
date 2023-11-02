@@ -125,3 +125,24 @@ TEST(returnPhraseLineFunction, ReturnPhraseTest)
   // the file does not exist and we should not get back the fileLine
   EXPECT_NE(returnPhraseLine(fileDoesntExist, phrase), fileLine);
 }
+
+
+
+TEST(makeDirectoryFunction, MakeDirectoryTest)
+{
+  const std::string dirPath = "./testDirectory";
+  bool directoryMade;
+
+  // create directory case
+  if(doesDirectoryExist(dirPath) == false)
+    {
+      directoryMade = makeDirectory(dirPath);
+      EXPECT_EQ(directoryMade, true);
+    }
+  // directory already exists case
+  else
+    {
+      directoryMade = makeDirectory(dirPath);
+      EXPECT_EQ(directoryMade, false);      
+    }
+}
