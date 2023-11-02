@@ -304,8 +304,10 @@ void extractProcessStateCount(const std::unordered_map<int, ProcessInfo*>& allPr
 	  break;
 	case 'T':
 	  stopped++;
+	  break;
 	case 'D':
 	  unSleep++;
+	  break;
 	case 'R':
 	  running++;
 	  break;
@@ -324,8 +326,8 @@ void extractProcessStateCount(const std::unordered_map<int, ProcessInfo*>& allPr
   taskInfo.setZombie(zombie);
   taskInfo.setIdle(idle);
   sleeping = taskInfo.calcSleeping();
-  total = taskInfo.calcTotal();
   taskInfo.setSleeping(sleeping);
+  total = taskInfo.calcTotal();
   taskInfo.setTotal(total);
 } // end of "extractProcessStateCount"
 
