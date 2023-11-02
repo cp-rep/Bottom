@@ -1406,8 +1406,17 @@ const std::string returnFileLineByPhrase(const std::string& filePath,
    Scans an incoming string for a matching string dubbed "phrase".
 
   Input:
+   line                 - A reference to a constant string type that
+                          contains a line of characters extracted
+			  from a file.
+  
+   phrase               - A reference to a constant string type that
+                          contains the string of characters(phrase)
+			  we're searching for in the line parameter.
 
   Output:
+   bool                 - A result of true if the phrase existed in
+                          the line, false otherwise.
   
 */
 bool phraseExists(const std::string& line, const std::string& phrase)
