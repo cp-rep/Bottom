@@ -1193,10 +1193,19 @@ bool testNumericDir(const std::string& dirPath)
   parseLine
 
   Description:
+   Using white space and tabs as delimeters, the incoming string is
+   parsed to individual strings and stored in a vector<string> object
+   type and returned to the caller.
 
   Input:
+   str                  - A reference to a constant string object type
+                          that should contain delimited character data
+			  to be parsed.
 
   Output:
+   vector<string>       - A vector<string> object type that should
+                          contain the parsed values from the str
+			  parameter.
  */
 std::vector<std::string> parseLine(const std::string& str)
 {
