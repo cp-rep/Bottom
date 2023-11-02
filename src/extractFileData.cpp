@@ -1079,10 +1079,19 @@ const int returnValByWhiteSpaceCount(const std::string& line,
    That string is returned to the caller.
 
   Input:
+   line                 - A reference to a constant string object type that
+                          contains the line to be traversed.
+
+   numWhiteSpaces       - A reference to a constant integer type that holds
+                          the number of whitespace characters the loop
+			  should count before returning the remaining
+			  characters of the line parameter.
 
   Output:
-
- */
+   string               - A constant string object type that should be
+                          the resulting string from the counted white
+			  spaces.
+*/
 const std::string returnStringByWhiteSpaceCount(const std::string& line,
 						 const int& numWhiteSpaces)
 {
@@ -1105,50 +1114,6 @@ const std::string returnStringByWhiteSpaceCount(const std::string& line,
 
   return valString;
 } // end of "returnStringByWhiteSpace"
-
-
-
-/*
-  Function:
-  getFilesPaths
-
-  Description:
-  Returns a vector of found existing file paths based on the path given
-  from the parameter dirPath.
-
-  Input:
-
-  Output:
- */
-const std::vector<std::string> getFilePaths(const std::string& dirPath)
-{
-  std::vector<std::string> dirNames;
-  return dirNames;
-} // end of "getFilePaths"
-
-
-
-/*
-  Function:
-  getFileNames
-   
-  Description:
-  Searches the file path given from the parameter dirPath for files.
-  If the path exists and files are found, the file names are stored in
-  vector<string> type and returned to the caller.
-  
-  Input:
-  dirPath                - a const string reference representing a file
-                           path to a directory.
-  
-  Output:
-  NONE
-*/
-const std::vector<std::string> getFileNames(const std::string& dirPath)
-{
-  std::vector<std::string> dirNames;
-  return dirNames;
-} // end of "getFileNames"
 
 
 
