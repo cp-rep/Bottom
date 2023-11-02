@@ -146,3 +146,85 @@ TEST(makeDirectoryFunction, MakeDirectoryTest)
       EXPECT_EQ(directoryMade, false);      
     }
 }
+
+
+
+TEST(extractProcessStateCountFunction, ExtractCountsTest)
+{
+  TaskInfo taskInfo;
+  std::unordered_map<int, ProcessInfo*> allProcessInfo;
+  ProcessInfo* process1 = new ProcessInfo();
+  ProcessInfo* process2 = new ProcessInfo();
+  ProcessInfo* process3 = new ProcessInfo();
+  ProcessInfo* process4 = new ProcessInfo();
+  ProcessInfo* process5 = new ProcessInfo();
+  ProcessInfo* process6 = new ProcessInfo();
+  ProcessInfo* process7 = new ProcessInfo();
+  ProcessInfo* process8 = new ProcessInfo();
+  ProcessInfo* process9 = new ProcessInfo();  
+  std::vector<int> pids;
+
+  pids.push_back(1);
+  pids.push_back(2);
+  pids.push_back(3);
+  pids.push_back(4);
+  pids.push_back(5);
+  pids.push_back(6);
+  pids.push_back(7);
+  pids.push_back(8);
+  pids.push_back(9);  
+  allProcessInfo.insert(std::make_pair(pids.at(0), process1));
+  allProcessInfo.insert(std::make_pair(pids.at(1), process2));
+  allProcessInfo.insert(std::make_pair(pids.at(2), process3));
+  allProcessInfo.insert(std::make_pair(pids.at(3), process4));
+  allProcessInfo.insert(std::make_pair(pids.at(4), process5));
+  allProcessInfo.insert(std::make_pair(pids.at(5), process6));
+  allProcessInfo.insert(std::make_pair(pids.at(6), process7));
+  allProcessInfo.insert(std::make_pair(pids.at(7), process8));
+  allProcessInfo.insert(std::make_pair(pids.at(8), process9));
+
+  // set the values
+  allProcessInfo.at(pids.at(0))->setS('S');
+  allProcessInfo.at(pids.at(1))->setS('S');
+  allProcessInfo.at(pids.at(2))->setS('I');
+  allProcessInfo.at(pids.at(3))->setS('T');
+  allProcessInfo.at(pids.at(4))->setS('D');
+  allProcessInfo.at(pids.at(5))->setS('R');  
+  allProcessInfo.at(pids.at(6))->setS('Z');
+  allProcessInfo.at(pids.at(7))->setS('Z');  
+  allProcessInfo.at(pids.at(8))->setS('Z');
+
+  // check values set properly
+  EXPECT_EQ(allProcessInfo.at(pids.at(0))->getS(), 'S');
+  EXPECT_EQ(allProcessInfo.at(pids.at(1))->getS(), 'S');
+  EXPECT_EQ(allProcessInfo.at(pids.at(2))->getS(), 'I');
+  EXPECT_EQ(allProcessInfo.at(pids.at(3))->getS(), 'T');
+  EXPECT_EQ(allProcessInfo.at(pids.at(4))->getS(), 'D');
+  EXPECT_EQ(allProcessInfo.at(pids.at(5))->getS(), 'R');
+  EXPECT_EQ(allProcessInfo.at(pids.at(6))->getS(), 'Z');
+  EXPECT_EQ(allProcessInfo.at(pids.at(7))->getS(), 'Z');
+  EXPECT_EQ(allProcessInfo.at(pids.at(8))->getS(), 'Z');
+
+  // call the function
+  extractProcessStateCount(allProcessInfo, taskInfo);
+
+  // test the results were properly tallied and calculated  in
+  // the TaskInfo object
+  EXPECT_EQ(taskInfo.getInSleep(), 2);
+  EXPECT_EQ(taskInfo.getIdle(), 1);
+  EXPECT_EQ(taskInfo.getStopped(), 1);
+  EXPECT_EQ(taskInfo.getUnSleep(), 1);  
+  EXPECT_EQ(taskInfo.getRunning(), 1);
+  EXPECT_EQ(taskInfo.getZombie(), 3);
+  EXPECT_EQ(taskInfo.getSleeping(), 4);
+  EXPECT_EQ(taskInfo.getTotal(), 5);
+
+  // test processes allocated correctly
+  EXPECT_EQ(allProcessInfo.size(), 9);
+  
+  // clean up
+  removeDeadProcesses(allProcessInfo, pids);
+
+  // test they cleaned up
+  EXPECT_EQ(allProcessInfo.size(), 0);
+}
