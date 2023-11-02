@@ -614,6 +614,29 @@ void extractProcUptimeLoadavg(SecondsToTime& uptime,
    createTopLine
 
   Description:
+   Uses incoming parameters to create the output string for the very top
+   default line of the Top utility program.  The created line is returned.
+
+  Input:
+   HHMMSS               - A const string object type that holds the current
+                          military time.
+			  
+   numDays              - A const int type that holds the number of days the
+                          system has been up.
+
+   numHours             - A const int type that holds the number of hours the
+                          system has been up.
+
+   numMinutes           - A const int type that holds the number of minutes
+                          the system has been up.
+
+   parsedLoadAvg        - A const vector<string> object type that holds the
+                          data for the /proc/loadavg file, parsed into a
+			  individual strings for each value.
+
+  Output:
+   string               - A const string object type that should contain
+                          the result of the created top line.
 */
 const std::string createTopLine(const std::string HHMMSS,
 				const int numDays,
