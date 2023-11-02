@@ -337,10 +337,16 @@ void extractProcessStateCount(const std::unordered_map<int, ProcessInfo*>& allPr
    extractProcStatData
 
   Description:
+   Extracts CPU related data from the /proc/stat file and stores it in the
+   incoming parameter.
 
   Input:
+   cpuInfo              - A CPUInfo object type that contains member functions
+                          for storing, retrieving, and calculating CPU related
+			  values.
 
   Output:
+   NONE
 */
 void extractProcStatData(CPUInfo& cpuInfo)
 {
