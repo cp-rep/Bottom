@@ -340,14 +340,10 @@ int main()
       }
 
     // ## get user input ##
-    std::vector<std::pair<double, int>> sortedByDouble;
-    std::vector<std::pair<std::string, int>> procStrings;
-    std::vector<std::pair<int, int>> sortedByInt;
     std::vector<int> outPids;
     int highlightIndex = 0;
     int userInput = 0;
     int shiftState = 0;
-    int previousSortState = sortState;
 
     shiftState = userInput = getch();
     flushinp();
