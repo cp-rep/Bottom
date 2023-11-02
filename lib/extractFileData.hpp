@@ -64,7 +64,8 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			  MemInfo& memInfo,
 			  SecondsToTime& uptime,
 			  const int currentPid);
-void extractProcStatData(CPUInfo& cpuInfo);
+void extractProcStatData(CPUInfo& cpuInfo,
+			 const std::string& filePath);
 void defineCpusLine(std::vector<std::string>& allTopLines);
 void defineMemSwapLine(std::vector<std::string>& allTopLines);
 void defineMemMiBLine(std::vector<std::string>& allTopLines);

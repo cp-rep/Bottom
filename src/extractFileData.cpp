@@ -348,17 +348,15 @@ void extractProcessStateCount(const std::unordered_map<int, ProcessInfo*>& allPr
   Output:
    NONE
 */
-void extractProcStatData(CPUInfo& cpuInfo)
+void extractProcStatData(CPUInfo& cpuInfo,
+			 const std::string& filePath)
 {
-  std::string filePath;
   std::string lineString;
   std::string fileLine;  
   std::vector<std::string> parsedLine;
   int tempInt;
   const double ticks = (double)sysconf(_SC_CLK_TCK);
   
-  filePath = _PROC;
-  filePath.append(_STAT);
   lineString = returnFileLineByNumber(filePath, 1);
   parsedLine = parseLine(lineString);
   cpuInfo.setUs(stringToInt(parsedLine.at(1)));
