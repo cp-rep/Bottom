@@ -692,7 +692,7 @@ const std::string createTopLine(const std::string HHMMSS,
     tempTopString.append(parsedLoadAvg.at(2));
 
     return tempTopString;
-} // end of "creatTopLine"
+} // end of "createTopLine"
 
 
 
@@ -701,10 +701,15 @@ const std::string createTopLine(const std::string HHMMSS,
    extractMemInfoData
 
   Description:
+   Extracts data from the /proc/meminfo file and stores it in the
+   MemInfo object parameter.
 
   Input:
-
+   memInfo              - A MemInfo object type that has member functions
+                          for storing, retrieving, and calculating values
+			  for its memory related member variables.   
   Output:
+   NONE
 */
 void extractMemInfoData(MemInfo& memInfo)
 {
