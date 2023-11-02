@@ -94,7 +94,7 @@
 #include "VIRTWindow.hpp"
 
 // debug constants
-#define _CURSES 0
+#define _CURSES 1
 #define _LOG 1
 
 // commands and options/modes constants
