@@ -32,9 +32,6 @@ const std::string returnPhraseLine(const std::string& fileName,
 const int returnFirstIntFromLine(const std::string& line);
 const std::string returnFileLineByNumber(const std::string& dirPath,
 					 const int& lineNumber);
-const std::vector<std::string> getFilePaths(const std::string& dirPath);
-const std::vector<std::string> getFileNames(const std::string& dirPath);
-const std::string getFolderPaths(const std::string& dirPath);
 bool testNumericDir(const std::string& dirPath);
 const std::string returnFileLineByPhrase(const std::string& filePath,
 					 const std::string& phrase);
