@@ -1157,10 +1157,19 @@ const std::vector<std::string> getFileNames(const std::string& dirPath)
    testNumericDir
 
   Description:
+   This function tests that a directory file name is represented only
+   by numeric characters.  This is essential for determining which
+   directories are /proc/[pid] directories in the /proc filepath.
    
   Input:
+   dirPath              - A reference to a constant string object type
+                          that should contain the directory path for
+			  testing.
 
   Output:
+   bool                 - A bool type that returns true if the directory
+                          is represented by numeric characters only, else
+			  false is returned.
  */
 bool testNumericDir(const std::string& dirPath)
 {
