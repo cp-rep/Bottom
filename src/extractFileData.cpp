@@ -85,8 +85,12 @@ bool makeDirectory(const std::string& dirPath)
    false is returned.
 
   Input:
+   dirPath              - A const string type containing a filepath to a directory
+                          to check for existence.
 
   Output:
+   bool                 - A bool type representing the result of the conditional
+                          check of the directories existence.
 */
 bool doesDirectoryExist(const std::string& dirPath)
 {
@@ -112,10 +116,23 @@ bool doesDirectoryExist(const std::string& dirPath)
    extractProcComm
 
   Description:
+   Extracts the command associated with the pid number from the
+   /proc/[pid]/comm filepath and stores it in the one of the private
+   member variables of the incoming paremter.
 
   Input:
-
+   allProcessInfo       - An unordored map<int, ProcessInfo*> object type
+                          that holds process related data found in
+			  /proc/[pid]/. related directories. The index key
+			  is the corresponding PID for its ProcessInfo
+			  value.
+			  
+   pid                  - A const int type holding a process id to extract
+                          its related command for.  It is used to as a key
+			  for the allProcessInfo key/value pairs.
+   
   Output:
+   NONE
 */
 void extractProcComm(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		     const int pid)
@@ -134,10 +151,15 @@ void extractProcComm(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
    defineTasksLine
 
   Description:
-
+   Simply creates a string and stores it in a vector of strings that is the incoming
+   parameter.
+  
   Input:
+   allTopLines          - A vector<string> object type that will hold the base strings
+                          for outputing data to the screen.
 
   Output:
+   NONE
 */
 void defineTasksLine(std::vector<std::string>& allTopLines)
 {
@@ -153,10 +175,14 @@ void defineTasksLine(std::vector<std::string>& allTopLines)
    defineMemMiBLine
 
   Description:
-
+   Simply creates a string and stores it in a vector of strings that is the incoming
+   parameter.
+  
   Input:
-
+   allTopLines          - A vector<string> object type that will hold the base strings
+                          for outputing data to the screen.  
   Output:
+   NONE
 */
 void defineMemMiBLine(std::vector<std::string>& allTopLines)
 {
@@ -172,10 +198,14 @@ void defineMemMiBLine(std::vector<std::string>& allTopLines)
    defineMemSwapLine
 
   Description:
-
+   Simply creates a string and stores it in a vector of strings that is the incoming
+   parameter.
+  
   Input:
-
+   allTopLines          - A vector<string> object type that will hold the base strings
+                          for outputing data to the screen.  
   Output:
+   NONE
 */
 void defineMemSwapLine(std::vector<std::string>& allTopLines)
 {
@@ -191,10 +221,14 @@ void defineMemSwapLine(std::vector<std::string>& allTopLines)
    defineCpusLine
 
   Description:
-
+   Simply creates a string and stores it in a vector of strings that is the incoming
+   parameter.
+  
   Input:
-
+   allTopLines          - A vector<string> object type that will hold the base strings
+                          for outputing data to the screen.  
   Output:
+   NONE
 */
 void defineCpusLine(std::vector<std::string>& allTopLines)
 {
@@ -210,10 +244,24 @@ void defineCpusLine(std::vector<std::string>& allTopLines)
    extractProcessStateCount
 
   Description:
+   Loops through all current dynamically allocated ProcessInfo objects and retrieves
+   the corresponding processes current state.  That value is used as the runtime
+   constant for a switch statement that tallies how many of each process state
+   are currently active.  Upon completing the loop, the resulting values are stored
+   in the TaskInfo object type parameter.
 
   Input:
-  
+   allProcessInfo       - An unordored map<int, ProcessInfo*> object type
+                          that holds process related data found in
+			  /proc/[pid]/. related directories. The index key
+			  is the corresponding PID for its ProcessInfo
+			  value.
+			  
+   taskInfo             - An TaskInfo object type that is used for storing, retreiving,
+                          and calculating related task process state values.
+                          
   Output:
+   NONE
 */
 void extractProcessStateCount(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			      TaskInfo& taskInfo)
