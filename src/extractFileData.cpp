@@ -342,8 +342,8 @@ void extractProcessStateCount(const std::unordered_map<int, ProcessInfo*>& allPr
 
   Input:
    cpuInfo              - A CPUInfo object type that contains member functions
-                          for storing, retrieving, and calculating CPU related
-			  values.
+                          for storing, retrieving, and calculating extracted CPU
+			  related values.
 
   Output:
    NONE
