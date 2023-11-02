@@ -1500,8 +1500,16 @@ const std::string fixStatLine(const std::string& line)
    to append.
 
   Input:
+   val                  - A reference to a constant double type that
+                          will be converted to a string.
+
+   precision            - A reference to a constant integer type that
+                          determines the number of decimal places the
+			  caller chose to store in the string.
 
   Output:
+   string               - A const string object type that is the result
+                          of the double to string conversion.
  */
 const std::string doubleToStr(const double& val, const int& precision)
 {
