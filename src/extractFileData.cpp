@@ -1456,8 +1456,11 @@ bool phraseExists(const std::string& line, const std::string& phrase)
    element that is not a whitespace or a ')' character after the last ')' character.
 
   Input:
+   line                 - A reference to a constant string object type that holds
+                          the /proc/[pid]/stat line that shal be truncated.
 
   Output:
+   string               - The resulting truncated stat line string.
  */
 const std::string fixStatLine(const std::string& line)
 {
