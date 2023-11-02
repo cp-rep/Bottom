@@ -509,7 +509,6 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       allProcessInfo[currentPid]->setS(lineString.at(0));
 
       // get %CPU for current process
-
       utime = stringToInt(parsedLine.at(11));
       cutime = stringToInt(parsedLine.at(12));
       pstart = stringToInt(parsedLine.at(19));
@@ -554,16 +553,28 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 
 
 
-
 /*
   Function:
    extractTopWinData
 
   Description:
+   Extracts data from the /proc/uptime and /proc/loadavg files, makes
+   calculations for the extracted data using the SecondsToTime parameter
+   object, and then calls the createTopLine function to create the
+   output line for that data, storing it in the vector<string> parameter
+   object.
 
   Input:
+   uptime               - A SecondsToTime object type that has member functions
+                          for storing, retrieving, and calculating/converting time
+			  related values to store in its member varaibles.
+			  
+   allTopLines          - A reference to a vector<string> object type that is used
+                          to store output lines for the five default top lines of
+			  the Top utility.
 
   Output:
+   NONE
 */
 void extractProcUptimeLoadavg(SecondsToTime& uptime,
 			      std::vector<std::string>& allTopLines)
