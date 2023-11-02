@@ -818,10 +818,23 @@ const bool findDeadProcesses(const std::vector<int>& pids,
    removeDeadProcessees
 
   Description:
+   Frees the process data stored in the allProcessInfo object parameter that
+   represents processes that were found to have died between the previous
+   program loop, and the current program loop.
 
   Input:
+   allProcessInfo       - A unordored map<int, ProcessInfo*> object type
+                          that holds process related data found in
+			  /proc/[pid]/. related directories. The index key
+			  is the corresponding PID for its ProcessInfo
+			  value.
+			  
+   pidsDead             - A reference to a constant vector<int> object type
+                          that should hold a list of all the "dead" process
+			  IDs.
 
   Output:
+   NONE
 */
 void removeDeadProcesses(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			 const std::vector<int>& pidsDead)
