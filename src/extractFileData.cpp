@@ -1328,9 +1328,13 @@ const int stringToInt(const std::string str)
    only numeric contains (excluding the period).
 
   Input:
+   str                  - A constant string type that should represent
+                          a floating point value we wish to convert from
+			  a string to a double type and return it.
 
   Output:
-  
+   double               - A constant double type that is the result of
+                          the conversion.
  */
 const double stringToDouble(const std::string str)
 {
@@ -1357,9 +1361,18 @@ const double stringToDouble(const std::string str)
    parameter phrase is returned to the caller.
 
   Input:
+   filePath             - A reference to a constant string object type that
+                          contains the file path for the file we will be
+			  opening for reading.
+			  
+   phrase               - A reference to a constant string object type that
+                          contains a string of characters(phrase) we will be
+			  looking for in the file we opened for reading.
 
   Output:
-
+   string               - A constant string type that contains the entire
+                          file line that the phrase was found on. Else, the
+			  string "-1" is returned.
 */
 const std::string returnFileLineByPhrase(const std::string& filePath,
 					 const std::string& phrase)
@@ -1417,7 +1430,6 @@ const std::string returnFileLineByPhrase(const std::string& filePath,
   Output:
    bool                 - A result of true if the phrase existed in
                           the line, false otherwise.
-  
 */
 bool phraseExists(const std::string& line, const std::string& phrase)
 {
