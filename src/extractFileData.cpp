@@ -760,10 +760,28 @@ void extractMemInfoData(MemInfo& memInfo)
    findDeadProcesses
 
   Description:
+   Loops through the pid lists looking for processes that have died
+   during the main program loop between the last time the process list
+   was gathered stored in pidsOld, and the currently gathered list stored
+   in pids.  The found dead processes are stored in the pidsDead parameter.
 
   Input:
-
+   pids                 - A reference to a constant vector<int> object type
+                          that contains the most recently gathered running
+			  process list.
+			  
+   pidsOld              - A reference to a constant vector<int> object type
+                          that contains the process PIDs that were gathered
+			  during the previous main program loop.
+			  
+   pidsDead             - A reference to a vector<int> object type that
+                          should be empty and used to store process PIDs
+			  from the pidsOld parameter that are not in the
+			  pids parameter.  The list is "returned" by
+			  reference.
   Output:
+   bool                 - True if any dead process were found, false
+                          otherwise.
 */
 const bool findDeadProcesses(const std::vector<int>& pids,
 			     const std::vector<int>& pidsOld,
