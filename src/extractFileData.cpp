@@ -20,10 +20,22 @@
    CreateFileCSV
 
   Description:
+   Loops through the current dynamically allocated ProcessInfo list and extracts
+   the COMMAND associated with each process and outputs the command to a comma
+   seperated value list, saving it to the users computer.  If the file already
+   exists, it is overwritten.  If it doesn't exist, it is created.
 
   Input:
-
+   allProcessInfo       - A constant unordored map<int, ProcessInfo*> object type
+                          that holds process data found in /proc/[pid]/.
+			  related directories. The index key is the corresponding
+			  PID for its ProcessInfo value.
+			  
+   filePath             - A const string type that is the filepath to which append
+                          a filename and write the CSV list to and output to the
+			  users computer.
   Output:
+   NONE
 */
 void createFileCSV(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		   const std::string& filePath)
@@ -57,8 +69,13 @@ void createFileCSV(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
    true is returned.
 
   Input:
+   dirPath              - A const string object type that contains the filepath
+                          to which a directory will be created based on a
+			  conditional check.
 
   Output:
+   bool                 - A bool type returned as false if the directory already
+                          exists, true if a directory is created.
 */
 bool makeDirectory(const std::string& dirPath)
 {
