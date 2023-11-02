@@ -1302,9 +1302,13 @@ const std::vector<int> findNumericDirs(const std::string& dirPath)
    only numeric characters.
 
   Input:
+   str                  - A constant string object type that should
+                          contain the numeric characters we wish to
+			  convert to an integer type and return it.
 
   Output:
-  
+   int                  - A constant integer type that should contain
+                          the result of the conversion.
  */
 const int stringToInt(const std::string str)
 {
