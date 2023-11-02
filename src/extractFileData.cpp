@@ -267,7 +267,7 @@ void defineCpusLine(std::vector<std::string>& allTopLines)
    in the TaskInfo object type parameter.
 
   Input:
-   allProcessInfo       - An unordored map<int, ProcessInfo*> object type
+   allProcessInfo       - A const unordored map<int, ProcessInfo*> object type
                           that holds process related data found in
 			  /proc/[pid]/. related directories. The index key
 			  is the corresponding PID for its ProcessInfo
@@ -380,11 +380,30 @@ void extractProcStatData(CPUInfo& cpuInfo)
    extractProcPidStatus
 
   Description:
+   Extracts data from the /proc/[pid]/status file and saves it to related
+   parameters member data while making necessary calculations to represent
+   the member data names that are used for outputting the extracted
+   data.
    
-
   Input:
+   allProcessInfo       - A unordored map<int, ProcessInfo*> object type
+                          that holds process related data found in
+			  /proc/[pid]/. related directories. The index key
+			  is the corresponding PID for its ProcessInfo
+			  value.   
 
+   memInfo              - A MemInfo object type that has member functions
+                          for storing, retrieving, and calculating values
+			  for its memory related member variables.
+
+   uptime               - A SecondsToTime object type that has member functions
+                          for storing, retrieving, and calculating/converting time
+			  related values to store in its member varaibles.
+
+   currentPid           - A constant integer type holding the PID of the current
+                          process we are examining in the main program loop.
   Output:
+   NONE
 */
 void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			  MemInfo& memInfo,
@@ -839,18 +858,18 @@ const std::string returnPhraseLine(const std::string& fileName,
 
 /*
   Function:
-  returnFirstIntFromLine
+   returnFirstIntFromLine
    
   Description:
-  Finds the first ASCII numeric character(s) from the line parameter,
-  converts them to an int type, and then returns the value.
+   Finds the first ASCII numeric character(s) from the line parameter,
+   converts them to an int type, and then returns the value.
 
   Input:
-  line                        - a const string that will be scanned
-                                for numeric characters.
+   line                 - a const string that will be scanned
+                          for numeric characters.
   
   Output:
-  const int             - returns the value extract from the line if
+   const int            - returns the value extract from the line if
                           successful, else returns -1
 */
 const int returnFirstIntFromLine(const std::string& line)
