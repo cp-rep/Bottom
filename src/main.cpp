@@ -273,8 +273,6 @@ int main()
   SecondsToTime uptime;
   std::vector<std::string> allTopLines;
   std::string filePath;
-  std::string fileLine;
-  std::string tempLine;
   std::string colorLine;
 
   colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
@@ -316,7 +314,9 @@ int main()
 
 	// extract data for CPU Line
 	// "%Cpu(s): x.x us, x.x sy..."
-	extractProcStatData(cpuInfo);
+	filePath = _PROC;
+	filePath.append(_STAT);
+	extractProcStatData(cpuInfo, filePath);
 
 	// extract data for MiB Mem and MiB swap
 	// "MiB Mem: xxxx.xx total, xxxx.xx Free..."
