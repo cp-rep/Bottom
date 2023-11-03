@@ -295,17 +295,23 @@ int main()
 
     // "current time, # users, load avg"
     // extract data from /proc/uptime for very top window
-    //    filePath.clear();
-    //    filePath = _PROC_UPTIME;
     extractProcUptime(uptime,
 		      uptimeStrings,
 		      _PROC_UPTIME);
 
     // extract data from /proc/loadavg for very top window
-    filePath.clear();
-    filePath = _PROC_LOADAVG;
     extractProcLoadavg(loadAvgStrings,
-		       filePath);
+		       _PROC_LOADAVG);
+
+    // extract data for CPU Line
+    // "%Cpu(s): x.x us, x.x sy..."
+    extractProcStatData(cpuInfo,
+			_PROC_STAT);
+    
+    // extract data for MiB Mem and MiB swap
+    // "MiB Mem: xxxx.xx total, xxxx.xx Free..."
+    extractMemInfoData(memInfo,
+		       _PROC_MEMINFO);    
 
     // set the time string with current military time
     timeString = uptime.returnHHMMSS(timeinfo->tm_hour,
@@ -322,7 +328,6 @@ int main()
     defineCpusLine(allTopLines);
     defineMemMiBLine(allTopLines);
     defineMemSwapLine(allTopLines);
-    
 
     // update/add process data for still running and new found processes
     for(int i = 0; i < pids.size(); i++)
@@ -334,16 +339,6 @@ int main()
 	    allProcessInfo.insert(std::make_pair(pids.at(i), process));
 	  }
 
-	// extract data for CPU Line
-	// "%Cpu(s): x.x us, x.x sy..."
-	extractProcStatData(cpuInfo,
-			    _PROC_STAT);
-
-	// extract data for MiB Mem and MiB swap
-	// "MiB Mem: xxxx.xx total, xxxx.xx Free..."
-	extractMemInfoData(memInfo,
-	                   _PROC_MEMINFO);
-	
 	// get pid of current process
 	allProcessInfo[pids.at(i)]->setPID(pids.at(i));
 
