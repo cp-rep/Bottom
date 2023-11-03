@@ -408,20 +408,19 @@ void extractProcStatData(CPUInfo& cpuInfo,
 void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			  MemInfo& memInfo,
 			  SecondsToTime& uptime,
-			  const int currentPid)
+			  const int currentPid,
+			  std::string& filePath)
 {
-  const std::string currentProcessPath = _PROC + std::to_string(currentPid);  
-  std::string filePath;
   std::string lineString;
-  std::string fileLine;  
+  std::string fileLine;
   std::vector<std::string> parsedLine;
   int tempInt;
 
-  filePath = currentProcessPath;
-  filePath.append(_STATUS);
   lineString = returnPhraseLine(filePath, "Gid");
 
-  // a return value of "-1" is returned upon error. check for error
+  // set value to  "-1" for current data if the file doesn't exist at the
+  // filePath.  This must be checked because processes may stop running
+  // and their file paths close
   if(lineString != "-1")
     {
       struct passwd userData;
@@ -434,18 +433,18 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	      
       if(!(getpwuid_r(uidt, &userData, buff, sizeof(buff), &userDataPtr)))
 	{
-	  allProcessInfo[currentPid]->setUSER(userData.pw_name);
+	  allProcessInfo.at(currentPid)->setUSER(userData.pw_name);
 	}
       else
 	{
-	  allProcessInfo[currentPid]->setUSER(userData.pw_name);
+	  allProcessInfo.at(currentPid)->setUSER(userData.pw_name);
 	}
     }
   else
     {
-      allProcessInfo[currentPid]->setUSER("-1");
+      allProcessInfo.at(currentPid)->setUSER("-1");
     }
-
+  
   // get VIRT
   lineString = returnFileLineByPhrase(filePath, "VmSize");
 	  
@@ -453,7 +452,7 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
     {
       parsedLine = parseLine(lineString);
       tempInt = stringToInt(parsedLine.at(1));
-      allProcessInfo[currentPid]->setVIRT(tempInt);
+      allProcessInfo.at(currentPid)->setVIRT(tempInt);
     }
 
   // get RES
@@ -463,7 +462,7 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
     {
       parsedLine = parseLine(lineString);
       tempInt = stringToInt(parsedLine.at(1));
-      allProcessInfo[currentPid]->setRES(tempInt);
+      allProcessInfo.at(currentPid)->setRES(tempInt);
     }
 
   // get SHR
@@ -473,12 +472,54 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
     {
       parsedLine = parseLine(lineString);
       tempInt = stringToInt(parsedLine.at(1));
-      allProcessInfo[currentPid]->setSHR(tempInt);
+      allProcessInfo.at(currentPid)->setSHR(tempInt);
     }
+} // end of "extractProcPidStatus"
 
+
+
+/*
+  Function:
+   extractProcPidStat
+
+  Description:
+   Extracts data from the /proc/[pid]/stat file and saves it to related
+   parameter member data while making necessary calculations to represent
+   the member data names that are used for outputting the extracted
+   data.
+   
+  Input:
+   allProcessInfo       - A unordored map<int, ProcessInfo*> object type
+                          that holds process related data found in
+			  /proc/[pid]/. related directories. The index key
+			  is the corresponding PID for its ProcessInfo
+			  value.   
+
+   memInfo              - A MemInfo object type that has member functions
+                          for storing, retrieving, and calculating values
+			  for its memory related member variables.
+
+   uptime               - A SecondsToTime object type that has member functions
+                          for storing, retrieving, and calculating/converting time
+			  related values to store in its member varaibles.
+
+   currentPid           - A constant integer type holding the PID of the current
+                          process we are examining in the main program loop.
+  Output:
+   NONE
+*/
+void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+			MemInfo& memInfo,
+			SecondsToTime& uptime,
+			const int currentPid,
+			std::string& filePath)
+{
+  std::string fileLine;  
+  std::string lineString;
+  std::vector<std::string> parsedLine;  
+  int tempInt;
+  
   // get PR
-  filePath = currentProcessPath;
-  filePath.append(_STAT);
   lineString = returnFileLineByNumber(filePath, 1);
 
   if(lineString != "-1")
@@ -493,20 +534,20 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       parsedLine = parseLine(fileLine);
       percent = stringToDouble(parsedLine.at(0));
       uptime.setTotalSeconds(percent);
-      allProcessInfo[currentPid]->setCPUUsage(percent);
+      allProcessInfo.at(currentPid)->setCPUUsage(percent);
 
       // get priority
       lineString = fixStatLine(lineString);
       parsedLine = parseLine(lineString);
       tempInt = stringToInt(parsedLine.at(15));
-      allProcessInfo[currentPid]->setPR(tempInt);
+      allProcessInfo.at(currentPid)->setPR(tempInt);
 
       // get NI
       tempInt = stringToInt(parsedLine.at(16));
-      allProcessInfo[currentPid]->setNI(tempInt);
+      allProcessInfo.at(currentPid)->setNI(tempInt);
 
       // get S
-      allProcessInfo[currentPid]->setS(lineString.at(0));
+      allProcessInfo.at(currentPid)->setS(lineString.at(0));
 
       // get %CPU for current process
       utime = stringToInt(parsedLine.at(11));
@@ -534,7 +575,7 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	}
 
       // get TIME+ (CPU time)
-      allProcessInfo[currentPid]->setCpuRawTime(utime + cutime);
+      allProcessInfo.at(currentPid)->setCpuRawTime(utime + cutime);
       SecondsToTime timePlus((utime + cutime)/((double)sysconf(_SC_CLK_TCK)));
       std::string timePlusString = timePlus.returnHHMMSS(timePlus.getHours(),
 							 timePlus.getMinutes(),
@@ -542,14 +583,13 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       allProcessInfo.at(currentPid)->setProcessCPUTime(timePlusString);
 
       // get %MEM
-      percent = allProcessInfo[currentPid]->getRES();
+      percent = allProcessInfo.at(currentPid)->getRES();
       percent = percent/(double)memInfo.getMemTotal();
       percent = std::ceil(percent * 1000.0);
       percent = percent/10;
-      allProcessInfo[currentPid]->setMEMUsage(percent);
+      allProcessInfo.at(currentPid)->setMEMUsage(percent);
     }
-
-} // end of "extractProcPidStatus"
+} // end of "extractProcPidStat"
 
 
 

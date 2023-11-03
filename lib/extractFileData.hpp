@@ -63,7 +63,13 @@ const std::string createTopLine(const std::string HHMMSS,
 void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			  MemInfo& memInfo,
 			  SecondsToTime& uptime,
-			  const int currentPid);
+			  const int currentPid,
+			  std::string& filePath);
+void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+			MemInfo& memInfo,
+			SecondsToTime& uptime,
+			const int currentPid,
+			std::string& filePath);
 void extractProcStatData(CPUInfo& cpuInfo,
 			 const std::string& filePath);
 void defineCpusLine(std::vector<std::string>& allTopLines);
