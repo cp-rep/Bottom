@@ -304,8 +304,7 @@ int main()
     // extract data from /proc/loadavg for very top window
     filePath.clear();
     filePath = _PROC_LOADAVG;
-    extractProcLoadavg(uptime,
-		       loadAvgStrings,
+    extractProcLoadavg(loadAvgStrings,
 		       filePath);
 
     // set the time string with current military time
