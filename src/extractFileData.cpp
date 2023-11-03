@@ -511,6 +511,7 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			MemInfo& memInfo,
 			SecondsToTime& uptime,
 			const int currentPid,
+			const std::vector<std::string>& uptimeStrings,
 			std::string& filePath)
 {
   std::string fileLine;  
@@ -529,9 +530,7 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       double percent = 0;
 
       // get uptime to use for helping calculate CPU usage
-      fileLine = returnFileLineByNumber(_PROC_UPTIME, 1);
-      parsedLine = parseLine(fileLine);
-      percent = stringToDouble(parsedLine.at(0));
+      percent = stringToDouble(uptimeStrings.at(0));      
       uptime.setTotalSeconds(percent);
       allProcessInfo.at(currentPid)->setCPUUsage(percent);
 
@@ -612,15 +611,16 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
    NONE
 */
 void extractProcUptime(SecondsToTime& uptime,
+		       std::vector<std::string>& uptimeStrings,		       
 		       const std::string& filePath)
 {
   int tempInt;
   std::string fileLine;
-  std::vector<std::string> parsedLine;
+  //  std::vector<std::string> parsedLine;
 
   fileLine = returnFileLineByNumber(filePath, 1);
-  parsedLine = parseLine(fileLine);
-  tempInt = stringToInt(parsedLine.at(0));
+  uptimeStrings = parseLine(fileLine);
+  tempInt = stringToInt(uptimeStrings.at(0));
   uptime.setHours(uptime.convertToHours(tempInt));
   uptime.setMinutes(uptime.convertToMinutes(tempInt));
   uptime.setSeconds(uptime.findRemainingSeconds(tempInt));
@@ -631,7 +631,7 @@ void extractProcUptime(SecondsToTime& uptime,
 
 /*
   Function:
-   extractProcLoadAvg
+   extractProcLoadavg
 
   Description:
    Opens the /proc/loadavg file for reading and extracts its data.  The data
@@ -652,12 +652,12 @@ void extractProcUptime(SecondsToTime& uptime,
    None
 */
 void extractProcLoadavg(SecondsToTime& uptime,
-			std::vector<std::string>& loadAvgs,
+			std::vector<std::string>& loadAvgStrings,
 			const std::string& filePath)
 {
   std::string fileLine;
   fileLine = returnFileLineByNumber(filePath, 1);
-  loadAvgs = parseLine(fileLine);
+  loadAvgStrings = parseLine(fileLine);
 } // end of "extractProcLoadavg"
 
 
