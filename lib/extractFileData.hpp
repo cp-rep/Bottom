@@ -57,8 +57,8 @@ void extractProcUptime(SecondsToTime& uptime,
 		       const std::string& filePath);		       
 void extractProcLoadavg(std::vector<std::string>& loadAvgStrings,
 			const std::string& filePath);
-void extractMemInfoData(MemInfo& memInfo,
-			const std::string& filepath);			
+void extractProcMeminfo(MemInfo& memInfo,
+			const std::string& filePath);			
 const std::string createTopLine(const std::string HHMMSS,
 				const int numDays,
 				const int numHours,
@@ -73,8 +73,8 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			const int currentPid,
 			const std::vector<std::string>& uptimeStrings,			
 			const std::string& filePath);
-void extractProcStatData(CPUInfo& cpuInfo,
-			 const std::string& filePath);
+void extractProcStat(CPUInfo& cpuInfo,
+		     const std::string& filePath);
 void defineCpusLine(std::vector<std::string>& allTopLines);
 void defineMemSwapLine(std::vector<std::string>& allTopLines);
 void defineMemMiBLine(std::vector<std::string>& allTopLines);

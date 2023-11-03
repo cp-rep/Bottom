@@ -338,7 +338,7 @@ void countProcessStates(const std::unordered_map<int, ProcessInfo*>& allProcessI
 
 /*
   Function:
-   extractProcStatData
+   extractProcStat
 
   Description:
    Extracts CPU related data from the /proc/stat file and stores it in the
@@ -351,8 +351,8 @@ void countProcessStates(const std::unordered_map<int, ProcessInfo*>& allProcessI
   Output:
    NONE
 */
-void extractProcStatData(CPUInfo& cpuInfo,
-			 const std::string& filePath)
+void extractProcStat(CPUInfo& cpuInfo,
+		     const std::string& filePath)
 {
   std::string lineString;
   std::string fileLine;  
@@ -374,7 +374,7 @@ void extractProcStatData(CPUInfo& cpuInfo,
   cpuInfo.setGun(stringToInt(parsedLine.at(10)));
   cpuInfo.setTicks(ticks);
   cpuInfo.setJiffs(cpuInfo.calculateJiffs());
-} // end of "extractProcStatData"
+} // end of "extractProcStat"
 
 
 
@@ -750,7 +750,7 @@ const std::string createTopLine(const std::string HHMMSS,
 
 /*
   Function:
-   extractMemInfoData
+   extractMemInfo
 
   Description:
    Extracts data from the /proc/meminfo file and stores it in the
@@ -766,48 +766,55 @@ const std::string createTopLine(const std::string HHMMSS,
   Output:
    NONE
 */
-void extractMemInfoData(MemInfo& memInfo,
-			const std::string& filepath)
+void extractProcMeminfo(MemInfo& memInfo,
+			const std::string& filePath)
 {
   std::string fileLine;
   std::vector<std::string> parsedLine;
-  
-  fileLine = returnFileLineByNumber(_PROC_MEMINFO, 1);
+
+  // extract MemTotal
+  fileLine = returnFileLineByNumber(filePath, 1);
   parsedLine = parseLine(fileLine);
   memInfo.setMemTotal(stringToInt(parsedLine.at(1)));
 
-  fileLine = returnFileLineByNumber(_PROC_MEMINFO, 2);
+  // extract MemFree
+  fileLine = returnFileLineByNumber(filePath, 2);
   parsedLine = parseLine(fileLine);
   memInfo.setMemFree(stringToInt(parsedLine.at(1)));
 
-  fileLine = returnFileLineByNumber(_PROC_MEMINFO, 3);
+  // extract MemAvailable
+  fileLine = returnFileLineByNumber(filePath, 3);
   parsedLine = parseLine(fileLine);
   memInfo.setMemAvailable(stringToInt(parsedLine.at(1)));
 
-  fileLine = returnFileLineByNumber(_PROC_MEMINFO, 4);
+  // extract Buffer
+  fileLine = returnFileLineByNumber(filePath, 4);
   parsedLine = parseLine(fileLine);
-  memInfo.setBuffers(stringToInt(parsedLine.at(1)));	  
+  memInfo.setBuffers(stringToInt(parsedLine.at(1)));
 
-  fileLine = returnFileLineByNumber(_PROC_MEMINFO, 5);
+  // extract Cached
+  fileLine = returnFileLineByNumber(filePath, 5);
   parsedLine = parseLine(fileLine);
-  memInfo.setCached(stringToInt(parsedLine.at(1)));	  	  
+  memInfo.setCached(stringToInt(parsedLine.at(1)));
 
-  fileLine = returnFileLineByNumber(_PROC_MEMINFO, 15);
+  // extract SwapTotal
+  fileLine = returnFileLineByNumber(filePath, 15);
   parsedLine = parseLine(fileLine);
   memInfo.setSwapTotal(stringToInt(parsedLine.at(1)));
 
-  fileLine = returnFileLineByNumber(_PROC_MEMINFO, 16);
+  // extract SwapFree
+  fileLine = returnFileLineByNumber(filePath, 16);
   parsedLine = parseLine(fileLine);
   memInfo.setSwapFree(stringToInt(parsedLine.at(1)));
 
-  fileLine = returnFileLineByNumber(_PROC_MEMINFO, 26);
+  // extract SReclaimable and calculate related values
+  fileLine = returnFileLineByNumber(filePath, 26);
   parsedLine = parseLine(fileLine);
-
   memInfo.setSReclaimable(stringToInt(parsedLine.at(1)));
   memInfo.setMemUsed(memInfo.calculateMemUsed());
   memInfo.setSwapUsed(memInfo.calculateSwapUsed());
   memInfo.setBuffCache(memInfo.calculateBuffCache());  
-} // end of "extractMemInfoData"
+} // end of "extractMemInfo"
 
 
 
