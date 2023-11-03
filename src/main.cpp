@@ -295,11 +295,11 @@ int main()
 
     // "current time, # users, load avg"
     // extract data from /proc/uptime for very top window
-    filePath.clear();
-    filePath = _PROC_UPTIME;
+    //    filePath.clear();
+    //    filePath = _PROC_UPTIME;
     extractProcUptime(uptime,
 		      uptimeStrings,
-		      filePath);
+		      _PROC_UPTIME);
 
     // extract data from /proc/loadavg for very top window
     filePath.clear();
@@ -336,14 +336,13 @@ int main()
 
 	// extract data for CPU Line
 	// "%Cpu(s): x.x us, x.x sy..."
-	filePath.clear();
-	filePath = _PROC;
-	filePath.append(_STAT);
-	extractProcStatData(cpuInfo, filePath);
+	extractProcStatData(cpuInfo,
+			    _PROC_STAT);
 
 	// extract data for MiB Mem and MiB swap
 	// "MiB Mem: xxxx.xx total, xxxx.xx Free..."
-	extractMemInfoData(memInfo);
+	extractMemInfoData(memInfo,
+	                   _PROC_MEMINFO);
 	
 	// get pid of current process
 	allProcessInfo[pids.at(i)]->setPID(pids.at(i));
