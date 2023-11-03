@@ -534,7 +534,7 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       uptime.setTotalSeconds(percent);
       allProcessInfo.at(currentPid)->setCPUUsage(percent);
 
-      // get priority
+      // get PR
       lineString = fixStatLine(lineString);
       parsedLine = parseLine(lineString);
       tempInt = stringToInt(parsedLine.at(15));
@@ -546,7 +546,6 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 
       // get S
       allProcessInfo.at(currentPid)->setS(lineString.at(0));
-
 
       // get %CPU for current process
       utime = stringToInt(parsedLine.at(11));
@@ -652,8 +651,7 @@ void extractProcUptime(SecondsToTime& uptime,
   Output:
    None
 */
-void extractProcLoadavg(SecondsToTime& uptime,
-			std::vector<std::string>& loadAvgStrings,
+void extractProcLoadavg(std::vector<std::string>& loadAvgStrings,
 			const std::string& filePath)
 {
   std::string fileLine;

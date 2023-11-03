@@ -55,8 +55,7 @@ void removeDeadProcesses(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 void extractProcUptime(SecondsToTime& uptime,
 		       std::vector<std::string>& uptimeStrings,
 		       const std::string& filePath);		       
-void extractProcLoadavg(SecondsToTime& uptime,
-			std::vector<std::string>& loadAvgStrings,
+void extractProcLoadavg(std::vector<std::string>& loadAvgStrings,
 			const std::string& filePath);
 void extractMemInfoData(MemInfo& memInfo);
 const std::string createTopLine(const std::string HHMMSS,
