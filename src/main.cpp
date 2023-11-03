@@ -314,6 +314,7 @@ int main()
 
 	// extract data for CPU Line
 	// "%Cpu(s): x.x us, x.x sy..."
+	filePath.clear();
 	filePath = _PROC;
 	filePath.append(_STAT);
 	extractProcStatData(cpuInfo, filePath);
@@ -326,10 +327,22 @@ int main()
 	allProcessInfo[pids.at(i)]->setPID(pids.at(i));
 
 	// extract per process data (USER, PR, VIRT...)
+	filePath.clear();
+	filePath = _PROC + std::to_string(pids.at(i));
+	filePath.append(_STATUS);
 	extractProcPidStatus(allProcessInfo,
 			     memInfo,
 			     uptime,
-			     pids.at(i));
+			     pids.at(i),
+			     filePath);
+	filePath.clear();
+	filePath = _PROC + std::to_string(pids.at(i));
+	filePath.append(_STAT);
+	extractProcPidStat(allProcessInfo,
+			   memInfo,
+			   uptime,			   
+			   pids.at(i),
+			   filePath);
 	
 	// extract COMMAND
 	extractProcComm(allProcessInfo,
@@ -440,7 +453,15 @@ int main()
       it != allProcessInfo.end(); it++)
     {
       delete(it->second);
+      it->second = nullptr;
     }
+  allProcessInfo.clear();
+  
+  if(log.is_open())
+    {
+      log.close();
+    }
+
   
 #if _CURSES  
   endwin();
