@@ -286,13 +286,13 @@ TEST(extractProcLoadavgFunction, ExtractProcLoadavgTest)
 
 
 
-TEST(extractProcStatDataFunction, ExtractProcStatDataTest)
+TEST(extractProcStatFunction, ExtractProcStatTest)
 {
   CPUInfo cpuInfo;
   std::string filePath = "./gtest/proc_stat.txt";
 
   // extract the data from the file path
-  extractProcStatData(cpuInfo, filePath);
+  extractProcStat(cpuInfo, filePath);
 
   // test the values were extracted correctly
   EXPECT_EQ(cpuInfo.getUs(), 11429);
@@ -398,3 +398,38 @@ TEST(extractProcPidStatFunction, ExtractProcPidStatTest)
 
 
 
+TEST(extractProcMeminfoFunction, extractProcMeminfoTest)
+{
+  MemInfo memInfo;
+  const std::string memInfoPath = "./gtest/proc_meminfo.txt";
+
+
+  extractProcMeminfo(memInfo,
+		     memInfoPath);
+
+  // test that meminfo valus were successfully extracted
+  EXPECT_EQ(memInfo.getMemTotal(), 8123912);
+  EXPECT_NE(memInfo.getMemTotal(), 8123913);
+  EXPECT_NE(memInfo.getMemTotal(), 0);    
+  EXPECT_EQ(memInfo.getMemFree(), 7435484);
+  EXPECT_NE(memInfo.getMemFree(), 7435485);
+  EXPECT_NE(memInfo.getMemFree(), 0);  
+  EXPECT_EQ(memInfo.getMemAvailable(), 7641304);
+  EXPECT_NE(memInfo.getMemAvailable(), 7641305);
+  EXPECT_NE(memInfo.getMemAvailable(), 0);  
+  EXPECT_EQ(memInfo.getBuffers(), 31408);
+  EXPECT_NE(memInfo.getBuffers(), 31409);
+  EXPECT_NE(memInfo.getBuffers(), 0);  
+  EXPECT_EQ(memInfo.getCached(), 381092);
+  EXPECT_NE(memInfo.getCached(), 381093);
+  EXPECT_NE(memInfo.getCached(), 0);    
+  EXPECT_EQ(memInfo.getSwapTotal(), 4194300);
+  EXPECT_NE(memInfo.getSwapTotal(), 4194301);
+  EXPECT_NE(memInfo.getSwapTotal(), 0);  
+  EXPECT_EQ(memInfo.getSwapFree(), 4194300);
+  EXPECT_NE(memInfo.getSwapFree(), 4194301);
+  EXPECT_NE(memInfo.getSwapFree(), 0);
+  EXPECT_EQ(memInfo.getSReclaimable(), 25952);
+  EXPECT_NE(memInfo.getSReclaimable(), 25953);  
+  EXPECT_NE(memInfo.getSReclaimable(), 0);          
+}
