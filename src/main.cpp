@@ -97,10 +97,6 @@
 #define _CURSES 1
 #define _LOG 1
 
-// commands and options/modes constants
-#define _UTMPDUMP "utmpdump"
-#define _READ "r"
-
 
 
 /*
