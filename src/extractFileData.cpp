@@ -395,10 +395,6 @@ void extractProcStatData(CPUInfo& cpuInfo,
 			  is the corresponding PID for its ProcessInfo
 			  value.   
 
-   memInfo              - A MemInfo object type that has member functions
-                          for storing, retrieving, and calculating values
-			  for its memory related member variables.
-
    uptime               - A SecondsToTime object type that has member functions
                           for storing, retrieving, and calculating/converting time
 			  related values to store in its member varaibles.
@@ -412,7 +408,6 @@ void extractProcStatData(CPUInfo& cpuInfo,
    NONE
 */
 void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-			  MemInfo& memInfo,
 			  SecondsToTime& uptime,
 			  const int currentPid,
 			  std::string& filePath)
