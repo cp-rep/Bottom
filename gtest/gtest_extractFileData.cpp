@@ -433,3 +433,91 @@ TEST(extractProcMeminfoFunction, extractProcMeminfoTest)
   EXPECT_NE(memInfo.getSReclaimable(), 25953);  
   EXPECT_NE(memInfo.getSReclaimable(), 0);          
 }
+
+
+
+TEST(findDeadProcessesFunction, findDeadProcessesTest)
+{
+  std::vector<int> pids = { 3, 4, 5, 7, 10, 11 };
+  std::vector<int> pidsOld = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+  std::vector<int> pidsDead;
+  std::vector<int> pidsDeadResult = {1, 2, 6, 8, 9, 12};
+  bool foundDead;
+
+  // first died, middle died, end died case
+  foundDead = findDeadProcesses(pids,
+				pidsOld,
+				pidsDead);
+  EXPECT_EQ(foundDead, true);
+  EXPECT_EQ(pidsDead, pidsDeadResult);
+  
+  pids.clear();
+  pidsOld.clear();
+  pidsDead.clear();
+  pidsDeadResult.clear();
+
+  // none died case
+  pids = { 1, 2};
+  pidsOld = { 1, 2};
+  foundDead = findDeadProcesses(pids,
+				pidsOld,
+				pidsDead);
+  EXPECT_EQ(foundDead, false);
+  EXPECT_EQ(pidsDead, pidsDeadResult);
+
+  pids.clear();
+  pidsOld.clear();
+  pidsDead.clear();
+  pidsDeadResult.clear();
+
+  // no processes case (technically impossible but sanity)
+  foundDead = findDeadProcesses(pids,
+				pidsOld,
+				pidsDead);
+  EXPECT_EQ(foundDead, false);
+  EXPECT_EQ(pidsDead, pidsDeadResult);
+
+  pids.clear();
+  pidsOld.clear();
+  pidsDead.clear();
+  pidsDeadResult.clear();
+  
+  // first loop case, no old pids
+  pids = { 3, 4, 5, 7, 10, 11 };
+  foundDead = findDeadProcesses(pids,
+				pidsOld,
+				pidsDead);
+  EXPECT_EQ(foundDead, false);
+  EXPECT_EQ(pidsDead, pidsDeadResult);
+
+
+  pids.clear();
+  pidsOld.clear();
+  pidsDead.clear();
+  pidsDeadResult.clear();
+  
+  // all died case
+  pidsOld = { 1, 2, 3, 4, 5, 6, 7};
+  pidsDeadResult = { 1, 2, 3, 4, 5, 6, 7};
+  foundDead = findDeadProcesses(pids,
+				pidsOld,
+				pidsDead);
+  EXPECT_EQ(foundDead, true);
+  EXPECT_EQ(pidsDead, pidsDeadResult);
+
+
+  pids.clear();
+  pidsOld.clear();
+  pidsDead.clear();
+  pidsDeadResult.clear();
+  
+  // new processes case with deaths
+  pids = { 3, 4, 5, 7, 10, 11, 14, 17, 100, 98, 877 };
+  pidsOld = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+  pidsDeadResult = {1, 2, 6, 8, 9, 12};
+  foundDead = findDeadProcesses(pids,
+				pidsOld,
+				pidsDead);
+  EXPECT_EQ(foundDead, true);
+  EXPECT_EQ(pidsDead, pidsDeadResult);
+}
