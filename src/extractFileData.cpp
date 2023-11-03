@@ -130,7 +130,7 @@ bool doesDirectoryExist(const std::string& dirPath)
 
 /*
   Function:
-   extractProcComm
+   extractProcPidComm
 
   Description:
    Extracts the command associated with the pid number from the
@@ -147,18 +147,21 @@ bool doesDirectoryExist(const std::string& dirPath)
    pid                  - A const int type holding a process id to extract
                           its related command for.  It is used to as a key
 			  for the allProcessInfo key/value pairs.
+
+   filePath             - A reference to a constant string object that should
+                          contain the full path to the file path
+			  /proc/[pid]/comm.
    
   Output:
    NONE
 */
-void extractProcComm(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-		     const int pid)
+void extractProcPidComm(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+		     const int pid,
+		     const std::string& filePath)
 {
-  std::string filePath = _PROC + std::to_string(pid);
-  filePath.append(_COMM);
   std::string lineString = returnFileLineByNumber(filePath, 1);
   allProcessInfo[pid]->setCOMMAND(lineString);
-} // end of "extractProcComm"
+} // end of "extractProcPidComm"
 
 
 

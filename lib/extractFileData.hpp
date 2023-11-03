@@ -78,6 +78,7 @@ void defineMemMiBLine(std::vector<std::string>& allTopLines);
 void countProcessStates(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			TaskInfo& taskInfo);
 void defineTasksLine(std::vector<std::string>& allTopLines);
-void extractProcComm(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-		     const int pid);
+void extractProcPidComm(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+			const int pid,
+			const std::string& filePath);		     
 #endif
