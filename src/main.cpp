@@ -339,8 +339,8 @@ int main()
 	    allProcessInfo.insert(std::make_pair(pids.at(i), process));
 	  }
 
-	// get pid of current process
-	allProcessInfo[pids.at(i)]->setPID(pids.at(i));
+	// set pid of current process
+	allProcessInfo.at(pids.at(i))->setPID(pids.at(i));
 
 	// extract per process data (USER, PR, VIRT...)
 	// /proc/[pid]/status
