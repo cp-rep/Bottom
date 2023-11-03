@@ -370,13 +370,12 @@ int main()
 	extractProcPidComm(allProcessInfo,
 			   pids.at(i),
 			   filePath);
-
-	// count the extracted process states ProcessInfo objects for task window
-	// "Tasks: XXX total, X running..."
-	countProcessStates(allProcessInfo,
-			   taskInfo);
-
       }
+
+    // count the extracted process states for task window
+    // "Tasks: XXX total, X running..."
+    countProcessStates(allProcessInfo,
+		       taskInfo);    
 
     // ## get user input ##
     std::vector<int> outPids;
