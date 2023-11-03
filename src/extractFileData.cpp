@@ -393,12 +393,8 @@ void extractProcStatData(CPUInfo& cpuInfo,
                           that holds process related data found in
 			  /proc/[pid]/. related directories. The index key
 			  is the corresponding PID for its ProcessInfo
-			  value.   
-
-   uptime               - A SecondsToTime object type that has member functions
-                          for storing, retrieving, and calculating/converting time
-			  related values to store in its member varaibles.
-
+			  value.
+			  
    currentPid           - A constant integer type holding the PID of the current
                           process we are examining in the main program loop.
 
@@ -408,7 +404,6 @@ void extractProcStatData(CPUInfo& cpuInfo,
    NONE
 */
 void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-			  SecondsToTime& uptime,
 			  const int currentPid,
 			  std::string& filePath)
 {

@@ -61,7 +61,6 @@ const std::string createTopLine(const std::string HHMMSS,
 				const int numMinutes,
 				const std::vector<std::string> parsedLoadAvg);
 void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-			  SecondsToTime& uptime,
 			  const int currentPid,
 			  std::string& filePath);
 void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
