@@ -332,7 +332,6 @@ int main()
 	filePath = _PROC + std::to_string(pids.at(i));
 	filePath.append(_STATUS);
 	extractProcPidStatus(allProcessInfo,
-			     memInfo,
 			     uptime,
 			     pids.at(i),
 			     filePath);
