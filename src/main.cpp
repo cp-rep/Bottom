@@ -348,8 +348,12 @@ int main()
 
 	// extract COMMAND
 	// /proc/[pid]/comm
-	extractProcComm(allProcessInfo,
-			pids.at(i));
+	filePath.clear();
+	filePath = _PROC + std::to_string(pids.at(i));	
+	filePath.append(_COMM);	
+	extractProcPidComm(allProcessInfo,
+			   pids.at(i),
+			   filePath);
 
 	// count the extracted process states ProcessInfo objects for task window
 	// "Tasks: XXX total, X running..."
