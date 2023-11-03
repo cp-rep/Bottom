@@ -11,9 +11,10 @@
 #define _STATUS "/status"
 #define _MEMINFO "/meminfo"
 #define _PROC_MEMINFO "/proc/meminfo"
-#define _UPTIME "/proc/uptime"
+#define _PROC_UPTIME "/proc/uptime"
 #define _UTMP "/var/run/utmp"
 #define _CSV "./csv/"
+#define _PROC_LOADAVG "/proc/loadavg"
 
 // in-file phrases
 #define _MEMTOTAL "MemTotal"
