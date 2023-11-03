@@ -72,7 +72,7 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			SecondsToTime& uptime,
 			const int currentPid,
 			const std::vector<std::string>& uptimeStrings,			
-			std::string& filePath);
+			const std::string& filePath);
 void extractProcStatData(CPUInfo& cpuInfo,
 			 const std::string& filePath);
 void defineCpusLine(std::vector<std::string>& allTopLines);

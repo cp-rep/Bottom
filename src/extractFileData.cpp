@@ -512,7 +512,7 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			SecondsToTime& uptime,
 			const int currentPid,
 			const std::vector<std::string>& uptimeStrings,
-			std::string& filePath)
+			const std::string& filePath)
 {
   std::string fileLine;  
   std::string lineString;
@@ -529,7 +529,7 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       double pstart = 0;
       double percent = 0;
 
-      // get uptime to use for helping calculate CPU usage
+      // use uptime values for helping calculate CPU usage
       percent = stringToDouble(uptimeStrings.at(0));      
       uptime.setTotalSeconds(percent);
       allProcessInfo.at(currentPid)->setCPUUsage(percent);
@@ -547,6 +547,7 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       // get S
       allProcessInfo.at(currentPid)->setS(lineString.at(0));
 
+
       // get %CPU for current process
       utime = stringToInt(parsedLine.at(11));
       cutime = stringToInt(parsedLine.at(12));
@@ -556,6 +557,7 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       percent = std::ceil(percent * 100);
       percent = percent /100;
       */
+
       double tempDouble = percent;
       int tempInt;
       tempDouble *= 10;
@@ -616,7 +618,6 @@ void extractProcUptime(SecondsToTime& uptime,
 {
   int tempInt;
   std::string fileLine;
-  //  std::vector<std::string> parsedLine;
 
   fileLine = returnFileLineByNumber(filePath, 1);
   uptimeStrings = parseLine(fileLine);
