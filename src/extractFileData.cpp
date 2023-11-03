@@ -529,7 +529,7 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       double percent = 0;
 
       // get uptime to use for helping calculate CPU usage
-      fileLine = returnFileLineByNumber(_UPTIME, 1);
+      fileLine = returnFileLineByNumber(_PROC_UPTIME, 1);
       parsedLine = parseLine(fileLine);
       percent = stringToDouble(parsedLine.at(0));
       uptime.setTotalSeconds(percent);
@@ -594,57 +594,71 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 
 /*
   Function:
-   extractTopWinData
+   extractProcUptime
 
   Description:
-   Extracts data from the /proc/uptime and /proc/loadavg files, makes
-   calculations for the extracted data using the SecondsToTime parameter
-   object, and then calls the createTopLine function to create the
-   output line for that data, storing it in the vector<string> parameter
-   object.
+   Opens the /proc/uptime file for reading and extracts its data.  The data is
+   parsed and converted to human readable time values stored in the SecondsToTime
+   object parameter.
 
   Input:
    uptime               - A SecondsToTime object type that has member functions
                           for storing, retrieving, and calculating/converting time
-			  related values to store in its member varaibles.
+			  related values to store in its member variables.
 			  
-   allTopLines          - A reference to a vector<string> object type that is used
-                          to store output lines for the five default top lines of
-			  the Top utility.
-
+   filePath             - A reference to a constant string object containing that
+                          should contain a file path for the /proc/uptime file.
   Output:
    NONE
 */
-void extractProcUptimeLoadavg(SecondsToTime& uptime,
-			      std::vector<std::string>& allTopLines)
+void extractProcUptime(SecondsToTime& uptime,
+		       const std::string& filePath)
 {
   int tempInt;
   std::string fileLine;
   std::vector<std::string> parsedLine;
-  std::string tempLine;
-  time_t rawtime;
-  struct tm* timeinfo;
 
-  fileLine = returnFileLineByNumber(_UPTIME, 1);
+  fileLine = returnFileLineByNumber(filePath, 1);
   parsedLine = parseLine(fileLine);
   tempInt = stringToInt(parsedLine.at(0));
   uptime.setHours(uptime.convertToHours(tempInt));
   uptime.setMinutes(uptime.convertToMinutes(tempInt));
   uptime.setSeconds(uptime.findRemainingSeconds(tempInt));
   uptime.setTotalSeconds(tempInt);
-  time(&rawtime);
-  timeinfo = localtime(&rawtime);
-  tempLine = uptime.returnHHMMSS(timeinfo->tm_hour,
-				 timeinfo->tm_min,
-				 timeinfo->tm_sec);
-  fileLine = returnFileLineByNumber("/proc/loadavg", 1);
-  parsedLine = parseLine(fileLine);
-  allTopLines.push_back(createTopLine(tempLine,
-				      uptime.getHours()/24,
-				      uptime.getHours() % 24,
-				      uptime.getMinutes(),
-				      parsedLine));
-} // end of "extractTopWinData"
+} // end of "extractProcUptime"
+
+
+
+/*
+  Function:
+   extractProcLoadAvg
+
+  Description:
+   Opens the /proc/loadavg file for reading and extracts its data.  The data
+   is parsed and stored in a vector<string> object type that is passed
+   back to the caller by reference.
+
+  Input:
+   uptime               - A SecondsToTime object type that has member functions
+                          for storing, retrieving, and calculating/converting time
+			  related values to store in its member variables.
+			  
+   loadAvgs             - A reference to a vector<string> object type that will be
+                          used to store parsed data from the /proc/loadavg file.
+
+   filePath		- A reference to a constant string object type that should
+                          contain a path to the /proc/loadavg file.
+  Output:
+   None
+*/
+void extractProcLoadavg(SecondsToTime& uptime,
+			std::vector<std::string>& loadAvgs,
+			const std::string& filePath)
+{
+  std::string fileLine;
+  fileLine = returnFileLineByNumber(filePath, 1);
+  loadAvgs = parseLine(fileLine);
+} // end of "extractProcLoadavg"
 
 
 
