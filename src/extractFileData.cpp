@@ -257,7 +257,7 @@ void defineCpusLine(std::vector<std::string>& allTopLines)
 
 /*
   Function:
-   extractProcessStateCount
+   countProcessStates
 
   Description:
    Loops through all current dynamically allocated ProcessInfo objects and retrieves
@@ -279,8 +279,8 @@ void defineCpusLine(std::vector<std::string>& allTopLines)
   Output:
    NONE
 */
-void extractProcessStateCount(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-			      TaskInfo& taskInfo)
+void countProcessStates(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+			TaskInfo& taskInfo)
 {
   unsigned int running = 0;
   unsigned int unSleep = 0;
@@ -292,7 +292,7 @@ void extractProcessStateCount(const std::unordered_map<int, ProcessInfo*>& allPr
   unsigned int total = 0;
 
   for(std::unordered_map<int, ProcessInfo*>::const_iterator it = allProcessInfo.begin();
-			 it != allProcessInfo.end(); it++)
+      it != allProcessInfo.end(); it++)
     {
       switch(it->second->getS())
 	{
@@ -329,7 +329,7 @@ void extractProcessStateCount(const std::unordered_map<int, ProcessInfo*>& allPr
   taskInfo.setSleeping(sleeping);
   total = taskInfo.calcTotal();
   taskInfo.setTotal(total);
-} // end of "extractProcessStateCount"
+} // end of "countProcessStates"
 
 
 
@@ -529,7 +529,7 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       double pstart = 0;
       double percent = 0;
 
-      // get update
+      // get uptime to use for helping calculate CPU usage
       fileLine = returnFileLineByNumber(_UPTIME, 1);
       parsedLine = parseLine(fileLine);
       percent = stringToDouble(parsedLine.at(0));
