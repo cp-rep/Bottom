@@ -149,7 +149,7 @@ TEST(makeDirectoryFunction, MakeDirectoryTest)
 
 
 
-TEST(extractProcessStateCountFunction, ExtractCountsTest)
+TEST(countProcessStatesFunction, countStatesTest)
 {
   TaskInfo taskInfo;
   std::unordered_map<int, ProcessInfo*> allProcessInfo;
@@ -206,7 +206,7 @@ TEST(extractProcessStateCountFunction, ExtractCountsTest)
   EXPECT_EQ(allProcessInfo.at(pids.at(8))->getS(), 'Z');
 
   // call the function
-  extractProcessStateCount(allProcessInfo, taskInfo);
+  countProcessStates(allProcessInfo, taskInfo);
 
   // test the results were properly tallied and calculated  in
   // the TaskInfo object
@@ -251,4 +251,10 @@ TEST(extractProcStatDataFunction, ExtractProcStatDataTest)
   EXPECT_EQ(cpuInfo.getGu(), 1);
   EXPECT_EQ(cpuInfo.getGun(), 2);
   EXPECT_EQ(cpuInfo.getJiffs(), 2251499);  
+}
+
+
+TEST(extractProcPidStatusFunction, ExtractProcPidStatusTest)
+{
+  
 }
