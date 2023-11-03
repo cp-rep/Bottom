@@ -750,7 +750,7 @@ const std::string createTopLine(const std::string HHMMSS,
 
 /*
   Function:
-   extractMemInfo
+   extractProcMemInfo
 
   Description:
    Extracts data from the /proc/meminfo file and stores it in the
@@ -814,7 +814,7 @@ void extractProcMeminfo(MemInfo& memInfo,
   memInfo.setMemUsed(memInfo.calculateMemUsed());
   memInfo.setSwapUsed(memInfo.calculateSwapUsed());
   memInfo.setBuffCache(memInfo.calculateBuffCache());  
-} // end of "extractMemInfo"
+} // end of "extractProcMemInfo"
 
 
 
