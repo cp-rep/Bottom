@@ -57,7 +57,8 @@ void extractProcUptime(SecondsToTime& uptime,
 		       const std::string& filePath);		       
 void extractProcLoadavg(std::vector<std::string>& loadAvgStrings,
 			const std::string& filePath);
-void extractMemInfoData(MemInfo& memInfo);
+void extractMemInfoData(MemInfo& memInfo,
+			const std::string& filepath);			
 const std::string createTopLine(const std::string HHMMSS,
 				const int numDays,
 				const int numHours,

@@ -759,11 +759,15 @@ const std::string createTopLine(const std::string HHMMSS,
   Input:
    memInfo              - A MemInfo object type that has member functions
                           for storing, retrieving, and calculating values
-			  for its memory related member variables.   
+			  for its memory related member variables.
+			  
+   filePath		- A reference to a constant string object type that should
+                          contain a path to the /proc/meminfo file.			  
   Output:
    NONE
 */
-void extractMemInfoData(MemInfo& memInfo)
+void extractMemInfoData(MemInfo& memInfo,
+			const std::string& filepath)
 {
   std::string fileLine;
   std::vector<std::string> parsedLine;
