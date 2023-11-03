@@ -109,14 +109,14 @@
 
   Description:
    The main driver function for the Bottom program.
- */
+*/
 int main()
 {
   //  ## create log system ##
   time_t rawtime;
   struct tm* timeinfo;
 #if _LOG    
-  Log logFile("./log/", "log", 1, ".log");  
+  Log logFile("./log/", "log", 1, ".log");
   std::ofstream log;
 
   //  get time info
@@ -327,6 +327,7 @@ int main()
 	allProcessInfo[pids.at(i)]->setPID(pids.at(i));
 
 	// extract per process data (USER, PR, VIRT...)
+	// /proc/[pid]/status
 	filePath.clear();
 	filePath = _PROC + std::to_string(pids.at(i));
 	filePath.append(_STATUS);
@@ -335,6 +336,7 @@ int main()
 			     uptime,
 			     pids.at(i),
 			     filePath);
+	// /proc/uptime & /proc/[pid]/stat
 	filePath.clear();
 	filePath = _PROC + std::to_string(pids.at(i));
 	filePath.append(_STAT);
@@ -343,15 +345,16 @@ int main()
 			   uptime,			   
 			   pids.at(i),
 			   filePath);
-	
+
 	// extract COMMAND
+	// /proc/[pid]/comm
 	extractProcComm(allProcessInfo,
 			pids.at(i));
 
-	// extract and count process states for task window
+	// count the extracted process states ProcessInfo objects for task window
 	// "Tasks: XXX total, X running..."
-	extractProcessStateCount(allProcessInfo,
-				 taskInfo);
+	countProcessStates(allProcessInfo,
+			   taskInfo);
       }
 
     // ## get user input ##
@@ -385,16 +388,16 @@ int main()
     
     // change the processes sort state from '<' and '>' user input
     bottomWinsProcSortState(allProcessInfo,
-			   pids,
-			   outPids,
-			   sortState);
+			    pids,
+			    outPids,
+			    sortState);
 
     // shift windows up down left or right from arrow key input
     bottomWinsShiftState(allWins,
-			shiftState,
-			shiftY,
-			shiftX,
-			outPids.size() - 3);
+			 shiftState,
+			 shiftY,
+			 shiftX,
+			 outPids.size() - 3);
 
     // ## print process windows ##
     if(highlight == true)
@@ -412,7 +415,7 @@ int main()
 		 allTopLines);
     
     boldOnAllTopWins(allWins,
-		    A_BOLD);
+		     A_BOLD);
     printTasksData(allWins,
 		   taskInfo);
     printCpusData(allWins,
@@ -420,7 +423,7 @@ int main()
     printMemMiBData(allWins,
 		    memInfo);
     boldOffAllTopWins(allWins,
-		    A_BOLD);
+		      A_BOLD);
     printProcs(allWins,
 	       allProcessInfo,
 	       outPids,
@@ -447,7 +450,6 @@ int main()
 
   } while(true);
 
-
   // cleanup
   for(std::unordered_map<int, ProcessInfo*>::iterator it = allProcessInfo.begin();
       it != allProcessInfo.end(); it++)
@@ -457,11 +459,12 @@ int main()
     }
   allProcessInfo.clear();
   
+#if _LOG
   if(log.is_open())
     {
       log.close();
     }
-
+#endif
   
 #if _CURSES  
   endwin();
