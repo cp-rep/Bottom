@@ -44,10 +44,14 @@ TEST(extractProcCommFunction, ExtractCommandTest)
 {
   std::unordered_map<int, ProcessInfo*> allProcessInfo;
   ProcessInfo* process;
-  
+  std::string filePath;
+
+  filePath = _PROC;
+  filePath.append("1");
+  filePath.append(_COMM);	
   process = new ProcessInfo();
   allProcessInfo.insert(std::make_pair(1, process));
-  extractProcComm(allProcessInfo, 1);
+  extractProcPidComm(allProcessInfo, 1, filePath);
 
   // command exists (read from PID 1)
   EXPECT_EQ(allProcessInfo.at(1)->getCOMMAND(), "systemd");
