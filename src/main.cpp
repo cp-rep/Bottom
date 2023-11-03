@@ -262,15 +262,15 @@ int main()
 		    miBSwapFreeWin,
 		    miBSwapUsedWin,
 		    miBMemAvailWin);
-  
   initializeProgramStates(progStates);
   
   // loop variables
   SecondsToTime uptime;
   std::vector<std::string> allTopLines;
+  std::vector<std::string> loadAvgStrings;
+  std::vector<std::string> uptimeStrings;  
   std::string filePath;
   std::string colorLine;
-  std::vector<std::string> loadAvgs;
   std::string timeString;
 
   colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
@@ -298,13 +298,14 @@ int main()
     filePath.clear();
     filePath = _PROC_UPTIME;
     extractProcUptime(uptime,
+		      uptimeStrings,
 		      filePath);
 
     // extract data from /proc/loadavg for very top window
     filePath.clear();
     filePath = _PROC_LOADAVG;
     extractProcLoadavg(uptime,
-		       loadAvgs,
+		       loadAvgStrings,
 		       filePath);
 
     // set the time string with current military time
@@ -317,7 +318,7 @@ int main()
 					uptime.getHours()/24,
 					uptime.getHours() % 24,
 					uptime.getMinutes(),
-					loadAvgs));
+					loadAvgStrings));
     defineTasksLine(allTopLines);
     defineCpusLine(allTopLines);
     defineMemMiBLine(allTopLines);
@@ -356,14 +357,16 @@ int main()
 	extractProcPidStatus(allProcessInfo,
 			     pids.at(i),
 			     filePath);
+	
 	// /proc/uptime & /proc/[pid]/stat
 	filePath.clear();
 	filePath = _PROC + std::to_string(pids.at(i));
 	filePath.append(_STAT);
 	extractProcPidStat(allProcessInfo,
 			   memInfo,
-			   uptime,			   
+			   uptime,
 			   pids.at(i),
+			   uptimeStrings,
 			   filePath);
 
 	// extract COMMAND
@@ -440,7 +443,6 @@ int main()
     clearAllWins(allWins);
     printTopWins(allWins,
 		 allTopLines);
-
     boldOnAllTopWins(allWins,
 		     A_BOLD);
     printTasksData(allWins,
@@ -451,7 +453,6 @@ int main()
 		    memInfo);
     boldOffAllTopWins(allWins,
 		      A_BOLD);
-
     printProcs(allWins,
 	       allProcessInfo,
 	       outPids,
@@ -469,7 +470,6 @@ int main()
 		   colorLine);
     refreshAllWins(allWins);
     doupdate();
-
 #endif
 
     if(quit)
@@ -485,6 +485,7 @@ int main()
       delete(it->second);
       it->second = nullptr;
     }
+  
   allProcessInfo.clear();
   
 #if _LOG
@@ -493,7 +494,6 @@ int main()
       log.close();
     }
 #endif
-  
 #if _CURSES  
   endwin();
 #endif
