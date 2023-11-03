@@ -270,10 +270,14 @@ int main()
   std::vector<std::string> allTopLines;
   std::string filePath;
   std::string colorLine;
+  std::vector<std::string> loadAvgs;
+  std::string timeString;
 
   colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
   
   do{
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
     allTopLines.clear();
     pidsOld = pids;
     pids.clear();
@@ -289,14 +293,36 @@ int main()
 	removeDeadProcesses(allProcessInfo, pidsDead);
       }
 
-    // extract data from uptime for very top window
     // "current time, # users, load avg"
-    extractProcUptimeLoadavg(uptime,
-			     allTopLines);
+    // extract data from /proc/uptime for very top window
+    filePath.clear();
+    filePath = _PROC_UPTIME;
+    extractProcUptime(uptime,
+		      filePath);
+
+    // extract data from /proc/loadavg for very top window
+    filePath.clear();
+    filePath = _PROC_LOADAVG;
+    extractProcLoadavg(uptime,
+		       loadAvgs,
+		       filePath);
+
+    // set the time string with current military time
+    timeString = uptime.returnHHMMSS(timeinfo->tm_hour,
+				     timeinfo->tm_min,
+				     timeinfo->tm_sec);    
+
+    // create the top lines for ouput
+    allTopLines.push_back(createTopLine(timeString,
+					uptime.getHours()/24,
+					uptime.getHours() % 24,
+					uptime.getMinutes(),
+					loadAvgs));
     defineTasksLine(allTopLines);
     defineCpusLine(allTopLines);
     defineMemMiBLine(allTopLines);
     defineMemSwapLine(allTopLines);
+    
 
     // update/add process data for still running and new found processes
     for(int i = 0; i < pids.size(); i++)
@@ -353,6 +379,7 @@ int main()
 	// "Tasks: XXX total, X running..."
 	countProcessStates(allProcessInfo,
 			   taskInfo);
+
       }
 
     // ## get user input ##
@@ -364,7 +391,8 @@ int main()
     shiftState = userInput = getch();
     flushinp();
 
-#if _CURSES    
+#if _CURSES
+
     // update state values from user input
     updateStateValues(allWins,
 		      progStates,
@@ -408,10 +436,11 @@ int main()
 	wattroff(allWins.at(highlightIndex)->getWindow(),
 		 A_BOLD);
       }
+
     clearAllWins(allWins);
     printTopWins(allWins,
 		 allTopLines);
-    
+
     boldOnAllTopWins(allWins,
 		     A_BOLD);
     printTasksData(allWins,
@@ -422,6 +451,7 @@ int main()
 		    memInfo);
     boldOffAllTopWins(allWins,
 		      A_BOLD);
+
     printProcs(allWins,
 	       allProcessInfo,
 	       outPids,
@@ -440,12 +470,12 @@ int main()
     refreshAllWins(allWins);
     doupdate();
 
-#endif    
+#endif
+
     if(quit)
       {
 	break;
       }
-
   } while(true);
 
   // cleanup
