@@ -245,12 +245,43 @@ TEST(extractProcUptimeFunction, ExtractProcUptimeTest)
 		    uptimeStrings,		    
 		    uptimePath);
 
+  // test that the uptime values were extracted correctly
   EXPECT_EQ(uptimeStrings.at(0), "9360.26");
   EXPECT_NE(uptimeStrings.at(0), "9360.27");
   EXPECT_NE(uptimeStrings.at(0), "");
   EXPECT_EQ(uptimeStrings.at(1), "27505.65");
   EXPECT_NE(uptimeStrings.at(1), "27505.66");
   EXPECT_NE(uptimeStrings.at(1), "");
+}
+
+
+
+TEST(extractProcLoadavgFunction, ExtractProcLoadavgTest)
+{
+  
+  std::vector<std::string> loadavgStrings;
+  std::string loadavgPath = "./gtest/proc_loadavg.txt";
+
+  extractProcLoadavg(loadavgStrings,
+		     loadavgPath);
+
+  // test that values were parsed and extracted correctly
+  EXPECT_EQ(loadavgStrings.at(0), "0.02");
+  EXPECT_NE(loadavgStrings.at(0), "0.03");
+  EXPECT_NE(loadavgStrings.at(0), "");
+  EXPECT_EQ(loadavgStrings.at(1), "0.06");
+  EXPECT_NE(loadavgStrings.at(1), "0.07");
+  EXPECT_NE(loadavgStrings.at(1), "");
+  EXPECT_EQ(loadavgStrings.at(2), "0.02");
+  EXPECT_NE(loadavgStrings.at(2), "0.03");
+  EXPECT_NE(loadavgStrings.at(2), "");
+  EXPECT_EQ(loadavgStrings.at(3), "1/129");
+  EXPECT_NE(loadavgStrings.at(3), "1/128");
+  EXPECT_NE(loadavgStrings.at(3), "");
+  EXPECT_EQ(loadavgStrings.at(4), "8951");
+  EXPECT_NE(loadavgStrings.at(4), "8952");
+  EXPECT_NE(loadavgStrings.at(4), "");    
+
 }
 
 
@@ -364,3 +395,6 @@ TEST(extractProcPidStatFunction, ExtractProcPidStatTest)
   // test they cleaned up
   EXPECT_EQ(allProcessInfo.size(), 0);
 }
+
+
+
