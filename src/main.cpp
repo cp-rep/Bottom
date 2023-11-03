@@ -305,12 +305,12 @@ int main()
 
     // extract data for CPU Line
     // "%Cpu(s): x.x us, x.x sy..."
-    extractProcStatData(cpuInfo,
-			_PROC_STAT);
+    extractProcStat(cpuInfo,
+		    _PROC_STAT);
     
     // extract data for MiB Mem and MiB swap
     // "MiB Mem: xxxx.xx total, xxxx.xx Free..."
-    extractMemInfoData(memInfo,
+    extractProcMeminfo(memInfo,
 		       _PROC_MEMINFO);    
 
     // set the time string with current military time
