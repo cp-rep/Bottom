@@ -405,6 +405,9 @@ void extractProcStatData(CPUInfo& cpuInfo,
 
    currentPid           - A constant integer type holding the PID of the current
                           process we are examining in the main program loop.
+
+   filePath             - A reference to a string type that should contain
+                          the file path to /proc/[pid]/status			  
   Output:
    NONE
 */
@@ -508,6 +511,9 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 
    currentPid           - A constant integer type holding the PID of the current
                           process we are examining in the main program loop.
+
+   filePath             - A reference to a string type that should contain
+                          the file path to /proc/[pid]/stat.
   Output:
    NONE
 */
