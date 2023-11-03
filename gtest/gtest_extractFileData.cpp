@@ -235,6 +235,26 @@ TEST(countProcessStatesFunction, countStatesTest)
 
 
 
+TEST(extractProcUptimeFunction, ExtractProcUptimeTest)
+{
+  SecondsToTime uptime;
+  const std::string uptimePath = "./gtest/proc_uptime.txt";
+  std::vector<std::string> uptimeStrings;
+
+  extractProcUptime(uptime,
+		    uptimeStrings,		    
+		    uptimePath);
+
+  EXPECT_EQ(uptimeStrings.at(0), "9360.26");
+  EXPECT_NE(uptimeStrings.at(0), "9360.27");
+  EXPECT_NE(uptimeStrings.at(0), "");
+  EXPECT_EQ(uptimeStrings.at(1), "27505.65");
+  EXPECT_NE(uptimeStrings.at(1), "27505.66");
+  EXPECT_NE(uptimeStrings.at(1), "");
+}
+
+
+
 TEST(extractProcStatDataFunction, ExtractProcStatDataTest)
 {
   CPUInfo cpuInfo;
@@ -328,7 +348,6 @@ TEST(extractProcPidStatFunction, ExtractProcPidStatTest)
 
   EXPECT_EQ(allProcessInfo.at(1)->getPR(), 20);
   EXPECT_EQ(allProcessInfo.at(1)->getNI(), 0);
-  EXPECT_EQ(allProcessInfo.at(1)->getS(), 'S');
   EXPECT_EQ(allProcessInfo.at(1)->getS(), 'S');
   EXPECT_EQ(allProcessInfo.at(1)->getCPUUsage(), 0);
   EXPECT_EQ(allProcessInfo.at(1)->getCpuRawTime(), 9 + 53);
