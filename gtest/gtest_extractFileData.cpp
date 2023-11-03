@@ -238,7 +238,7 @@ TEST(countProcessStatesFunction, countStatesTest)
 TEST(extractProcStatDataFunction, ExtractProcStatDataTest)
 {
   CPUInfo cpuInfo;
-  std::string filePath = "./gtest/stat.txt";
+  std::string filePath = "./gtest/proc_stat.txt";
 
   // extract the data from the file path
   extractProcStatData(cpuInfo, filePath);
@@ -258,7 +258,48 @@ TEST(extractProcStatDataFunction, ExtractProcStatDataTest)
 }
 
 
+
 TEST(extractProcPidStatusFunction, ExtractProcPidStatusTest)
 {
+  std::unordered_map<int, ProcessInfo*> allProcessInfo;
+  MemInfo memInfo;
+  std::string filePath = "./gtest/proc_pid_status.txt";
+  ProcessInfo* process;
+
+  process = new ProcessInfo();
+  allProcessInfo.insert(std::make_pair(1, process));
+
+  extractProcPidStatus(allProcessInfo,
+		       1,
+		       filePath);
+
+  // check that the user was extracted correctly
+  EXPECT_EQ(allProcessInfo.at(1)->getUSER(), "root");
+  EXPECT_NE(allProcessInfo.at(1)->getUSER(), "rooty");
+  EXPECT_NE(allProcessInfo.at(1)->getUSER(), "");
+
+  // check that the virtual memory was extracted correctly
+  EXPECT_EQ(allProcessInfo.at(1)->getVIRT(), 21312);
+  EXPECT_NE(allProcessInfo.at(1)->getVIRT(), 21313);
+
+  // check that the reserved memory was extracted correctly
+  EXPECT_EQ(allProcessInfo.at(1)->getRES(), 13000);
+  EXPECT_NE(allProcessInfo.at(1)->getRES(), 13001);
+
+  // check that the shared memory was extracted correctly
+  EXPECT_EQ(allProcessInfo.at(1)->getSHR(), 10208);
+  EXPECT_NE(allProcessInfo.at(1)->getSHR(), 10209);
+
+
+  // test processes allocated correctly
+  EXPECT_EQ(allProcessInfo.size(), 1);
+
+  std::vector<int> pids;
+  pids.push_back(1);
   
+  // clean up
+  removeDeadProcesses(allProcessInfo, pids);
+
+  // test they cleaned up
+  EXPECT_EQ(allProcessInfo.size(), 0);
 }
