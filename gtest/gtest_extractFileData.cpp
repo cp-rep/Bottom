@@ -262,7 +262,6 @@ TEST(extractProcStatDataFunction, ExtractProcStatDataTest)
 TEST(extractProcPidStatusFunction, ExtractProcPidStatusTest)
 {
   std::unordered_map<int, ProcessInfo*> allProcessInfo;
-  MemInfo memInfo;
   std::string filePath = "./gtest/proc_pid_status.txt";
   ProcessInfo* process;
 
@@ -290,10 +289,53 @@ TEST(extractProcPidStatusFunction, ExtractProcPidStatusTest)
   EXPECT_EQ(allProcessInfo.at(1)->getSHR(), 10208);
   EXPECT_NE(allProcessInfo.at(1)->getSHR(), 10209);
 
-
   // test processes allocated correctly
   EXPECT_EQ(allProcessInfo.size(), 1);
 
+  std::vector<int> pids;
+  pids.push_back(1);
+  
+  // clean up
+  removeDeadProcesses(allProcessInfo, pids);
+
+  // test they cleaned up
+  EXPECT_EQ(allProcessInfo.size(), 0);
+}
+
+
+
+TEST(extractProcPidStatFunction, ExtractProcPidStatTest)
+{
+  std::unordered_map<int, ProcessInfo*> allProcessInfo;
+  ProcessInfo* process;
+  MemInfo memInfo;
+  SecondsToTime uptime;
+  std::vector<std::string> uptimeStrings;
+  const std::string uptimePath = "./gtest/proc_uptime.txt";
+  const std::string statPath = "./gtest/proc_pid_stat.txt";  
+  
+  extractProcUptime(uptime,
+		    uptimeStrings,
+		    uptimePath);
+  process = new ProcessInfo();
+  allProcessInfo.insert(std::make_pair(1, process));
+  extractProcPidStat(allProcessInfo,
+		     memInfo,
+		     uptime,
+		     1,
+		     uptimeStrings,
+		     statPath);
+
+  EXPECT_EQ(allProcessInfo.at(1)->getPR(), 20);
+  EXPECT_EQ(allProcessInfo.at(1)->getNI(), 0);
+  EXPECT_EQ(allProcessInfo.at(1)->getS(), 'S');
+  EXPECT_EQ(allProcessInfo.at(1)->getS(), 'S');
+  EXPECT_EQ(allProcessInfo.at(1)->getCPUUsage(), 0);
+  EXPECT_EQ(allProcessInfo.at(1)->getCpuRawTime(), 9 + 53);
+
+  // test processes allocated correctly
+  EXPECT_EQ(allProcessInfo.size(), 1);
+  
   std::vector<int> pids;
   pids.push_back(1);
   
