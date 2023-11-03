@@ -339,8 +339,8 @@ int main()
 	    allProcessInfo.insert(std::make_pair(pids.at(i), process));
 	  }
 
-	// get pid of current process
-	allProcessInfo[pids.at(i)]->setPID(pids.at(i));
+	// set pid of current process
+	allProcessInfo.at(pids.at(i))->setPID(pids.at(i));
 
 	// extract per process data (USER, PR, VIRT...)
 	// /proc/[pid]/status
@@ -365,8 +365,8 @@ int main()
 	// extract COMMAND
 	// /proc/[pid]/comm
 	filePath.clear();
-	filePath = _PROC + std::to_string(pids.at(i));	
-	filePath.append(_COMM);	
+	filePath = _PROC + std::to_string(pids.at(i));
+	filePath.append(_COMM);
 	extractProcPidComm(allProcessInfo,
 			   pids.at(i),
 			   filePath);
@@ -375,7 +375,7 @@ int main()
     // count the extracted process states for task window
     // "Tasks: XXX total, X running..."
     countProcessStates(allProcessInfo,
-		       taskInfo);    
+		       taskInfo);
 
     // ## get user input ##
     std::vector<int> outPids;
@@ -387,7 +387,6 @@ int main()
     flushinp();
 
 #if _CURSES
-
     // update state values from user input
     updateStateValues(allWins,
 		      progStates,
