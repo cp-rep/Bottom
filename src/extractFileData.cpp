@@ -1328,11 +1328,32 @@ const int stringToInt(const std::string str)
 const double stringToDouble(const std::string str)
 {
   double val = 0;
+  double dotCount = 0;
+  
   if(!str.empty())
     {
+      for(int i = 0; i < str.length(); i++)
+	{
+	  if((str.at(i) < '0' || str.at(i) > '9') && str.at(i) != '.')
+	    {
+	      return 0;
+	    }
+	  
+	  if(str.at(i) == '.')
+	    {
+	      dotCount++;
+
+	      if(dotCount > 1)
+		{
+		  return 0;
+		}
+	    }
+	}
+      
       std::stringstream container(str);
       container >> val;
     }
+  
   return val;  
 } // end of "stringToDouble"
 
