@@ -805,5 +805,54 @@ TEST(stringToInt_FUNCTION, stringToInt_TEST)
 
   // case mixed numeric characters and whitespace
   EXPECT_EQ(stringToInt(str5), 0);  
+}
 
+
+
+TEST(stringToDouble_FUNCTION, stringToDouble_TEST)
+{
+  const std::string str1 = "";
+  const std::string str2 = "0";
+  const std::string str3 = "234";
+  const std::string str4 = "234j";
+  const std::string str5 = " 234 856";
+  const std::string str6 = "1234.5678";
+  const std::string str7 = " 1234.5678";
+  const std::string str8 = ".1234.5678";  
+  const std::string str9 = "12.34.5678";
+  const std::string str10 = "1234..5678";
+  const std::string str11 = "1234.5678.";
+
+  // case empty string
+  EXPECT_EQ(stringToDouble(str1), 0);
+
+  // case numeric charcter 0
+  EXPECT_EQ(stringToDouble(str2), 0);
+
+  // case numeric characters
+  EXPECT_EQ(stringToDouble(str3), 234);
+
+  // case mixed alpha-numeric characters
+  EXPECT_EQ(stringToDouble(str4), 0);
+
+  // case mixed numeric characters and whitespace
+  EXPECT_EQ(stringToDouble(str5), 0);
+
+  // case numeric characters with '.'
+  EXPECT_EQ(stringToDouble(str6), 1234.5678);
+
+  // case prefixed whitespace
+  EXPECT_EQ(stringToDouble(str7), 0);
+
+  // case prefixed '.' with another mixed '.'
+  EXPECT_EQ(stringToDouble(str8), 0);
+
+  // case multiple mixed '.'
+  EXPECT_EQ(stringToDouble(str9), 0);
+
+  // case multiple mixed '.' together
+  EXPECT_EQ(stringToDouble(str10), 0);
+
+  // case multiple mixed with '.' at end
+  EXPECT_EQ(stringToDouble(str11), 0);  
 }
