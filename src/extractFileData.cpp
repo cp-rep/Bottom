@@ -1016,9 +1016,10 @@ const int returnFirstIntFromLine(const std::string& line)
     }
   
   // loop until we reach a numeric character
-  do{
-    i++;
-  } while(line.at(i) < '0' || line.at(i) > '9');
+  while(line.at(i) < '0' || line.at(i) > '9')
+    {
+      i++;
+    }
 
   // push back until we reach a non numeric character
   while(line.at(i) >= '0' && line.at(i) <= '9')
@@ -1101,7 +1102,7 @@ const std::string returnFileLineByNumber(const std::string& filePath,
   Output:
   const int              - a const int containing a value read from the
                            parameter line.
- */
+*/
 const int returnValByWhiteSpaceCount(const std::string& line,
 				     const int& numWhiteSpaces)
 {
@@ -1212,7 +1213,7 @@ bool testNumericDir(const std::string& dirPath)
     {
       return false;
     }
-} // end of "getNumberedFolders"
+} // end of "testNumericDir"
 
 
 
@@ -1457,7 +1458,7 @@ const std::string returnFileLineByPhrase(const std::string& filePath,
     }
 
      
-} // end of "returnFileLineByNumber"
+} // end of "returnFileLineByPhrase"
 
 
 
