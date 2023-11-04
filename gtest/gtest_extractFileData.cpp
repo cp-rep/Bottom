@@ -283,7 +283,6 @@ TEST(extractProcLoadavg_FUNCTION, extractProcLoadavg_TEST)
   EXPECT_EQ(loadavgStrings.at(4), "8951");
   EXPECT_NE(loadavgStrings.at(4), "8952");
   EXPECT_NE(loadavgStrings.at(4), "");    
-
 }
 
 
@@ -664,9 +663,21 @@ TEST(parseLine_FUNCTION, parseLine_TEST)
   std::string str2 = "\tthe 234 kdfjf98 fantastic #$parse23&^ \t great";
   std::string str3 = "\t\t the \t 234   kdfjf98\tfantastic #$parse23&^ \tgreat\t";
   std::string str4 = "\t\tthe\t\t234\tkdfjf98\tfantastic\t#$parse23&^\tgreat\t";
-  std::string str5 = "\t \tthe\t \t 234   \t kdfjf98\tfantastic\t #$parse23&^ \tgreat \t";    
+  std::string str5 = "\t \tthe\t \t 234   \t kdfjf98\tfantastic\t #$parse23&^ \tgreat \t";
+  std::string str6 = "\t \tthe\t \t 234   \t kdfjf98\tfantastic\t #$parse23&^ \tgreat ";
+  std::string str7 = "\t \tthe\t \t 234   \t kdfjf98\tfantastic\t #$parse23&^ \tgreat \t ";
+  std::string str8 = "    ";
+  std::string str9 = "\t\t\t";
+  std::string str10 = "\t \t \t";
+  std::string str11 = "\t \t \t ";
+  std::string str12 = " \t \t \t ";
+  std::string str13 = " \t\t\t ";
+  std::string str14 = " \t\t\t";
+  std::string str15 = " ";
+  std::string str16 = "\t";    
+  std::string str17 = "";
 
-  // case just whitespace
+  // case mixed with whitespace
   parsedString = parseLine(str1);
   EXPECT_EQ(parsedString.at(0), "the");
   EXPECT_EQ(parsedString.at(1), "234");
@@ -695,7 +706,7 @@ TEST(parseLine_FUNCTION, parseLine_TEST)
   EXPECT_EQ(parsedString.at(4), "#$parse23&^");
   EXPECT_EQ(parsedString.at(5), "great");
 
-  // case just tabs with tab at end
+  // case mixed with tabs with tab at end
   parsedString.clear();
   parsedString  = parseLine(str4);
   EXPECT_EQ(parsedString.at(0), "the");
@@ -713,5 +724,64 @@ TEST(parseLine_FUNCTION, parseLine_TEST)
   EXPECT_EQ(parsedString.at(2), "kdfjf98");
   EXPECT_EQ(parsedString.at(3), "fantastic");
   EXPECT_EQ(parsedString.at(4), "#$parse23&^");
-  EXPECT_EQ(parsedString.at(5), "great");      
+  EXPECT_EQ(parsedString.at(5), "great");
+
+  // case mixed white space and tabs with space at end
+  parsedString.clear();
+  parsedString  = parseLine(str6);
+  EXPECT_EQ(parsedString.at(0), "the");
+  EXPECT_EQ(parsedString.at(1), "234");
+  EXPECT_EQ(parsedString.at(2), "kdfjf98");
+  EXPECT_EQ(parsedString.at(3), "fantastic");
+  EXPECT_EQ(parsedString.at(4), "#$parse23&^");
+  EXPECT_EQ(parsedString.at(5), "great");
+
+  // case mixed white space and tabs with tab and then space at end
+  parsedString.clear();
+  parsedString  = parseLine(str7);
+  EXPECT_EQ(parsedString.at(0), "the");
+  EXPECT_EQ(parsedString.at(1), "234");
+  EXPECT_EQ(parsedString.at(2), "kdfjf98");
+  EXPECT_EQ(parsedString.at(3), "fantastic");
+  EXPECT_EQ(parsedString.at(4), "#$parse23&^");
+  EXPECT_EQ(parsedString.at(5), "great");
+
+
+  // case various tests
+  // white space, whitespace + tab, tab only, and empty string
+  parsedString.clear();
+  parsedString  = parseLine(str8);
+  EXPECT_EQ(parsedString.size(), 0);
+
+  parsedString.clear();
+  parsedString  = parseLine(str9);
+  EXPECT_EQ(parsedString.size(), 0);
+
+  parsedString.clear();
+  parsedString  = parseLine(str10);
+  EXPECT_EQ(parsedString.size(), 0);
+
+  parsedString.clear();
+  parsedString  = parseLine(str11);
+  EXPECT_EQ(parsedString.size(), 0);
+
+  parsedString.clear();
+  parsedString  = parseLine(str12);
+  EXPECT_EQ(parsedString.size(), 0);
+
+  parsedString.clear();
+  parsedString  = parseLine(str13);
+  EXPECT_EQ(parsedString.size(), 0);
+
+  parsedString.clear();
+  parsedString  = parseLine(str14);
+  EXPECT_EQ(parsedString.size(), 0);
+
+  parsedString.clear();
+  parsedString  = parseLine(str15);
+  EXPECT_EQ(parsedString.size(), 0);
+
+  parsedString.clear();
+  parsedString  = parseLine(str16);
+  EXPECT_EQ(parsedString.size(), 0);  
 }
