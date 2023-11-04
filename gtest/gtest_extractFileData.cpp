@@ -653,3 +653,65 @@ TEST(returnFileLineByNumber_FUNCTION, returnFileLineByNumber_TEST)
   // case filepath doesn't exist
   EXPECT_EQ(returnFileLineByNumber(fileDoesntExist, 1), "-1");  
 }
+
+
+
+TEST(parseLine_FUNCTION, parseLine_TEST)
+{
+  std::vector<std::string> parsedString;
+
+  std::string str1 = "the 234 kdfjf98 fantastic #$parse23&^ great";
+  std::string str2 = "\tthe 234 kdfjf98 fantastic #$parse23&^ \t great";
+  std::string str3 = "\t\t the \t 234   kdfjf98\tfantastic #$parse23&^ \tgreat\t";
+  std::string str4 = "\t\tthe\t\t234\tkdfjf98\tfantastic\t#$parse23&^\tgreat\t";
+  std::string str5 = "\t \tthe\t \t 234   \t kdfjf98\tfantastic\t #$parse23&^ \tgreat \t";    
+
+  // case just whitespace
+  parsedString = parseLine(str1);
+  EXPECT_EQ(parsedString.at(0), "the");
+  EXPECT_EQ(parsedString.at(1), "234");
+  EXPECT_EQ(parsedString.at(2), "kdfjf98");
+  EXPECT_EQ(parsedString.at(3), "fantastic");
+  EXPECT_EQ(parsedString.at(4), "#$parse23&^");
+  EXPECT_EQ(parsedString.at(5), "great");
+
+  // case mixed whitepsace and tabs
+  parsedString.clear();
+  parsedString  = parseLine(str2);
+  EXPECT_EQ(parsedString.at(0), "the");
+  EXPECT_EQ(parsedString.at(1), "234");
+  EXPECT_EQ(parsedString.at(2), "kdfjf98");
+  EXPECT_EQ(parsedString.at(3), "fantastic");
+  EXPECT_EQ(parsedString.at(4), "#$parse23&^");
+  EXPECT_EQ(parsedString.at(5), "great");
+
+  // case mixed whitespace and tabs with tab at end
+  parsedString.clear();
+  parsedString  = parseLine(str3);
+  EXPECT_EQ(parsedString.at(0), "the");
+  EXPECT_EQ(parsedString.at(1), "234");
+  EXPECT_EQ(parsedString.at(2), "kdfjf98");
+  EXPECT_EQ(parsedString.at(3), "fantastic");
+  EXPECT_EQ(parsedString.at(4), "#$parse23&^");
+  EXPECT_EQ(parsedString.at(5), "great");
+
+  // case just tabs with tab at end
+  parsedString.clear();
+  parsedString  = parseLine(str4);
+  EXPECT_EQ(parsedString.at(0), "the");
+  EXPECT_EQ(parsedString.at(1), "234");
+  EXPECT_EQ(parsedString.at(2), "kdfjf98");
+  EXPECT_EQ(parsedString.at(3), "fantastic");
+  EXPECT_EQ(parsedString.at(4), "#$parse23&^");
+  EXPECT_EQ(parsedString.at(5), "great");
+
+  // case mixed white space and tabs with space then tab at end
+  parsedString.clear();
+  parsedString  = parseLine(str5);
+  EXPECT_EQ(parsedString.at(0), "the");
+  EXPECT_EQ(parsedString.at(1), "234");
+  EXPECT_EQ(parsedString.at(2), "kdfjf98");
+  EXPECT_EQ(parsedString.at(3), "fantastic");
+  EXPECT_EQ(parsedString.at(4), "#$parse23&^");
+  EXPECT_EQ(parsedString.at(5), "great");      
+}
