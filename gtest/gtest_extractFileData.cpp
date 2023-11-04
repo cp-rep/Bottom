@@ -444,7 +444,7 @@ TEST(findDeadProcessesFunction, findDeadProcessesTest)
   std::vector<int> pidsDeadResult = {1, 2, 6, 8, 9, 12};
   bool foundDead;
 
-  // first died, middle died, end died case
+  // case first died, middle died, end died
   foundDead = findDeadProcesses(pids,
 				pidsOld,
 				pidsDead);
@@ -456,7 +456,7 @@ TEST(findDeadProcessesFunction, findDeadProcessesTest)
   pidsDead.clear();
   pidsDeadResult.clear();
 
-  // none died case
+  // case no deaths
   pids = { 1, 2};
   pidsOld = { 1, 2};
   foundDead = findDeadProcesses(pids,
@@ -470,7 +470,7 @@ TEST(findDeadProcessesFunction, findDeadProcessesTest)
   pidsDead.clear();
   pidsDeadResult.clear();
 
-  // no processes case (technically impossible but sanity)
+  // case no processes (technically impossible but sanity)
   foundDead = findDeadProcesses(pids,
 				pidsOld,
 				pidsDead);
@@ -482,7 +482,7 @@ TEST(findDeadProcessesFunction, findDeadProcessesTest)
   pidsDead.clear();
   pidsDeadResult.clear();
   
-  // first loop case, no old pids
+  // case first loop, no old pids
   pids = { 3, 4, 5, 7, 10, 11 };
   foundDead = findDeadProcesses(pids,
 				pidsOld,
@@ -496,7 +496,7 @@ TEST(findDeadProcessesFunction, findDeadProcessesTest)
   pidsDead.clear();
   pidsDeadResult.clear();
   
-  // all died case
+  // case all died
   pidsOld = { 1, 2, 3, 4, 5, 6, 7};
   pidsDeadResult = { 1, 2, 3, 4, 5, 6, 7};
   foundDead = findDeadProcesses(pids,
@@ -511,7 +511,7 @@ TEST(findDeadProcessesFunction, findDeadProcessesTest)
   pidsDead.clear();
   pidsDeadResult.clear();
   
-  // new processes case with deaths
+  // case new processes with deaths
   pids = { 3, 4, 5, 7, 10, 11, 14, 17, 100, 98, 877 };
   pidsOld = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
   pidsDeadResult = {1, 2, 6, 8, 9, 12};
@@ -520,4 +520,95 @@ TEST(findDeadProcessesFunction, findDeadProcessesTest)
 				pidsDead);
   EXPECT_EQ(foundDead, true);
   EXPECT_EQ(pidsDead, pidsDeadResult);
+}
+
+
+
+TEST(returnFirstIntFromLineFunction, returnFirstIntFromLineTesT)
+{
+  std::string line;
+
+  // case first numeric starts string index 0, other values follow by whitespace
+  line = "34 f$kj 55";
+  EXPECT_EQ(returnFirstIntFromLine(line), 34);
+
+  // case first numeric starts string index 0 other characters directly appended
+  line = "34f$kj";
+  EXPECT_EQ(returnFirstIntFromLine(line), 34);
+
+  // case first numeric starts string index 0 other characters directly appended
+  // with other numeric characters directly appended to those
+  line = "34f$kj54";
+  EXPECT_EQ(returnFirstIntFromLine(line), 34);
+
+  // case first numeric starts string index 0, no other characters follow
+  line = "34";
+  EXPECT_EQ(returnFirstIntFromLine(line), 34);    
+
+  // case first numeric starts string index 1, other values follow by whitespace
+  line = " 34 f$kj 55";
+  EXPECT_EQ(returnFirstIntFromLine(line), 34);
+
+  // case first numeric starts string index 1 other characters directly appended
+  line = " 34f$kj";
+  EXPECT_EQ(returnFirstIntFromLine(line), 34);
+
+  // case first numeric starts string index 1 other characters directly appended
+  // with other numeric characters directly appended to those
+  line = " 34f$kj54";
+  EXPECT_EQ(returnFirstIntFromLine(line), 34);
+
+  // case first numeric starts string index 0, no other characters follow
+  line = " 34";
+  EXPECT_EQ(returnFirstIntFromLine(line), 34);    
+
+  // case first numeric starts mid string appended
+  line = "w#dn!@j54";
+  EXPECT_EQ(returnFirstIntFromLine(line), 54);
+
+  // case first numeric starts mid string appended with whitespace after
+  line = "w#dn!@j54 ";
+  EXPECT_EQ(returnFirstIntFromLine(line), 54);
+
+  // case first numeric starts mid string appended with whitespace after with
+  // another numeric
+  line = "w#dn!@j54 43";
+  EXPECT_EQ(returnFirstIntFromLine(line), 54);
+
+  // case first numeric starts mid string with more characters and numeric
+  // appended after
+  line = "w#dn!@j54df43";
+  EXPECT_EQ(returnFirstIntFromLine(line), 54);
+
+  // case first numeric starts mid string with whitespace and more characters
+  // and numeric appended after  
+  line = "w#dn!@j 54df43";
+  EXPECT_EQ(returnFirstIntFromLine(line), 54);
+
+  // case first numeric starts mid string with whitespace and more characters
+  // and numeric appended after another whitepace
+  line = "w#dn!@j 54 df43";
+  EXPECT_EQ(returnFirstIntFromLine(line), 54);
+
+  // case first numeric starts mid string with whitespace and whitespace after
+  line = "w#dn!@j 54 ";
+  EXPECT_EQ(returnFirstIntFromLine(line), 54);
+
+  // repeat of test cases with just numeric characters
+  line = "54 100";
+  EXPECT_EQ(returnFirstIntFromLine(line), 54);
+  line = "54 100 ";
+  EXPECT_EQ(returnFirstIntFromLine(line), 54);
+  line = "54 100 150";
+  EXPECT_EQ(returnFirstIntFromLine(line), 54);
+  line = "54 100 150 ";
+  EXPECT_EQ(returnFirstIntFromLine(line), 54);
+  line = " 54 100";
+  EXPECT_EQ(returnFirstIntFromLine(line), 54);
+  line = " 54 100 ";
+  EXPECT_EQ(returnFirstIntFromLine(line), 54);
+  line = " 54 100 150";
+  EXPECT_EQ(returnFirstIntFromLine(line), 54);
+  line = " 54 100 150 ";
+  EXPECT_EQ(returnFirstIntFromLine(line), 54);      
 }
