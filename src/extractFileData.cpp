@@ -1056,20 +1056,20 @@ const int returnFirstIntFromLine(const std::string& line)
 
 /*
   Function:
-  returnFileLineByNumber
+   returnFileLineByNumber
    
   Description:
-  Returns a specified line from a file of a corresponding line number.
+   Returns a specified line from a file of a corresponding line number.
 
   Input:
-  filePath               - a const reference to a string for a full file path.
+   filePath               - a const reference to a string for a full file path.
 
-  lineNumber             - a const reference to an int for a specific line number
-                           we want to return.
+   lineNumber             - a const reference to an int for a specific line number
+                            we want to return.
 			   
   Output:
-  const string           - a const string containing the desired line we are
-                           returning based upon the incoming line number.
+   const string           - a const string containing the desired line we are
+                            returning based upon the incoming line number.
 */
 const std::string returnFileLineByNumber(const std::string& filePath,
 					 const int& lineNumber)
@@ -1095,103 +1095,6 @@ const std::string returnFileLineByNumber(const std::string& filePath,
       return "-1";
     }    
 } // end of "returnFileLineByNumber"
-
-
-
-/*
-  Function:
-   returnValByWhitespaceCount
-
-  Description:
-   Traverses a whitespace delimited string and retruns a preceding numeric
-   value based upon how many whitespaces have been counted.
-
-  Input:
-  line                   - a const string reference containing a comma
-                           delimited string.
-
-  numWhiteSpaces         - a const int reference representing the number 
-                           of whitespaces to skip before reading a value;
-
-  Output:
-  const int              - a const int containing a value read from the
-                           parameter line.
-*/
-const int returnValByWhiteSpaceCount(const std::string& line,
-				     const int& numWhiteSpaces)
-{
-  std::string valString;
-  int i = 0;
-  int spaceCount = 0;
-
-  do{
-    i++;
-  } while(line.at(i) != ')');
-
-  for(; i < line.length() && spaceCount != numWhiteSpaces; i++)
-    {
-      if(line.at(i) == ' ')
-	{
-	  spaceCount++;
-	}
-    }
-
-  do{
-      valString.push_back(line.at(i));
-      i++;
-    } while(line.at(i) != ' ');
-
-  return stoi(valString);
-} // end of "returnValByWhiteSpace"
-
-
-
-/*
-  Function:
-   returnStringByWhiteSpaceCount
-
-  Description:
-   Traverses an incoming string counting each whitespace character.  When the
-   count of whitespaces is reached, the next non whitespace elements are
-   appended to a new string until a new white space character is found.
-   That string is returned to the caller.
-
-  Input:
-   line                 - A reference to a constant string object type that
-                          contains the line to be traversed.
-
-   numWhiteSpaces       - A reference to a constant integer type that holds
-                          the number of whitespace characters the loop
-			  should count before returning the remaining
-			  characters of the line parameter.
-
-  Output:
-   string               - A constant string object type that should be
-                          the resulting string from the counted white
-			  spaces.
-*/
-const std::string returnStringByWhiteSpaceCount(const std::string& line,
-						 const int& numWhiteSpaces)
-{
-  std::string valString;
-  int i = 0;
-  int spaceCount = 0;
-  
-  for(; i < line.length() && spaceCount != numWhiteSpaces; i++)
-    {
-      if(line.at(i) == ' ')
-	{
-	  spaceCount++;
-	}
-    }
-
-  do{
-      valString.push_back(line.at(i));
-      i++;
-    } while(line.at(i) != ' ');
-
-  return valString;
-} // end of "returnStringByWhiteSpace"
 
 
 
