@@ -949,3 +949,49 @@ TEST(fixStatLine_FUNCTION, fixStatLine_TEST)
   // case empty string
   EXPECT_EQ(fixStatLine(str18), "");
 }
+
+
+
+TEST(doubleToStr_FUNCTION, doubleToStr_TEST)
+{
+  double val1 = 123.456789;
+  double val2 = 123;
+  double val3 = .29485;
+  double val4 = 0;  
+
+  // case xxx.xxxx
+  EXPECT_EQ(doubleToStr(val1, 0), "123");
+  EXPECT_EQ(doubleToStr(val1, 1), "123.4");
+  EXPECT_EQ(doubleToStr(val1, 2), "123.45");
+  EXPECT_EQ(doubleToStr(val1, 3), "123.456");
+  EXPECT_EQ(doubleToStr(val1, 4), "123.4567");
+  EXPECT_EQ(doubleToStr(val1, 5), "123.45678");
+  EXPECT_EQ(doubleToStr(val1, 6), "123.456789");
+
+  // case xxx
+  EXPECT_EQ(doubleToStr(val2, 0), "123");  
+  EXPECT_EQ(doubleToStr(val2, 1), "123.0");
+  EXPECT_EQ(doubleToStr(val2, 2), "123.00");
+  EXPECT_EQ(doubleToStr(val2, 3), "123.000");
+  EXPECT_EQ(doubleToStr(val2, 4), "123.0000");
+  EXPECT_EQ(doubleToStr(val2, 5), "123.00000");
+  EXPECT_EQ(doubleToStr(val2, 6), "123.000000");      
+  
+  // case 0.xxx
+  EXPECT_EQ(doubleToStr(val3, 0), "0");
+  EXPECT_EQ(doubleToStr(val3, 1), "0.2");
+  EXPECT_EQ(doubleToStr(val3, 2), "0.29");
+  EXPECT_EQ(doubleToStr(val3, 3), "0.294");
+  EXPECT_EQ(doubleToStr(val3, 4), "0.2948");  
+  EXPECT_EQ(doubleToStr(val3, 5), "0.29485");
+  EXPECT_EQ(doubleToStr(val3, 6), "0.294850");
+
+  // case 0
+  EXPECT_EQ(doubleToStr(val4, 0), "0");
+  EXPECT_EQ(doubleToStr(val4, 1), "0.0");
+  EXPECT_EQ(doubleToStr(val4, 2), "0.00");
+  EXPECT_EQ(doubleToStr(val4, 3), "0.000");
+  EXPECT_EQ(doubleToStr(val4, 4), "0.0000");
+  EXPECT_EQ(doubleToStr(val4, 5), "0.00000");
+  EXPECT_EQ(doubleToStr(val4, 6), "0.000000");        
+}
