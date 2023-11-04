@@ -11,7 +11,7 @@
 #include "cpuInfo.hpp"
 #include "taskInfo.hpp"
 
-TEST(doesDirectoryExistFunction, DirectoryExistsTest)
+TEST(doesDirectoryExist_FUNCTION, directoryExists_TEST)
 {
   std::string dir1 = "./";
   std::string dir2 = "./gtest";
@@ -26,7 +26,7 @@ TEST(doesDirectoryExistFunction, DirectoryExistsTest)
 
 
 
-TEST(doesDirectoryExistFunction, DirectoryDoesntExistTest)
+TEST(doesDirectoryExistFunction, directoryDoesntExist_TEST)
 {
   std::string dir1 = "./idontexist";
   std::string dir2 = "./idefinitelydontexist";
@@ -40,7 +40,7 @@ TEST(doesDirectoryExistFunction, DirectoryDoesntExistTest)
 
 
 
-TEST(extractProcCommFunction, ExtractCommandTest)
+TEST(extractProcComm_FUNCTION, extractCommand_TEST)
 {
   std::unordered_map<int, ProcessInfo*> allProcessInfo;
   ProcessInfo* process;
@@ -71,7 +71,7 @@ TEST(extractProcCommFunction, ExtractCommandTest)
 
 
 
-TEST(removeDeadProcessesFunction, DeleteDeadProcessesTest)
+TEST(removeDeadProcesses_FUNCTION, deleteDeadProcesses_TEST)
 {
   std::unordered_map<int, ProcessInfo*> allProcessInfo;
   ProcessInfo* process1 = new ProcessInfo();
@@ -103,7 +103,7 @@ TEST(removeDeadProcessesFunction, DeleteDeadProcessesTest)
 
 
 
-TEST(returnPhraseLineFunction, ReturnPhraseTest)
+TEST(returnPhraseLine_FUNCTION, returnPhrase_TEST)
 {
   const std::string filePath = "./gtest/meminfo.txt";  
   const std::string fileDoesntExist = "file.file";
@@ -132,7 +132,7 @@ TEST(returnPhraseLineFunction, ReturnPhraseTest)
 
 
 
-TEST(makeDirectoryFunction, MakeDirectoryTest)
+TEST(makeDirectory_FUNCTION, makeDirectory_TEST)
 {
   const std::string dirPath = "./testDirectory";
   bool directoryMade;
@@ -153,7 +153,7 @@ TEST(makeDirectoryFunction, MakeDirectoryTest)
 
 
 
-TEST(countProcessStatesFunction, countStatesTest)
+TEST(countProcessStates_FUNCTION, countStates_TEST)
 {
   TaskInfo taskInfo;
   std::unordered_map<int, ProcessInfo*> allProcessInfo;
@@ -235,7 +235,7 @@ TEST(countProcessStatesFunction, countStatesTest)
 
 
 
-TEST(extractProcUptimeFunction, ExtractProcUptimeTest)
+TEST(extractProcUptime_FUNCTION, extractProcUptime_TEST)
 {
   SecondsToTime uptime;
   const std::string uptimePath = "./gtest/proc_uptime.txt";
@@ -256,7 +256,7 @@ TEST(extractProcUptimeFunction, ExtractProcUptimeTest)
 
 
 
-TEST(extractProcLoadavgFunction, ExtractProcLoadavgTest)
+TEST(extractProcLoadavg_FUNCTION, extractProcLoadavg_TEST)
 {
   
   std::vector<std::string> loadavgStrings;
@@ -286,7 +286,7 @@ TEST(extractProcLoadavgFunction, ExtractProcLoadavgTest)
 
 
 
-TEST(extractProcStatFunction, ExtractProcStatTest)
+TEST(extractProcStat_FUNCTION, extractProcStat_TEST)
 {
   CPUInfo cpuInfo;
   std::string filePath = "./gtest/proc_stat.txt";
@@ -310,7 +310,7 @@ TEST(extractProcStatFunction, ExtractProcStatTest)
 
 
 
-TEST(extractProcPidStatusFunction, ExtractProcPidStatusTest)
+TEST(extractProcPidStatus_FUNCTION, extractProcPidStatus_TEST)
 {
   std::unordered_map<int, ProcessInfo*> allProcessInfo;
   std::string filePath = "./gtest/proc_pid_status.txt";
@@ -355,7 +355,7 @@ TEST(extractProcPidStatusFunction, ExtractProcPidStatusTest)
 
 
 
-TEST(extractProcPidStatFunction, ExtractProcPidStatTest)
+TEST(extractProcPidStat_FUNCTION, extractProcPidStat_TEST)
 {
   std::unordered_map<int, ProcessInfo*> allProcessInfo;
   ProcessInfo* process;
@@ -398,7 +398,7 @@ TEST(extractProcPidStatFunction, ExtractProcPidStatTest)
 
 
 
-TEST(extractProcMeminfoFunction, extractProcMeminfoTest)
+TEST(extractProcMeminfo_FUNCTION, extractProcMeminfo_TEST)
 {
   MemInfo memInfo;
   const std::string memInfoPath = "./gtest/proc_meminfo.txt";
@@ -436,7 +436,7 @@ TEST(extractProcMeminfoFunction, extractProcMeminfoTest)
 
 
 
-TEST(findDeadProcessesFunction, findDeadProcessesTest)
+TEST(findDeadProcesses_FUNCTION, findDeadProcesses_TEST)
 {
   std::vector<int> pids = { 3, 4, 5, 7, 10, 11 };
   std::vector<int> pidsOld = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
@@ -524,7 +524,7 @@ TEST(findDeadProcessesFunction, findDeadProcessesTest)
 
 
 
-TEST(returnFirstIntFromLineFunction, returnFirstIntFromLineTesT)
+TEST(returnFirstIntFromLine_FUNCTION, returnFirstIntFromLine_TesT)
 {
   std::string line;
 
@@ -610,5 +610,12 @@ TEST(returnFirstIntFromLineFunction, returnFirstIntFromLineTesT)
   line = " 54 100 150";
   EXPECT_EQ(returnFirstIntFromLine(line), 54);
   line = " 54 100 150 ";
-  EXPECT_EQ(returnFirstIntFromLine(line), 54);      
+  EXPECT_EQ(returnFirstIntFromLine(line), 54);
+}
+
+
+
+TEST(returnFileLineByNumber_FUNCTION, returnFileLineByNumber_TEST)
+{
+  
 }
