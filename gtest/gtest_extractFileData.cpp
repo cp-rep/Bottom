@@ -822,6 +822,7 @@ TEST(stringToDouble_FUNCTION, stringToDouble_TEST)
   const std::string str9 = "12.34.5678";
   const std::string str10 = "1234..5678";
   const std::string str11 = "1234.5678.";
+  const std::string str12 = ".";
 
   // case empty string
   EXPECT_EQ(stringToDouble(str1), 0);
@@ -854,5 +855,8 @@ TEST(stringToDouble_FUNCTION, stringToDouble_TEST)
   EXPECT_EQ(stringToDouble(str10), 0);
 
   // case multiple mixed with '.' at end
-  EXPECT_EQ(stringToDouble(str11), 0);  
+  EXPECT_EQ(stringToDouble(str11), 0);
+
+  // case only '.'
+  EXPECT_EQ(stringToDouble(str12), 0);    
 }
