@@ -860,3 +860,47 @@ TEST(stringToDouble_FUNCTION, stringToDouble_TEST)
   // case only '.'
   EXPECT_EQ(stringToDouble(str12), 0);    
 }
+
+
+
+TEST(returnFileLineByPhrase_FUNCTION, returnFileLineByPhrase_TEST)
+{
+  const std::string filePath1 = "./gtest/proc_pid_status.txt";
+  const std::string filePath2 = "";
+  const std::string filePath3 = " ";
+  const std::string filePath4 = "./gtest";  
+  const std::string filePath5 = "./gtest/doesNotExist";
+
+  // case file path exists, phrase exists
+  // test phrase starts index 0
+  EXPECT_EQ(returnFileLineByPhrase(filePath1,
+				   "VmPeak"), "VmPeak:\t   30308 kB");
+  // test phrase starts index 0
+  EXPECT_EQ(returnFileLineByPhrase(filePath1,
+				   "SigBlk"), "SigBlk:\t7fefc1fe28014a03");
+  // test phrase starts mid string
+  EXPECT_EQ(returnFileLineByPhrase(filePath1,
+				   "\t7fef"), "SigBlk:\t7fefc1fe28014a03");
+  // test phrase reaches end of string
+  EXPECT_EQ(returnFileLineByPhrase(filePath1,
+				   "4a03"), "SigBlk:\t7fefc1fe28014a03");
+  // test phrase starts mid string
+  EXPECT_EQ(returnFileLineByPhrase(filePath1,
+				   "gid"), "Tgid:\t1");
+
+  // case empty file path
+  EXPECT_EQ(returnFileLineByPhrase(filePath2,
+				   "gid"), "-1");
+
+  // case bad file path
+  EXPECT_EQ(returnFileLineByPhrase(filePath3,
+				   "gid"), "-1");
+
+  // case file path is a folder
+  EXPECT_EQ(returnFileLineByPhrase(filePath4,
+				   "gid"), "-1");
+
+  // case file doesn't exist bad file path
+  EXPECT_EQ(returnFileLineByPhrase(filePath5,
+				   "gid"), "-1");  
+}
