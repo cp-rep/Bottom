@@ -1016,18 +1016,32 @@ const int returnFirstIntFromLine(const std::string& line)
     }
   
   // loop until we reach a numeric character
-  while(line.at(i) < '0' || line.at(i) > '9')
+  while(i < line.size())
     {
-      i++;
+      if(line.at(i) < '0' || line.at(i) > '9')
+	{
+	  i++;
+	}
+      else
+	{
+	  break;
+	}
     }
-
-  // push back until we reach a non numeric character
-  while(line.at(i) >= '0' && line.at(i) <= '9')
+  
+  // push back numeric characters until we reach a non-numeric character
+  while(i < line.size())
     {
-      temp.push_back(line.at(i));
-      i++;
+      if(line.at(i) >= '0' && line.at(i) <= '9')
+	{
+	  temp.push_back(line.at(i));
+	  i++;
+	}
+      else
+	{
+	  break;
+	}
     }
-    
+  
   if(temp.empty())
     {
       return -1;
