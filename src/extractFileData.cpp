@@ -1364,10 +1364,10 @@ const double stringToDouble(const std::string str)
    returnFileLineByPhrase
 
   Description:
-   Retrieves lines of text from a file line by line, saves that line to
-   a string, and then sends that string off to the phraseExists() function
-   to see if the incoming "phrase" parameter is contained in that line.
-   If the phrase is found, the file line string that contained the
+   Retrieves lines of text from a file line by line, saving them to
+   a string, and then uses that string as an argument for the phraseExists()
+   function to see if the incoming "phrase" parameter is contained in the
+   line. If the phrase is found, the file line string that contained the
    parameter phrase is returned to the caller.
 
   Input:
