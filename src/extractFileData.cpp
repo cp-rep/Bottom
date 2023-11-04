@@ -1162,6 +1162,12 @@ std::vector<std::string> parseLine(const std::string& str)
     {
       while((str.at(i) == '\t' || str.at(i) == ' ') && i < str.length())
 	{
+	  if( (str.at(i) == '\t' && i == str.length() - 1) ||
+	      (str.at(i) == ' ' && i == str.length() - 1))
+	    {
+	      break;
+	    }
+	  
 	  if(!temp.empty())
 	    {
 	      parsedString.push_back(temp);
@@ -1169,7 +1175,12 @@ std::vector<std::string> parseLine(const std::string& str)
 	    }
 	  i++;
 	}
-      temp.push_back(str.at(i));
+
+      if((str.at(i) != '\t') &&
+	 (str.at(i) != ' '))
+	{
+	  temp.push_back(str.at(i));
+	}
     }
 
   if(!temp.empty())
