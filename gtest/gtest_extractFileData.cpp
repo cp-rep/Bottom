@@ -748,40 +748,35 @@ TEST(parseLine_FUNCTION, parseLine_TEST)
 
 
   // case various tests
-  // white space, whitespace + tab, tab only, and empty string
+  // white space only , whitespace + tab, tab only, and empty string
   parsedString.clear();
   parsedString  = parseLine(str8);
   EXPECT_EQ(parsedString.size(), 0);
-
   parsedString.clear();
   parsedString  = parseLine(str9);
   EXPECT_EQ(parsedString.size(), 0);
-
   parsedString.clear();
   parsedString  = parseLine(str10);
   EXPECT_EQ(parsedString.size(), 0);
-
   parsedString.clear();
   parsedString  = parseLine(str11);
   EXPECT_EQ(parsedString.size(), 0);
-
   parsedString.clear();
   parsedString  = parseLine(str12);
   EXPECT_EQ(parsedString.size(), 0);
-
   parsedString.clear();
   parsedString  = parseLine(str13);
   EXPECT_EQ(parsedString.size(), 0);
-
   parsedString.clear();
   parsedString  = parseLine(str14);
   EXPECT_EQ(parsedString.size(), 0);
-
   parsedString.clear();
   parsedString  = parseLine(str15);
   EXPECT_EQ(parsedString.size(), 0);
-
   parsedString.clear();
   parsedString  = parseLine(str16);
+  EXPECT_EQ(parsedString.size(), 0);
+  parsedString.clear();
+  parsedString  = parseLine(str17);
   EXPECT_EQ(parsedString.size(), 0);  
 }
