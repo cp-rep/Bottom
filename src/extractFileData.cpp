@@ -1555,11 +1555,10 @@ const std::string fixStatLine(const std::string& line)
    precision            - A reference to a constant integer type that
                           determines the number of decimal places the
 			  caller chose to store in the string.
-
   Output:
    string               - A const string object type that is the result
                           of the double to string conversion.
- */
+*/
 const std::string doubleToStr(const double& val, const int& precision)
 {
   std::string valString = std::to_string(val);
@@ -1571,15 +1570,19 @@ const std::string doubleToStr(const double& val, const int& precision)
       temp.push_back(valString.at(i));
     }
 
-  if(valString.at(i) == '.')
-    {
-      temp.push_back(valString.at(i));
-      i++;
-      for(int j = 0; j < precision && i < valString.length(); j++, i++)
+  if(precision > 0)
+      {
+      if(i != valString.length() && valString.at(i) == '.')
 	{
-	  temp.push_back(valString.at(i)); 
+	  temp.push_back(valString.at(i));
+	  i++;
+      
+	  for(int j = 0; j < precision && i < valString.length(); j++, i++)
+	    {
+	      temp.push_back(valString.at(i));
+	    }
 	}
     }
-
+  
   return temp;
 } // end of "doubleToStr"
