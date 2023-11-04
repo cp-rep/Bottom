@@ -1284,15 +1284,25 @@ const std::vector<int> findNumericDirs(const std::string& dirPath)
   Output:
    int                  - A constant integer type that should contain
                           the result of the conversion.
- */
+*/
 const int stringToInt(const std::string str)
 {
   int val = 0;
+  
   if(!str.empty())
     {
+      for(int i = 0; i < str.length(); i++)
+	{
+	  if(str.at(i) < '0' || str.at(i) > '9')
+	    {
+	      return 0;
+	    }
+	}
+      
       std::stringstream container(str);
       container >> val;
     }
+  
   return val;
 } // end of "stringToInt"
 
