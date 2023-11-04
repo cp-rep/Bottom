@@ -887,20 +887,65 @@ TEST(returnFileLineByPhrase_FUNCTION, returnFileLineByPhrase_TEST)
   // test phrase starts mid string
   EXPECT_EQ(returnFileLineByPhrase(filePath1,
 				   "gid"), "Tgid:\t1");
-
   // case empty file path
   EXPECT_EQ(returnFileLineByPhrase(filePath2,
 				   "gid"), "-1");
-
   // case bad file path
   EXPECT_EQ(returnFileLineByPhrase(filePath3,
 				   "gid"), "-1");
-
   // case file path is a folder
   EXPECT_EQ(returnFileLineByPhrase(filePath4,
 				   "gid"), "-1");
-
   // case file doesn't exist bad file path
   EXPECT_EQ(returnFileLineByPhrase(filePath5,
 				   "gid"), "-1");  
+}
+
+
+
+TEST(fixStatLine_FUNCTION, fixStatLine_TEST)
+{
+  const std::string str1 = "23 (someCommand) R 0 34 56 88...";
+  const std::string str2 = "23 ((someCommand)) R 0 34 56 88...";
+  const std::string str3 = "23 (((((((someCommand) R 0 34 56 88...";
+  const std::string str4 = "23 (((((((someCommand)) R 0 34 56 88...";
+  const std::string str5 = "23 (((((((someCommand)))) R 0 34 56 88...";
+  const std::string str6 = "23 (someCommand)) R 0 34 56 88...";
+  const std::string str7 = "23 (someCommand)))) R 0 34 56 88...";
+  const std::string str8 = "23 (someCommand)))))))) R 0 34 56 88...";
+  const std::string str9 = "23 ( some Command )))))))) R 0 34 56 88...";
+  const std::string str10 = "23 ( some Command )))))))) R 0 34 56 88...";
+  const std::string str11 = "23 (some Command)))))))) R 0 34 56 88...";
+  const std::string str12 = "23 (some: Command) R 0 34 56 88...";
+  const std::string str13 = "23 (some: Command))) R 0 34 56 88...";
+  const std::string str14 = "23 (some:Command ))) R 0 34 56 88...";
+  const std::string str15 = "23 (some:Command ) R 0 34 56 88...";
+  const std::string str16 = "23 (some:Command )";
+  const std::string str17 = "23 (some:Command ) ";  
+  const std::string str18 = "";
+
+  // various cases for unnecessarily full proofing reading past
+  // the command
+  EXPECT_EQ(fixStatLine(str1), "R 0 34 56 88...");
+  EXPECT_EQ(fixStatLine(str2), "R 0 34 56 88...");
+  EXPECT_EQ(fixStatLine(str3), "R 0 34 56 88...");
+  EXPECT_EQ(fixStatLine(str4), "R 0 34 56 88...");
+  EXPECT_EQ(fixStatLine(str5), "R 0 34 56 88...");
+  EXPECT_EQ(fixStatLine(str6), "R 0 34 56 88...");
+  EXPECT_EQ(fixStatLine(str7), "R 0 34 56 88...");
+  EXPECT_EQ(fixStatLine(str8), "R 0 34 56 88...");
+  EXPECT_EQ(fixStatLine(str9), "R 0 34 56 88...");
+  EXPECT_EQ(fixStatLine(str10), "R 0 34 56 88...");
+  EXPECT_EQ(fixStatLine(str11), "R 0 34 56 88...");
+  EXPECT_EQ(fixStatLine(str12), "R 0 34 56 88...");
+  EXPECT_EQ(fixStatLine(str13), "R 0 34 56 88...");
+  EXPECT_EQ(fixStatLine(str14), "R 0 34 56 88...");
+  EXPECT_EQ(fixStatLine(str15), "R 0 34 56 88...");
+
+  // case the file is corrupted after the command value
+  EXPECT_EQ(fixStatLine(str16), "-1");
+  EXPECT_EQ(fixStatLine(str17), "-1");
+
+  // case empty string
+  EXPECT_EQ(fixStatLine(str18), "");
 }
