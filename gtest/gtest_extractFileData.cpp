@@ -105,7 +105,7 @@ TEST(removeDeadProcesses_FUNCTION, removeDeadProcesses_TEST)
 
 TEST(returnPhraseLine_FUNCTION, returnPhraseLine_TEST)
 {
-  const std::string filePath = "./gtest/meminfo.txt";  
+  const std::string filePath = "./gtest/proc_meminfo.txt";  
   const std::string fileDoesntExist = "file.file";
   const std::string phrase = "SwapCached";
   const std::string fileLine = "SwapCached:            0 kB";
@@ -328,6 +328,7 @@ TEST(extractProcPidStatus_FUNCTION, extractProcPidStatus_TEST)
 
   // test that the user was extracted correctly
   EXPECT_EQ(allProcessInfo.at(1)->getUSER(), "root");
+  EXPECT_NE(allProcessInfo.at(1)->getUSER(), "roo");    
   EXPECT_NE(allProcessInfo.at(1)->getUSER(), "rooty");
   EXPECT_NE(allProcessInfo.at(1)->getUSER(), "");
 
@@ -496,8 +497,7 @@ TEST(findDeadProcesses_FUNCTION, findDeadProcesses_TEST)
 				pidsDead);
   EXPECT_EQ(foundDead, false);
   EXPECT_EQ(pidsDead, pidsDeadResult);
-
-
+  
   pids.clear();
   pidsOld.clear();
   pidsDead.clear();
@@ -511,7 +511,6 @@ TEST(findDeadProcesses_FUNCTION, findDeadProcesses_TEST)
 				pidsDead);
   EXPECT_EQ(foundDead, true);
   EXPECT_EQ(pidsDead, pidsDeadResult);
-
 
   pids.clear();
   pidsOld.clear();
@@ -601,7 +600,7 @@ TEST(returnFirstIntFromLine_FUNCTION, returnFirstIntFromLine_TEST)
   line = "w#dn!@j 54 ";
   EXPECT_EQ(returnFirstIntFromLine(line), 54);
 
-  // repeat of test cases with just numeric characters
+  // repeat of test cases with just numeric characters and whitespace
   line = "54 100";
   EXPECT_EQ(returnFirstIntFromLine(line), 54);
   line = "54 100 ";
@@ -624,5 +623,33 @@ TEST(returnFirstIntFromLine_FUNCTION, returnFirstIntFromLine_TEST)
 
 TEST(returnFileLineByNumber_FUNCTION, returnFileLineByNumber_TEST)
 {
-  
+  const std::string filePath = "./gtest/fileLines.txt";
+  const std::string noFile = "";
+  const std::string fileDoesntExist = "./doesNotExist.txt";
+
+  // case returning correct results
+  // test first line
+  EXPECT_EQ(returnFileLineByNumber(filePath, 1), "File line 1.");
+  EXPECT_EQ(returnFileLineByNumber(filePath, 2), "File line 2.");
+  // test middle line
+  EXPECT_EQ(returnFileLineByNumber(filePath, 6), "File line 6.");
+  // test skipped lines  
+  EXPECT_EQ(returnFileLineByNumber(filePath, 8), "File line 8.");
+  EXPECT_EQ(returnFileLineByNumber(filePath, 11), "File line 11.");
+  // test last line
+  EXPECT_EQ(returnFileLineByNumber(filePath, 12), "And file line 12.");
+  // test file lines beyond the total lines in file
+  EXPECT_EQ(returnFileLineByNumber(filePath, 13), "");
+  EXPECT_EQ(returnFileLineByNumber(filePath, 14), "");  
+
+  // case returning incorrect results
+  EXPECT_NE(returnFileLineByNumber(filePath, 1), "File line 1");    
+  EXPECT_NE(returnFileLineByNumber(filePath, 1), "File line 2.");
+  EXPECT_NE(returnFileLineByNumber(filePath, 0), "File line 1.");
+
+  // case no filepath provided
+  EXPECT_EQ(returnFileLineByNumber(noFile, 1), "-1");
+
+  // case filepath doesn't exist
+  EXPECT_EQ(returnFileLineByNumber(fileDoesntExist, 1), "-1");  
 }
