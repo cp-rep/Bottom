@@ -1482,13 +1482,15 @@ bool phraseExists(const std::string& line, const std::string& phrase)
   Description:
    The incoming /proc/[pid]/stat needs to be parsed for process data.
    The command is the second "value" delimited by whitespace.  The command
-   always ends in a ')', but sometimes the command itself contains parenthesese.
-   This function truncates the first portion of the string returning the first
-   element that is not a whitespace or a ')' character after the last ')' character.
+   always ends in a ')', but sometimes the command itself contains
+   parenthesese. This function truncates the first portion of the string
+   returning the first element that is not a whitespace or a ')' character
+   after the last ')' character.
 
   Input:
-   line                 - A reference to a constant string object type that holds
-                          the /proc/[pid]/stat line that shal be truncated.
+   line                 - A reference to a constant string object type that
+                          holds the /proc/[pid]/stat line that shal be
+			  truncated.
 
   Output:
    string               - The resulting truncated stat line string.
@@ -1498,16 +1500,29 @@ const std::string fixStatLine(const std::string& line)
   std::string temp;
   int i;
 
-  for(i = 0; line.at(i) != ')'; i++);
+  if(line.empty())
+    {
+      return "";
+    }
   
-  while(line.at(i) == ')')
+  for(i = 0; line.at(i) != '('; i++);
+
+  while(i < line.length() && line.at(i) != ')')
     {
       i++;
     }
 
-  i++;
+  while(i < line.length() && line.at(i) != ' ')
+    {
+      i++;
+    }
 
-  for(int j = i; j < line.size(); j++)
+  if(i < line.length())
+    {
+      i++;
+    }
+
+  for(int j = i; j < line.length(); j++)
     {
       temp.push_back(line.at(j));
     }
