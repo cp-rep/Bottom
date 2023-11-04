@@ -36,10 +36,6 @@ bool testNumericDir(const std::string& dirPath);
 const std::string returnFileLineByPhrase(const std::string& filePath,
 					 const std::string& phrase);
 std::vector<std::string> parseLine(const std::string& str);
-const int returnValByWhiteSpaceCount(const std::string& line,
-				     const int& numWhiteSpaces);
-const std::string returnStringByWhiteSpaceCount(const std::string& line,
-						 const int& numWhiteSpaces);
 bool phraseExists(const std::string& line, const std::string& phrase);
 const int stringToInt(const std::string str);
 const double stringToDouble(const std::string str);
