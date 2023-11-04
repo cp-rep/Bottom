@@ -11,36 +11,35 @@
 #include "cpuInfo.hpp"
 #include "taskInfo.hpp"
 
-TEST(doesDirectoryExist_FUNCTION, directoryExists_TEST)
+TEST(doesDirectoryExist_FUNCTION, doesDirectoryExist_TEST)
 {
   std::string dir1 = "./";
   std::string dir2 = "./gtest";
-  std::string dir3 = "./notADirectory";  
 
-  // directory exists
+  // case directory exists
   EXPECT_EQ(doesDirectoryExist(dir1), true);
   EXPECT_EQ(doesDirectoryExist(dir2), true);
   EXPECT_NE(doesDirectoryExist(dir1), false);
-  EXPECT_NE(doesDirectoryExist(dir2), false);      
+  EXPECT_NE(doesDirectoryExist(dir2), false);
+
+  std::string dir3 = "./idontexist";
+  std::string dir4 = "./idefinitelydontexist";
+
+  // case directory doesn't exist
+  EXPECT_EQ(doesDirectoryExist(dir3), false);
+  EXPECT_EQ(doesDirectoryExist(dir4), false);  
+  EXPECT_NE(doesDirectoryExist(dir3), true);
+  EXPECT_NE(doesDirectoryExist(dir4), true);
+
+  // case empty string
+  std::string dir5 = "";
+  EXPECT_EQ(doesDirectoryExist(dir5), false);
+  EXPECT_NE(doesDirectoryExist(dir5), true);
 }
 
 
 
-TEST(doesDirectoryExistFunction, directoryDoesntExist_TEST)
-{
-  std::string dir1 = "./idontexist";
-  std::string dir2 = "./idefinitelydontexist";
-
-  // directory doesn't exist
-  EXPECT_EQ(doesDirectoryExist(dir1), false);
-  EXPECT_EQ(doesDirectoryExist(dir2), false);  
-  EXPECT_NE(doesDirectoryExist(dir1), true);
-  EXPECT_NE(doesDirectoryExist(dir2), true);
-}
-
-
-
-TEST(extractProcComm_FUNCTION, extractCommand_TEST)
+TEST(extractProcComm_FUNCTION, extractProcComm_TEST)
 {
   std::unordered_map<int, ProcessInfo*> allProcessInfo;
   ProcessInfo* process;
@@ -53,25 +52,25 @@ TEST(extractProcComm_FUNCTION, extractCommand_TEST)
   allProcessInfo.insert(std::make_pair(1, process));
   extractProcPidComm(allProcessInfo, 1, filePath);
 
-  // command exists (read from PID 1)
+  // case command exists (read from PID 1)
   EXPECT_EQ(allProcessInfo.at(1)->getCOMMAND(), "systemd");
 
-  // command doesn't exist
+  // case command doesn't exist
   EXPECT_NE(allProcessInfo.at(1)->getCOMMAND(), "systemc");  
 
-  // list shouldn't be empty
+  // test list shouldn't be empty
   EXPECT_EQ(allProcessInfo.size(), 1);
   
   delete allProcessInfo.at(1);
   allProcessInfo.erase(1);
 
-  // list should be empty
+  // test list should be empty
   EXPECT_EQ(allProcessInfo.size(), 0);
 }
 
 
 
-TEST(removeDeadProcesses_FUNCTION, deleteDeadProcesses_TEST)
+TEST(removeDeadProcesses_FUNCTION, removeDeadProcesses_TEST)
 {
   std::unordered_map<int, ProcessInfo*> allProcessInfo;
   ProcessInfo* process1 = new ProcessInfo();
@@ -79,6 +78,7 @@ TEST(removeDeadProcesses_FUNCTION, deleteDeadProcesses_TEST)
   ProcessInfo* process3 = new ProcessInfo();
   std::vector<int> pids;
 
+  // case remove allocated processes
   pids.push_back(1);
   pids.push_back(2);
   pids.push_back(3);  
@@ -87,23 +87,23 @@ TEST(removeDeadProcesses_FUNCTION, deleteDeadProcesses_TEST)
   allProcessInfo.insert(std::make_pair(pids.at(1), process2));
   allProcessInfo.insert(std::make_pair(pids.at(2), process3));
 
-  // list should hold 3 elements
+  // test list should hold 3 elements
   EXPECT_EQ(allProcessInfo.size(), 3);
 
-  // each value should point to something
+  // test value should point to something
   EXPECT_NE(allProcessInfo.at(pids.at(0)), nullptr);
   EXPECT_NE(allProcessInfo.at(pids.at(1)), nullptr);
   EXPECT_NE(allProcessInfo.at(pids.at(2)), nullptr);
 
   removeDeadProcesses(allProcessInfo, pids);
 
-  // list should be empty
+  // test list should be empty
   EXPECT_EQ(allProcessInfo.size(), 0);
 }
 
 
 
-TEST(returnPhraseLine_FUNCTION, returnPhrase_TEST)
+TEST(returnPhraseLine_FUNCTION, returnPhraseLine_TEST)
 {
   const std::string filePath = "./gtest/meminfo.txt";  
   const std::string fileDoesntExist = "file.file";
@@ -111,22 +111,22 @@ TEST(returnPhraseLine_FUNCTION, returnPhrase_TEST)
   const std::string fileLine = "SwapCached:            0 kB";
   const std::string notInFile = "-2";
 
-  // string phrase doesn't exist
+  // case string phrase doesn't exist
   EXPECT_EQ(returnPhraseLine(filePath, "phrase doesn't exist"), notInFile);
 
-  // string phrase should exist
+  // case string phrase should exist
   EXPECT_EQ(returnPhraseLine(filePath, phrase), fileLine);
 
-  // the file should not exist and therefore return "-1"
+  // case the file should not exist and therefore return "-1"
   EXPECT_EQ(returnPhraseLine(fileDoesntExist, phrase), "-1");
 
-  // the filePath should not exist and phrase not exist
+  // case the filePath should not exist and phrase not exist
   EXPECT_NE(returnPhraseLine(filePath, "phrase doesn't exist"), "-1");
 
-  // the filePath should exist but phrase not exist
+  // case the filePath should exist but phrase not exist
   EXPECT_NE(returnPhraseLine(filePath, "phrase doesn't exist"), fileLine);
 
-  // the file does not exist and we should not get back the fileLine
+  // case the file does not exist and we should not get back the fileLine
   EXPECT_NE(returnPhraseLine(fileDoesntExist, phrase), fileLine);
 }
 
@@ -137,13 +137,13 @@ TEST(makeDirectory_FUNCTION, makeDirectory_TEST)
   const std::string dirPath = "./testDirectory";
   bool directoryMade;
 
-  // create directory case
+  // case create directory
   if(doesDirectoryExist(dirPath) == false)
     {
       directoryMade = makeDirectory(dirPath);
       EXPECT_EQ(directoryMade, true);
     }
-  // directory already exists case
+  // case directory already exists
   else
     {
       directoryMade = makeDirectory(dirPath);
@@ -153,7 +153,7 @@ TEST(makeDirectory_FUNCTION, makeDirectory_TEST)
 
 
 
-TEST(countProcessStates_FUNCTION, countStates_TEST)
+TEST(countProcessStates_FUNCTION, countProcessStates_TEST)
 {
   TaskInfo taskInfo;
   std::unordered_map<int, ProcessInfo*> allProcessInfo;
@@ -168,6 +168,7 @@ TEST(countProcessStates_FUNCTION, countStates_TEST)
   ProcessInfo* process9 = new ProcessInfo();  
   std::vector<int> pids;
 
+  // allocate "processses"
   pids.push_back(1);
   pids.push_back(2);
   pids.push_back(3);
@@ -262,6 +263,7 @@ TEST(extractProcLoadavg_FUNCTION, extractProcLoadavg_TEST)
   std::vector<std::string> loadavgStrings;
   std::string loadavgPath = "./gtest/proc_loadavg.txt";
 
+  // parse the values from file path
   extractProcLoadavg(loadavgStrings,
 		     loadavgPath);
 
@@ -319,24 +321,25 @@ TEST(extractProcPidStatus_FUNCTION, extractProcPidStatus_TEST)
   process = new ProcessInfo();
   allProcessInfo.insert(std::make_pair(1, process));
 
+  // extract data from file path
   extractProcPidStatus(allProcessInfo,
 		       1,
 		       filePath);
 
-  // check that the user was extracted correctly
+  // test that the user was extracted correctly
   EXPECT_EQ(allProcessInfo.at(1)->getUSER(), "root");
   EXPECT_NE(allProcessInfo.at(1)->getUSER(), "rooty");
   EXPECT_NE(allProcessInfo.at(1)->getUSER(), "");
 
-  // check that the virtual memory was extracted correctly
+  // test that the virtual memory was extracted correctly
   EXPECT_EQ(allProcessInfo.at(1)->getVIRT(), 21312);
   EXPECT_NE(allProcessInfo.at(1)->getVIRT(), 21313);
 
-  // check that the reserved memory was extracted correctly
+  // test that the reserved memory was extracted correctly
   EXPECT_EQ(allProcessInfo.at(1)->getRES(), 13000);
   EXPECT_NE(allProcessInfo.at(1)->getRES(), 13001);
 
-  // check that the shared memory was extracted correctly
+  // test that the shared memory was extracted correctly
   EXPECT_EQ(allProcessInfo.at(1)->getSHR(), 10208);
   EXPECT_NE(allProcessInfo.at(1)->getSHR(), 10209);
 
@@ -364,12 +367,15 @@ TEST(extractProcPidStat_FUNCTION, extractProcPidStat_TEST)
   std::vector<std::string> uptimeStrings;
   const std::string uptimePath = "./gtest/proc_uptime.txt";
   const std::string statPath = "./gtest/proc_pid_stat.txt";  
-  
+
+  // extract and parse uptime, we need it for next function call
   extractProcUptime(uptime,
 		    uptimeStrings,
 		    uptimePath);
   process = new ProcessInfo();
   allProcessInfo.insert(std::make_pair(1, process));
+
+  // extract data from file path and parse it
   extractProcPidStat(allProcessInfo,
 		     memInfo,
 		     uptime,
@@ -377,6 +383,7 @@ TEST(extractProcPidStat_FUNCTION, extractProcPidStat_TEST)
 		     uptimeStrings,
 		     statPath);
 
+  // test data was extracted and parsed successfully
   EXPECT_EQ(allProcessInfo.at(1)->getPR(), 20);
   EXPECT_EQ(allProcessInfo.at(1)->getNI(), 0);
   EXPECT_EQ(allProcessInfo.at(1)->getS(), 'S');
@@ -403,7 +410,7 @@ TEST(extractProcMeminfo_FUNCTION, extractProcMeminfo_TEST)
   MemInfo memInfo;
   const std::string memInfoPath = "./gtest/proc_meminfo.txt";
 
-
+  // extract data from file path
   extractProcMeminfo(memInfo,
 		     memInfoPath);
 
@@ -524,7 +531,7 @@ TEST(findDeadProcesses_FUNCTION, findDeadProcesses_TEST)
 
 
 
-TEST(returnFirstIntFromLine_FUNCTION, returnFirstIntFromLine_TesT)
+TEST(returnFirstIntFromLine_FUNCTION, returnFirstIntFromLine_TEST)
 {
   std::string line;
 
