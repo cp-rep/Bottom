@@ -24,7 +24,7 @@
    accordingly.  Each value list is then sorted by PID creating lists of the same
    value type sorted by their corresponding PIDs.  These different lists are then
    combined into a single list of PID numbers and then returned to the caller.
-
+ 
   Runtime Complexity:
    O(N * Log(N))
 
@@ -35,14 +35,12 @@
    pidNums              - a const reference to a PID list representing all running
                           processes
 
-   const T& (P::*extractor)() const
-                        - A lambda function that uses two template parameters
-			  to return different types that need sorting from
-			  the ProcessInfo class. P template typename represents the
-			  ProcessInfo class type that is necessary for he extractor
-			  to call the classes different "getter" functions. The
-			  T template typename allows the storing of the different
-			  object types that are returned from the extractor.
+   const T& (ProcessInfo::*extractor)() const
+                        - A function pointer that returns a T type template object.
+			  The "extractor" as we so called it allows us to call
+			  functions from the ProcessInfo class.  In this case,
+			  we are using it to call the classes getter functions
+			  and return their different object types.
   Output:
    const std::vector<int>
                         - the sorted list of PIDs
@@ -67,17 +65,16 @@ template std::vector<int> sortValuesByPID(
     const std::vector<int>& pidNums,
     const char& (ProcessInfo::*extractor)() const);
 
-template <typename P, typename T>
-std::vector<int> sortValuesByPID(const std::unordered_map<int, P*>& allProcessInfo,
+template <typename T>
+std::vector<int> sortValuesByPID(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 				 const std::vector<int>& pidNums,
-				 const T& (P::*extractor)() const)
+				 const T& (ProcessInfo::*extractor)() const)
 {
   std::vector<int> tempPIDs;  
   std::vector<std::pair<T, int>> tPid;
   std::set<T> diffValuesSet;
   typename std::set<T>::iterator it;
   std::vector<T> diffValuesVec;    
-
   T value;
 
   // loop through the ProcessInfo object and store all <key(PID), value(T)> pairs

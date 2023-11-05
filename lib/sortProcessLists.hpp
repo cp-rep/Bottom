@@ -4,7 +4,7 @@
   
   Description:
    Header file containing a function declaration for sorting allocated process
-   data.
+   data. 
  */
 #ifndef SORTPROCESSLISTS_HPP
 #define SORTPROCESSLISTS_HPP
@@ -15,8 +15,8 @@
 #include "processInfo.hpp"
 #include "_cursesWinConsts.hpp"
 
-template <typename P, typename T>
-std::vector<int> sortValuesByPID(const std::unordered_map<int, P*>& allProcessInfo,
+template <typename T>
+std::vector<int> sortValuesByPID(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 				 const std::vector<int>& pidNums,
-				 const T& (P::*extractor)() const);
+				 const T& (ProcessInfo::*extractor)() const);
 #endif
