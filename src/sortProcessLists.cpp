@@ -12,30 +12,11 @@
    result).
    
   Analysis:
-   After taking the time to analyze my sorting algorithm, these maintain a
-   sufficient growth rate at O(N * Log(N)). I originally thought it was
-   O(n^2) due to the following piece (having wrote it in a rush to get things
-   initially sorted).
-
-  // store all PIDS as a vector of vector of std::pair<int, USER>
-  std::vector<std::vector<std::pair<int, std::string>>> sortedByUserTypePID(types.size());
-  for(int i = 0; i < procUSERStrings.size(); i++)
-    {
-      for(int j = 0; j < types.size(); j++)
-	{
-	  if(types.at(j) == procUSERStrings.at(i).first)
-	    {
-	      sortedByUserTypePID[j].push_back(std::make_pair(procUSERStrings.at(i).second,
-							      procUSERStrings.at(i).first));
-	    }
-	}
-    }   
-
    After quick analysis, while it looks as if it's nested loop is iterating over the size
-   of types, it is iterating over the different types of user strings.
+   of types, it is iterating over the different value "types" found making the overall
+   time complexity  O(N * Logn(N)), which is sufficient.
 */
 #include "sortProcessLists.hpp"
-#include <map>
 
 
 
@@ -116,6 +97,77 @@ const std::vector<int> sortByUSER(std::unordered_map<int, ProcessInfo*>& allProc
   
   return tempPIDs;
 } // end of "sortByUSER"
+
+
+template <typename T>
+std::vector<int> sortObjectsByValue
+(const std::unordered_map<int, T*>& allProcessInfo,
+ const std::vector<int>& pidNums,
+ const int& (T::*extractor)() const)
+{
+  std::vector<std::pair<int, int>> procPR;
+  std::set<int> intTypes;
+  std::vector<int> types;
+  std::vector<int> tempPIDs;  
+
+  for (int i = 0; i < allProcessInfo.size(); i++)
+    {
+
+      int pid = pidNums[i];
+      int value = (allProcessInfo.at(pid)->*extractor)();  
+      procPR.push_back(std::make_pair(value, pid));
+
+    
+      // get the different PR types (repeated values for separating later)
+      if(intTypes.count(procPR.at(i).first) == 0)
+	{
+	  intTypes.insert(procPR.at(i).first);
+	}
+    }
+    
+  // save PR types as vector of string for later use
+  for(std::set<int>::iterator it = intTypes.begin();
+      it != intTypes.end(); it++)
+    {
+      types.push_back(*it);
+    }
+  
+  // store all PIDS as a vector of vector of std::pair<PID, PR>
+  std::vector<std::vector<std::pair<int, int>>> sortedByPRTypePID(types.size());
+  for(int i = 0; i < procPR.size(); i++)
+    {
+      for(int j = 0; j < types.size(); j++)
+	{
+	  if(types.at(j) == procPR.at(i).first)
+	    {
+	      sortedByPRTypePID[j].push_back(std::make_pair(procPR.at(i).second,
+							    procPR.at(i).first));
+	    }
+	}
+    }
+  
+  // sort each PR type list by PID
+  for(int i = 0; i < sortedByPRTypePID.size(); i++)
+    {
+      std::sort(sortedByPRTypePID.at(i).begin(), sortedByPRTypePID.at(i).end());
+    }
+
+  // store the list of sorted PIDs to vector<int> to return to caller 
+  for(int i = sortedByPRTypePID.size() - 1; i >= 0; i--)    
+    {
+      for(int j = 0; j < sortedByPRTypePID.at(i).size(); j++)
+	{
+	  tempPIDs.push_back(sortedByPRTypePID.at(i).at(j).first);
+	}
+    }
+
+  return tempPIDs;
+}
+
+template std::vector<int> sortObjectsByValue(
+    const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+    const std::vector<int>& pidNums,
+    const int& (ProcessInfo::*extractor)() const);
 
 
 

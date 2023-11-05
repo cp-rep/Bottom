@@ -15,6 +15,14 @@
 #include "processInfo.hpp"
 #include "_cursesWinConsts.hpp"
 
+
+
+template <typename T>
+std::vector<int> sortObjectsByValue
+(const std::unordered_map<int, T*>& allProcessInfo,
+ const std::vector<int>& pidNums,
+ const int& (T::*extractor)() const);
+
 const std::vector<int> sortByUSER(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 				  const std::vector<int>& pidNums);
 const std::vector<int> sortByPR(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
