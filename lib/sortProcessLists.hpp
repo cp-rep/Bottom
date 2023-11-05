@@ -3,7 +3,7 @@
    sortProcessLists.hpp
   
   Description:
-   Header file containing function declarations for sorting allocated process
+   Header file containing a function declaration for sorting allocated process
    data.
  */
 #ifndef SORTPROCESSLISTS_HPP
@@ -15,23 +15,8 @@
 #include "processInfo.hpp"
 #include "_cursesWinConsts.hpp"
 
-
-
-template <typename T>
-std::vector<int> sortObjectsByValue
-(const std::unordered_map<int, T*>& allProcessInfo,
- const std::vector<int>& pidNums,
- const unsigned int& (T::*extractor)() const);
-const std::vector<int> sortByUSER(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-				  const std::vector<int>& pidNums);
-const std::vector<int> sortByS(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-			       const std::vector<int>& pidNums);
-const std::vector<int> sortByCPUUsage(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-				      const std::vector<int>& pidNums);
-const std::vector<int> sortByMEMUsage(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-				      const std::vector<int>& pidNums);
-const std::vector<int> sortByCpuTime(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-				     const std::vector<int>& pidNums);
-const std::vector<int> sortByCOMMAND(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-				     const std::vector<int>& pidNums);
+template <typename P, typename T>
+std::vector<int> sortValuesByPID(const std::unordered_map<int, P*>& allProcessInfo,
+				 const std::vector<int>& pidNums,
+				 const T& (P::*extractor)() const);
 #endif
