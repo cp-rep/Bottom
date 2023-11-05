@@ -4,10 +4,28 @@
   Description:
    Function definitions for the sortProcessLists.hpp file.
   
-   These are temporary brute force solutions for sorting the process data until it
-   is better understood how the TOP program determines the priority for some of the
-   operating system processes in sorting order.
+   After taking the time to analyze my sorting algorithm, these maintain a
+   sufficient growth rate at O(N * Log(N)). I originally thought it was
+   O(n^2) due to the following piece (having wrote it in a rush to get things
+   initially sorted).
 
+  // store all PIDS as a vector of vector of std::pair<int, USER>
+  std::vector<std::vector<std::pair<int, std::string>>> sortedByUserTypePID(types.size());
+  for(int i = 0; i < procUSERStrings.size(); i++)
+    {
+      for(int j = 0; j < types.size(); j++)
+	{
+	  if(types.at(j) == procUSERStrings.at(i).first)
+	    {
+	      sortedByUserTypePID[j].push_back(std::make_pair(procUSERStrings.at(i).second,
+							      procUSERStrings.at(i).first));
+	    }
+	}
+    }   
+
+   After quick analysis, while it looks as if it's nested loop is iterating over the size
+   of types, it is iterating over the different types of user strings.
+   
    The current solution sorts by the list type (PID, USER, PR...).  The algorithms
    determine the significant values and places them in descending order.  If there
    is a duplicate value, it sorts those by PID in ascending order. This pattern
@@ -16,6 +34,7 @@
    result).
 */
 #include "sortProcessLists.hpp"
+#include <map>
 
 
 
