@@ -36,8 +36,8 @@
                           processes
 
    const T& (ProcessInfo::*extractor)() const
-                        - A function pointer that returns a refence to a constant T
-			  type template object. The "extractor" as we so called it
+                        - A function pointer that returns a reference to a constant
+			  T type template object. The "extractor", as we called it,
 			  allows us to call functions from the ProcessInfo class.
 			  In this case, we are using it to call the classes getter
 			  functions and return their different object types.
