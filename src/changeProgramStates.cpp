@@ -255,53 +255,59 @@ void bottomWinsProcSortState(std::unordered_map<int, ProcessInfo*>& allProcessIn
 		outPids.end());
       break;
     case _USERWIN:
-      outPids = sortByUSER(allProcessInfo,
-			   pids);
+      outPids = sortValuesByPID(allProcessInfo,
+				   pids,
+				   &ProcessInfo::getUSER);      
       break;
     case _PRWIN:
-      outPids = sortObjectsByValue(allProcessInfo,
+      outPids = sortValuesByPID(allProcessInfo,
 				   pids,
 				   &ProcessInfo::getPR);
       break;
     case _NIWIN:
-      outPids = sortObjectsByValue(allProcessInfo,
+      outPids = sortValuesByPID(allProcessInfo,
 				   pids,
 				   &ProcessInfo::getNI);
       break;
     case _VIRTWIN:
-      outPids = sortObjectsByValue(allProcessInfo,
+      outPids = sortValuesByPID(allProcessInfo,
 				   pids,
 				   &ProcessInfo::getVIRT);
       break;
     case _RESWIN:
-      outPids = sortObjectsByValue(allProcessInfo,
+      outPids = sortValuesByPID(allProcessInfo,
 				   pids,
 				   &ProcessInfo::getRES);
       break;
     case _SHRWIN:
-      outPids = sortObjectsByValue(allProcessInfo,
+      outPids = sortValuesByPID(allProcessInfo,
 				   pids,
 				   &ProcessInfo::getSHR);      
       break;
     case _SWIN:
-      outPids = sortByS(allProcessInfo,
-			pids);
+      outPids = sortValuesByPID(allProcessInfo,
+				   pids,
+				   &ProcessInfo::getS);
       break;
     case _PROCCPUWIN:
-      outPids = sortByCPUUsage(allProcessInfo,
-			       pids);	
+      outPids = sortValuesByPID(allProcessInfo,
+				   pids,
+				   &ProcessInfo::getCPUUsage);      
       break;
     case _PROCMEMWIN:
-      outPids = sortByMEMUsage(allProcessInfo,
-			       pids);
+      outPids = sortValuesByPID(allProcessInfo,
+				   pids,
+				   &ProcessInfo::getMEMUsage); 
       break;
     case _PROCTIMEWIN:
-      outPids = sortByCpuTime(allProcessInfo,
-			      pids);
+      outPids = sortValuesByPID(allProcessInfo,
+				   pids,
+				   &ProcessInfo::getProcessCPUTime);      
       break;
     case _COMMANDWIN:
-      outPids = sortByCOMMAND(allProcessInfo,
-			      pids);
+      outPids = sortValuesByPID(allProcessInfo,
+				   pids,
+				   &ProcessInfo::getCOMMAND);
       break;
     default:
       break;
