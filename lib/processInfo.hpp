@@ -14,8 +14,8 @@ class ProcessInfo{
 public:
   ProcessInfo(const int& pid = 0,
 	      const std::string& user = "",
-	      const unsigned short& pr = 0,
-	      const unsigned short& ni = 0,
+	      const unsigned int& pr = 0,
+	      const unsigned int& ni = 0,
 	      const unsigned int& virt = 0,
 	      const unsigned int& res = 0,
 	      const unsigned int& shr = 0,
@@ -30,7 +30,7 @@ public:
   const int& getPID() const;
   const std::string& getUSER() const;
   const int& getPR() const;
-  const short& getNI() const;
+  const int& getNI() const;
   const unsigned int& getVIRT() const;
   const unsigned int& getRES() const;
   const unsigned int& getSHR() const;
@@ -46,7 +46,7 @@ public:
   void setPID(const int& pid);
   void setUSER(const std::string& user);
   void setPR(const int& pr);
-  void setNI(const short& ni);
+  void setNI(const int& ni);
   void setVIRT(const unsigned int& virt);
   void setRES(const unsigned int& res);
   void setSHR(const unsigned int& shr);
@@ -62,7 +62,7 @@ private:
   int m_pid;
   std::string m_user;
   int m_pr;
-  short m_ni;
+  int m_ni;
   unsigned int m_virt;
   unsigned int m_res;
   unsigned int m_shr;

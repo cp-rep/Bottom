@@ -9,8 +9,8 @@
 
 ProcessInfo::ProcessInfo(const int& pid,
 			 const std::string& user,
-			 const unsigned short& pr,
-			 const unsigned short& ni,
+			 const unsigned int& pr,
+			 const unsigned int& ni,
 			 const unsigned int& virt,
 			 const unsigned int& res,
 			 const unsigned int& shr,
@@ -98,7 +98,7 @@ const int& ProcessInfo::getPR() const
 
   Output:
 */
-const short& ProcessInfo::getNI() const
+const int& ProcessInfo::getNI() const
 {
   return m_ni;
 } // end of "getNI"
@@ -336,7 +336,7 @@ void ProcessInfo::setPR(const int& pr)
 
   Output:
 */
-void ProcessInfo::setNI(const short& ni)
+void ProcessInfo::setNI(const int& ni)
 {
   m_ni = ni;
 } // end of "setNI"
