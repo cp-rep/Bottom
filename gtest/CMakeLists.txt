@@ -14,10 +14,7 @@ FetchContent_MakeAvailable(googletest)
 # create executable that tests the code with attached source files
 add_executable(
     unit_tests
-    gtest_byteConverter.cpp
     gtest_extractFileData.cpp
-    gtest_log.cpp
-    gtest_secondsToTime.cpp
     gtest_sortProcessLists.cpp
     )
 
