@@ -267,19 +267,21 @@ void bottomWinsProcSortState(std::unordered_map<int, ProcessInfo*>& allProcessIn
       outPids = sortObjectsByValue(allProcessInfo,
 				   pids,
 				   &ProcessInfo::getNI);
-
       break;
     case _VIRTWIN:
-      outPids = sortByVIRT(allProcessInfo,
-			   pids);
+      outPids = sortObjectsByValue(allProcessInfo,
+				   pids,
+				   &ProcessInfo::getVIRT);
       break;
     case _RESWIN:
-      outPids = sortByRES(allProcessInfo,
-			  pids);
+      outPids = sortObjectsByValue(allProcessInfo,
+				   pids,
+				   &ProcessInfo::getRES);
       break;
     case _SHRWIN:
-      outPids = sortBySHR(allProcessInfo,
-			  pids);
+      outPids = sortObjectsByValue(allProcessInfo,
+				   pids,
+				   &ProcessInfo::getSHR);      
       break;
     case _SWIN:
       outPids = sortByS(allProcessInfo,
