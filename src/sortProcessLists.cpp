@@ -3,7 +3,15 @@
   
   Description:
    Function definitions for the sortProcessLists.hpp file.
-  
+
+   The current solution sorts by the list type (PID, USER, PR...).  The algorithms
+   determine the significant values and places them in descending order.  If there
+   is a duplicate value, it sorts those by PID in ascending order. This pattern
+   is repeated until all lists are sorted(although the algorithm doesn't 
+   necessarily operate systematically by the described  pattern, it is the
+   result).
+   
+  Analysis:
    After taking the time to analyze my sorting algorithm, these maintain a
    sufficient growth rate at O(N * Log(N)). I originally thought it was
    O(n^2) due to the following piece (having wrote it in a rush to get things
@@ -25,13 +33,6 @@
 
    After quick analysis, while it looks as if it's nested loop is iterating over the size
    of types, it is iterating over the different types of user strings.
-   
-   The current solution sorts by the list type (PID, USER, PR...).  The algorithms
-   determine the significant values and places them in descending order.  If there
-   is a duplicate value, it sorts those by PID in ascending order. This pattern
-   is repeated until all lists are sorted(although the algorithm doesn't 
-   necessarily operate systematically by the described  pattern, it is the
-   result).
 */
 #include "sortProcessLists.hpp"
 #include <map>
