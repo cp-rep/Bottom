@@ -29,18 +29,18 @@
    O(N * Log(N))
 
   Input:
-   allProcessInfo       - all stored process data that will be traversed in
+   allProcessInfo       - All stored process data that will be traversed in
                           ordere to retrieve desired sort state values
 
-   pidNums              - a const reference to a PID list representing all running
+   pidNums              - A const reference to a PID list representing all running
                           processes
 
    const T& (ProcessInfo::*extractor)() const
-                        - A function pointer that returns a T type template object.
-			  The "extractor" as we so called it allows us to call
-			  functions from the ProcessInfo class.  In this case,
-			  we are using it to call the classes getter functions
-			  and return their different object types.
+                        - A function pointer that returns a refence to a constant T
+			  type template object. The "extractor" as we so called it
+			  allows us to call functions from the ProcessInfo class.
+			  In this case, we are using it to call the classes getter
+			  functions and return their different object types.
   Output:
    const std::vector<int>
                         - the sorted list of PIDs
