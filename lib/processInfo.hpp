@@ -12,7 +12,7 @@
 
 class ProcessInfo{
 public:
-  ProcessInfo(const int& pid = 0,
+  ProcessInfo(const unsigned int& pid = 0,
 	      const std::string& user = "",
 	      const unsigned int& pr = 0,
 	      const unsigned int& ni = 0,
@@ -27,10 +27,10 @@ public:
 	      const bool& changed = false);
 
   // getters
-  const int& getPID() const;
+  const unsigned int& getPID() const;
   const std::string& getUSER() const;
-  const int& getPR() const;
-  const int& getNI() const;
+  const unsigned int& getPR() const;
+  const unsigned int& getNI() const;
   const unsigned int& getVIRT() const;
   const unsigned int& getRES() const;
   const unsigned int& getSHR() const;
@@ -43,10 +43,10 @@ public:
   const bool& getChanged() const;
   
   // setters
-  void setPID(const int& pid);
+  void setPID(const unsigned int& pid);
   void setUSER(const std::string& user);
-  void setPR(const int& pr);
-  void setNI(const int& ni);
+  void setPR(const unsigned int& pr);
+  void setNI(const unsigned int& ni);
   void setVIRT(const unsigned int& virt);
   void setRES(const unsigned int& res);
   void setSHR(const unsigned int& shr);
@@ -59,10 +59,10 @@ public:
   void setChanged(const bool& changed);
   
 private:
-  int m_pid;
+  unsigned int m_pid;
   std::string m_user;
-  int m_pr;
-  int m_ni;
+  unsigned int m_pr;
+  unsigned int m_ni;
   unsigned int m_virt;
   unsigned int m_res;
   unsigned int m_shr;

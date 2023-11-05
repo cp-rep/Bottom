@@ -7,7 +7,7 @@
 
 
 
-ProcessInfo::ProcessInfo(const int& pid,
+ProcessInfo::ProcessInfo(const unsigned int& pid,
 			 const std::string& user,
 			 const unsigned int& pr,
 			 const unsigned int& ni,
@@ -48,7 +48,7 @@ ProcessInfo::ProcessInfo(const int& pid,
 
   Output:
 */
-const int& ProcessInfo::getPID() const
+const unsigned int& ProcessInfo::getPID() const
 {
   return m_pid;
 } // end of "getPID"
@@ -82,7 +82,7 @@ const std::string& ProcessInfo::getUSER() const
 
   Output:
 */
-const int& ProcessInfo::getPR() const
+const unsigned int& ProcessInfo::getPR() const
 {
   return m_pr;
 } // end of "getPR"
@@ -98,7 +98,7 @@ const int& ProcessInfo::getPR() const
 
   Output:
 */
-const int& ProcessInfo::getNI() const
+const unsigned int& ProcessInfo::getNI() const
 {
   return m_ni;
 } // end of "getNI"
@@ -285,7 +285,7 @@ const bool& ProcessInfo::getChanged() const
 
   Output:
 */
-void ProcessInfo::setPID(const int& pid)
+void ProcessInfo::setPID(const unsigned int& pid)
 {
   m_pid = pid;
 } // end of "setPID"
@@ -319,7 +319,7 @@ void ProcessInfo::setUSER(const std::string& user)
 
   Output:
 */
-void ProcessInfo::setPR(const int& pr)
+void ProcessInfo::setPR(const unsigned int& pr)
 {
   m_pr = pr;
 } // end of "setPR"
@@ -336,7 +336,7 @@ void ProcessInfo::setPR(const int& pr)
 
   Output:
 */
-void ProcessInfo::setNI(const int& ni)
+void ProcessInfo::setNI(const unsigned int& ni)
 {
   m_ni = ni;
 } // end of "setNI"
