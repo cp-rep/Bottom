@@ -13,7 +13,7 @@ Bottom uses the Make utility for building the base program. Use all commands fro
 Bottom uses GTest for its unit testing.  GTest requires the GTest package and uses the CMake utility and Python3 for building GTest files and directories. Use all commands from the ./Bottom working directory unless directed otherwise.
 - Enter "cmake -S . -B [output directory name]" to build GTest testing interface.
 - Enter "cmake --build [output directory name used above]" to build test files.
-- Enter "ctest" from ./Bottom/[output directory] or execute the "unit_tests" program from the ./Bottom/[output directory]/bin/unit_tests file path to start tests.
+- Enter command ./[output directory]/bin/unit_tests from the ./Bottom base directory.  Some tests will fail due to file reading if not executed from the ./Bottom directory.
 
 ## Current Features and How to Use Them
 - The arrow keys allow shifting the windows left, right, up, and down.
