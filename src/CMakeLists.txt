@@ -12,6 +12,7 @@ target_sources(Gtest
   processInfo.cpp
   secondsToTime.cpp
   taskInfo.cpp
+  sortProcessLists.cpp
   
   PUBLIC
   # program library files
@@ -22,6 +23,7 @@ target_sources(Gtest
   ../lib/processInfo.hpp
   ../lib/secondsToTime.hpp
   ../lib/taskInfo.hpp
+  ../lib/sortProcessLists.hpp
   )
 
 # direct the location of the files
