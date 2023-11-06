@@ -271,7 +271,7 @@ int main()
   SecondsToTime uptime;
   std::vector<std::string> allTopLines;
   std::vector<std::string> loadAvgStrings;
-  std::vector<std::string> uptimeStrings;  
+  std::vector<std::string> uptimeStrings;
   std::string filePath;
   std::string colorLine;
   std::string timeString;
@@ -403,6 +403,12 @@ int main()
 		      highlightIndex);
 
     // ## update states ##
+    // update process sort state (changed by '<' and '>' user input)
+    bottomWinsProcSortState(allProcessInfo,
+			    pids,
+			    outPids,
+			    sortState);
+    
     // program state
     changeProgramState(allProcessInfo,
 		       allWins,
@@ -410,13 +416,8 @@ int main()
 		       prevState,
 		       sortState,
 		       quit,
-		       highlight);
-    
-    // change the processes sort state from '<' and '>' user input
-    bottomWinsProcSortState(allProcessInfo,
-			    pids,
-			    outPids,
-			    sortState);
+		       highlight,
+		       outPids.at(0));
 
     // shift windows up down left or right from arrow key input
     bottomWinsShiftState(allWins,
