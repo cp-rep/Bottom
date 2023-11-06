@@ -399,8 +399,7 @@ void killState(std::unordered_map<int, CursesWindow*>& allWins)
   int yOffset = 0;
   int numLines = 1;
   int numCols = allWins.at(_MAINWIN)->getMaxX() - outString.length();
-  
-  
+    
   // enable kill state curses settings
   curs_set(1);
 
