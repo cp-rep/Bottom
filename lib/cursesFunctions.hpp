@@ -149,8 +149,10 @@ void shiftBottomWinsLeft(std::unordered_map<int, CursesWindow*>& wins,
 void shiftBottomWinsRight(std::unordered_map<int, CursesWindow*>& wins,
 			  const int& shiftX);
 void drawBoxes(const std::unordered_map<int, CursesWindow*>& wins);
-void printUserInput(const std::unordered_map<int, CursesWindow*>& allWins,
+void printUserInput(const std::unordered_map<int, CursesWindow*>& wins,
+		    const int winIndex,		    
 		    const int& input,
+		    std::string& inputString,		    
 		    int& yOffset,
 		    int& xOffset);
 #endif
