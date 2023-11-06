@@ -263,7 +263,8 @@ int main()
 		    miBSwapTotalWin,
 		    miBSwapFreeWin,
 		    miBSwapUsedWin,
-		    miBMemAvailWin);
+		    miBMemAvailWin,
+		    userInputWin);
   initializeProgramStates(progStates);
   
   // loop variables
