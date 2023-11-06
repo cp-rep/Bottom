@@ -685,23 +685,7 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 			      numCols,
 			      startY,
 			      startX);
-  // define UserInputWindow
-  /*
-  numCols = 20;
-  numLines = 1;
-  startY = 0;
-  startX = 0;
-  userInputWin.defineWindow(newwin(numLines,
-				   numCols,
-				   startY,
-				   startX),  
-			      "UserInputWindow",
-			      numLines,
-			      numCols,
-			      startY,
-			      startX);
-  */
-
+  
   // store all windows in hash map
   wins.insert(std::make_pair(_MAINWIN,&mainWin));
   wins.insert(std::make_pair(_TOPWIN, &topWin));
