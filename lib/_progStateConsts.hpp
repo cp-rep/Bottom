@@ -11,5 +11,6 @@
 #define _PROGSTATEHL 'x'
 #define _PROGSTATEKILL 'k'
 #define _PROGSTATECSV ','
+#define _ESCAPE 27
 
 #endif
