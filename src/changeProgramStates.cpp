@@ -408,9 +408,6 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   int yOffset = 0;
   int numLines = 1;
   int numCols = wins.at(_MAINWIN)->getMaxX() - outString.length();
-    
-  // enable kill state curses settings
-  curs_set(1);
 
   // create the user input window
   wins.at(_USERINPUTWIN)->defineWindow(newwin(numLines,
@@ -423,6 +420,9 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 					  _YOFFSET - 1,
 					  outString.length());
   
+  // enable kill state curses settings
+  curs_set(1);
+  
   // output the kill prompt
   wattron(wins.at(_MAINWIN)->getWindow(),
 	  A_BOLD);
@@ -430,8 +430,6 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	    _YOFFSET - 1,
 	    0,
 	    outString.c_str());
-  wattroff(wins.at(_MAINWIN)->getWindow(),
-	   A_BOLD);
   wrefresh(wins.at(_MAINWIN)->getWindow());
   doupdate();
 
@@ -460,7 +458,69 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       doupdate();
     }
 
-  if(isNumericString(inputString))
+  
+  // if the input was valid, kill the process
+  if(isNumericString(inputString) || inputString.empty())
+    { 
+      int killPid;
+      
+      if(inputString.empty())
+	{
+	  killPid = defaultKillPid;
+	}
+      else
+	{
+	  killPid = stringToInt(inputString);
+
+	}
+
+      // update output string
+      inputString.clear();
+      outString = "Send pid ";
+      outString.append(std::to_string(killPid));
+      outString.append(" signal [15/sigterm] ");
+
+      // update windows BSOD
+      mvwaddstr(wins.at(_MAINWIN)->getWindow(),
+		_YOFFSET - 1,
+		0,
+		outString.c_str());
+      werase(wins.at(_USERINPUTWIN)->getWindow());      
+      mvwin(wins.at(_USERINPUTWIN)->getWindow(),
+	    _YOFFSET - 1,
+	    outString.length());
+      
+      // reset offset
+      xOffset = 0;
+
+      while(true)
+	{
+	  input = getch();
+	  flushinp();
+	  printUserInput(wins,
+			 _USERINPUTWIN,
+			 input,
+			 inputString,
+			 yOffset,
+			 xOffset);
+
+	  if(!inputString.empty())
+	    {
+	      if(inputString.size() == 1 && inputString.at(0) == 10)
+		{
+		  kill(killPid, SIGTERM);
+		  break;
+		}
+	      else // bad input
+		{
+		}
+	    }
+
+	  refreshAllWins(wins);
+	  doupdate();
+	}
+    }
+  else // bad input
     {
     }
   
@@ -468,5 +528,7 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   wins.at(_USERINPUTWIN)->deleteWindow();
 
   // restore settings
+  wattroff(wins.at(_MAINWIN)->getWindow(),
+	   A_BOLD);    
   curs_set(0);
 } // end of "killState"
