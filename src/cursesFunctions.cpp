@@ -101,7 +101,8 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 		       MiBSwapTotalWindow& miBSwapTotalWin,
 		       MiBSwapFreeWindow& miBSwapFreeWin,
 		       MiBSwapUsedWindow& miBSwapUsedWin,
-		       MiBMemAvailWindow& miBMemAvailWin)
+		       MiBMemAvailWindow& miBMemAvailWin,
+		       UserInputWindow& userInputWin)
 {
   int numLines;
   int numCols;
@@ -115,6 +116,8 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 		       numCols,
 		       startY,
 		       startX);
+  mainWin.setMaxY(numLines);
+  mainWin.setMaxX(numCols);
   numLines = 1;
   numCols = numCols;
   startY = _YOFFSET - 6;
@@ -682,6 +685,22 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 			      numCols,
 			      startY,
 			      startX);
+  // define UserInputWindow
+  /*
+  numCols = 20;
+  numLines = 1;
+  startY = 0;
+  startX = 0;
+  userInputWin.defineWindow(newwin(numLines,
+				   numCols,
+				   startY,
+				   startX),  
+			      "UserInputWindow",
+			      numLines,
+			      numCols,
+			      startY,
+			      startX);
+  */
 
   // store all windows in hash map
   wins.insert(std::make_pair(_MAINWIN,&mainWin));
@@ -721,7 +740,8 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
   wins.insert(std::make_pair(_MIBSWAPTOTALWIN, &miBSwapTotalWin));
   wins.insert(std::make_pair(_MIBSWAPFREEWIN, &miBSwapFreeWin));
   wins.insert(std::make_pair(_MIBSWAPUSEDWIN, &miBSwapUsedWin));
-  wins.insert(std::make_pair(_MIBMEMAVAILWIN, &miBMemAvailWin));  
+  wins.insert(std::make_pair(_MIBMEMAVAILWIN, &miBMemAvailWin));
+  wins.insert(std::make_pair(_USERINPUTWIN, &userInputWin));
 } // end of "initializeWindows"
 
 
@@ -1874,3 +1894,34 @@ void drawBoxes(const std::unordered_map<int, CursesWindow*>& wins)
 	}
     }
 } // end of "drawBoxes"
+
+
+
+void printUserInput(const std::unordered_map<int, CursesWindow*>& allWins,
+		    const int& input,
+		    int& yOffset,
+		    int& xOffset)
+{
+  if((input >= 32) &&
+     (input <= 126) &&
+     (input != KEY_ENTER) &&
+     (xOffset < allWins.at(_USERINPUTWIN)->getNumCols() - 2))
+    {
+      mvwaddch(allWins.at(_USERINPUTWIN)->getWindow(),
+	       yOffset,
+	       xOffset,
+	       input);
+      xOffset++;
+    }
+  else if(input == KEY_BACKSPACE && xOffset > 0)
+    {
+      xOffset--;
+      mvwaddch(allWins.at(_USERINPUTWIN)->getWindow(),
+	       yOffset,
+	       xOffset,
+	       ' ');
+      wmove(allWins.at(_USERINPUTWIN)->getWindow(),
+	    yOffset,
+	    xOffset);
+    }
+} // end of "getUserString"

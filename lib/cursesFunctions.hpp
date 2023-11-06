@@ -47,6 +47,7 @@
 #include "memWindow.hpp"
 #include "RESWindow.hpp"
 #include "NIWindow.hpp"
+#include "userInputWindow.hpp"
 #include "USERWindow.hpp"
 #include "cursesWindow.hpp"
 #include "percentCPUWindow.hpp"
@@ -96,7 +97,8 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 		       MiBSwapTotalWindow& miBSwapTotalWin,
 		       MiBSwapFreeWindow& miBSwapFreeWin,
 		       MiBSwapUsedWindow& miBSwapUsedWin,
-		       MiBMemAvailWindow& miBMemAvailWin);
+		       MiBMemAvailWindow& miBMemAvailWin,
+		       UserInputWindow& userInputWin);
 void initializeProgramStates(std::unordered_map<char, int>& progStates);
 void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins);
@@ -147,5 +149,8 @@ void shiftBottomWinsLeft(std::unordered_map<int, CursesWindow*>& wins,
 void shiftBottomWinsRight(std::unordered_map<int, CursesWindow*>& wins,
 			  const int& shiftX);
 void drawBoxes(const std::unordered_map<int, CursesWindow*>& wins);
-
+void printUserInput(const std::unordered_map<int, CursesWindow*>& allWins,
+		    const int& input,
+		    int& yOffset,
+		    int& xOffset);
 #endif
