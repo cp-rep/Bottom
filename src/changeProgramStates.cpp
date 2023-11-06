@@ -44,7 +44,7 @@ void initializeProgramStates(std::unordered_map<char, int>& progStates)
    to change the running program state.
   
   Input:
-   allWins              - A reference to a constant object that is an
+   wins              - A reference to a constant object that is an
                           un ordered map containing all the allocated
 			  curses windows addressable by the hash key
 			  PID number.
@@ -80,7 +80,7 @@ void initializeProgramStates(std::unordered_map<char, int>& progStates)
   Output:
    NONE
 */
-void updateStateValues(std::unordered_map<int, CursesWindow*>& allWins,
+void updateStateValues(std::unordered_map<int, CursesWindow*>& wins,
 		       std::unordered_map<char, int>& progStates,
 		       const int& userInput,
 		       int& sortState,
@@ -100,10 +100,10 @@ void updateStateValues(std::unordered_map<int, CursesWindow*>& allWins,
 	{
 	  if(highlight == true)
 	    {
-	      wattroff(allWins.at(sortState)->getWindow(),
+	      wattroff(wins.at(sortState)->getWindow(),
 		       A_BOLD);
 	      sortState--;
-	      wattron(allWins.at(sortState)->getWindow(),
+	      wattron(wins.at(sortState)->getWindow(),
 		      A_BOLD);
 	    }
 	  else
@@ -115,10 +115,10 @@ void updateStateValues(std::unordered_map<int, CursesWindow*>& allWins,
 	{
 	  if(highlight == true)
 	    {
-	      wattroff(allWins.at(sortState)->getWindow(),
+	      wattroff(wins.at(sortState)->getWindow(),
 		       A_BOLD);
 	      sortState++;
-	      wattron(allWins.at(sortState)->getWindow(),
+	      wattron(wins.at(sortState)->getWindow(),
 		      A_BOLD);
 	    }
 	  else
@@ -159,7 +159,7 @@ void updateStateValues(std::unordered_map<int, CursesWindow*>& allWins,
    NONE
 */
 void changeProgramState(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-			std::unordered_map<int, CursesWindow*>& allWins,
+			std::unordered_map<int, CursesWindow*>& wins,
 			int& progState,
 			const int& prevState,
 			bool& quit,
@@ -184,7 +184,7 @@ void changeProgramState(const std::unordered_map<int, ProcessInfo*>& allProcessI
       progState = prevState;
       break;
     case _PROGSTATEKILL:
-      killState(allWins);
+      killState(wins);
       progState = prevState;
       break;
     case _PROGSTATECSV:
@@ -311,7 +311,7 @@ void bottomWinsProcSortState(std::unordered_map<int, ProcessInfo*>& allProcessIn
    outputed.
 
   Input:
-   allWins              - A reference to a constant object that is an
+   wins              - A reference to a constant object that is an
                           un ordered map containing all the allocated
 			  curses windows addressable by the hash key
 			  PID number.
@@ -335,7 +335,7 @@ void bottomWinsProcSortState(std::unordered_map<int, ProcessInfo*>& allProcessIn
   Output:
    NONE
  */
-void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& allWins,
+void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& wins,
 			  const int& shiftState,
 			  int& shiftY,
 			  int& shiftX,
@@ -358,7 +358,7 @@ void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& allWins,
     case KEY_LEFT:
       if(shiftX > _PIDWIN)
 	{
-	  shiftBottomWinsRight(allWins,
+	  shiftBottomWinsRight(wins,
 			       shiftX);
 	  shiftX--;
 	}
@@ -366,7 +366,7 @@ void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& allWins,
     case KEY_RIGHT:
       if(shiftX < _COMMANDWIN)
 	{
-	  shiftBottomWinsLeft(allWins,
+	  shiftBottomWinsLeft(wins,
 			      shiftX);
 	  shiftX++;
 	}
@@ -389,22 +389,22 @@ void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& allWins,
   Output:
   
 */
-void killState(std::unordered_map<int, CursesWindow*>& allWins)
+void killState(std::unordered_map<int, CursesWindow*>& wins)
 {
   std::string outString = "PID to signal/kill [default pid = xxxx] ";
+  std::string inputString;  
   int input = 0;
-  std::string inputString;
   bool stopLoop = false;
   int xOffset = 0;
   int yOffset = 0;
   int numLines = 1;
-  int numCols = allWins.at(_MAINWIN)->getMaxX() - outString.length();
+  int numCols = wins.at(_MAINWIN)->getMaxX() - outString.length();
     
   // enable kill state curses settings
   curs_set(1);
 
   // create the user input window
-  allWins.at(_USERINPUTWIN)->defineWindow(newwin(numLines,
+  wins.at(_USERINPUTWIN)->defineWindow(newwin(numLines,
 						 numCols,
 						 _YOFFSET - 1,
 						 outString.length()),
@@ -415,51 +415,42 @@ void killState(std::unordered_map<int, CursesWindow*>& allWins)
 					  outString.length());
 
   // output the kill prompt
-  wattron(allWins.at(_MAINWIN)->getWindow(),
+  wattron(wins.at(_MAINWIN)->getWindow(),
 	  A_BOLD);
-  mvwaddstr(allWins.at(_MAINWIN)->getWindow(),
+  mvwaddstr(wins.at(_MAINWIN)->getWindow(),
 	    _YOFFSET - 1,
 	    0,
 	    outString.c_str());
-  wattroff(allWins.at(_MAINWIN)->getWindow(),
+  wattroff(wins.at(_MAINWIN)->getWindow(),
 	   A_BOLD);
-  wrefresh(allWins.at(_MAINWIN)->getWindow());
+  wrefresh(wins.at(_MAINWIN)->getWindow());
   doupdate();
 
   //  loop getting user input
-  while(stopLoop == false)
+  while(true)
     {
       input = getch();
-      inputString.push_back(input);
       flushinp();
-      printUserInput(allWins,
+      printUserInput(wins,
+		     _USERINPUTWIN,
 		     input,
+		     inputString,
 		     yOffset,
 		     xOffset);
 
-
-      /*
-      userInput.push_back(input);
-      switch(input)
+      if(!inputString.empty())
 	{
-	case _ESCAPE:
-	  stopLoop = true;
-	  curs_set(0);
-	  break;
-	default:
-	  break;
+	  if(inputString.at(inputString.size() - 1) == 10)
+	    {
+	      break;
+	    }
 	}
-      // wrefresh(allWins.at(_MAINWIN)->getWindow());
-      // doupdate();
-      */
-      
-      //      wrefresh(allWins.at(_MAINWIN)->getWindow());
-      refreshAllWins(allWins);
+      refreshAllWins(wins);
       doupdate();
     }
 
   // delete user input window as no longer needed
-  allWins.at(_USERINPUTWIN)->deleteWindow();
+  wins.at(_USERINPUTWIN)->deleteWindow();
 
   // restore settings
   curs_set(0);
