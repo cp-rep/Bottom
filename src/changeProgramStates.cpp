@@ -158,7 +158,7 @@ void updateStateValues(std::unordered_map<int, CursesWindow*>& allWins,
   Output:
    NONE
 */
-void changeProgramState(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,			
+void changeProgramState(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			const std::unordered_map<int, CursesWindow*>& allWins,
 			int& progState,
 			const int& prevState,
@@ -184,7 +184,8 @@ void changeProgramState(const std::unordered_map<int, ProcessInfo*>& allProcessI
       progState = prevState;
       break;
     case _PROGSTATEKILL:
-      // killState(allWins);
+      killState(allWins);
+      progState = prevState;
       break;
     case _PROGSTATECSV:
       makeDirectory(_CSV);
@@ -197,24 +198,6 @@ void changeProgramState(const std::unordered_map<int, ProcessInfo*>& allProcessI
     }
 } // end of "changeProgramState"
 
-
-
-void killState(const std::unordered_map<int, CursesWindow*>& allWins)
-{
-  std::string outString = "PID to signal/kill [default pid = xxxx] ";
-  wattron(allWins.at(_MAINWIN)->getWindow(),
-	  A_BOLD);
-  mvwaddstr(allWins.at(_MAINWIN)->getWindow(),
-	    _YOFFSET - 1,
-	    0,
-	    outString.c_str());
-
-  wattroff(allWins.at(_MAINWIN)->getWindow(),
-	   A_BOLD);
-  
-  wrefresh(allWins.at(_MAINWIN)->getWindow());
-  doupdate();
-}
 
 
 /*
@@ -392,3 +375,57 @@ void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& allWins,
       break;
     }
 } // end of "bottomWinShiftState"
+
+
+
+
+/*
+  Function:
+   killState
+
+  Description:
+
+  Input:
+
+  Output:
+  
+*/
+void killState(const std::unordered_map<int, CursesWindow*>& allWins)
+{
+  std::string outString = "PID to signal/kill [default pid = xxxx] ";
+  int input;
+  bool stopLoop = false;
+
+  // enable cursor visibility
+  curs_set(1);
+
+  // print the kill prompt to screen
+  wattron(allWins.at(_MAINWIN)->getWindow(),
+	  A_BOLD);
+  mvwaddstr(allWins.at(_MAINWIN)->getWindow(),
+	    _YOFFSET - 1,
+	    0,
+	    outString.c_str());
+  wattroff(allWins.at(_MAINWIN)->getWindow(),
+	   A_BOLD);
+  wrefresh(allWins.at(_MAINWIN)->getWindow());
+  doupdate();
+
+  // loop new user input for kill state
+  while(stopLoop == false)
+    {
+      input = mvgetch(_YOFFSET - 1, outString.length() + 2);
+      flushinp();
+
+      switch(input)
+	{
+	case _PROGSTATEQUIT:
+	  stopLoop = true;
+	  curs_set(0);
+	  break;
+	default:
+	  break;
+	}
+    }
+  
+} // end of "killState"
