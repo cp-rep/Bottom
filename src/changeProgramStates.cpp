@@ -162,6 +162,7 @@ void changeProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			std::unordered_map<int, CursesWindow*>& wins,
 			int& progState,
 			const int& prevState,
+			const int& sortState,
 			bool& quit,
 			bool& highlight)
 {
@@ -185,7 +186,8 @@ void changeProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       break;
     case _PROGSTATEKILL:
       killState(allProcessInfo,
-		wins);
+		wins,
+		sortState);
       progState = prevState;
       break;
     case _PROGSTATECSV:
@@ -312,7 +314,7 @@ void bottomWinsProcSortState(std::unordered_map<int, ProcessInfo*>& allProcessIn
    outputed.
 
   Input:
-   wins              - A reference to a constant object that is an
+   wins                 - A reference to a constant object that is an
                           un ordered map containing all the allocated
 			  curses windows addressable by the hash key
 			  PID number.
@@ -384,14 +386,15 @@ void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& wins,
    killState
 
   Description:
+   
 
   Input:
 
   Output:
-  
 */
 void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-	       std::unordered_map<int, CursesWindow*>& wins)
+	       std::unordered_map<int, CursesWindow*>& wins,
+	       const int& sortState)
 {
   std::string outString = "PID to signal/kill [default pid = xxxx] ";
   std::string inputString;  
