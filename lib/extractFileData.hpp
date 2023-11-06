@@ -79,5 +79,6 @@ void countProcessStates(const std::unordered_map<int, ProcessInfo*>& allProcessI
 void defineTasksLine(std::vector<std::string>& allTopLines);
 void extractProcPidComm(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			const int pid,
-			const std::string& filePath);		     
+			const std::string& filePath);
+bool isNumericString(const std::string& inString);
 #endif

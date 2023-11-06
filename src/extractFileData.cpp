@@ -1586,3 +1586,43 @@ const std::string doubleToStr(const double& val, const int& precision)
   
   return temp;
 } // end of "doubleToStr"
+
+
+
+
+/*
+  Function:
+   isNumericString
+
+  Description:
+   Traverses a string and checks that all characters are numeric characters.
+   Returns true if only numeric characters are found, false otherwise.
+
+  Input:
+   inString             - A reference to a constant string object that
+                          holds ASCII characters to be tested if they
+			  are numeric or not.
+  
+  Output:
+   bool                 - A bool object that is true if all characters
+                          in the inString were numeric, false otherwise.
+*/
+bool isNumericString(const std::string& inString)
+{
+
+  if(inString.empty())
+    {
+      return false;
+    }
+  
+  for(std::string::const_iterator it = inString.begin();
+      it != inString.end(); it++)
+    {
+      if(*it < '0' || *it > '9')
+	{
+	  return false;
+	}
+    }
+
+  return true;
+} // end of "isNumericString"
