@@ -158,7 +158,7 @@ void updateStateValues(std::unordered_map<int, CursesWindow*>& wins,
   Output:
    NONE
 */
-void changeProgramState(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+void changeProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			std::unordered_map<int, CursesWindow*>& wins,
 			int& progState,
 			const int& prevState,
@@ -184,7 +184,8 @@ void changeProgramState(const std::unordered_map<int, ProcessInfo*>& allProcessI
       progState = prevState;
       break;
     case _PROGSTATEKILL:
-      killState(wins);
+      killState(allProcessInfo,
+		wins);
       progState = prevState;
       break;
     case _PROGSTATECSV:
@@ -389,7 +390,8 @@ void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& wins,
   Output:
   
 */
-void killState(std::unordered_map<int, CursesWindow*>& wins)
+void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+	       std::unordered_map<int, CursesWindow*>& wins)
 {
   std::string outString = "PID to signal/kill [default pid = xxxx] ";
   std::string inputString;  

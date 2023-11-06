@@ -27,7 +27,7 @@ void updateStateValues(std::unordered_map<int, CursesWindow*>& allWins,
 		       int& progState,
 		       const bool& highlight,
 		       int& highlightIndex);
-void changeProgramState(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+void changeProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			std::unordered_map<int, CursesWindow*>& allWins,
 			int& progState,			
 			const int& prevState,
@@ -42,5 +42,6 @@ void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& allWins,
 			  int& shiftY,
 			  int& shiftX,
 			  const int shiftDownMax);
-void killState(std::unordered_map<int, CursesWindow*>& allWins);
+void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+	       std::unordered_map<int, CursesWindow*>& wins);
 #endif
