@@ -995,3 +995,72 @@ TEST(doubleToStr_FUNCTION, doubleToStr_TEST)
   EXPECT_EQ(doubleToStr(val4, 5), "0.00000");
   EXPECT_EQ(doubleToStr(val4, 6), "0.000000");        
 }
+
+
+
+TEST(isNumericString_FUNCTION, isNumericString_TEST)
+{
+  // case all numeric
+  std::string str = "5555";
+  EXPECT_EQ(isNumericString(str), true);
+
+  str = "5554";
+  EXPECT_EQ(isNumericString(str), true);
+
+  str = "1234567890";
+  EXPECT_EQ(isNumericString(str), true);
+  
+  str = "1";
+  EXPECT_EQ(isNumericString(str), true);  
+
+  // case empty string
+  str = "";
+  EXPECT_EQ(isNumericString(str), false);
+
+  // case mixed characters
+  str = "1a";
+  EXPECT_EQ(isNumericString(str), false);
+  
+  str = "a1";
+  EXPECT_EQ(isNumericString(str), false);
+
+  str = "1a1";
+  EXPECT_EQ(isNumericString(str), false);
+
+  str = " 1";
+  EXPECT_EQ(isNumericString(str), false);  
+
+  str = "1 ";
+  EXPECT_EQ(isNumericString(str), false);
+
+  str = "\t";
+  EXPECT_EQ(isNumericString(str), false);
+
+  str = "\t1";
+  EXPECT_EQ(isNumericString(str), false);
+
+  str = "1\t";
+  EXPECT_EQ(isNumericString(str), false);
+
+
+  // test all characters that arent '0'-'9' fail
+  for(int i = 0; i < '0'; i++)
+    {
+      str = i;
+      EXPECT_EQ(isNumericString(str), false);
+    }
+
+  // test all characters '0'-'9' pass
+  for(int i = '0'; i <= '9'; i++)
+    {
+      str = i;
+      EXPECT_EQ(isNumericString(str), true);
+    }
+
+  // test that all characters after '9' fail
+  for(int i = ':'; i <= 127; i++)
+    {
+      str = i;
+      EXPECT_EQ(isNumericString(str), false);
+    }
+}
