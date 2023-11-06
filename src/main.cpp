@@ -278,10 +278,12 @@ int main()
   do{
     time(&rawtime);
     timeinfo = localtime(&rawtime);
-    allTopLines.clear();
     pidsOld = pids;
     pids.clear();
     process = nullptr;
+    loadAvgStrings.clear();
+    uptimeStrings.clear();
+    allTopLines.clear();
 
     // get current active PIDS
     pids = findNumericDirs(_PROC);
@@ -467,6 +469,7 @@ int main()
       {
 	break;
       }
+    
   } while(true);
 
   // cleanup
