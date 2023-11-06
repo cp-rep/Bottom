@@ -334,7 +334,7 @@ void bottomWinsProcSortState(std::unordered_map<int, ProcessInfo*>& allProcessIn
 			  window.
   Output:
    NONE
- */
+*/
 void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& wins,
 			  const int& shiftState,
 			  int& shiftY,
@@ -413,7 +413,7 @@ void killState(std::unordered_map<int, CursesWindow*>& wins)
 					  numCols,
 					  _YOFFSET - 1,
 					  outString.length());
-
+  
   // output the kill prompt
   wattron(wins.at(_MAINWIN)->getWindow(),
 	  A_BOLD);
@@ -442,13 +442,19 @@ void killState(std::unordered_map<int, CursesWindow*>& wins)
 	{
 	  if(inputString.at(inputString.size() - 1) == 10)
 	    {
+	      inputString.pop_back();	      
 	      break;
 	    }
 	}
+      
       refreshAllWins(wins);
       doupdate();
     }
 
+  if(isNumericString(inputString))
+    {
+    }
+  
   // delete user input window as no longer needed
   wins.at(_USERINPUTWIN)->deleteWindow();
 
