@@ -159,7 +159,7 @@ void updateStateValues(std::unordered_map<int, CursesWindow*>& allWins,
    NONE
 */
 void changeProgramState(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-			const std::unordered_map<int, CursesWindow*>& allWins,
+			std::unordered_map<int, CursesWindow*>& allWins,
 			int& progState,
 			const int& prevState,
 			bool& quit,
@@ -378,7 +378,6 @@ void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& allWins,
 
 
 
-
 /*
   Function:
    killState
@@ -390,16 +389,33 @@ void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& allWins,
   Output:
   
 */
-void killState(const std::unordered_map<int, CursesWindow*>& allWins)
+void killState(std::unordered_map<int, CursesWindow*>& allWins)
 {
   std::string outString = "PID to signal/kill [default pid = xxxx] ";
-  int input;
+  int input = 0;
+  std::string inputString;
   bool stopLoop = false;
-
-  // enable cursor visibility
+  int xOffset = 0;
+  int yOffset = 0;
+  int numLines = 1;
+  int numCols = allWins.at(_MAINWIN)->getMaxX() - outString.length();
+  
+  
+  // enable kill state curses settings
   curs_set(1);
 
-  // print the kill prompt to screen
+  // create the user input window
+  allWins.at(_USERINPUTWIN)->defineWindow(newwin(numLines,
+						 numCols,
+						 _YOFFSET - 1,
+						 outString.length()),
+					  "UserInputWindow",
+					  numLines,
+					  numCols,
+					  _YOFFSET - 1,
+					  outString.length());
+
+  // output the kill prompt
   wattron(allWins.at(_MAINWIN)->getWindow(),
 	  A_BOLD);
   mvwaddstr(allWins.at(_MAINWIN)->getWindow(),
@@ -411,21 +427,41 @@ void killState(const std::unordered_map<int, CursesWindow*>& allWins)
   wrefresh(allWins.at(_MAINWIN)->getWindow());
   doupdate();
 
-  // loop new user input for kill state
+  //  loop getting user input
   while(stopLoop == false)
     {
-      input = mvgetch(_YOFFSET - 1, outString.length() + 2);
+      input = getch();
+      inputString.push_back(input);
       flushinp();
+      printUserInput(allWins,
+		     input,
+		     yOffset,
+		     xOffset);
 
+
+      /*
+      userInput.push_back(input);
       switch(input)
 	{
-	case _PROGSTATEQUIT:
+	case _ESCAPE:
 	  stopLoop = true;
 	  curs_set(0);
 	  break;
 	default:
 	  break;
 	}
+      // wrefresh(allWins.at(_MAINWIN)->getWindow());
+      // doupdate();
+      */
+      
+      //      wrefresh(allWins.at(_MAINWIN)->getWindow());
+      refreshAllWins(allWins);
+      doupdate();
     }
-  
+
+  // delete user input window as no longer needed
+  allWins.at(_USERINPUTWIN)->deleteWindow();
+
+  // restore settings
+  curs_set(0);
 } // end of "killState"
