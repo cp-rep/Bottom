@@ -90,6 +90,7 @@
 #include "topUpWindow.hpp"
 #include "topUsersWindow.hpp"
 #include "topWindow.hpp"
+#include "userInputWindow.hpp"
 #include "USERWindow.hpp"
 #include "VIRTWindow.hpp"
 
@@ -207,6 +208,7 @@ int main()
   MiBSwapFreeWindow miBSwapFreeWin;
   MiBSwapUsedWindow miBSwapUsedWin;
   MiBMemAvailWindow miBMemAvailWin;
+  UserInputWindow userInputWin;
   
   // state related vars
   int progState = 0;
@@ -387,7 +389,7 @@ int main()
 
     shiftState = userInput = getch();
     flushinp();
-
+    
 #if _CURSES
     // update state values from user input
     updateStateValues(allWins,
