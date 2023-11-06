@@ -408,6 +408,7 @@ int main()
 		       allWins,
 		       progState,
 		       prevState,
+		       sortState,
 		       quit,
 		       highlight);
     
