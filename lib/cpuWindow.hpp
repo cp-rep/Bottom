@@ -3,6 +3,8 @@
    cpuWindow.hpp
   
   Description:
+   The class definition for the CpuWindow class.
+  
    Represents the %CPU(s) window of the Top program for the output line
    "%CPU(s): - X.X us, X.X sy, X.X ni..."
    
@@ -14,7 +16,7 @@
 class CpuWindow : public CursesWindow {
 public:
   CpuWindow(WINDOW* win = nullptr,
-	    const std::string windowName = "",	      
+	    const std::string& windowName = "",	      
 	    const short& numLines = 0,
 	    const short& numCols = 0,
 	    const short& startY = 0,

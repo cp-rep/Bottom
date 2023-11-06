@@ -1,6 +1,9 @@
 /*
-  File: cpuWindow.cpp
+  File:
+   cpuWindow.cpp
+   
   Description:
+   Class implementation for the CpuWindow class.
  */
 #include "cpuWindow.hpp"
 
@@ -8,7 +11,7 @@
 
 /*
   Function
-   Function Constructor
+   CpuWindow Constructor
 
   Description:
    The class constructor for creating a CpuWindow object initializing related 
@@ -37,7 +40,7 @@
    None
 */
 CpuWindow::CpuWindow(WINDOW* win,
-		     const std::string windowName,	      
+		     const std::string& windowName,	      
 		     const short& numLines,
 		     const short& numCols,
 		     const short& startY,
