@@ -55,6 +55,11 @@ public:
   void setStartY(const int& startY);
   void setStartX(const int& startX);
   
+  void setMaxY(const int& maxY) { m_maxY = maxY; }
+  void setMaxX(const int& maxX) { m_maxX = maxX; }
+  const int& getMaxY() { return m_maxY; }
+  const int& getMaxX() { return m_maxX; }  
+  
 private:
   // member variables
   WINDOW* m_window;
@@ -63,6 +68,8 @@ private:
   int m_numCols;
   int m_startY;
   int m_startX;
+  int m_maxY;
+  int m_maxX;
 };
 
 #endif
