@@ -164,7 +164,8 @@ void changeProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			const int& prevState,
 			const int& sortState,
 			bool& quit,
-			bool& highlight)
+			bool& highlight,
+			const int& defaultKillPid)
 {
   switch(progState)
     {
@@ -187,7 +188,7 @@ void changeProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
     case _PROGSTATEKILL:
       killState(allProcessInfo,
 		wins,
-		sortState);
+		defaultKillPid);
       progState = prevState;
       break;
     case _PROGSTATECSV:
@@ -243,7 +244,7 @@ void bottomWinsProcSortState(std::unordered_map<int, ProcessInfo*>& allProcessIn
     case _USERWIN:
       outPids = sortValuesByPID(allProcessInfo,
 				   pids,
-				   &ProcessInfo::getUSER);      
+				   &ProcessInfo::getUSER);
       break;
     case _PRWIN:
       outPids = sortValuesByPID(allProcessInfo,
@@ -268,7 +269,7 @@ void bottomWinsProcSortState(std::unordered_map<int, ProcessInfo*>& allProcessIn
     case _SHRWIN:
       outPids = sortValuesByPID(allProcessInfo,
 				   pids,
-				   &ProcessInfo::getSHR);      
+				   &ProcessInfo::getSHR);
       break;
     case _SWIN:
       outPids = sortValuesByPID(allProcessInfo,
@@ -278,7 +279,7 @@ void bottomWinsProcSortState(std::unordered_map<int, ProcessInfo*>& allProcessIn
     case _PROCCPUWIN:
       outPids = sortValuesByPID(allProcessInfo,
 				   pids,
-				   &ProcessInfo::getCPUUsage);      
+				   &ProcessInfo::getCPUUsage);
       break;
     case _PROCMEMWIN:
       outPids = sortValuesByPID(allProcessInfo,
@@ -288,7 +289,7 @@ void bottomWinsProcSortState(std::unordered_map<int, ProcessInfo*>& allProcessIn
     case _PROCTIMEWIN:
       outPids = sortValuesByPID(allProcessInfo,
 				   pids,
-				   &ProcessInfo::getProcessCPUTime);      
+				   &ProcessInfo::getProcessCPUTime);
       break;
     case _COMMANDWIN:
       outPids = sortValuesByPID(allProcessInfo,
@@ -297,7 +298,7 @@ void bottomWinsProcSortState(std::unordered_map<int, ProcessInfo*>& allProcessIn
       break;
     default:
       break;
-    }  
+    }
 } // end of "bottomWinProcSortState"
 
 
@@ -342,7 +343,7 @@ void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& wins,
 			  const int& shiftState,
 			  int& shiftY,
 			  int& shiftX,
-			  const int shiftDownMax)			 
+			  const int shiftDownMax)
 {
   switch(shiftState)
     {
@@ -386,18 +387,21 @@ void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& wins,
    killState
 
   Description:
-   
-
+  
   Input:
-
+  
   Output:
+  
 */
 void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	       std::unordered_map<int, CursesWindow*>& wins,
-	       const int& sortState)
+	       const int& defaultKillPid)
 {
-  std::string outString = "PID to signal/kill [default pid = xxxx] ";
-  std::string inputString;  
+  std::string outString = "PID to signal/kill [default pid = ";
+  outString.append(std::to_string(defaultKillPid));
+  outString.append("] ");
+		   
+  std::string inputString;
   int input = 0;
   bool stopLoop = false;
   int xOffset = 0;
@@ -447,7 +451,7 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	{
 	  if(inputString.at(inputString.size() - 1) == 10)
 	    {
-	      inputString.pop_back();	      
+	      inputString.pop_back();
 	      break;
 	    }
 	}
