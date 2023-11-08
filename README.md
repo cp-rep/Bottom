@@ -29,13 +29,8 @@ The main branch will maintain the stable version of Bottom.  It currently suppor
 ## Current Challenges/Known Issues
 Some information does not match one to one to Top.  One such example are the CPU User Time and System Time averages and related values.  These need to be measured over a duration to get the correct average usage rates.  These calculations will eventually be rectified in the threaded branch down the line.  Another example is the number of users logged into the system which are not correct and currently set to 0.  All Research has pointed towards that data being retrieved from the '/var/run/utmp' file which requires a UTMP dump or some other method to interface with it such as non-standard libraries like 'libutempter'.
 
-## Short Term Fixes and Changes/Additions
-The following is a quick list of my most important upcoming short-term changes:
-- Basic process management
-- Adding an interruptable delay
-- Unit tests
-
-## Longer Term Changes/Additions
-- Mouse functionality
-- Web-based features.  For example, snap shotting the process list and uploading it to examine for unusual values that may determine a malicious connection or program.
-- Potentially many others I have considered but these are at the top of my list!
+## Future Changes/Additions I Would Like to Implement
+- Web-based features.
+- An interruptable delay via multithreading.
+- Process/Mem Statistics Graphs
+- Potentially many others.
