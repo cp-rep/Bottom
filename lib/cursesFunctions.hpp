@@ -19,6 +19,7 @@
 #include "COMMANDWindow.hpp"
 #include "PIDWindow.hpp"
 #include "SWindow.hpp"
+#include "cpuGraphWindow.hpp"
 #include "cpuHiWindow.hpp"
 #include "cpuIdWindow.hpp"
 #include "cpuNiWindow.hpp"
@@ -98,7 +99,8 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 		       MiBSwapFreeWindow& miBSwapFreeWin,
 		       MiBSwapUsedWindow& miBSwapUsedWin,
 		       MiBMemAvailWindow& miBMemAvailWin,
-		       UserInputWindow& userInputWin);
+		       UserInputWindow& userInputWin,
+		       CpuGraphWindow& cpuGraphWin);
 void initializeProgramStates(std::unordered_map<char, int>& progStates);
 void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins);

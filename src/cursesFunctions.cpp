@@ -102,7 +102,8 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 		       MiBSwapFreeWindow& miBSwapFreeWin,
 		       MiBSwapUsedWindow& miBSwapUsedWin,
 		       MiBMemAvailWindow& miBMemAvailWin,
-		       UserInputWindow& userInputWin)
+		       UserInputWindow& userInputWin,
+		       CpuGraphWindow& cpuGraphWin)
 {
   int numLines;
   int numCols;
@@ -726,6 +727,7 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
   wins.insert(std::make_pair(_MIBSWAPUSEDWIN, &miBSwapUsedWin));
   wins.insert(std::make_pair(_MIBMEMAVAILWIN, &miBMemAvailWin));
   wins.insert(std::make_pair(_USERINPUTWIN, &userInputWin));
+  wins.insert(std::make_pair(_CPUGRAPHWIN, &userInputWin));  
 } // end of "initializeWindows"
 
 
