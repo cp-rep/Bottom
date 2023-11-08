@@ -20,12 +20,12 @@ public:
   SecondsToTime(const float& seconds = 0);
 
   // member functions
-  const int convertToHours(const int& seconds) const;
-  const int convertToMinutes(const int& seconds) const;
-  const int findRemainingSeconds(const int& seconds) const;
-  std::string returnHHMMSS(const int& hours,
-			   const int& minutes,
-			   const int& seconds) const;
+  const unsigned int convertToHours(const unsigned int& seconds) const;
+  const unsigned int convertToMinutes(const unsigned int& seconds) const;
+  const unsigned int findRemainingSeconds(const unsigned int& seconds) const;
+  std::string returnHHMMSS(const unsigned int& hours,
+			   const unsigned int& minutes,
+			   const unsigned int& seconds) const;
   
   // getters
   const unsigned int& getHours() const;

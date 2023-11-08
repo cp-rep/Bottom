@@ -22,7 +22,7 @@
 
   Input:
    seconds              - A constant float value that should be the total
-                          seconds the caller wants converted into other time
+                          seconds the caller wants converted unsigned into other time
 			  values.
   Output:
    NONE
@@ -45,14 +45,14 @@ SecondsToTime::SecondsToTime(const float& seconds)
    Converts the incoming parameter of seconds to hours.
   
   Input:
-   seconds                - A reference to a constant integer that should be
+   seconds                - A reference to a constant unsigned integer that should be
                          the amount of seconds the caller wants converted
 			 to hours.
   Output:
-   const int           - The resulting calculation from seconds to
+   const unsigned int           - The resulting calculation from seconds to
                          hours.
 */
-const int SecondsToTime::convertToHours(const int& seconds) const
+const unsigned int SecondsToTime::convertToHours(const unsigned int& seconds) const
 {
   return seconds/(MINUTE * MINUTE);
 } // end of "convertToHours"
@@ -67,14 +67,14 @@ const int SecondsToTime::convertToHours(const int& seconds) const
    Converts the incoming parameter of seconds to minutes.
   
   Input:
-   seconds                - A reference to a constant integer that should be
+   seconds                - A reference to a constant unsigned integer that should be
                          the amount of seconds the caller wants converted
 			 to minutes.
   Output:
-   const int           - The resulting calculation from seconds to
+   const unsigned int           - The resulting calculation from seconds to
                          hours.
 */
-const int SecondsToTime::convertToMinutes(const int& seconds) const
+const unsigned int SecondsToTime::convertToMinutes(const unsigned int& seconds) const
 {
   return (seconds/MINUTE) % MINUTE;
 } // end of "convertToMinutes"
@@ -90,14 +90,14 @@ const int SecondsToTime::convertToMinutes(const int& seconds) const
    incoming seconds provided by the calling object.
   
   Input:
-   seconds                 - A reference to a constant integer that will
+   seconds                 - A reference to a constant unsigned integer that will
                           be calculated for a remainder of seconds if
 			  divided by a minute.
   Output:
-   const int            - The calculated remainder of seconds.
+   const unsigned int            - The calculated remainder of seconds.
   
 */
-const int SecondsToTime::findRemainingSeconds(const int& seconds) const
+const unsigned int SecondsToTime::findRemainingSeconds(const unsigned int& seconds) const
 {
   return seconds % MINUTE;
 } // end of "findRemainingSeconds"
@@ -113,22 +113,22 @@ const int SecondsToTime::findRemainingSeconds(const int& seconds) const
    string type in HH:MM:SS formatted pattern.
   
   Input:
-   hours                - A reference to a constant integer that represents
+   hours                - A reference to a constant unsigned integer that represents
                           the total hours to be converted and formatted.
 
-   minutes              - A reference to a constant integer that represents
+   minutes              - A reference to a constant unsigned integer that represents
                           the total minutes to be converted and formatted.
 
-   seconds              - A reference to a constant integer that represents
+   seconds              - A reference to a constant unsigned integer that represents
                           the total seconds to be converted and formatted.
   
   Output:
    string               - A formatted string in the pattern HH:MM:SS.
   
 */
-std::string SecondsToTime::returnHHMMSS(const int& hours,
-					 const int& minutes,
-					 const int& seconds) const
+std::string SecondsToTime::returnHHMMSS(const unsigned int& hours,
+					 const unsigned int& minutes,
+					 const unsigned int& seconds) const
 {
   std::string hhmmss;
 
