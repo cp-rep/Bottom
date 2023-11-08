@@ -14,6 +14,7 @@
   - the 'x' key allows highlighting a particular column.
   - the arrow keys allow shifting the windows left and right.
   - the '<' and '>' keys change how the columns are sorted.
+  - the 'k' key allows the user to "kill" desired processes.
 */
 #include <algorithm>
 #include <chrono>
