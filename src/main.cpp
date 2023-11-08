@@ -39,6 +39,7 @@
 #include "byteConverter.hpp"
 #include "changeProgramStates.hpp"
 #include "COMMANDWindow.hpp"
+#include "cpuGraphWindow.hpp"
 #include "cpuHiWindow.hpp"
 #include "cpuIdWindow.hpp"
 #include "cpuInfo.hpp"
@@ -209,6 +210,7 @@ int main()
   MiBSwapUsedWindow miBSwapUsedWin;
   MiBMemAvailWindow miBMemAvailWin;
   UserInputWindow userInputWin;
+  CpuGraphWindow cpuGraphWin;
   
   // state related vars
   int progState = 0;
@@ -264,7 +266,8 @@ int main()
 		    miBSwapFreeWin,
 		    miBSwapUsedWin,
 		    miBMemAvailWin,
-		    userInputWin);
+		    userInputWin,
+		    cpuGraphWin);
   initializeProgramStates(progStates);
   
   // loop variables
