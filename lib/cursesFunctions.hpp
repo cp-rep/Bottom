@@ -139,11 +139,12 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 		const int shiftY,
 		const int shiftX);
 const std::string createColorLine(const int& len);
-void printColorLine(const std::unordered_map<int, CursesWindow*>& wins,
-		    const int& row,
-		    const int& attrs,
-		    const int& window,
-		    const std::string& colorLine);
+void printLine(const std::unordered_map<int, CursesWindow*>& wins,
+	       const int& row,
+	       const int& col,
+	       const int& attrs,
+	       const int& window,
+	       const std::string& colorLine);
 void shiftBottomWinsLeft(std::unordered_map<int, CursesWindow*>& wins,
 			 const int& shiftX);
 void shiftBottomWinsRight(std::unordered_map<int, CursesWindow*>& wins,

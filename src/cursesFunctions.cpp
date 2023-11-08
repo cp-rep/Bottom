@@ -1722,12 +1722,10 @@ const std::string createColorLine(const int& len)
 
 /*
   Function:
-   printColorLine
+   printLine
 
   Description:
-   Prints a solid color line at the position of the incoming "row" variable's
-   position to the incoming CursesWindow indexed by the incoming "window"
-   variable.
+   Prints an incoming string to
    
   Input:
    wins                 - A reference to a const unordered map
@@ -1737,37 +1735,38 @@ const std::string createColorLine(const int& len)
 			  _cursesWinConsts.hpp.  
 
    row                  - A reference to a constant integer that holds
-                          the Y-Position to print the color line to the
-			  desired CursesWindow object's window.
+                          the Y-Position to print the string to.
 
    attr                 - A reference to a constant integer that holds the
-                          color combination to print.
+                          color combination that will be applied to the
+			  output string.
 
    window               - A reference to a constant integer that holds the
-                          index value of the CursesWindow object to print
-			  the color line to.
+                          index value of the CursesWindow object that will
+			  be printed to.
+			  
 
-   colorLine            - A reference to a constant string object which is
-                          a string of whitespaces that should be the
-			  total number of columns of the window to print
-			  it to.
+   outString            - A reference to a constant string object that holds
+                          the string to print to the given window and the
+			  y/x coordinates of that window.
 			  
   Output:
    NONE
 */
-void printColorLine(const std::unordered_map<int, CursesWindow*>& wins,
-		    const int& row,
-		    const int& attrs,
-		    const int& window,
-		    const std::string& colorLine)
+void printLine(const std::unordered_map<int, CursesWindow*>& wins,
+	       const int& row,
+	       const int& col,
+	       const int& attrs,
+	       const int& window,
+	       const std::string& outString)
 {
   wattron(wins.at(window)->getWindow(), COLOR_PAIR(attrs));
   mvwaddstr(wins.at(window)->getWindow(),
 	    row,
-	    0,
-	    colorLine.c_str());
+	    col,
+	    outString.c_str());
   wattroff(wins.at(window)->getWindow(), COLOR_PAIR(attrs));
-} // end of "printColorLine"
+} // end of "printLine"
 
 
 
