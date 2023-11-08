@@ -528,13 +528,17 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		  if(isNumericString(inputString))
 		    {
 		      unsigned int signal = stringToInt(inputString);
-		      kill(killPid, signal);
+		      if(isValidKillSignal(signal) == true)
+			{
+			  kill(killPid, signal);
+			}
+			  
 		      break;
 		    }
 		  // invalid signal prompt
 		  else
 		    {
-		      curs_set(0);
+		      // clear the line where new next will be printed
 		      outString = createColorLine(wins.at(_MAINWIN)->getNumCols());
 		      printColorLine(wins,
 				     _YOFFSET - 1,
@@ -545,8 +549,8 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		      // update prompt string
 		      outString = " Invalid Signal ";
 
-
 		      // update window settings for prompt
+		      curs_set(0);
 		      wattroff(wins.at(_MAINWIN)->getWindow(),
 			       A_BOLD);
 		      wattron(wins.at(_MAINWIN)->getWindow(),
@@ -559,11 +563,9 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 				outString.c_str());
 
 		      // reset to default window settings
-		      wrefresh(wins.at(_MAINWIN)->getWindow());
-
 		      wattron(wins.at(_MAINWIN)->getWindow(),
 			       COLOR_PAIR(_WHITE_TEXT));
-		      
+		      wrefresh(wins.at(_MAINWIN)->getWindow());
 		      doupdate();
 		      inputString.clear();
 		      sleep(1.75);
@@ -589,3 +591,56 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	   A_BOLD);
   curs_set(0);
 } // end of "killState"
+
+
+
+/*
+  Function:
+   isValidKillSignal
+
+  Description:
+   Checks if the incoming integer contains a valid signal value to which a
+   process can be killed.
+  
+  Input:
+   signal               - A reference to a constant integer that contains
+                          a value that represents the signal number
+			  to kill a process with.
+  
+  Output:
+   bool                 - A boolean object that is true if the signal value
+                          is a valid kill signal, false otherwise.
+*/
+bool isValidKillSignal(const int& signal)
+{
+  bool isValid = false;
+  switch(signal)
+    {
+    case SIGTERM:
+      isValid = true;
+      break;
+    case SIGKILL:
+      isValid = true;      
+      break;
+    case SIGHUP:
+      isValid = true;      
+      break;
+    case SIGINT:
+      isValid = true;      
+      break;
+    case SIGALRM:
+      isValid = true;
+      break;
+    case SIGCHLD:
+      isValid = true;
+      break;
+    case SIGPIPE:
+      isValid = true;
+      break;
+    default:
+      isValid = false;      
+	break;
+    }
+
+  return isValid;
+} // end of "isValidKillSignal"
