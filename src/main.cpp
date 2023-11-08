@@ -391,7 +391,7 @@ int main()
     // ## get user input ##
     std::vector<int> outPids;
     int highlightIndex = 0;
-    int userInput = 0;
+    int userInput = -1;
     int shiftState = 0;
 
     shiftState = userInput = getch();

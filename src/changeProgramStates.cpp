@@ -126,7 +126,7 @@ void updateStateValues(std::unordered_map<int, CursesWindow*>& wins,
 	      sortState++;
 	    }
 	}
-      else
+      else // bad input
 	{
 	  std::string outString = " Unknown command - try 'h' for help ";
 	  printBadInputString(wins,
@@ -136,7 +136,7 @@ void updateStateValues(std::unordered_map<int, CursesWindow*>& wins,
 			      outString);
 	  refreshAllWins(wins);
 	  doupdate();	  
-	  sleep(1.75);	  
+	  sleep(1.75);
 	}
     }
   highlightIndex = sortState;
@@ -199,13 +199,13 @@ void changeProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	}
       progState = prevState;
       break;
-    case _PROGSTATEKILL:
+    case _PROGSTATEKILL: // kill state
       killState(allProcessInfo,
 		wins,
 		defaultKillPid);
       progState = prevState;
       break;
-    case _PROGSTATECSV:
+    case _PROGSTATECSV: // output csv file
       makeDirectory(_CSV);
       createFileCSV(allProcessInfo,
 		    _CSV);
@@ -673,7 +673,7 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   // delete user input window as no longer needed
   wins.at(_USERINPUTWIN)->deleteWindow();
 
-  // restore settings
+  // restore window settings
   wattroff(wins.at(_MAINWIN)->getWindow(),
 	   A_BOLD);
   curs_set(0);
@@ -689,7 +689,7 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
    Outputs the help screen.  'q' exits the help screen.
 
   Input:
-   wins              - A reference to a constant object that is an
+   wins                 - A reference to a constant object that is an
                           un ordered map containing all the allocated
 			  curses windows addressable by the hash key
 			  PID number.
@@ -710,7 +710,7 @@ void helpState(const std::unordered_map<int, CursesWindow*>& wins)
 					 0),
 				  "Help Window",
 				  wins.at(_MAINWIN)->getMaxY(),
-				  wins.at(_MAINWIN)->getMaxX(),    
+				  wins.at(_MAINWIN)->getMaxX(),
 				  0,
 				  0);
 
