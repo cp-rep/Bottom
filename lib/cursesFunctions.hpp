@@ -29,6 +29,7 @@
 #include "cpuUsWindow.hpp"
 #include "cpuWaWindow.hpp"
 #include "cpuWindow.hpp"
+#include "helpWindow.hpp"
 #include "miBBuffCacheWindow.hpp"
 #include "miBMemAvailWindow.hpp"
 #include "miBMemFreeWindow.hpp"
@@ -100,6 +101,7 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 		       MiBSwapUsedWindow& miBSwapUsedWin,
 		       MiBMemAvailWindow& miBMemAvailWin,
 		       UserInputWindow& userInputWin,
+		       HelpWindow& helpWin,
 		       CpuGraphWindow& cpuGraphWin);
 void initializeProgramStates(std::unordered_map<char, int>& progStates);
 void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins);
