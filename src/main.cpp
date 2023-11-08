@@ -306,6 +306,7 @@ int main()
 
     // "current time, # users, load avg"
     // extract data from /proc/uptime for very top window
+
     extractProcUptime(uptime,
 		      uptimeStrings,
 		      _PROC_UPTIME);
@@ -327,7 +328,7 @@ int main()
     // set the time string with current military time
     timeString = uptime.returnHHMMSS(timeinfo->tm_hour,
 				     timeinfo->tm_min,
-				     timeinfo->tm_sec);    
+				     timeinfo->tm_sec);
 
     // create the top lines for ouput
     allTopLines.push_back(createTopLine(timeString,
@@ -430,7 +431,7 @@ int main()
 			 shiftState,
 			 shiftY,
 			 shiftX,
-			 outPids.size() - 3);
+			 outPids.size() - 2);
 
     // ## print process windows ##
     if(highlight == true)
