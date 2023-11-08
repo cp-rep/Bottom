@@ -315,8 +315,8 @@ void bottomWinsProcSortState(std::unordered_map<int, ProcessInfo*>& allProcessIn
       break;
     case _COMMANDWIN:
       outPids = sortValuesByPID(allProcessInfo,
-				   pids,
-				   &ProcessInfo::getCOMMANDUpper);
+				pids,
+				&ProcessInfo::getCOMMANDUpper);
       break;
     default:
       break;
