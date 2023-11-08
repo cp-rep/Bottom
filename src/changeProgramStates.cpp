@@ -387,6 +387,10 @@ void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& wins,
    killState
 
   Description:
+   Allows the user to send a signal to a process. If the signal is allowed by
+   the kill() function, the signal will be successfully sent. Else, if any
+   input does not meet the requirements of the kill() function, a logical
+   reply will be output to the screen about the input error.
   
   Input:
    allProcessInfo       - A reference to an unordered_map<int, ProcessInfo*> object
