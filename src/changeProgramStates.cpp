@@ -126,6 +126,14 @@ void updateStateValues(std::unordered_map<int, CursesWindow*>& wins,
 	      sortState++;
 	    }
 	}
+      else if(userInput == KEY_UP ||
+	      userInput == KEY_DOWN ||
+	      userInput == KEY_LEFT ||
+	      userInput == KEY_RIGHT)
+	{
+	  // do nothing
+	}
+	    
       else // bad input
 	{
 	  std::string outString = " Unknown command - try 'h' for help ";
@@ -308,7 +316,7 @@ void bottomWinsProcSortState(std::unordered_map<int, ProcessInfo*>& allProcessIn
     case _COMMANDWIN:
       outPids = sortValuesByPID(allProcessInfo,
 				   pids,
-				   &ProcessInfo::getCOMMAND);
+				   &ProcessInfo::getCOMMANDUpper);
       break;
     default:
       break;
