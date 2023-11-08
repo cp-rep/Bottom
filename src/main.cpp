@@ -184,7 +184,6 @@ int main()
   PercentMEMWindow PercentMEMWin;
   TIMEWindow TIMEWin;
   COMMANDWindow COMMANDWin;
-  HelpWindow helpWindow;
   TopTimeWindow topTimeWin;
   TopUpWindow topUpWin;
   TopUsersWindow topUserWin;
@@ -211,7 +210,9 @@ int main()
   MiBSwapUsedWindow miBSwapUsedWin;
   MiBMemAvailWindow miBMemAvailWin;
   UserInputWindow userInputWin;
+  HelpWindow helpWin;  
   CpuGraphWindow cpuGraphWin;
+  
   
   // state related vars
   int progState = 0;
@@ -268,6 +269,7 @@ int main()
 		    miBSwapUsedWin,
 		    miBMemAvailWin,
 		    userInputWin,
+		    helpWin,
 		    cpuGraphWin);
   initializeProgramStates(progStates);
   
