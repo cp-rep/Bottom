@@ -243,6 +243,23 @@ const std::string& ProcessInfo::getProcessCPUTime() const
 
 /*
   Function:
+   getCOMMANDUpper
+   
+  Description:
+
+  Input:
+
+  Output:
+*/
+const std::string& ProcessInfo::getCOMMANDUpper() const
+{
+  return m_commandUpper;
+} // end of "getCOMMANDUpper"
+
+
+
+/*
+  Function:
    getCOMMAND
    
   Description:
@@ -492,7 +509,34 @@ void ProcessInfo::setProcessCPUTime(const std::string& processCPUTime)
 void ProcessInfo::setCOMMAND(const std::string& command)
 {
   m_command = command;
+  setCOMMANDUpper(command);
 } // end of "setCOMMAND"
+
+
+
+/*
+  Function:
+   setCOMMANDUpper
+   
+  Description:
+
+  Input:
+
+  Output:
+*/
+void ProcessInfo::setCOMMANDUpper(const std::string& command)
+{
+  for(int i = 0; i < command.length(); i++)
+    {
+      if((command.at(i) >= 'a' && command.at(i) <= 'z') ||
+	 (command.at(i) >= 'A' && command.at(i) <= 'Z'))
+	
+	{
+	  m_commandUpper.push_back(toupper(command.at(i)));
+	}
+    }
+} // end of "getCOMMANDUpper"
+
 
 
 

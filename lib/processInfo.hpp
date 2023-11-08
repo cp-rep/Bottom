@@ -40,6 +40,7 @@ public:
   const double& getCpuRawTime() const;
   const std::string& getProcessCPUTime() const;
   const std::string& getCOMMAND() const;
+  const std::string& getCOMMANDUpper() const;
   const bool& getChanged() const;
   
   // setters
@@ -56,6 +57,7 @@ public:
   void setCpuRawTime(const double& cpuRawTime);
   void setProcessCPUTime(const std::string& processCPUTime);
   void setCOMMAND(const std::string& command);
+  void setCOMMANDUpper(const std::string& command);  
   void setChanged(const bool& changed);
   
 private:
@@ -73,6 +75,7 @@ private:
   std::string m_processCPUTime;
   std::string m_command;
   bool m_changed;
+  std::string m_commandUpper;
 };
 
 #endif
