@@ -156,4 +156,10 @@ void printUserInput(const std::unordered_map<int, CursesWindow*>& wins,
 		    std::string& inputString,		    
 		    int& yOffset,
 		    int& xOffset);
+void printInputPrompt(std::unordered_map<int, CursesWindow*>& wins);
+void printBadInputString(const std::unordered_map<int, CursesWindow*>& wins,
+			 const int& window,
+			 const int& yOffset,
+			 const int& xOffset,
+			 const std::string& outString);
 #endif

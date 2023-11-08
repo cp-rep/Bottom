@@ -1702,12 +1702,13 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
   Input:
    len                  - A reference to a constant integer type which holds
                           the total length of whitespace characters to
-			  define.
+			  define in the string.
 
   Output:
    const std::string    - The resulting string of whitespace characters.
 */
 const std::string createColorLine(const int& len)
+
 {
   std::string temp;
   for(int i = 0; i < len; i++)
@@ -1747,8 +1748,7 @@ const std::string createColorLine(const int& len)
 			  
 
    outString            - A reference to a constant string object that holds
-                          the string to print to the given window and the
-			  y/x coordinates of that window.
+                          the string to print to on the given window.
 			  
   Output:
    NONE
@@ -1996,3 +1996,72 @@ void printUserInput(const std::unordered_map<int, CursesWindow*>& wins,
       inputString.push_back(10);
     }
 } // end of "printUserInput"
+
+
+
+/*
+  Function:
+   printBadInputString
+ 
+  Description:
+   Prints the incoming string as black text on a white background
+   to the incoming window.  The window is first cleared completely
+   of the any preivous outputby printing a color line at the location
+   first before printing the bad input string.
+
+  Input:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+			  to all currently allocated CursesWindow objects
+			  that can be indexed by values in the file
+			  _cursesWinConsts.hpp.
+
+   window               - A reference to a constant integer that holds the
+                          index value of the CursesWindow object that will
+			  be printed to.			  
+
+
+   yOffset              - A reference to an integer that contains the current
+                          Y position in the window to print to.
+
+			  
+   xOffset              - A reference to an integer that contains the current
+                          X position in the window to print to.
+
+   outString            - A reference to a constant string object that holds
+                          the string to print to on the given window.
+
+  Output:
+   NONE
+*/
+void printBadInputString(const std::unordered_map<int, CursesWindow*>& wins,
+			 const int& window,
+			 const int& yOffset,
+			 const int& xOffset,
+			 const std::string& outString)
+{
+  std::string colorLine;
+  curs_set(0);
+  wattroff(wins.at(window)->getWindow(),
+	   A_BOLD);
+		      
+  // clear the line where the prompt will be printed
+  colorLine = createColorLine(wins.at(window)->getNumCols());
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    window,
+	    colorLine);
+				     
+  // define and print the prompt
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _BLACK_TEXT,
+	    window,
+	    outString);
+  
+  wrefresh(wins.at(window)->getWindow());
+  doupdate();  
+} // end of "printBadInputString"
