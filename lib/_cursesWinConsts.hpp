@@ -44,7 +44,8 @@ enum _WINS {
   _MIBSWAPFREEWIN,
   _MIBSWAPUSEDWIN,
   _MIBMEMAVAILWIN,
-  _USERINPUTWIN // 38
+  _USERINPUTWIN,
+  _CPUGRAPHWIN // 39
 };
 
 // color pair values
