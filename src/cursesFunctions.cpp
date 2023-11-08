@@ -1565,7 +1565,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 {
   std::string outString;
 
-  for(int i = 0; i < pidList.size() - 1; i++)
+  for(int i = 0; i < pidList.size(); i++)
     {
       int posY = i + shiftY;
 
