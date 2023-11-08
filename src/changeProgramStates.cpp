@@ -389,8 +389,46 @@ void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& wins,
   Description:
   
   Input:
-  
+   allProcessInfo       - A reference to an unordered_map<int, ProcessInfo*> object
+                          that contains all currently extracted process data from
+			  the current PID list.
+
+   wins                 - A reference to a constant object that is an
+                          un ordered map containing all the allocated
+			  curses windows addressable by the hash key
+			  PID number.
+			  
+   defaultKillPid       - A reference to a constant integer that holds the PID
+                          for the first value of the current sorted list of
+			  PIDs that represents the default PID to kill for
+			  the current sort.
   Output:
+   NONE
+
+  Bad Cases Tested:
+   Case 1: Blank Input + Invalid Signal
+   Result: Invalid Signal
+
+   Case 2: Blank Input + Characters
+   Result: Invalid Signal
+
+   Case 3: Characters
+   Result: Unacceptable Integer
+
+   Case 4: Invalid PID + Default Signal
+   Result: Failed signal pid 'xxxx' with '15': No such process
+
+   Case 5: Invalid PID + Valid User Input Signal
+   Result: Failed signal pid 'xxxx' with 'x': No such process
+
+   Case 6: Invalid PID + Invalid User Input Signal
+   Result: Invalid Signal
+
+   Case 7: Valid PID + Invalid Signal
+   Result: Invalid Signal
+
+   Case 8: Valid PID + Characters
+   Result: Invalid Signal
   
 */
 void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
@@ -512,13 +550,29 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	  // check if user entered input for type of kill signal
 	  if(!inputString.empty())
 	    {
-	      // test if input was only the new line key for default
+	      // test if input was newline key for default kill signal
 	      if(inputString.size() == 1 && inputString.at(0) == 10)
 		{
-		  kill(killPid, SIGTERM);
+		  if(kill(killPid, SIGTERM) != 0)
+		    {
+		      outString = " Failed signal pid '";
+		      outString.append(std::to_string(killPid));
+		      outString.append("' with '");
+		      outString.append(std::to_string(SIGTERM));
+		      outString.append(": No such process");
+		      printBadInputString(wins,
+					  _MAINWIN,
+					  _YOFFSET -1,
+					  0,
+					  outString);
+		      inputString.clear();
+		      sleep(1.75);
+		    }
+		  
 		  break;
 		}
-	      // user entered characters plus the new line
+	      
+	      // user entered characters plus the new line for kill signal
 	      else if(inputString.at(inputString.size() - 1) == 10)
 		{
 		  // pop the new line character
@@ -528,45 +582,52 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		  if(isNumericString(inputString))
 		    {
 		      unsigned int signal = stringToInt(inputString);
+
+		      // valid signal
 		      if(isValidKillSignal(signal) == true)
 			{
-			  kill(killPid, signal);
+			  int result = kill(killPid, signal);
+			  
+			  if(result != 0)
+			    {
+			      outString = " Failed signal pid '";
+			      outString.append(std::to_string(killPid));
+			      outString.append("' with '");
+			      outString.append(std::to_string(signal));
+			      outString.append(": No such process");
+			      printBadInputString(wins,
+						  _MAINWIN,
+						  _YOFFSET -1,
+						  0,
+						  outString);
+			      inputString.clear();
+			      sleep(1.75);
+			    }
+			}
+		      // invalid signal
+		      else
+			{
+			  outString = " Invalid Signal ";
+			  printBadInputString(wins,
+					      _MAINWIN,
+					      _YOFFSET -1,
+					      0,
+					      outString);
+			  inputString.clear();
+			  sleep(1.75);
 			}
 			  
 		      break;
 		    }
-		  // invalid signal prompt
+		  // invalid signal
 		  else
 		    {
-		      // clear the line where new next will be printed
-		      outString = createColorLine(wins.at(_MAINWIN)->getNumCols());
-		      printColorLine(wins,
-				     _YOFFSET - 1,
-				     _WHITE_TEXT,
-				     _MAINWIN,
-				     outString);
-				     
-		      // update prompt string
 		      outString = " Invalid Signal ";
-
-		      // update window settings for prompt
-		      curs_set(0);
-		      wattroff(wins.at(_MAINWIN)->getWindow(),
-			       A_BOLD);
-		      wattron(wins.at(_MAINWIN)->getWindow(),
-			      COLOR_PAIR(_BLACK_TEXT));
-
-		      // primpt prompt
-		      mvwaddstr(wins.at(_MAINWIN)->getWindow(),
-				_YOFFSET - 1,
-				0,
-				outString.c_str());
-
-		      // reset to default window settings
-		      wattron(wins.at(_MAINWIN)->getWindow(),
-			       COLOR_PAIR(_WHITE_TEXT));
-		      wrefresh(wins.at(_MAINWIN)->getWindow());
-		      doupdate();
+		      printBadInputString(wins,
+					  _MAINWIN,
+					  _YOFFSET -1,
+					  0,
+					  outString);
 		      inputString.clear();
 		      sleep(1.75);
 		      break;
@@ -581,6 +642,14 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   // unnacceptable input prompt
   else
     {
+      outString = " Unacceptable Integer ";
+      printBadInputString(wins,
+			  _MAINWIN,
+			  _YOFFSET -1,
+			  0,
+			  outString);
+      inputString.clear();
+      sleep(1.75);
     }
 
   // delete user input window as no longer needed
@@ -614,6 +683,7 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 bool isValidKillSignal(const int& signal)
 {
   bool isValid = false;
+  
   switch(signal)
     {
     case SIGTERM:
