@@ -19,6 +19,7 @@ Bottom uses GTest for its unit testing.  GTest requires the GTest package and us
 - The arrow keys allow shifting the windows left, right, up, and down.
 - The '<' and '>' keys determine which column to sort by.
 - The 'x' key allows highlighting a particular column.
+- The 'k' key allows the user to "kill" desired processes.
 
 ## Why C++?
 I wanted to write a small Linux process management utility that may be easier expanded upon with experimental features. I don't have much interest in actually trying to submit this into any official Linux circles or ecosystems.
