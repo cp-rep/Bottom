@@ -461,11 +461,12 @@ int main()
     printWindowNames(allWins);
     attroffBottomWins(allWins,
 		      _BLACK_TEXT);
-    printColorLine(allWins,
-		   _YOFFSET,
-		   _BLACK_TEXT,
-		   _MAINWIN,
-		   colorLine);
+    printLine(allWins,
+	      _YOFFSET,
+	      0,
+	      _BLACK_TEXT,
+	      _MAINWIN,
+	      colorLine);
     refreshAllWins(allWins);
     doupdate();
 #endif
