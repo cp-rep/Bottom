@@ -526,6 +526,7 @@ void ProcessInfo::setCOMMAND(const std::string& command)
 */
 void ProcessInfo::setCOMMANDUpper(const std::string& command)
 {
+  m_commandUpper.clear();
   for(int i = 0; i < command.length(); i++)
     {
       if((command.at(i) >= 'a' && command.at(i) <= 'z') ||
