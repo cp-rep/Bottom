@@ -45,7 +45,8 @@ void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& allWins,
 			  int& shiftX,
 			  const int shiftDownMax);
 void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-	       std::unordered_map<int, CursesWindow*>& wins,
+	       const std::unordered_map<int, CursesWindow*>& wins,
 	       const int& defaultKillPid);
+void helpState(const std::unordered_map<int, CursesWindow*>& wins);
 bool isValidKillSignal(const int& signal);
 #endif

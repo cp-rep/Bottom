@@ -170,6 +170,7 @@ void changeProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   switch(progState)
     {
     case _PROGSTATEHELP: // help
+      helpState(wins);
       break;
     case _PROGSTATEQUIT: // quit
       quit = true;
@@ -436,7 +437,7 @@ void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& wins,
   
 */
 void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-	       std::unordered_map<int, CursesWindow*>& wins,
+	       const std::unordered_map<int, CursesWindow*>& wins,
 	       const int& defaultKillPid)
 {
   std::string outString = "PID to signal/kill [default pid = ";
@@ -664,6 +665,22 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	   A_BOLD);
   curs_set(0);
 } // end of "killState"
+
+
+/*
+  Function:
+   helpState
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void helpState(const std::unordered_map<int, CursesWindow*>& wins)
+{
+  clearAllWins(wins);
+} // end of "helpState"
 
 
 
