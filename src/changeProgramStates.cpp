@@ -126,6 +126,18 @@ void updateStateValues(std::unordered_map<int, CursesWindow*>& wins,
 	      sortState++;
 	    }
 	}
+      else
+	{
+	  std::string outString = " Unknown command - try 'h' for help ";
+	  printBadInputString(wins,
+			      _MAINWIN,
+			      _YOFFSET -1,
+			      0,
+			      outString);
+	  refreshAllWins(wins);
+	  doupdate();	  
+	  sleep(1.75);	  
+	}
     }
   highlightIndex = sortState;
 } // end of "updateStateValues"
