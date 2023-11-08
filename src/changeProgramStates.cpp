@@ -96,34 +96,40 @@ void updateStateValues(std::unordered_map<int, CursesWindow*>& wins,
 	  prevState = progState;
 	  progState = userInput;
 	}
-      else if(userInput == '<' && sortState > _PIDWIN)
+      else if(userInput == '<')
 	{
-	  if(highlight == true)
+	  if(sortState > _PIDWIN)
 	    {
-	      wattroff(wins.at(sortState)->getWindow(),
-		       A_BOLD);
-	      sortState--;
-	      wattron(wins.at(sortState)->getWindow(),
-		      A_BOLD);
-	    }
-	  else
-	    {
-	      sortState--;
+	      if(highlight == true)
+		{
+		  wattroff(wins.at(sortState)->getWindow(),
+			   A_BOLD);
+		  sortState--;
+		  wattron(wins.at(sortState)->getWindow(),
+			  A_BOLD);
+		}
+	      else
+		{
+		  sortState--;
+		}
 	    }
 	}
-      else if(userInput == '>' && sortState < _COMMANDWIN)
+	else if(userInput == '>')
 	{
-	  if(highlight == true)
+	  if(sortState < _COMMANDWIN)
 	    {
-	      wattroff(wins.at(sortState)->getWindow(),
-		       A_BOLD);
-	      sortState++;
-	      wattron(wins.at(sortState)->getWindow(),
-		      A_BOLD);
-	    }
-	  else
-	    {
-	      sortState++;
+	      if(highlight == true)
+		{
+		  wattroff(wins.at(sortState)->getWindow(),
+			   A_BOLD);
+		  sortState++;
+		  wattron(wins.at(sortState)->getWindow(),
+			  A_BOLD);
+		}
+	      else
+		{
+		  sortState++;
+		}
 	    }
 	}
       else if(userInput == KEY_UP ||
