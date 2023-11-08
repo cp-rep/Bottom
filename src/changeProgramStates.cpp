@@ -171,6 +171,7 @@ void changeProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
     {
     case _PROGSTATEHELP: // help
       helpState(wins);
+      progState = prevState;
       break;
     case _PROGSTATEQUIT: // quit
       quit = true;
@@ -667,19 +668,264 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 } // end of "killState"
 
 
+
 /*
   Function:
    helpState
 
   Description:
+   Outputs the help screen.  'q' exits the help screen.
 
   Input:
+   wins              - A reference to a constant object that is an
+                          un ordered map containing all the allocated
+			  curses windows addressable by the hash key
+			  PID number.
 
   Output:
+   NONE
 */
 void helpState(const std::unordered_map<int, CursesWindow*>& wins)
 {
+  std::string outString;
+  int xOffset;
+  int yOffset;
+
   clearAllWins(wins);
+  wins.at(_HELPWIN)->defineWindow(newwin(wins.at(_MAINWIN)->getMaxY(),
+					 wins.at(_MAINWIN)->getMaxX(),
+					 0,
+					 0),
+				  "Help Window",
+				  wins.at(_MAINWIN)->getMaxY(),
+				  wins.at(_MAINWIN)->getMaxX(),    
+				  0,
+				  0);
+
+  // help window line
+  yOffset = 0;
+  xOffset = 0;
+  wattron(wins.at(_HELPWIN)->getWindow(),
+	  A_BOLD);
+  outString = "Help for Interactive Commands";
+  printLine(wins,
+	    yOffset,	    
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+  wattroff(wins.at(_HELPWIN)->getWindow(),
+	   A_BOLD);
+  yOffset++;
+  outString = "Press '";
+  printLine(wins,
+	    yOffset,	    
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+  xOffset += outString.length();
+  outString = "q";
+  wattron(wins.at(_HELPWIN)->getWindow(),
+	  A_BOLD);
+  printLine(wins,
+	    yOffset,	    
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+  wattroff(wins.at(_HELPWIN)->getWindow(),
+	  A_BOLD);  
+  xOffset += outString.length();
+  outString = "' to exit help screen.";
+  printLine(wins,
+	    yOffset,	    
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);  
+  
+  // arrow keys
+  yOffset += 2;
+  xOffset = 0;
+  outString = " - The '";
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+  xOffset += outString.length();
+  outString = "Arrow Keys";
+  wattron(wins.at(_HELPWIN)->getWindow(),
+	  A_BOLD);
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+  wattroff(wins.at(_HELPWIN)->getWindow(),
+	   A_BOLD);
+  xOffset += outString.length();
+  outString = "' allow shifting windows left and right as well as ";
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+  outString = "the verticle scrolling of process output.";
+  yOffset++;
+  xOffset = 3;
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+
+  // 'x' highlight key
+  yOffset += 2;
+  xOffset = 0;
+  outString = " - The '";
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+  xOffset += outString.length();
+  outString = "x";
+  wattron(wins.at(_HELPWIN)->getWindow(),
+	  A_BOLD);
+  printLine(wins,
+	    5,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+  wattroff(wins.at(_HELPWIN)->getWindow(),
+	   A_BOLD);
+  xOffset += outString.length();
+  outString = "' key allows highlighting a particular process output column.";
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+
+  // '<' '>' sort state keys
+  yOffset += 2;
+  xOffset = 0;
+  outString = " - The '";
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+  xOffset += outString.length();
+  outString = "<";
+  wattron(wins.at(_HELPWIN)->getWindow(),
+	  A_BOLD);
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+  wattroff(wins.at(_HELPWIN)->getWindow(),
+	   A_BOLD);
+  xOffset += outString.length();
+  outString = "' '";
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+  wattron(wins.at(_HELPWIN)->getWindow(),
+	  A_BOLD);
+  xOffset += outString.length();
+  outString = ">";
+  wattron(wins.at(_HELPWIN)->getWindow(),
+	  A_BOLD);
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+  wattroff(wins.at(_HELPWIN)->getWindow(),
+	   A_BOLD);
+  xOffset += outString.length();
+  outString = "' keys chnage which process output column to sort by.";
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);    
+
+  // 'k' kill state
+  yOffset += 2;
+  xOffset = 0;
+  outString = " - The '";
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+  xOffset += outString.length();
+  outString = "k";
+  wattron(wins.at(_HELPWIN)->getWindow(),
+	  A_BOLD);
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+  wattroff(wins.at(_HELPWIN)->getWindow(),
+	   A_BOLD);
+  xOffset += outString.length();
+  outString = "' key enters the \"kill\" state allowing the user to \"kill\"";
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+  yOffset++;
+  xOffset = 3;
+  outString = "desired processes.";
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+    
+  // refresh and update windows
+  wrefresh(wins.at(_MAINWIN)->getWindow());
+  wrefresh(wins.at(_HELPWIN)->getWindow());    
+  doupdate();
+
+  int input;
+  while(true)
+    {
+      input = getch();
+
+      if(input == 'q')
+	{
+	  break;
+	}      
+    }
+  
+  wins.at(_HELPWIN)->deleteWindow();
 } // end of "helpState"
 
 
