@@ -238,8 +238,8 @@ void bottomWinsProcSortState(std::unordered_map<int, ProcessInfo*>& allProcessIn
     {
     case _PIDWIN:
       outPids = pids;
-      std::sort(outPids.begin(),
-		outPids.end());
+      std::sort(outPids.rbegin(),
+		outPids.rend());
       break;
     case _USERWIN:
       outPids = sortValuesByPID(allProcessInfo,
