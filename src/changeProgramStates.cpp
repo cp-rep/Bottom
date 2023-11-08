@@ -408,17 +408,18 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   int yOffset = 0;
   int numLines = 1;
   int numCols = wins.at(_MAINWIN)->getMaxX() - outString.length();
+  unsigned int signal = 0;
 
   // create the user input window
   wins.at(_USERINPUTWIN)->defineWindow(newwin(numLines,
-						 numCols,
-						 _YOFFSET - 1,
-						 outString.length()),
-					  "UserInputWindow",
-					  numLines,
-					  numCols,
-					  _YOFFSET - 1,
-					  outString.length());
+					      numCols,
+					      _YOFFSET - 1,
+					      outString.length()),
+				       "UserInputWindow",
+				       numLines,
+				       numCols,
+				       _YOFFSET - 1,
+				       outString.length());
   
   // enable kill state curses settings
   curs_set(1);
@@ -431,7 +432,7 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	    0,
 	    outString.c_str());
   wrefresh(wins.at(_MAINWIN)->getWindow());
-  doupdate();
+  doupdate();  
 
   //  loop getting user input
   while(true)
@@ -457,42 +458,46 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       refreshAllWins(wins);
       doupdate();
     }
-
   
-  // if the input was valid, kill the process
+  // we have received user input, enter if it meets criteria to kill a process
   if(isNumericString(inputString) || inputString.empty())
     { 
       int killPid;
-      
+
+      // set kill default
       if(inputString.empty())
 	{
 	  killPid = defaultKillPid;
 	}
+      // set kill entered PID      
       else
 	{
 	  killPid = stringToInt(inputString);
 
 	}
 
-      // update output string
+      // create confirmation kill string
       inputString.clear();
       outString = "Send pid ";
       outString.append(std::to_string(killPid));
       outString.append(" signal [15/sigterm] ");
 
-      // update windows BSOD
+      // output string and update windows 11
       mvwaddstr(wins.at(_MAINWIN)->getWindow(),
 		_YOFFSET - 1,
 		0,
 		outString.c_str());
-      werase(wins.at(_USERINPUTWIN)->getWindow());      
+      werase(wins.at(_USERINPUTWIN)->getWindow());
+
+      // move user input window to new output location
       mvwin(wins.at(_USERINPUTWIN)->getWindow(),
 	    _YOFFSET - 1,
 	    outString.length());
       
-      // reset offset
+      // reset input column offset since were getting a new input
       xOffset = 0;
 
+      // loop for confirmation input
       while(true)
 	{
 	  input = getch();
@@ -504,15 +509,66 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			 yOffset,
 			 xOffset);
 
+	  // check if user entered input for type of kill signal
 	  if(!inputString.empty())
 	    {
+	      // test if input was only the new line key for default
 	      if(inputString.size() == 1 && inputString.at(0) == 10)
 		{
 		  kill(killPid, SIGTERM);
 		  break;
 		}
-	      else // bad input
+	      // user entered characters plus the new line
+	      else if(inputString.at(inputString.size() - 1) == 10)
 		{
+		  // pop the new line character
+		  inputString.pop_back();
+
+		  // check if remaining string is numeric input for kill signal
+		  if(isNumericString(inputString))
+		    {
+		      unsigned int signal = stringToInt(inputString);
+		      kill(killPid, signal);
+		      break;
+		    }
+		  // invalid signal prompt
+		  else
+		    {
+		      curs_set(0);
+		      outString = createColorLine(wins.at(_MAINWIN)->getNumCols());
+		      printColorLine(wins,
+				     _YOFFSET - 1,
+				     _WHITE_TEXT,
+				     _MAINWIN,
+				     outString);
+				     
+		      // update prompt string
+		      outString = " Invalid Signal ";
+
+
+		      // update window settings for prompt
+		      wattroff(wins.at(_MAINWIN)->getWindow(),
+			       A_BOLD);
+		      wattron(wins.at(_MAINWIN)->getWindow(),
+			      COLOR_PAIR(_BLACK_TEXT));
+
+		      // primpt prompt
+		      mvwaddstr(wins.at(_MAINWIN)->getWindow(),
+				_YOFFSET - 1,
+				0,
+				outString.c_str());
+
+		      // reset to default window settings
+		      wrefresh(wins.at(_MAINWIN)->getWindow());
+
+		      wattron(wins.at(_MAINWIN)->getWindow(),
+			       COLOR_PAIR(_WHITE_TEXT));
+		      
+		      doupdate();
+		      inputString.clear();
+		      sleep(1.75);
+		      break;
+		    }
 		}
 	    }
 
@@ -520,15 +576,16 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	  doupdate();
 	}
     }
-  else // bad input
+  // unnacceptable input prompt
+  else
     {
     }
-  
+
   // delete user input window as no longer needed
   wins.at(_USERINPUTWIN)->deleteWindow();
 
   // restore settings
   wattroff(wins.at(_MAINWIN)->getWindow(),
-	   A_BOLD);    
+	   A_BOLD);
   curs_set(0);
 } // end of "killState"
