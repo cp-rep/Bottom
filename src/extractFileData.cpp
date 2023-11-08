@@ -12,7 +12,7 @@
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <iostream>
-
+#include <ncurses.h>
 
 
 /*
@@ -619,12 +619,16 @@ void extractProcUptime(SecondsToTime& uptime,
   std::string fileLine;
 
   fileLine = returnFileLineByNumber(filePath, 1);
-  uptimeStrings = parseLine(fileLine);
-  tempInt = stringToInt(uptimeStrings.at(0));
-  uptime.setHours(uptime.convertToHours(tempInt));
-  uptime.setMinutes(uptime.convertToMinutes(tempInt));
-  uptime.setSeconds(uptime.findRemainingSeconds(tempInt));
-  uptime.setTotalSeconds(tempInt);
+  
+  if(fileLine != "-1")
+    {
+      uptimeStrings = parseLine(fileLine);
+      tempInt = stoi(uptimeStrings.at(0));
+      uptime.setHours(uptime.convertToHours(tempInt));
+      uptime.setMinutes(uptime.convertToMinutes(tempInt));
+      uptime.setSeconds(uptime.findRemainingSeconds(tempInt));
+      uptime.setTotalSeconds(tempInt);
+    }
 } // end of "extractProcUptime"
 
 
@@ -722,14 +726,15 @@ const std::string createTopLine(const std::string HHMMSS,
 	    }
 	  tempTopString.append(std::to_string(numMinutes));
 	  tempTopString.append(", ");
-
 	}
     }
+
   else if(numDays == 1)
     {
       tempTopString.append(std::to_string(numDays));
       tempTopString.append(" day, ");
     }
+
   else
     {
       tempTopString.append(std::to_string(numDays));      
