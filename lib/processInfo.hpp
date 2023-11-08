@@ -57,7 +57,7 @@ public:
   void setCpuRawTime(const double& cpuRawTime);
   void setProcessCPUTime(const std::string& processCPUTime);
   void setCOMMAND(const std::string& command);
-  void setCOMMANDUpper(const std::string& command);  
+  void setCOMMANDUpper(const std::string& command);
   void setChanged(const bool& changed);
   
 private:
