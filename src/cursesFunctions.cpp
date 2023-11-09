@@ -78,7 +78,7 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins)
 
   Output:
 */
-void defineWindows(std::unordered_map<int, CursesWindow*>& wins)
+void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 {
   int numLines;
   int numCols;
@@ -99,6 +99,7 @@ void defineWindows(std::unordered_map<int, CursesWindow*>& wins)
   numCols = numCols;
   startY = _YOFFSET - 6;
   startX = 0;
+
   wins.at(_TOPWIN)->defineWindow(newwin(numLines,
 					numCols,
 					startY,
@@ -107,7 +108,7 @@ void defineWindows(std::unordered_map<int, CursesWindow*>& wins)
 				 numLines,
 				 numCols,
 				 startY,
-				 startX);
+				 startX);  
 
   // define tasks window
   numLines = 1;
@@ -668,7 +669,12 @@ void defineWindows(std::unordered_map<int, CursesWindow*>& wins)
 					 numCols,
 					 startY,
 					 startX);
-} // end of "defineWindows"
+} // end of "defineStartingWindows"
+
+
+void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
+{
+}
 
 
 
