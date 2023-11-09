@@ -122,12 +122,6 @@ int main()
 
   // window related vars
   std::unordered_map<int, CursesWindow*> allWins;
-
-  for(int i = _MAINWIN; i <= _MIBMEMAVAILWIN; i++)
-    {
-      CursesWindow* newWindow = new CursesWindow();
-      allWins.insert(std::make_pair(i, newWindow));
-    }
   
   // state related vars
   int progState = 0;
@@ -144,6 +138,7 @@ int main()
   // ## initialize and setup curses ##
   initializeCurses();
 #endif
+  initializeStartingWindows(allWins);
   defineStartingWindows(allWins);
   initializeProgramStates(progStates);
   
