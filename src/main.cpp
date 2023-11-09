@@ -125,8 +125,8 @@ int main()
 
   for(int i = _MAINWIN; i < _CPUGRAPHWIN; i++)
     {
-      CursesWindow newWindow;
-      allWins.insert(std::make_pair(i, &newWindow));
+      CursesWindow* newWindow = new CursesWindow();
+      allWins.insert(std::make_pair(i, newWindow));
     }
   
   
@@ -160,7 +160,7 @@ int main()
   colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
 
   do{
-    /*
+
     time(&rawtime);
     timeinfo = localtime(&rawtime);
     pidsOld = pids;
@@ -195,7 +195,7 @@ int main()
     // "%Cpu(s): x.x us, x.x sy..."
     extractProcStat(cpuInfo,
 		    _PROC_STAT);
-    
+
     // extract data for MiB Mem and MiB swap
     // "MiB Mem: xxxx.xx total, xxxx.xx Free..."
     extractProcMeminfo(memInfo,
@@ -212,6 +212,7 @@ int main()
 					uptime.getHours() % 24,
 					uptime.getMinutes(),
 					loadAvgStrings));
+
     defineTasksLine(allTopLines);
     defineCpusLine(allTopLines);
     defineMemMiBLine(allTopLines);
@@ -220,6 +221,7 @@ int main()
     // update/add process data for still running and new found processes
     for(int i = 0; i < pids.size(); i++)
       {
+
 	// if new process was found, allocate it
 	if(allProcessInfo.count(pids.at(i)) == 0)
 	  {
@@ -227,8 +229,10 @@ int main()
 	    allProcessInfo.insert(std::make_pair(pids.at(i), process));
 	  }
 
+
 	// set pid of current process
 	allProcessInfo.at(pids.at(i))->setPID(pids.at(i));
+
 
 	// extract per process data (USER, PR, VIRT...)
 	// /proc/[pid]/status
@@ -238,7 +242,7 @@ int main()
 	extractProcPidStatus(allProcessInfo,
 			     pids.at(i),
 			     filePath);
-	
+
 	// /proc/uptime & /proc/[pid]/stat
 	filePath.clear();
 	filePath = _PROC + std::to_string(pids.at(i));
@@ -258,12 +262,14 @@ int main()
 	extractProcPidComm(allProcessInfo,
 			   pids.at(i),
 			   filePath);
+
       }
 
     // count the extracted process states for task window
     // "Tasks: XXX total, X running..."
     countProcessStates(allProcessInfo,
 		       taskInfo);
+
 
     // ## get user input ##
     std::vector<int> outPids;
@@ -298,7 +304,7 @@ int main()
       }
     
     flushinp();
-    
+
 #if _CURSES    
 
     // ## update states ##
@@ -322,6 +328,7 @@ int main()
 		       outPids.size() - 2);
 
     // ## print process windows ##
+
     if(highlight == true)
       {
 	wattron(allWins.at(sortState)->getWindow(),
@@ -334,8 +341,10 @@ int main()
       }
 
     clearAllWins(allWins);
+
     printTopWins(allWins,
 		 allTopLines);
+
     boldOnAllTopWins(allWins,
 		     A_BOLD);
     printTasksData(allWins,
@@ -346,22 +355,26 @@ int main()
 		    memInfo);
     boldOffAllTopWins(allWins,
 		      A_BOLD);
+
     printProcs(allWins,
 	       allProcessInfo,
 	       outPids,
 	       shiftY,
 	       shiftX);
+
     attronBottomWins(allWins,
 		     _BLACK_TEXT);
     printWindowNames(allWins);
     attroffBottomWins(allWins,
 		      _BLACK_TEXT);
+
     printLine(allWins,
 	      _YOFFSET,
 	      0,
 	      _BLACK_TEXT,
 	      _MAINWIN,
 	      colorLine);
+
     refreshAllWins(allWins);
     doupdate();
 #endif
@@ -370,7 +383,7 @@ int main()
       {
 	break;
       }
-  */    
+
   } while(true);
 
   // cleanup
