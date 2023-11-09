@@ -40,7 +40,7 @@ void initializeCurses()
   timeout(0);
   noecho();
   cbreak();
-  keypad(stdscr, true);
+  keypad(stdscr, false);
   nodelay(stdscr, true);
 } // end of "initializeCurses"
 
@@ -674,12 +674,15 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 
 void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
 {
-  std::unordered_map<int, CursesWindow*>::iterator it;
+  int numLines;
+  int numCols;
+  int startY = 0;
+  int startX = 0;
   
-  for(it = wins.begin(); it != wins.end(); it++)
-    {
-      
-    }
+  getmaxyx(stdscr, numLines, numCols);
+  
+  wins.at(_MAINWIN)->setNumLines(numLines);
+  wins.at(_MAINWIN)->setNumCols(numCols);  
 }
 
 
@@ -1523,7 +1526,10 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
       if(posY != 0)
 	{
 	  // PID
-	  if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr)
+	  if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr &&
+	     ( (wins.at(_PIDWIN)->getNumCols() + wins.at(_PIDWIN)->getStartX()) <
+	       wins.at(_MAINWIN)->getNumCols()))
+	       
 	    {
 	      outString = std::to_string(procData.at(pidList.at(i))->getPID());
 	      mvwaddstr(wins.at(_PIDWIN)->getWindow(),
@@ -1532,7 +1538,9 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());	
 	    }
 	  // USER      
-	  if(shiftX <= _USERWIN && wins.at(_USERWIN)->getWindow() != nullptr)
+	  if(shiftX <= _USERWIN && wins.at(_USERWIN)->getWindow() != nullptr &&
+	     ( (wins.at(_USERWIN)->getNumCols() + wins.at(_USERWIN)->getStartX()) <
+	       wins.at(_MAINWIN)->getNumCols()))
 	    {
 	      outString = procData.at(pidList.at(i))->getUSER();
 	      mvwaddstr(wins.at(_USERWIN)->getWindow(),
@@ -1541,7 +1549,9 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
 	    }
 	  // PR
-	  if(shiftX <= _PRWIN && wins.at(_PRWIN)->getWindow() != nullptr)
+	  if(shiftX <= _PRWIN && wins.at(_PRWIN)->getWindow() != nullptr &&
+	     ( (wins.at(_PRWIN)->getNumCols() + wins.at(_PRWIN)->getStartX()) <
+	       wins.at(_MAINWIN)->getNumCols()))
 	    {
 	      const int tempPRVal = procData.at(pidList.at(i))->getPR();
 	      if(tempPRVal == -100)
@@ -1559,7 +1569,9 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
 	    }	  
 	  // NI
-	  if(shiftX <= _NIWIN && wins.at(_NIWIN)->getWindow() != nullptr)
+	  if(shiftX <= _NIWIN && wins.at(_NIWIN)->getWindow() != nullptr &&
+	     ( (wins.at(_NIWIN)->getNumCols() + wins.at(_NIWIN)->getStartX()) <
+	       wins.at(_MAINWIN)->getNumCols()))	    
             {
 	      outString = std::to_string(procData.at(pidList.at(i))->getNI());
 	      mvwaddstr(wins.at(_NIWIN)->getWindow(),
@@ -1568,7 +1580,9 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
             }
 	  // VIRT
-	  if(shiftX <= _VIRTWIN && wins.at(_VIRTWIN)->getWindow() != nullptr)
+	  if(shiftX <= _VIRTWIN && wins.at(_VIRTWIN)->getWindow() != nullptr &&
+	     ( (wins.at(_VIRTWIN)->getNumCols() + wins.at(_VIRTWIN)->getStartX()) <
+	       wins.at(_MAINWIN)->getNumCols()))
             {
 	      outString = std::to_string(procData.at(pidList.at(i))->getVIRT());
 	      mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
@@ -1577,7 +1591,9 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
             }
 	  // RES
-	  if(shiftX <= _RESWIN && wins.at(_RESWIN)->getWindow() != nullptr)
+	  if(shiftX <= _RESWIN && wins.at(_RESWIN)->getWindow() != nullptr &&
+	     ( (wins.at(_RESWIN)->getNumCols() + wins.at(_RESWIN)->getStartX()) <
+	       wins.at(_MAINWIN)->getNumCols())	)    
             {
 	      outString = std::to_string(procData.at(pidList.at(i))->getRES());
 	      mvwaddstr(wins.at(_RESWIN)->getWindow(),
@@ -1586,7 +1602,9 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
             }
 	  // SHR
-	  if(shiftX <= _SHRWIN && wins.at(_SHRWIN)->getWindow() != nullptr)
+	  if(shiftX <= _SHRWIN && wins.at(_SHRWIN)->getWindow() != nullptr &&
+	     ( (wins.at(_SHRWIN)->getNumCols() + wins.at(_SHRWIN)->getStartX()) <
+	       wins.at(_MAINWIN)->getNumCols()))	    
             {
 	      outString = std::to_string(procData.at(pidList.at(i))->getSHR());
 	      mvwaddstr(wins.at(_SHRWIN)->getWindow(),
@@ -1595,7 +1613,9 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
             }
 	  // S
-	  if(shiftX <= _SWIN && wins.at(_SWIN)->getWindow() != nullptr)
+	  if(shiftX <= _SWIN && wins.at(_SWIN)->getWindow() != nullptr &&
+	     ( (wins.at(_SWIN)->getNumCols() + wins.at(_SWIN)->getStartX()) <
+	       wins.at(_MAINWIN)->getNumCols()))
 	    {
 	      mvwaddch(wins.at(_SWIN)->getWindow(),
 		       posY,
@@ -1603,7 +1623,9 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 		       procData.at(pidList.at(i))->getS());
             }
 	  // %CPU
-	  if(shiftX <= _PROCCPUWIN && wins.at(_PROCCPUWIN)->getWindow() != nullptr)
+	  if(shiftX <= _PROCCPUWIN && wins.at(_PROCCPUWIN)->getWindow() != nullptr &&
+	     ( (wins.at(_PROCCPUWIN)->getNumCols() + wins.at(_PROCCPUWIN)->getStartX()) <
+	       wins.at(_MAINWIN)->getNumCols()))
             {
 
 	      outString = doubleToStr(procData.at(pidList.at(i))->getCPUUsage(), 1);
@@ -1613,7 +1635,9 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
             }
 	  // %MEM
-	  if(shiftX <= _PROCMEMWIN && wins.at(_PROCMEMWIN)->getWindow() != nullptr)
+	  if(shiftX <= _PROCMEMWIN && wins.at(_PROCMEMWIN)->getWindow() != nullptr &&
+	     ( (wins.at(_PROCMEMWIN)->getNumCols() + wins.at(_PROCMEMWIN)->getStartX()) <
+	       wins.at(_MAINWIN)->getNumCols()))
             {
 	      outString = doubleToStr(procData.at(pidList.at(i))->getMEMUsage(), 1);
 	      mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
@@ -1622,7 +1646,9 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
             }
 	  // TIME+
-	  if(shiftX <= _PROCTIMEWIN && wins.at(_PROCTIMEWIN)->getWindow() != nullptr)
+	  if(shiftX <= _PROCTIMEWIN && wins.at(_PROCTIMEWIN)->getWindow() != nullptr &&
+	     ( (wins.at(_PROCTIMEWIN)->getNumCols() + wins.at(_PROCTIMEWIN)->getStartX()) <
+	       wins.at(_MAINWIN)->getNumCols()))
 	    {
 	      outString = procData.at(pidList.at(i))->getProcessCPUTime();
 	      mvwaddstr(wins.at(_PROCTIMEWIN)->getWindow(),
@@ -1631,7 +1657,9 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
             }
 	  // COMMAND
-	  if(shiftX <= _COMMANDWIN && wins.at(_COMMANDWIN)->getWindow() != nullptr)
+	  if(shiftX <= _COMMANDWIN && wins.at(_COMMANDWIN)->getWindow() != nullptr &&
+	     ( (wins.at(_COMMANDWIN)->getNumCols() + wins.at(_COMMANDWIN)->getStartX()) <
+	       wins.at(_MAINWIN)->getNumCols()))	    
             {
 	      outString = procData.at(pidList.at(i))->getCOMMAND();
 	      mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
