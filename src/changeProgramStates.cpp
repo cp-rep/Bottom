@@ -185,7 +185,8 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 
   Description:
    Sorts a vector of integer objects containing PID numbers that will be sorted
-   based upon the selected user input for outputing sorted process data.
+   based upon the selected user input for outputing sorted process data.  This must
+   be called before updateProgramState function.
   
   Input:
    allProcessInfo       - A reference to an unordered_map<int, ProcessInfo*> object
