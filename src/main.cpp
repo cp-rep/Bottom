@@ -391,57 +391,68 @@ int main()
 
     // ## get user input ##
     std::vector<int> outPids;
-    int highlightIndex = 0;
     int userInput = -1;
-    int shiftState = 0;
 
-    shiftState = userInput = getch();
+    userInput = getch();
     flushinp();
-    
-#if _CURSES
-    // update state values from user input
-    updateStateValues(allWins,
-		      progStates,
-		      userInput,
-		      sortState,
-		      prevState,
-		      progState,
-		      highlight,
-		      highlightIndex);
+
+
+    // check for user input
+    if(userInput != -1)
+      {
+	// update program state
+	if(progStates[userInput])
+	  {
+	    prevState = progState;
+	    progState = userInput;
+	  }
+	// undefined input
+	else 
+	  {
+	    std::string outString = " Unknown command - try 'h' for help ";
+#if _CURSES	    
+	    printBadInputString(allWins,
+				_MAINWIN,
+				_YOFFSET - 1,
+				0,
+				outString);
+	    refreshAllWins(allWins);
+	    doupdate();	  
+	    sleep(1.75);
+#endif
+	  }
+      }
+#if _CURSES    
 
     // ## update states ##
     // update process sort state (changed by '<' and '>' user input)
-    bottomWinsProcSortState(allProcessInfo,
-			    pids,
-			    outPids,
-			    sortState);
+    updateSortState(allProcessInfo,
+		    pids,
+		    outPids,
+		    sortState);
     
     // program state
-    changeProgramState(allProcessInfo,
+    updateProgramState(allProcessInfo,
 		       allWins,
 		       progState,
 		       prevState,
 		       sortState,
 		       quit,
 		       highlight,
-		       outPids.at(0));
-
-    // shift windows up down left or right from arrow key input
-    bottomWinsShiftState(allWins,
-			 shiftState,
-			 shiftY,
-			 shiftX,
-			 outPids.size() - 2);
-
+		       outPids.at(0),
+		       shiftY,
+		       shiftX,
+		       outPids.size() - 2);
+    
     // ## print process windows ##
     if(highlight == true)
       {
-	wattron(allWins.at(highlightIndex)->getWindow(),
+	wattron(allWins.at(sortState)->getWindow(),
 		A_BOLD);
       }
     else
       {
-	wattroff(allWins.at(highlightIndex)->getWindow(),
+	wattroff(allWins.at(sortState)->getWindow(),
 		 A_BOLD);
       }
 
