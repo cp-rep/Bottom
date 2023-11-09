@@ -333,7 +333,7 @@ void updateSortState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   
 */
 void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-	       const std::unordered_map<int, CursesWindow*>& wins,
+	       std::unordered_map<int, CursesWindow*>& wins,
 	       const int& defaultKillPid)
 {
   std::string outString = "PID to signal/kill [default pid = ";
@@ -350,6 +350,8 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   unsigned int signal = 0;
 
   // create the user input window
+  CursesWindow* userInputWindow = new CursesWindow();
+  wins.insert(std::make_pair(_USERINPUTWIN, userInputWindow));  
   wins.at(_USERINPUTWIN)->defineWindow(newwin(numLines,
 					      numCols,
 					      _YOFFSET - 1,
@@ -553,8 +555,10 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       sleep(1.75);
     }
 
-  // delete user input window as no longer needed
+  // delete user input window
   wins.at(_USERINPUTWIN)->deleteWindow();
+  delete(wins.at(_USERINPUTWIN));
+  wins.erase(_USERINPUTWIN);
 
   // restore window settings
   wattroff(wins.at(_MAINWIN)->getWindow(),
@@ -580,13 +584,15 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   Output:
    NONE
 */
-void helpState(const std::unordered_map<int, CursesWindow*>& wins)
+void helpState(std::unordered_map<int, CursesWindow*>& wins)
 {
   std::string outString;
   int xOffset;
   int yOffset;
 
   clearAllWins(wins);
+  CursesWindow* helpWindow = new CursesWindow();
+  wins.insert(std::make_pair(_HELPWIN, helpWindow));
   wins.at(_HELPWIN)->defineWindow(newwin(wins.at(_MAINWIN)->getMaxY(),
 					 wins.at(_MAINWIN)->getMaxX(),
 					 0,
@@ -821,6 +827,8 @@ void helpState(const std::unordered_map<int, CursesWindow*>& wins)
     }
   
   wins.at(_HELPWIN)->deleteWindow();
+  delete(wins.at(_HELPWIN));
+  wins.erase(_HELPWIN);
 } // end of "helpState"
 
 
