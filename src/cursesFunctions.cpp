@@ -48,7 +48,7 @@ void initializeCurses()
 
 /*
   Function:
-   initializeWindows
+   initializeStartingWindows
    
   Description:
   
@@ -57,15 +57,17 @@ void initializeCurses()
                           each CursesWindow object defined in this function.  The
                           key is from _cursesWinConsts.hpp and will match the 
                           corresponding CursesWindow object as value.
-
-   windows              - All CursesWindow and derived objects declared in main.cpp.
-
   Output:
    NONE
 */
-void initializeWindows(std::unordered_map<int, CursesWindow*>& wins)
+void initializeStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 {
-} // end of "initializeWindows"
+  for(int i = _MAINWIN; i <= _MIBMEMAVAILWIN; i++)
+    {
+      CursesWindow* newWindow = new CursesWindow();
+      wins.insert(std::make_pair(i, newWindow));
+    }  
+} // end of "initializeStartingWindows"
 
 
 
