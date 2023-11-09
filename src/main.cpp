@@ -394,8 +394,6 @@ int main()
     int userInput = -1;
 
     userInput = getch();
-    flushinp();
-
 
     // check for user input
     if(userInput != -1)
@@ -422,6 +420,9 @@ int main()
 #endif
 	  }
       }
+    
+    flushinp();
+    
 #if _CURSES    
 
     // ## update states ##
