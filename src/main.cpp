@@ -118,17 +118,16 @@ int main()
   std::vector<int> pids; // all currently allocated process PIDs
   std::vector<int> pidsOld; // previously found active PID
   std::vector<int> pidsDead; // PIDs that closed during loop
-  std::unordered_map<int, ProcessInfo*> allProcessInfo; // to be populated with /proc/[pid] data
+  std::unordered_map<int, ProcessInfo*> allProcessInfo; // /proc/[pid]/ data
 
   // window related vars
   std::unordered_map<int, CursesWindow*> allWins;
 
-  for(int i = _MAINWIN; i < _CPUGRAPHWIN; i++)
+  for(int i = _MAINWIN; i <= _MIBMEMAVAILWIN; i++)
     {
       CursesWindow* newWindow = new CursesWindow();
       allWins.insert(std::make_pair(i, newWindow));
     }
-  
   
   // state related vars
   int progState = 0;
@@ -145,7 +144,7 @@ int main()
   // ## initialize and setup curses ##
   initializeCurses();
 #endif
-  defineWindows(allWins);
+  defineStartingWindows(allWins);
   initializeProgramStates(progStates);
   
   // loop variables
@@ -180,9 +179,8 @@ int main()
 	removeDeadProcesses(allProcessInfo, pidsDead);
       }
 
-    // "current time, # users, load avg"
     // extract data from /proc/uptime for very top window
-
+    // "current time, # users, load avg"    
     extractProcUptime(uptime,
 		      uptimeStrings,
 		      _PROC_UPTIME);
@@ -212,7 +210,6 @@ int main()
 					uptime.getHours() % 24,
 					uptime.getMinutes(),
 					loadAvgStrings));
-
     defineTasksLine(allTopLines);
     defineCpusLine(allTopLines);
     defineMemMiBLine(allTopLines);
@@ -221,7 +218,6 @@ int main()
     // update/add process data for still running and new found processes
     for(int i = 0; i < pids.size(); i++)
       {
-
 	// if new process was found, allocate it
 	if(allProcessInfo.count(pids.at(i)) == 0)
 	  {
@@ -229,10 +225,8 @@ int main()
 	    allProcessInfo.insert(std::make_pair(pids.at(i), process));
 	  }
 
-
 	// set pid of current process
 	allProcessInfo.at(pids.at(i))->setPID(pids.at(i));
-
 
 	// extract per process data (USER, PR, VIRT...)
 	// /proc/[pid]/status
@@ -262,14 +256,12 @@ int main()
 	extractProcPidComm(allProcessInfo,
 			   pids.at(i),
 			   filePath);
-
       }
 
     // count the extracted process states for task window
     // "Tasks: XXX total, X running..."
     countProcessStates(allProcessInfo,
 		       taskInfo);
-
 
     // ## get user input ##
     std::vector<int> outPids;
@@ -328,7 +320,6 @@ int main()
 		       outPids.size() - 2);
 
     // ## print process windows ##
-
     if(highlight == true)
       {
 	wattron(allWins.at(sortState)->getWindow(),
@@ -344,7 +335,6 @@ int main()
 
     printTopWins(allWins,
 		 allTopLines);
-
     boldOnAllTopWins(allWins,
 		     A_BOLD);
     printTasksData(allWins,
@@ -355,26 +345,22 @@ int main()
 		    memInfo);
     boldOffAllTopWins(allWins,
 		      A_BOLD);
-
     printProcs(allWins,
 	       allProcessInfo,
 	       outPids,
 	       shiftY,
 	       shiftX);
-
     attronBottomWins(allWins,
 		     _BLACK_TEXT);
     printWindowNames(allWins);
     attroffBottomWins(allWins,
 		      _BLACK_TEXT);
-
     printLine(allWins,
 	      _YOFFSET,
 	      0,
 	      _BLACK_TEXT,
 	      _MAINWIN,
 	      colorLine);
-
     refreshAllWins(allWins);
     doupdate();
 #endif
