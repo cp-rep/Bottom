@@ -151,7 +151,7 @@ int main()
   std::string colorLine;
   std::string timeString;
 
-  colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
+  //  colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
 
   do{
 
@@ -325,7 +325,8 @@ int main()
 	wattroff(allWins.at(sortState)->getWindow(),
 		 A_BOLD);
       }
-
+    updateWindowDimensions(allWins);
+    colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());    
     clearAllWins(allWins);
 
     printTopWins(allWins,
