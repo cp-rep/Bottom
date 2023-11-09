@@ -64,7 +64,6 @@ void initializeProgramStates(std::unordered_map<char, int>& progStates)
                           is used to update the current state value
 			  for turning on or off highlighting of a
 			  column.
-
   Output:
    NONE
 */
@@ -329,8 +328,7 @@ void updateSortState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
    Result: Invalid Signal
 
    Case 8: Valid PID + Characters
-   Result: Invalid Signal
-  
+   Result: Invalid Signal 
 */
 void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	       std::unordered_map<int, CursesWindow*>& wins,
@@ -346,7 +344,7 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   int xOffset = 0;
   int yOffset = 0;
   int numLines = 1;
-  int numCols = wins.at(_MAINWIN)->getMaxX() - outString.length();
+  int numCols = wins.at(_MAINWIN)->getNumCols() - outString.length();
   unsigned int signal = 0;
 
   // create the user input window
@@ -593,13 +591,13 @@ void helpState(std::unordered_map<int, CursesWindow*>& wins)
   clearAllWins(wins);
   CursesWindow* helpWindow = new CursesWindow();
   wins.insert(std::make_pair(_HELPWIN, helpWindow));
-  wins.at(_HELPWIN)->defineWindow(newwin(wins.at(_MAINWIN)->getMaxY(),
-					 wins.at(_MAINWIN)->getMaxX(),
+  wins.at(_HELPWIN)->defineWindow(newwin(wins.at(_MAINWIN)->getNumLines(),
+					 wins.at(_MAINWIN)->getNumCols(),
 					 0,
 					 0),
 				  "Help Window",
-				  wins.at(_MAINWIN)->getMaxY(),
-				  wins.at(_MAINWIN)->getMaxX(),
+				  wins.at(_MAINWIN)->getNumLines(),
+				  wins.at(_MAINWIN)->getNumCols(),
 				  0,
 				  0);
 
