@@ -95,8 +95,6 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				  numCols,
 				  startY,
 				  startX);
-  wins.at(_MAINWIN)->setMaxY(numLines);
-  wins.at(_MAINWIN)->setMaxX(numCols);
   numLines = 1;
   numCols = numCols;
   startY = _YOFFSET - 6;
@@ -676,6 +674,12 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 
 void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
 {
+  std::unordered_map<int, CursesWindow*>::iterator it;
+  
+  for(it = wins.begin(); it != wins.end(); it++)
+    {
+      
+    }
 }
 
 
