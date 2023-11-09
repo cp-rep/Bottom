@@ -44,7 +44,6 @@
 #include "cursesWindow.hpp"
 #include "extractFileData.hpp"
 #include "log.hpp"
-#include "manageProcesses.hpp"
 #include "memInfo.hpp"
 #include "processInfo.hpp"
 #include "secondsToTime.hpp"
@@ -133,7 +132,6 @@ int main()
   int shiftX = _PIDWIN;
   std::unordered_map<char, int> progStates;
 
-
 #if _CURSES    
   // ## initialize and setup curses ##
   initializeCurses();
@@ -154,7 +152,6 @@ int main()
   //  colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
 
   do{
-
     time(&rawtime);
     timeinfo = localtime(&rawtime);
     pidsOld = pids;
@@ -209,7 +206,7 @@ int main()
     defineCpusLine(allTopLines);
     defineMemMiBLine(allTopLines);
     defineMemSwapLine(allTopLines);
-
+    
     // update/add process data for still running and new found processes
     for(int i = 0; i < pids.size(); i++)
       {
@@ -219,7 +216,7 @@ int main()
 	    process = new ProcessInfo();
 	    allProcessInfo.insert(std::make_pair(pids.at(i), process));
 	  }
-
+	
 	// set pid of current process
 	allProcessInfo.at(pids.at(i))->setPID(pids.at(i));
 
@@ -231,7 +228,7 @@ int main()
 	extractProcPidStatus(allProcessInfo,
 			     pids.at(i),
 			     filePath);
-
+	
 	// /proc/uptime & /proc/[pid]/stat
 	filePath.clear();
 	filePath = _PROC + std::to_string(pids.at(i));
@@ -252,18 +249,18 @@ int main()
 			   pids.at(i),
 			   filePath);
       }
-
+    
     // count the extracted process states for task window
     // "Tasks: XXX total, X running..."
     countProcessStates(allProcessInfo,
 		       taskInfo);
-
+    
     // ## get user input ##
     std::vector<int> outPids;
     int userInput = 0;
 
     userInput = getch();
-
+    
     // check for user input
     if(userInput != -1)
       {
@@ -325,10 +322,10 @@ int main()
 	wattroff(allWins.at(sortState)->getWindow(),
 		 A_BOLD);
       }
+    
     updateWindowDimensions(allWins);
     colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());    
     clearAllWins(allWins);
-
     printTopWins(allWins,
 		 allTopLines);
     boldOnAllTopWins(allWins,
