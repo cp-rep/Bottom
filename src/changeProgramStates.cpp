@@ -694,7 +694,7 @@ void helpState(const std::unordered_map<int, CursesWindow*>& wins)
   wattron(wins.at(_HELPWIN)->getWindow(),
 	  A_BOLD);
   printLine(wins,
-	    5,
+	    yOffset,
 	    xOffset,
 	    _WHITE_TEXT,
 	    _HELPWIN,
