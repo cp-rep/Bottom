@@ -11,8 +11,8 @@ CC=g++
 CPPFLAGS=-I$(IDIR)
 LIBS=-lm
 BINNAME=bottom
-_DEPS = log.hpp cursesWindow.hpp extractFileData.hpp memInfo.hpp byteConverter.hpp cpuInfo.hpp processInfo.hpp secondsToTime.hpp cursesFunctions.hpp _progStateConsts.hpp _fileConsts.hpp _cursesWinConsts.hpp sortProcessLists.hpp taskInfo.hpp changeProgramStates.hpp manageProcesses.hpp
-_OBJ = main.o log.o cursesWindow.o extractFileData.o memInfo.o byteConverter.o cpuInfo.o processInfo.o secondsToTime.o cursesFunctions.o sortProcessLists.o taskInfo.o changeProgramStates.o manageProcesses.o
+_DEPS = log.hpp cursesWindow.hpp extractFileData.hpp memInfo.hpp byteConverter.hpp cpuInfo.hpp processInfo.hpp secondsToTime.hpp cursesFunctions.hpp _progStateConsts.hpp _fileConsts.hpp _cursesWinConsts.hpp sortProcessLists.hpp taskInfo.hpp changeProgramStates.hpp
+_OBJ = main.o log.o cursesWindow.o extractFileData.o memInfo.o byteConverter.o cpuInfo.o processInfo.o secondsToTime.o cursesFunctions.o sortProcessLists.o taskInfo.o changeProgramStates.o
 
 DEPS = $(patsubst %,$(LDIR)/%,$(_DEPS))
 
