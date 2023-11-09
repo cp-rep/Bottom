@@ -39,5 +39,7 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	       const int& defaultKillPid);
 void helpState(std::unordered_map<int, CursesWindow*>& wins);
 bool isValidKillSignal(const int& signal);
+void cpuGraphState(std::unordered_map<int, CursesWindow*>& wins,
+		   const std::unordered_map<int, ProcessInfo*>& procData);
 
 #endif

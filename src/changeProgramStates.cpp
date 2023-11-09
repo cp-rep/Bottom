@@ -39,7 +39,8 @@ void initializeProgramStates(std::unordered_map<char, int>& progStates)
   progStates.insert(std::make_pair(_STATEKEYDOWN, 1));
   progStates.insert(std::make_pair(_ALLMOUSEEVENTS, 1));
   progStates.insert(std::make_pair(_MOUSEPOSITIONS, 1));
-  progStates.insert(std::make_pair(_WINRESIZEEVENT, 1));    
+  progStates.insert(std::make_pair(_WINRESIZEEVENT, 1));
+  progStates.insert(std::make_pair(_STATECPUGRAPH, 1));      
 } // end of "initializeProgramStates"
 
 
@@ -103,6 +104,10 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       killState(allProcessInfo,
 		wins,
 		defaultKillPid);
+      break;
+    case _STATECPUGRAPH:
+      cpuGraphState(wins,
+		    allProcessInfo);
       break;
     case _STATECSV: // output csv file
       makeDirectory(_CSV);
@@ -884,3 +889,53 @@ bool isValidKillSignal(const int& signal)
 
   return isValid;
 } // end of "isValidKillSignal"
+
+
+
+/*
+  Function:
+  
+  Description:
+
+  Input:
+
+  Output:
+*/
+void cpuGraphState(std::unordered_map<int, CursesWindow*>& wins,
+		   const std::unordered_map<int, ProcessInfo*>& procData)
+{
+  CursesWindow* cpuGraphWindow = new CursesWindow();
+  wins.insert(std::make_pair(_CPUGRAPHWIN, cpuGraphWindow));
+  int numLines = 30;
+  int numCols = wins.at(_COMMANDWIN)->getStartX() +
+    wins.at(_COMMANDWIN)->getNumCols() + 2;
+  wins.at(_CPUGRAPHWIN)->defineWindow(newwin(5,
+					     5,
+					     _YOFFSET + 5,
+					     numCols),
+				      "Cpu Graph Win",
+				      0,
+				      0,
+				      0,
+				      0);
+
+  //  box(wins.at(_CPUGRAPHWIN)->getWindow(), 'a', 'a');
+  while(true)
+    {
+      int input;
+      while(true)
+	{
+	  input = getch();
+
+	  if(input == 'q')
+	    {
+	      break;
+	    }      
+	}
+      
+    }
+
+  wins.at(_CPUGRAPHWIN)->deleteWindow();
+  delete(wins.at(_CPUGRAPHWIN));
+  wins.erase(_CPUGRAPHWIN);
+} // end of "cpuGraphState"
