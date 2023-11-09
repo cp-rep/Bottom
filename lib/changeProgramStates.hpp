@@ -33,7 +33,7 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 void updateSortState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		     std::vector<int>& pids,
 		     std::vector<int>& outPids,
-		     const int& userInput);
+		     const int& sortState);
 void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	       const std::unordered_map<int, CursesWindow*>& wins,
 	       const int& defaultKillPid);

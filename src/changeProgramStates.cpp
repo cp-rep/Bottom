@@ -208,9 +208,9 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 void updateSortState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		     std::vector<int>& pids,
 		     std::vector<int>& outPids,
-		     const int& userInput)
+		     const int& sortState)
 {
-  switch(userInput)
+  switch(sortState)
     {
     case _PIDWIN:
       outPids = pids;
