@@ -80,7 +80,8 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			const int& defaultKillPid,
 			int& shiftY,
 			int& shiftX,
-			const int shiftDownMax)
+			const int shiftDownMax,
+			bool& graph)
 {
   switch(progState)
     {
@@ -95,7 +96,7 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	{
 	  highlight = false;
 	}
-      else if(highlight == false)
+      else
 	{
 	  highlight = true;
 	}
@@ -106,8 +107,35 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		defaultKillPid);
       break;
     case _STATECPUGRAPH:
-      cpuGraphState(wins,
-		    allProcessInfo);
+      if(graph == false)
+      	{
+      	  graph = true;
+	  CursesWindow* graphWindow = new CursesWindow();
+	  wins.insert(std::make_pair(_CPUGRAPHWIN, graphWindow));
+	  wins.at(_CPUGRAPHWIN)->defineWindow
+	    (newwin(((wins.at(_MAINWIN)->getNumLines() - _YOFFSET)/2) + 1,
+		    (wins.at(_MAINWIN)->getNumCols() -
+		     wins.at(_COMMANDWIN)->getNumCols() -
+		     wins.at(_COMMANDWIN)->getStartX()) - 2,
+		    _YOFFSET + 1,
+		    wins.at(_COMMANDWIN)->getStartX() +
+		    wins.at(_COMMANDWIN)->getNumCols() + 2),
+	     "Cpu Graph Win",
+	     ((wins.at(_MAINWIN)->getNumLines() - _YOFFSET)/2) + 1,
+	     (wins.at(_MAINWIN)->getNumCols() -
+	      wins.at(_COMMANDWIN)->getNumCols() -
+	      wins.at(_COMMANDWIN)->getStartX()) - 2,	     
+	     _YOFFSET + 1,
+	     wins.at(_COMMANDWIN)->getStartX() +
+	     wins.at(_COMMANDWIN)->getNumCols() + 2);
+	}
+      else
+	{
+	  graph = false;
+	  wins.at(_CPUGRAPHWIN)->deleteWindow();
+	  delete(wins.at(_CPUGRAPHWIN));
+	  wins.erase(_CPUGRAPHWIN);
+	}
       break;
     case _STATECSV: // output csv file
       makeDirectory(_CSV);
@@ -889,53 +917,3 @@ bool isValidKillSignal(const int& signal)
 
   return isValid;
 } // end of "isValidKillSignal"
-
-
-
-/*
-  Function:
-  
-  Description:
-
-  Input:
-
-  Output:
-*/
-void cpuGraphState(std::unordered_map<int, CursesWindow*>& wins,
-		   const std::unordered_map<int, ProcessInfo*>& procData)
-{
-  CursesWindow* cpuGraphWindow = new CursesWindow();
-  wins.insert(std::make_pair(_CPUGRAPHWIN, cpuGraphWindow));
-  int numLines = 30;
-  int numCols = wins.at(_COMMANDWIN)->getStartX() +
-    wins.at(_COMMANDWIN)->getNumCols() + 2;
-  wins.at(_CPUGRAPHWIN)->defineWindow(newwin(5,
-					     5,
-					     _YOFFSET + 5,
-					     numCols),
-				      "Cpu Graph Win",
-				      0,
-				      0,
-				      0,
-				      0);
-
-  //  box(wins.at(_CPUGRAPHWIN)->getWindow(), 'a', 'a');
-  while(true)
-    {
-      int input;
-      while(true)
-	{
-	  input = getch();
-
-	  if(input == 'q')
-	    {
-	      break;
-	    }      
-	}
-      
-    }
-
-  wins.at(_CPUGRAPHWIN)->deleteWindow();
-  delete(wins.at(_CPUGRAPHWIN));
-  wins.erase(_CPUGRAPHWIN);
-} // end of "cpuGraphState"
