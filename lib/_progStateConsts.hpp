@@ -12,6 +12,7 @@
 #define _STATEHL 'x'
 #define _STATEKILL 'k'
 #define _STATECSV ','
+#define _STATECPUGRAPH 'c'
 #define _STATESORTLEFT '<'
 #define _STATESORTRIGHT '>'
 #define _STATEKEYLEFT KEY_LEFT
