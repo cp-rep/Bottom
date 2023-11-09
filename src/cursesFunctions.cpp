@@ -2047,3 +2047,19 @@ void printBadInputString(const std::unordered_map<int, CursesWindow*>& wins,
   wrefresh(wins.at(window)->getWindow());
   doupdate();  
 } // end of "printBadInputString"
+
+
+
+
+/*
+  Function:
+  
+  Description:
+
+  Input:
+
+  Output:
+*/
+void drawGraph()
+{
+} // end of "graphState"

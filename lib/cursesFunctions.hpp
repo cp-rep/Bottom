@@ -85,4 +85,5 @@ void printBadInputString(const std::unordered_map<int, CursesWindow*>& wins,
 			 const int& yOffset,
 			 const int& xOffset,
 			 const std::string& outString);
+void drawGraph();
 #endif
