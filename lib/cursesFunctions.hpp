@@ -103,6 +103,7 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 		       UserInputWindow& userInputWin,
 		       HelpWindow& helpWin,
 		       CpuGraphWindow& cpuGraphWin);
+void defineWindows(std::unordered_map<int, CursesWindow*>& wins);
 void initializeProgramStates(std::unordered_map<char, int>& progStates);
 void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins);

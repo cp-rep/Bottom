@@ -106,589 +106,6 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
 		       HelpWindow& helpWin,
 		       CpuGraphWindow& cpuGraphWin)
 {
-  int numLines;
-  int numCols;
-  int startY = 0;
-  int startX = 0;
-  getmaxyx(stdscr, numLines, numCols);
-
-  mainWin.defineWindow(stdscr,
-		       "Main",
-		       numLines,
-		       numCols,
-		       startY,
-		       startX);
-  mainWin.setMaxY(numLines);
-  mainWin.setMaxX(numCols);
-  numLines = 1;
-  numCols = numCols;
-  startY = _YOFFSET - 6;
-  startX = 0;
-  topWin.defineWindow(newwin(numLines,
-			     numCols,
-			     startY,
-			     startX),
-		      "top",
-		      numLines,
-		      numCols,
-		      startY,
-		      startX);
-  // define tasks window
-  numLines = 1;
-  numCols = numCols;
-  startY = _YOFFSET - 5;
-  startX = 0;
-  tasksWin.defineWindow(newwin(numLines,
-			       numCols,
-			       startY,
-			       startX),
-			"Tasks",
-			numLines,
-			numCols,
-			startY,
-			startX);
-  // define cpu window
-  numLines = 1;
-  numCols = numCols;
-  startY = _YOFFSET - 4;
-  startX = 0;
-  cpuWin.defineWindow(newwin(numLines,
-			     numCols,
-			     startY,
-			     startX),
-		      "CPU",
-		      numLines,
-		      numCols,
-		      startY,
-		      startX);
-  // define mem window
-  numLines = 2;
-  numCols = numCols;
-  startY = _YOFFSET - 3;
-  startX = 0;  
-  memWin.defineWindow(newwin(numLines,
-			     numCols,
-			     startY,
-			     startX),
-		      "MEM",
-		      numLines,
-		      numCols,
-		      startY,
-		      startX);
-  // define PID window
-  numLines = mainWin.getNumLines() -
-    memWin.getNumLines() -
-    cpuWin.getNumLines() -
-    tasksWin.getNumLines() -
-    topWin.getNumLines() - 1;
-  numCols = 7;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = 0;
-  PIDWin.defineWindow(newwin(numLines,
-			     numCols,
-			     startY,
-			     startX),
-		      "    PID",
-		      numLines,
-		      numCols,
-		      startY,
-		      startX);
-  // define USER window
-  numCols = 8;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() + 1;
-  USERWin.defineWindow(newwin(numLines,
-			      numCols,
-			      startY,
-			      startX),
-		       "USER    ",
-		       numLines,
-		       numCols,
-		       startY,
-		       startX);
-  // define PR window
-  numCols = 3;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() + 2;
-  PRWin.defineWindow(newwin(numLines,
-			    numCols,
-			    startY,
-			    startX),
-		     " PR",
-		     numLines,
-		     numCols,
-		     startY,
-		     startX);
-  // define NI window
-  numCols = 3;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() +
-    PRWin.getNumCols() + 3;
-  NIWin.defineWindow(newwin(numLines,
-			    numCols,
-			    startY,
-			    startX),
-		     " NI",
-		     numLines,
-		     numCols,
-		     startY,
-		     startX);
-  // define VIRT window
-  numCols = 7;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() +
-    PRWin.getNumCols() +
-    NIWin.getNumCols() + 4;
-  VIRTWin.defineWindow(newwin(numLines,
-			      numCols,
-			      startY,
-			      startX),
-		       "   VIRT",
-		       numLines,
-		       numCols,
-		       startY,
-		       startX);
-  // define RES window
-  numCols = 6;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() +
-    PRWin.getNumCols() +
-    NIWin.getNumCols() +
-    VIRTWin.getNumCols() + 5;
-  RESWin.defineWindow(newwin(numLines,
-			     numCols,
-			     startY,
-			     startX),
-		      "   RES",
-		      numLines,
-		      numCols,
-		      startY,
-		      startX);
-  // define SHR window
-  numCols = 6;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() +
-    PRWin.getNumCols() +
-    NIWin.getNumCols() +
-    VIRTWin.getNumCols() +
-    RESWin.getNumCols() + 6;
-  SHRWin.defineWindow(newwin(numLines,
-			     numCols,
-			     startY,
-			     startX),
-		      "   SHR",
-		      numLines,
-		      numCols,
-		      startY,
-		      startX);
-  // define S window
-  numCols = 1;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() +
-    PRWin.getNumCols() +
-    NIWin.getNumCols() +
-    VIRTWin.getNumCols() +
-    RESWin.getNumCols() +
-    SHRWin.getNumCols() + 7;
-  SWin.defineWindow(newwin(numLines,
-			   numCols,
-			   startY,
-			   startX),
-		    "S",
-		    numLines,
-		    numCols,
-		    startY,
-		    startX);
-  // define %CPU window
-  numCols = 5;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() +
-    PRWin.getNumCols() +
-    NIWin.getNumCols() +
-    VIRTWin.getNumCols() +
-    RESWin.getNumCols() +
-    SHRWin.getNumCols() + 
-    SWin.getNumCols() + 8;
-  PercentCPUWin.defineWindow(newwin(numLines,
-				    numCols,
-				    startY,
-				    startX),
-			     " %CPU",
-			     numLines,
-			     numCols,
-			     startY,
-			     startX);
-  // define %MEM window
-  numCols = 5;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() +
-    PRWin.getNumCols() +
-    NIWin.getNumCols() +
-    VIRTWin.getNumCols() +
-    RESWin.getNumCols() +
-    SHRWin.getNumCols() + 
-    SWin.getNumCols() +
-    PercentCPUWin.getNumCols() + 9;
-  PercentMEMWin.defineWindow(newwin(numLines,
-				    numCols,
-				    startY,
-				    startX),
-			     " %MEM",
-			     numLines,
-			     numCols,
-			     startY,
-			     startX);
-  // define TIME+ window
-  numCols = 9;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() +
-    PRWin.getNumCols() +
-    NIWin.getNumCols() +
-    VIRTWin.getNumCols() +
-    RESWin.getNumCols() +
-    SHRWin.getNumCols() + 
-    SWin.getNumCols() +
-    PercentCPUWin.getNumCols() + 
-    PercentMEMWin.getNumCols() + 10;  
-  TIMEWin.defineWindow(newwin(numLines,
-			      numCols,
-			      startY,
-			      startX),
-		       "    TIME+",
-		       numLines,
-		       numCols,
-		       startY,
-		       startX);
-  // define COMMAND window
-  numCols = 48;
-  startY = memWin.getStartY() + _YOFFSET - 3;
-  startX = PIDWin.getNumCols() +
-    USERWin.getNumCols() +
-    PRWin.getNumCols() +
-    NIWin.getNumCols() +
-    VIRTWin.getNumCols() +
-    RESWin.getNumCols() +
-    SHRWin.getNumCols() + 
-    SWin.getNumCols() +
-    PercentCPUWin.getNumCols() + 
-    PercentMEMWin.getNumCols() +
-    TIMEWin.getNumCols() + 11;
-  COMMANDWin.defineWindow(newwin(numLines,
-				 numCols,
-				 startY,
-				 startX), 
-			  "COMMAND",
-			  numLines,
-			  numCols,
-			  startY,
-			  startX);
-  COMMANDWin.fixCOMMANDWinName();
-  // define TasksTotalWindow
-  numCols = 4;
-  numLines = 1;
-  startY = 1;
-  startX = 6;
-  tasksTotalWin.defineWindow(newwin(numLines,
-				    numCols,
-				    startY,
-				    startX),
-			     "total",
-			     numLines,
-			     numCols,
-			     startY,
-			     startX);
-  // define TasksRunningWindow
-  numCols = 4;
-  numLines = 1;
-  startY = 1;
-  startX = 17;
-  tasksRunningWin.defineWindow(newwin(numLines,
-				    numCols,
-				    startY,
-				    startX),
-			     "running",
-			     numLines,
-			     numCols,
-			     startY,
-			     startX);
-  // define TasksSleepingWindow
-  numCols = 4;
-  numLines = 1;
-  startY = 1;
-  startX = 30;
-  tasksSleepingWin.defineWindow(newwin(numLines,
-				    numCols,
-				    startY,
-				    startX),
-			     "sleeping",
-			     numLines,
-			     numCols,
-			     startY,
-			     startX);
-  // define TasksStoppedWindow
-  numCols = 4;
-  numLines = 1;
-  startY = 1;
-  startX = 44;
-  tasksStoppedWin.defineWindow(newwin(numLines,
-				    numCols,
-				    startY,
-				    startX),
-			       "stopped",
-			       numLines,
-			       numCols,
-			       startY,
-			       startX);
-  // define TasksZombieWindow
-  numCols = 4;
-  numLines = 1;
-  startY = 1;
-  startX = 57;
-  tasksZombieWin.defineWindow(newwin(numLines,
-				       numCols,
-				       startY,
-				     startX),
-			      "zombie",
-			      numLines,
-			      numCols,
-			      startY,
-			      startX);
-  // define cpu user time window
-  numCols = 5;
-  numLines = 1;
-  startY = 2;
-  startX = 8;
-  cpuUsWin.defineWindow(newwin(numLines,
-			       numCols,
-			       startY,
-			       startX),
-			"us",
-			numLines,
-			numCols,
-			startY,
-			startX);
-  // define cpu system time window
-  numCols = 5;
-  numLines = 1;
-  startY = 2;
-  startX = 17;
-  cpuSyWin.defineWindow(newwin(numLines,
-			       numCols,
-			       startY,
-			       startX),
-			"sy",
-			numLines,
-			numCols,
-			startY,
-			startX);
-  // define cpu user nice time window
-  numCols = 5;
-  numLines = 1;
-  startY = 2;
-  startX = 26;
-  cpuNiWin.defineWindow(newwin(numLines,
-			       numCols,
-			       startY,
-			       startX),
-			"ni",
-			numLines,
-			numCols,
-			startY,
-			startX);
-  // define cpu idle time window
-  numCols = 5;
-  numLines = 1;
-  startY = 2;
-  startX = 35;
-  cpuIdWin.defineWindow(newwin(numLines,
-			       numCols,
-			       startY,
-			       startX),
-			"id",
-			numLines,
-			numCols,
-			startY,
-			startX);
-  // define cpu wait time window
-  numCols = 5;
-  numLines = 1;
-  startY = 2;
-  startX = 44;
-  cpuWaWin.defineWindow(newwin(numLines,
-			       numCols,
-			       startY,
-			       startX),
-			"wa",
-			numLines,
-			numCols,
-			startY,
-			startX);
-  // define cpu hardware interrupt time window
-  numCols = 5;
-  numLines = 1;
-  startY = 2;
-  startX = 53;
-  cpuHiWin.defineWindow(newwin(numLines,
-			       numCols,
-			       startY,
-			       startX),  
-			"hi",
-			numLines,
-			numCols,
-			startY,
-			startX);
-  // define cpu software interrupt time window
-  numCols = 5;
-  numLines = 1;
-  startY = 2;
-  startX = 62;
-  cpuSiWin.defineWindow(newwin(numLines,
-			       numCols,
-			       startY,
-			       startX),  
-			"Si",
-			numLines,
-			numCols,
-			startY,
-			startX);
-  // define cpu steal time window
-  numCols = 5;
-  numLines = 1;
-  startY = 2;
-  startX = 71;
-  cpuStWin.defineWindow(newwin(numLines,
-			       numCols,
-			       startY,
-			       startX),  
-			"St",
-			numLines,
-			numCols,
-			startY,
-			startX);
-
-  // define MiB mem total window
-  numCols = 9;
-  numLines = 1;
-  startY = 3;
-  startX = 9;
-  miBMemTotalWin.defineWindow(newwin(numLines,
-				     numCols,
-				     startY,
-				     startX),  
-			      "total",
-			      numLines,
-			      numCols,
-			      startY,
-			      startX);
-  // define MiB mem free window
-  numCols = 9;
-  numLines = 1;
-  startY = 3;
-  startX = 25;
-  miBMemFreeWin.defineWindow(newwin(numLines,
-				    numCols,
-				    startY,
-				    startX),  
-			     "free",
-			     numLines,
-			     numCols,
-			     startY,
-			     startX);
-  // define MiB mem Used window
-  numCols = 9;
-  numLines = 1;
-  startY = 3;
-  startX = 40;
-  miBMemUsedWin.defineWindow(newwin(numLines,
-			       numCols,
-			       startY,
-			       startX),  
-			"used",
-			numLines,
-			numCols,
-			startY,
-			startX);
-  // define cpu steal time window
-  numCols = 9;
-  numLines = 1;
-  startY = 3;
-  startX = 55;
-  miBBuffCacheWin.defineWindow(newwin(numLines,
-				      numCols,
-				      startY,
-				      startX),  
-			       "buff/cache",
-			       numLines,
-			       numCols,
-			       startY,
-			       startX);
-  // define MiB swap total window
-  numCols = 9;
-  numLines = 1;
-  startY = 4;
-  startX = 9;
-  miBSwapTotalWin.defineWindow(newwin(numLines,
-				      numCols,
-				      startY,
-				      startX),  
-			       "total",
-			       numLines,
-			       numCols,
-			       startY,
-			       startX);
-  // define MiB swap free window
-  numCols = 9;
-  numLines = 1;
-  startY = 4;
-  startX = 25;
-  miBSwapFreeWin.defineWindow(newwin(numLines,
-			       numCols,
-			       startY,
-			       startX),  
-			      "free",
-			      numLines,
-			      numCols,
-			      startY,
-			      startX);
-  // define MiB swap used window
-  numCols = 9;
-  numLines = 1;
-  startY = 4;
-  startX = 40;
-  miBSwapUsedWin.defineWindow(newwin(numLines,
-			       numCols,
-			       startY,
-			       startX),  
-			      "used",
-			      numLines,
-			      numCols,
-			      startY,
-			      startX);
-  // define MiB Swap avail mem window
-  numCols = 9;
-  numLines = 1;
-  startY = 4;
-  startX = 55;
-  miBMemAvailWin.defineWindow(newwin(numLines,
-				     numCols,
-				     startY,
-				     startX),  
-			      "avil Mem",
-			      numLines,
-			      numCols,
-			      startY,
-			      startX);
-  
-  // store all windows in hash map
   wins.insert(std::make_pair(_MAINWIN,&mainWin));
   wins.insert(std::make_pair(_TOPWIN, &topWin));
   wins.insert(std::make_pair(_TASKSWIN, &tasksWin));
@@ -729,8 +146,607 @@ void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,
   wins.insert(std::make_pair(_MIBMEMAVAILWIN, &miBMemAvailWin));
   wins.insert(std::make_pair(_USERINPUTWIN, &userInputWin));
   wins.insert(std::make_pair(_HELPWIN, &userInputWin));  
-  wins.insert(std::make_pair(_CPUGRAPHWIN, &userInputWin));  
+  wins.insert(std::make_pair(_CPUGRAPHWIN, &userInputWin));
 } // end of "initializeWindows"
+
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void defineWindows(std::unordered_map<int, CursesWindow*>& wins)
+{
+  int numLines;
+  int numCols;
+  int startY = 0;
+  int startX = 0;
+  
+  getmaxyx(stdscr, numLines, numCols);
+
+  wins.at(_MAINWIN)->defineWindow(stdscr,
+				  "Main",
+				  numLines,
+				  numCols,
+				  startY,
+				  startX);
+  wins.at(_MAINWIN)->setMaxY(numLines);
+  wins.at(_MAINWIN)->setMaxX(numCols);
+  numLines = 1;
+  numCols = numCols;
+  startY = _YOFFSET - 6;
+  startX = 0;
+  wins.at(_TOPWIN)->defineWindow(newwin(numLines,
+					numCols,
+					startY,
+					startX),
+				 "top",
+				 numLines,
+				 numCols,
+				 startY,
+				 startX);
+
+  // define tasks window
+  numLines = 1;
+  numCols = numCols;
+  startY = _YOFFSET - 5;
+  startX = 0;
+  wins.at(_TASKSWIN)->defineWindow(newwin(numLines,
+					  numCols,
+					  startY,
+					  startX),
+				   "Tasks",
+				   numLines,
+				   numCols,
+				   startY,
+				   startX);
+  // define cpu window
+  numLines = 1;
+  numCols = numCols;
+  startY = _YOFFSET - 4;
+  startX = 0;
+  wins.at(_CPUWIN)->defineWindow(newwin(numLines,
+					numCols,
+					startY,
+					startX),
+				 "CPU",
+				 numLines,
+				 numCols,
+				 startY,
+				 startX);
+  // define mem window
+  numLines = 2;
+  numCols = numCols;
+  startY = _YOFFSET - 3;
+  startX = 0;  
+  wins.at(_MEMWIN)->defineWindow(newwin(numLines,
+					numCols,
+					startY,
+					startX),
+				 "MEM",
+				 numLines,
+				 numCols,
+				 startY,
+				 startX);
+
+  // define PID window
+  numLines = wins.at(_MAINWIN)-> getNumLines() -
+    wins.at(_MEMWIN)->getNumLines() -
+    wins.at(_CPUWIN)->getNumLines() -
+    wins.at(_TASKSWIN)->getNumLines() -
+    wins.at(_TOPWIN)->getNumLines() - 1;
+  numCols = 7;
+  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
+  startX = 0;
+  wins.at(_PIDWIN)->defineWindow(newwin(numLines,
+					numCols,
+					startY,
+					startX),
+				 "    PID",
+				 numLines,
+				 numCols,
+				 startY,
+				 startX);
+  // define USER window
+  numCols = 8;
+  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
+  startX = wins.at(_PIDWIN)->getNumCols() + 1;
+  wins.at(_USERWIN)->defineWindow(newwin(numLines,
+					 numCols,
+					 startY,
+					 startX),
+				  "USER    ",
+				  numLines,
+				  numCols,
+				  startY,
+				  startX);
+  // define PR window
+  numCols = 3;
+  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
+  startX = wins.at(_PIDWIN)->getNumCols() +
+    wins.at(_USERWIN)->getNumCols() + 2;
+  wins.at(_PRWIN)->defineWindow(newwin(numLines,
+				       numCols,
+				       startY,
+				       startX),
+				" PR",
+				numLines,
+				numCols,
+				startY,
+				startX);
+  // define NI window
+  numCols = 3;
+  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
+  startX = wins.at(_PIDWIN)->getNumCols() +
+    wins.at(_USERWIN)->getNumCols() +
+    wins.at(_PRWIN)->getNumCols() + 3;
+  wins.at(_NIWIN)->defineWindow(newwin(numLines,
+				       numCols,
+				       startY,
+				       startX),
+				" NI",
+				numLines,
+				numCols,
+				startY,
+				startX);
+  // define VIRT window
+  numCols = 7;
+  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
+  startX = wins.at(_PIDWIN)->getNumCols() +
+    wins.at(_USERWIN)->getNumCols() +
+    wins.at(_PRWIN)->getNumCols() +
+    wins.at(_NIWIN)->getNumCols() + 4;
+  wins.at(_VIRTWIN)->defineWindow(newwin(numLines,
+					 numCols,
+					 startY,
+					 startX),
+				  "   VIRT",
+				  numLines,
+				  numCols,
+				  startY,
+				  startX);
+  // define RES window
+  numCols = 6;
+  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
+  startX = wins.at(_PIDWIN)->getNumCols() +
+    wins.at(_USERWIN)->getNumCols() +
+    wins.at(_PRWIN)->getNumCols() +
+    wins.at(_NIWIN)->getNumCols() + 
+    wins.at(_VIRTWIN)->getNumCols() + 5;    
+  wins.at(_RESWIN)->defineWindow(newwin(numLines,
+					numCols,
+					startY,
+					startX),
+				 "   RES",
+				 numLines,
+				 numCols,
+				 startY,
+				 startX);
+  // define SHR window
+  numCols = 6;
+  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
+  startX = wins.at(_PIDWIN)->getNumCols() +
+    wins.at(_USERWIN)->getNumCols() +
+    wins.at(_PRWIN)->getNumCols() +
+    wins.at(_NIWIN)->getNumCols() + 
+    wins.at(_VIRTWIN)->getNumCols() +
+    wins.at(_RESWIN)->getNumCols() + 6;
+  wins.at(_SHRWIN)->defineWindow(newwin(numLines,
+					numCols,
+					startY,
+					startX),
+				 "   SHR",
+				 numLines,
+				 numCols,
+				 startY,
+				 startX);
+  // define S window
+  numCols = 1;
+  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
+  startX = wins.at(_PIDWIN)->getNumCols() +
+    wins.at(_USERWIN)->getNumCols() +
+    wins.at(_PRWIN)->getNumCols() +
+    wins.at(_NIWIN)->getNumCols() + 
+    wins.at(_VIRTWIN)->getNumCols() +
+    wins.at(_RESWIN)->getNumCols() +
+    wins.at(_SHRWIN)->getNumCols() + 7;
+  wins.at(_SWIN)->defineWindow(newwin(numLines,
+				      numCols,
+				      startY,
+				      startX),
+			       "S",
+			       numLines,
+			       numCols,
+			       startY,
+			       startX);
+  // define %CPU window
+  numCols = 5;
+  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
+  startX = wins.at(_PIDWIN)->getNumCols() +
+    wins.at(_USERWIN)->getNumCols() +
+    wins.at(_PRWIN)->getNumCols() +
+    wins.at(_NIWIN)->getNumCols() + 
+    wins.at(_VIRTWIN)->getNumCols() +
+    wins.at(_RESWIN)->getNumCols() +
+    wins.at(_SHRWIN)->getNumCols() +
+    wins.at(_SWIN)->getNumCols() + 8;
+  wins.at(_PROCCPUWIN)->defineWindow(newwin(numLines,
+					    numCols,
+					    startY,
+					    startX),
+				     " %CPU",
+				     numLines,
+				     numCols,
+				     startY,
+				     startX);
+  // define %MEM window
+  numCols = 5;
+  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
+  startX = wins.at(_PIDWIN)->getNumCols() +    
+    wins.at(_USERWIN)->getNumCols() +
+    wins.at(_PRWIN)->getNumCols() +
+    wins.at(_NIWIN)->getNumCols() + 
+    wins.at(_VIRTWIN)->getNumCols() +
+    wins.at(_RESWIN)->getNumCols() +
+    wins.at(_SHRWIN)->getNumCols() +
+    wins.at(_SWIN)->getNumCols() +     
+    wins.at(_PROCCPUWIN)->getNumCols() + 9;
+  wins.at(_PROCMEMWIN)->defineWindow(newwin(numLines,
+					    numCols,
+					    startY,
+					    startX),
+				     " %MEM",
+				     numLines,
+				     numCols,
+				     startY,
+				     startX);
+  // define TIME+ window
+  numCols = 9;
+  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
+  startX = wins.at(_PIDWIN)->getNumCols() +
+    wins.at(_USERWIN)->getNumCols() +
+    wins.at(_PRWIN)->getNumCols() +
+    wins.at(_NIWIN)->getNumCols() + 
+    wins.at(_VIRTWIN)->getNumCols() +
+    wins.at(_RESWIN)->getNumCols() +
+    wins.at(_SHRWIN)->getNumCols() +
+    wins.at(_SWIN)->getNumCols() +     
+    wins.at(_PROCCPUWIN)->getNumCols() +    
+    wins.at(_PROCMEMWIN)->getNumCols() + 10;  
+  wins.at(_PROCTIMEWIN)->defineWindow(newwin(numLines,
+					     numCols,
+					     startY,
+					     startX),
+				      "    TIME+",
+				      numLines,
+				      numCols,
+				      startY,
+				      startX);
+  // define COMMAND window
+  numCols = 48;
+  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
+  startX = wins.at(_PIDWIN)->getNumCols() +    
+    wins.at(_USERWIN)->getNumCols() +
+    wins.at(_PRWIN)->getNumCols() +
+    wins.at(_NIWIN)->getNumCols() + 
+    wins.at(_VIRTWIN)->getNumCols() +
+    wins.at(_RESWIN)->getNumCols() +
+    wins.at(_SHRWIN)->getNumCols() +
+    wins.at(_SWIN)->getNumCols() +     
+    wins.at(_PROCCPUWIN)->getNumCols() +    
+    wins.at(_PROCMEMWIN)->getNumCols() +
+    wins.at(_PROCTIMEWIN)->getNumCols() + 11;
+  wins.at(_COMMANDWIN)->defineWindow(newwin(numLines,
+					    numCols,
+					    startY,
+					    startX), 
+				     "COMMAND",
+				     numLines,
+				     numCols,
+				     startY,
+				     startX);
+  // define TasksTotalWindow
+  numCols = 4;
+  numLines = 1;
+  startY = 1;
+  startX = 6;
+  wins.at(_TASKSTOTAL)->defineWindow(newwin(numLines,
+					    numCols,
+					    startY,
+					    startX),
+				     "total",
+				     numLines,
+				     numCols,
+				     startY,
+				     startX);
+  // define TasksRunningWindow
+  numCols = 4;
+  numLines = 1;
+  startY = 1;
+  startX = 17;
+  wins.at(_TASKSRUNNING)->defineWindow(newwin(numLines,
+					      numCols,
+					      startY,
+					      startX),
+				       "running",
+				       numLines,
+				       numCols,
+				       startY,
+				       startX);
+  // define TasksSleepingWindow
+  numCols = 4;
+  numLines = 1;
+  startY = 1;
+  startX = 30;
+  wins.at(_TASKSSLEEPING)->defineWindow(newwin(numLines,
+					       numCols,
+					       startY,
+					       startX),
+					"sleeping",
+					numLines,
+					numCols,
+					startY,
+					startX);
+  // define TasksStoppedWindow
+  numCols = 4;
+  numLines = 1;
+  startY = 1;
+  startX = 44;
+  wins.at(_TASKSSTOPPED)->defineWindow(newwin(numLines,
+					      numCols,
+					      startY,
+					      startX),
+				       "stopped",
+				       numLines,
+				       numCols,
+				       startY,
+				       startX);
+  // define TasksZombieWindow
+  numCols = 4;
+  numLines = 1;
+  startY = 1;
+  startX = 57;
+  wins.at(_TASKSZOMBIE)->defineWindow(newwin(numLines,
+					     numCols,
+					     startY,
+					     startX),
+				      "zombie",
+				      numLines,
+				      numCols,
+				      startY,
+				      startX);
+  // define cpu user time window
+  numCols = 5;
+  numLines = 1;
+  startY = 2;
+  startX = 8;
+  wins.at(_CPUUSWIN)->defineWindow(newwin(numLines,
+					  numCols,
+					  startY,
+					  startX),
+				   "us",
+				   numLines,
+				   numCols,
+				   startY,
+				   startX);
+  // define cpu system time window
+  numCols = 5;
+  numLines = 1;
+  startY = 2;
+  startX = 17;
+  wins.at(_CPUSYWIN)->defineWindow(newwin(numLines,
+					  numCols,
+					  startY,
+					  startX),
+				   "sy",
+				   numLines,
+				   numCols,
+				   startY,
+				   startX);
+  // define cpu user nice time window
+  numCols = 5;
+  numLines = 1;
+  startY = 2;
+  startX = 26;
+  wins.at(_CPUNIWIN)->defineWindow(newwin(numLines,
+					  numCols,
+					  startY,
+					  startX),
+				   "ni",
+				   numLines,
+				   numCols,
+				   startY,
+				   startX);
+  // define cpu idle time window
+  numCols = 5;
+  numLines = 1;
+  startY = 2;
+  startX = 35;
+  wins.at(_CPUIDWIN)->defineWindow(newwin(numLines,
+					  numCols,
+					  startY,
+					  startX),
+				   "id",
+				   numLines,
+				   numCols,
+				   startY,
+				   startX);
+  // define cpu wait time window
+  numCols = 5;
+  numLines = 1;
+  startY = 2;
+  startX = 44;
+  wins.at(_CPUWAWIN)->defineWindow(newwin(numLines,
+					  numCols,
+					  startY,
+					  startX),
+				   "wa",
+				   numLines,
+				   numCols,
+				   startY,
+				   startX);
+  // define cpu hardware interrupt time window
+  numCols = 5;
+  numLines = 1;
+  startY = 2;
+  startX = 53;
+  wins.at(_CPUHIWIN)->defineWindow(newwin(numLines,
+					  numCols,
+					  startY,
+					  startX),  
+				   "hi",
+				   numLines,
+				   numCols,
+				   startY,
+				   startX);
+  // define cpu software interrupt time window
+  numCols = 5;
+  numLines = 1;
+  startY = 2;
+  startX = 62;
+  wins.at(_CPUSIWIN)->defineWindow(newwin(numLines,
+					  numCols,
+					  startY,
+					  startX),  
+				   "Si",
+				   numLines,
+				   numCols,
+				   startY,
+				   startX);
+  // define cpu steal time window
+  numCols = 5;
+  numLines = 1;
+  startY = 2;
+  startX = 71;
+  wins.at(_CPUSTWIN)->defineWindow(newwin(numLines,
+					  numCols,
+					  startY,
+					  startX),  
+				   "St",
+				   numLines,
+				   numCols,
+				   startY,
+				   startX);
+
+  // define MiB mem total window
+  numCols = 9;
+  numLines = 1;
+  startY = 3;
+  startX = 9;
+  wins.at(_MIBTOTALWIN)->defineWindow(newwin(numLines,
+					     numCols,
+					     startY,
+					     startX),  
+				      "total",
+				      numLines,
+				      numCols,
+				      startY,
+				      startX);
+  // define MiB mem free window
+  numCols = 9;
+  numLines = 1;
+  startY = 3;
+  startX = 25;
+  wins.at(_MIBFREEWIN)->defineWindow(newwin(numLines,
+					    numCols,
+					    startY,
+					    startX),  
+				     "free",
+				     numLines,
+				     numCols,
+				     startY,
+				     startX);
+  // define MiB mem Used window
+  numCols = 9;
+  numLines = 1;
+  startY = 3;
+  startX = 40;
+  wins.at(_MIBUSEDWIN)->defineWindow(newwin(numLines,
+					    numCols,
+					    startY,
+					    startX),  
+				     "used",
+				     numLines,
+				     numCols,
+				     startY,
+				     startX);
+  // define buff cache window
+  numCols = 9;
+  numLines = 1;
+  startY = 3;
+  startX = 55;
+  wins.at(_MIBBUFFCACHEWIN)->defineWindow(newwin(numLines,
+						 numCols,
+						 startY,
+						 startX),  
+					  "buff/cache",
+					  numLines,
+					  numCols,
+					  startY,
+					  startX);
+  // define MiB swap total window
+  numCols = 9;
+  numLines = 1;
+  startY = 4;
+  startX = 9;
+  wins.at(_MIBSWAPTOTALWIN)->defineWindow(newwin(numLines,
+						 numCols,
+						 startY,
+						 startX),  
+					  "total",
+					  numLines,
+					  numCols,
+					  startY,
+					  startX);
+  // define MiB swap free window
+  numCols = 9;
+  numLines = 1;
+  startY = 4;
+  startX = 25;
+  wins.at(_MIBSWAPFREEWIN)->defineWindow(newwin(numLines,
+						numCols,
+						startY,
+						startX),  
+					 "free",
+					 numLines,
+					 numCols,
+					 startY,
+					 startX);
+  // define MiB swap used window
+  numCols = 9;
+  numLines = 1;
+  startY = 4;
+  startX = 40;
+  wins.at(_MIBSWAPUSEDWIN)->defineWindow(newwin(numLines,
+						numCols,
+						startY,
+						startX),  
+					 "used",
+					 numLines,
+					 numCols,
+					 startY,
+					 startX);
+  // define MiB Swap avail mem window
+  numCols = 9;
+  numLines = 1;
+  startY = 4;
+  startX = 55;
+  wins.at(_MIBMEMAVAILWIN)->defineWindow(newwin(numLines,
+						numCols,
+						startY,
+						startX),  
+					 "avil Mem",
+					 numLines,
+					 numCols,
+					 startY,
+					 startX);
+} // end of "defineWindows"
 
 
 
