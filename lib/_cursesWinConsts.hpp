@@ -46,7 +46,7 @@ enum _WINS {
   _MIBMEMAVAILWIN,
   _USERINPUTWIN,
   _HELPWIN,
-  _CPUGRAPHWIN // 39
+  _CPUGRAPHWIN // 40
 };
 
 // color pair values
