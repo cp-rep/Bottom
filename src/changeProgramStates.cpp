@@ -26,141 +26,25 @@
 */
 void initializeProgramStates(std::unordered_map<char, int>& progStates)
 {
-  progStates.insert(std::make_pair(_PROGSTATEHELP, 1)); // open help menu
-  progStates.insert(std::make_pair(_PROGSTATEQUIT, 1)); // quit
-  progStates.insert(std::make_pair(_PROGSTATEHL, 1)); // highlight column
-  progStates.insert(std::make_pair(_PROGSTATEKILL, 1)); // enter kill pid state
-  progStates.insert(std::make_pair(_PROGSTATECSV, 1)); // make csv file
+  progStates.insert(std::make_pair(_STATEHELP, 1)); // open help menu
+  progStates.insert(std::make_pair(_STATEQUIT, 1)); // quit
+  progStates.insert(std::make_pair(_STATEHL, 1)); // highlight column
+  progStates.insert(std::make_pair(_STATEKILL, 1)); // enter kill pid state
+  progStates.insert(std::make_pair(_STATECSV, 1)); // make csv file
+  progStates.insert(std::make_pair(_STATESORTLEFT, 1)); // update sort left
+  progStates.insert(std::make_pair(_STATESORTRIGHT, 1)); // update sort right
+  progStates.insert(std::make_pair(_STATEKEYLEFT, 1));
+  progStates.insert(std::make_pair(_STATEKEYRIGHT, 1));
+  progStates.insert(std::make_pair(_STATEKEYUP, 1)); 
+  progStates.insert(std::make_pair(_STATEKEYDOWN, 1));
+
 } // end of "initializeProgramStates"
 
 
 
 /*
   Function:
-   updateStateValues
-
-  Description:
-   Updates the values that will be used in further function calls
-   to change the running program state.
-  
-  Input:
-   wins              - A reference to a constant object that is an
-                          un ordered map containing all the allocated
-			  curses windows addressable by the hash key
-			  PID number.
-			  
-   progStates           - A reference to a constant object that is
-                          an unordered map containing the main program
-			  states such as highlight, help, and quit. It
-			  is addressable from the hash keys via
-			  _progStateConsts.hpp.
-
-   userInput            - A reference to a const int that contains the
-                          inputed user value that is used as the
-			  switch state control expression.
-
-   sortState            - A reference to an int that contains the current
-                          sort state value to be used in further state
-			  related function calls.
-
-   prevState            - A reference to an int that contains the
-                          previous sortState from the last loop iteration.
-
-   progState            - A reference to an int that is used to
-                          update the program state in further function
-			  calls.
-
-   highlight            - A reference to a constant bool object that
-                          is used in a control expression to determine
-			  if the highlight state should be updated.
-
-   highlightIndex       - A reference to an int that contains the index
-                          determining which column to highlight.
-
-  Output:
-   NONE
-*/
-void updateStateValues(std::unordered_map<int, CursesWindow*>& wins,
-		       std::unordered_map<char, int>& progStates,
-		       const int& userInput,
-		       int& sortState,
-		       int& prevState,
-		       int& progState,
-		       const bool& highlight,
-		       int& highlightIndex)
-{
-  if(userInput != -1)
-    {
-      if(progStates[userInput])
-	{
-	  prevState = progState;
-	  progState = userInput;
-	}
-      else if(userInput == '<')
-	{
-	  if(sortState > _PIDWIN)
-	    {
-	      if(highlight == true)
-		{
-		  wattroff(wins.at(sortState)->getWindow(),
-			   A_BOLD);
-		  sortState--;
-		  wattron(wins.at(sortState)->getWindow(),
-			  A_BOLD);
-		}
-	      else
-		{
-		  sortState--;
-		}
-	    }
-	}
-	else if(userInput == '>')
-	{
-	  if(sortState < _COMMANDWIN)
-	    {
-	      if(highlight == true)
-		{
-		  wattroff(wins.at(sortState)->getWindow(),
-			   A_BOLD);
-		  sortState++;
-		  wattron(wins.at(sortState)->getWindow(),
-			  A_BOLD);
-		}
-	      else
-		{
-		  sortState++;
-		}
-	    }
-	}
-      else if(userInput == KEY_UP ||
-	      userInput == KEY_DOWN ||
-	      userInput == KEY_LEFT ||
-	      userInput == KEY_RIGHT)
-	{
-	  // do nothing
-	}
-	    
-      else // bad input
-	{
-	  std::string outString = " Unknown command - try 'h' for help ";
-	  printBadInputString(wins,
-			      _MAINWIN,
-			      _YOFFSET -1,
-			      0,
-			      outString);
-	  refreshAllWins(wins);
-	  doupdate();	  
-	  sleep(1.75);
-	}
-    }
-  highlightIndex = sortState;
-} // end of "updateStateValues"
-
-
-
-/*
-  Function:
-   changeProgramState
+   updateProgramState
 
   Description:
    Updates the current main program state through a switch control
@@ -184,25 +68,27 @@ void updateStateValues(std::unordered_map<int, CursesWindow*>& wins,
   Output:
    NONE
 */
-void changeProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			std::unordered_map<int, CursesWindow*>& wins,
 			int& progState,
 			const int& prevState,
-			const int& sortState,
+			int& sortState,
 			bool& quit,
 			bool& highlight,
-			const int& defaultKillPid)
+			const int& defaultKillPid,
+			int& shiftY,
+			int& shiftX,
+			const int shiftDownMax)
 {
   switch(progState)
     {
-    case _PROGSTATEHELP: // help
+    case _STATEHELP: // help
       helpState(wins);
-      progState = prevState;
       break;
-    case _PROGSTATEQUIT: // quit
+    case _STATEQUIT: // quit
       quit = true;
       break;
-    case _PROGSTATEHL: // highlight
+    case _STATEHL: // highlight
       if(highlight == true)
 	{
 	  highlight = false;
@@ -211,30 +97,91 @@ void changeProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	{
 	  highlight = true;
 	}
-      progState = prevState;
       break;
-    case _PROGSTATEKILL: // kill state
+    case _STATEKILL: // kill state
       killState(allProcessInfo,
 		wins,
 		defaultKillPid);
-      progState = prevState;
       break;
-    case _PROGSTATECSV: // output csv file
+    case _STATECSV: // output csv file
       makeDirectory(_CSV);
       createFileCSV(allProcessInfo,
 		    _CSV);
-      progState = 0;
       break;
+    case _STATESORTLEFT: // shift sort left
+      if(sortState > _PIDWIN)
+	{
+	  if(highlight == true)
+	    {
+	      wattroff(wins.at(sortState)->getWindow(),
+		       A_BOLD);
+	      sortState--;
+	      wattron(wins.at(sortState)->getWindow(),
+		      A_BOLD);
+	    }
+	  else
+	    {
+	      sortState--;
+	    }
+	}      
+      break;      
+    case _STATESORTRIGHT: // shift sort right 
+      if(sortState < _COMMANDWIN)
+	{
+	  if(highlight == true)
+	    {
+	      wattroff(wins.at(sortState)->getWindow(),
+		       A_BOLD);
+	      sortState++;
+	      wattron(wins.at(sortState)->getWindow(),
+		      A_BOLD);
+	    }
+	  else
+	    {
+	      sortState++;
+	    }
+	}
+      break;
+    case _STATEKEYUP:
+      if(shiftY < 1)
+	{
+	  shiftY++;
+	}
+      break;
+    case _STATEKEYDOWN:
+      if(abs(shiftY) < shiftDownMax)
+	{
+	  shiftY--;
+	}
+      break;
+    case _STATEKEYLEFT:
+      if(shiftX > _PIDWIN)
+	{
+	  shiftBottomWinsRight(wins,
+			       shiftX);
+	  shiftX--;
+	}
+      break;
+    case _STATEKEYRIGHT:
+      if(shiftX < _COMMANDWIN)
+	{
+	  shiftBottomWinsLeft(wins,
+			      shiftX);
+	  shiftX++;
+	}
+      break;      
     default:
       break;
     }
+  
+  progState = prevState;
 } // end of "changeProgramState"
 
 
 
 /*
   Function:
-   bottomWinsProcSortState
+   updateSortState
 
   Description:
    Sorts a vector of integer objects containing PID numbers that will be sorted
@@ -257,10 +204,10 @@ void changeProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   Output:
    NONE
  */
-void bottomWinsProcSortState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-			     std::vector<int>& pids,
-			     std::vector<int>& outPids,
-			     const int& userInput)
+void updateSortState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+		     std::vector<int>& pids,
+		     std::vector<int>& outPids,
+		     const int& userInput)
 {
   switch(userInput)
     {
@@ -327,86 +274,7 @@ void bottomWinsProcSortState(std::unordered_map<int, ProcessInfo*>& allProcessIn
     default:
       break;
     }
-} // end of "bottomWinProcSortState"
-
-
-
-/*
-  Function:
-   bottomWinsShiftState
-
-  Description:
-   Uses a switch control structure to determine the shift state of the
-   windows and process data in the bottom windows.  Shifting left and right
-   will allocate or deallocate the windows from memory.  Shifting up and down
-   simply determine the starting and ending values of process datato be
-   outputed.
-
-  Input:
-   wins                 - A reference to a constant object that is an
-                          un ordered map containing all the allocated
-			  curses windows addressable by the hash key
-			  PID number.
-			  
-  shiftState            - A reference to a constant integer that contains
-                          the current shift state used in a switch control
-			  structure that can be updated vai the up, down, left,
-			  and right arrow keys.
-
-  shiftY                - A reference to an integer value that reprensents
-                          the current amount to shift the process list data
-			  vertically.
-
-  shiftX		- A reference to an integer value that represents
-                          the current amount of windows that are "shifted"
-			  in or out of the bottom window list horizontally.
-
-  shiftDownMax          - A constant integer that contains the max amount
-                          the process data can be shifted down in the output
-			  window.
-  Output:
-   NONE
-*/
-void bottomWinsShiftState(std::unordered_map<int, CursesWindow*>& wins,
-			  const int& shiftState,
-			  int& shiftY,
-			  int& shiftX,
-			  const int shiftDownMax)
-{
-  switch(shiftState)
-    {
-    case KEY_UP:
-      if(shiftY < 1)
-	{
-	  shiftY++;
-	}
-      break;
-    case KEY_DOWN:
-      if(abs(shiftY) < shiftDownMax)
-	{
-	  shiftY--;
-	}
-      break;
-    case KEY_LEFT:
-      if(shiftX > _PIDWIN)
-	{
-	  shiftBottomWinsRight(wins,
-			       shiftX);
-	  shiftX--;
-	}
-      break;
-    case KEY_RIGHT:
-      if(shiftX < _COMMANDWIN)
-	{
-	  shiftBottomWinsLeft(wins,
-			      shiftX);
-	  shiftX++;
-	}
-      break;
-    default:
-      break;
-    }
-} // end of "bottomWinShiftState"
+} // end of "updateSortState"
 
 
 
