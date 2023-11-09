@@ -37,7 +37,9 @@ void initializeProgramStates(std::unordered_map<char, int>& progStates)
   progStates.insert(std::make_pair(_STATEKEYRIGHT, 1));
   progStates.insert(std::make_pair(_STATEKEYUP, 1)); 
   progStates.insert(std::make_pair(_STATEKEYDOWN, 1));
-
+  progStates.insert(std::make_pair(_ALLMOUSEEVENTS, 1));
+  progStates.insert(std::make_pair(_MOUSEPOSITIONS, 1));
+  progStates.insert(std::make_pair(_WINRESIZEEVENT, 1));    
 } // end of "initializeProgramStates"
 
 
