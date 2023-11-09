@@ -45,7 +45,9 @@ CursesWindow::CursesWindow(WINDOW* win,
 			   const int& numLines,
 			   const int& numCols,
 			   const int& startY,
-			   const int& startX)
+			   const int& startX,
+			   const int& maxY,
+			   const int& maxX)
 {
   defineWindow(win,
 	       windowName,
@@ -53,6 +55,8 @@ CursesWindow::CursesWindow(WINDOW* win,
 	       numCols,
 	       startY,
 	       startX);
+  m_maxY = maxY;
+  m_maxX = maxX;
 } // end of "CursesWindow Constructor"
 
 

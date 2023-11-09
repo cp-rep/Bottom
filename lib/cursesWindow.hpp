@@ -20,8 +20,10 @@ public:
 	       const int& numLines = 0,
 	       const int& numCols = 0,
 	       const int& startY = 0,
-	       const int& startX = 0);
-
+	       const int& startX = 0,
+	       const int& maxY = 0,
+	       const int& maxX = 0);
+  
   // destructor
   ~CursesWindow();
 

@@ -33,7 +33,7 @@ void initializeProgramStates(std::unordered_map<char, int>& progStates)
   progStates.insert(std::make_pair(_STATECSV, 1)); // make csv file
   progStates.insert(std::make_pair(_STATESORTLEFT, 1)); // update sort left
   progStates.insert(std::make_pair(_STATESORTRIGHT, 1)); // update sort right
-  progStates.insert(std::make_pair(_STATEKEYLEFT, 1));
+  progStates.insert(std::make_pair(_STATEKEYLEFT, 1)); // 
   progStates.insert(std::make_pair(_STATEKEYRIGHT, 1));
   progStates.insert(std::make_pair(_STATEKEYUP, 1)); 
   progStates.insert(std::make_pair(_STATEKEYDOWN, 1));

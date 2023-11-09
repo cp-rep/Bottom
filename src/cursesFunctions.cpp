@@ -63,92 +63,9 @@ void initializeCurses()
   Output:
    NONE
 */
-void initializeWindows(std::unordered_map<int, CursesWindow*>& wins,		       
-		       MainWindow& mainWin,
-		       TopWindow& topWin,
-		       TasksWindow& tasksWin,
-		       CpuWindow& cpuWin,
-		       MemWindow& memWin,
-		       PIDWindow& PIDWin,
-		       USERWindow& USERWin,
-		       PRWindow& PRWin,
-		       NIWindow& NIWin,
-		       VIRTWindow& VIRTWin,
-		       RESWindow& RESWin,
-		       SHRWindow& SHRWin,
-		       SWindow& SWin,
-		       PercentCPUWindow& PercentCPUWin,
-		       PercentMEMWindow& PercentMEMWin,
-		       TIMEWindow& TIMEWin,
-		       COMMANDWindow& COMMANDWin,
-		       TasksTotalWindow& tasksTotalWin,
-		       TasksRunningWindow& tasksRunningWin,
-		       TasksStoppedWindow& tasksStoppedWin,
-		       TasksSleepingWindow& tasksSleepingWin,
-		       TasksZombieWindow& tasksZombieWin,
-		       CpuUsWindow& cpuUsWin,
-		       CpuSyWindow& cpuSyWin,
-		       CpuNiWindow& cpuNiWin,
-		       CpuIdWindow& cpuIdWin,
-		       CpuWaWindow& cpuWaWin,
-		       CpuHiWindow& cpuHiWin,
-		       CpuSiWindow& cpuSiWin,
-		       CpuStWindow& cpuStWin,
-		       MiBMemTotalWindow& miBMemTotalWin,
-		       MiBMemFreeWindow& miBMemFreeWin,
-		       MiBMemUsedWindow& miBMemUsedWin,
-		       MiBBuffCacheWindow& miBBuffCacheWin,
-		       MiBSwapTotalWindow& miBSwapTotalWin,
-		       MiBSwapFreeWindow& miBSwapFreeWin,
-		       MiBSwapUsedWindow& miBSwapUsedWin,
-		       MiBMemAvailWindow& miBMemAvailWin,
-		       UserInputWindow& userInputWin,
-		       HelpWindow& helpWin,
-		       CpuGraphWindow& cpuGraphWin)
+void initializeWindows(std::unordered_map<int, CursesWindow*>& wins)
 {
-  wins.insert(std::make_pair(_MAINWIN,&mainWin));
-  wins.insert(std::make_pair(_TOPWIN, &topWin));
-  wins.insert(std::make_pair(_TASKSWIN, &tasksWin));
-  wins.insert(std::make_pair(_CPUWIN, &cpuWin));
-  wins.insert(std::make_pair(_MEMWIN, &memWin));
-  wins.insert(std::make_pair(_PIDWIN, &PIDWin));
-  wins.insert(std::make_pair(_USERWIN, &USERWin));
-  wins.insert(std::make_pair(_PRWIN, &PRWin));
-  wins.insert(std::make_pair(_NIWIN, &NIWin));
-  wins.insert(std::make_pair(_VIRTWIN, &VIRTWin));
-  wins.insert(std::make_pair(_RESWIN, &RESWin));
-  wins.insert(std::make_pair(_SHRWIN, &SHRWin));
-  wins.insert(std::make_pair(_SWIN, &SWin));
-  wins.insert(std::make_pair(_PROCCPUWIN, &PercentCPUWin));
-  wins.insert(std::make_pair(_PROCMEMWIN, &PercentMEMWin));
-  wins.insert(std::make_pair(_PROCTIMEWIN, &TIMEWin));
-  wins.insert(std::make_pair(_COMMANDWIN, &COMMANDWin));
-  wins.insert(std::make_pair(_TASKSTOTAL, &tasksTotalWin));
-  wins.insert(std::make_pair(_TASKSRUNNING, &tasksRunningWin));
-  wins.insert(std::make_pair(_TASKSSLEEPING,&tasksSleepingWin));
-  wins.insert(std::make_pair(_TASKSSTOPPED, &tasksStoppedWin));
-  wins.insert(std::make_pair(_TASKSZOMBIE, &tasksZombieWin));
-  wins.insert(std::make_pair(_CPUUSWIN, &cpuUsWin));
-  wins.insert(std::make_pair(_CPUSYWIN, &cpuSyWin));
-  wins.insert(std::make_pair(_CPUNIWIN, &cpuNiWin));
-  wins.insert(std::make_pair(_CPUIDWIN, &cpuIdWin));
-  wins.insert(std::make_pair(_CPUWAWIN, &cpuWaWin));
-  wins.insert(std::make_pair(_CPUHIWIN, &cpuHiWin));
-  wins.insert(std::make_pair(_CPUSIWIN, &cpuSiWin));
-  wins.insert(std::make_pair(_CPUSTWIN, &cpuStWin));
-  wins.insert(std::make_pair(_MIBTOTALWIN, &miBMemTotalWin));
-  wins.insert(std::make_pair(_MIBFREEWIN, &miBMemFreeWin));
-  wins.insert(std::make_pair(_MIBUSEDWIN, &miBMemUsedWin));
-  wins.insert(std::make_pair(_MIBBUFFCACHEWIN, &miBBuffCacheWin));
-  wins.insert(std::make_pair(_MIBSWAPTOTALWIN, &miBSwapTotalWin));
-  wins.insert(std::make_pair(_MIBSWAPFREEWIN, &miBSwapFreeWin));
-  wins.insert(std::make_pair(_MIBSWAPUSEDWIN, &miBSwapUsedWin));
-  wins.insert(std::make_pair(_MIBMEMAVAILWIN, &miBMemAvailWin));
-  wins.insert(std::make_pair(_USERINPUTWIN, &userInputWin));
-  wins.insert(std::make_pair(_HELPWIN, &userInputWin));  
-  wins.insert(std::make_pair(_CPUGRAPHWIN, &userInputWin));
 } // end of "initializeWindows"
-
 
 
 

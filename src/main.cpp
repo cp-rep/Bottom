@@ -39,62 +39,17 @@
 #include "_progStateConsts.hpp"
 #include "byteConverter.hpp"
 #include "changeProgramStates.hpp"
-#include "COMMANDWindow.hpp"
-#include "cpuGraphWindow.hpp"
-#include "cpuHiWindow.hpp"
-#include "cpuIdWindow.hpp"
 #include "cpuInfo.hpp"
-#include "cpuNiWindow.hpp"
-#include "cpuSiWindow.hpp"
-#include "cpuStWindow.hpp"
-#include "cpuSyWindow.hpp"
-#include "cpuUsWindow.hpp"
-#include "cpuWaWindow.hpp"
-#include "cpuWindow.hpp"
 #include "cursesFunctions.hpp"
 #include "cursesWindow.hpp"
 #include "extractFileData.hpp"
-#include "helpWindow.hpp"
 #include "log.hpp"
-#include "mainWindow.hpp"
 #include "manageProcesses.hpp"
 #include "memInfo.hpp"
-#include "memWindow.hpp"
-#include "miBBuffCacheWindow.hpp"
-#include "miBMemAvailWindow.hpp"
-#include "miBMemFreeWindow.hpp"
-#include "miBMemTotalWindow.hpp"
-#include "miBMemUsedWindow.hpp"
-#include "miBSwapFreeWindow.hpp"
-#include "miBSwapTotalWindow.hpp"
-#include "miBSwapUsedWindow.hpp"
-#include "NIWindow.hpp"
-#include "percentCPUWindow.hpp"
-#include "percentMEMWindow.hpp"
-#include "PIDWindow.hpp"
 #include "processInfo.hpp"
-#include "PRWindow.hpp"
-#include "RESWindow.hpp"
 #include "secondsToTime.hpp"
-#include "SHRWindow.hpp"
 #include "sortProcessLists.hpp"
-#include "SWindow.hpp"
 #include "taskInfo.hpp"
-#include "tasksRunningWindow.hpp"
-#include "tasksSleepingWindow.hpp"
-#include "tasksStoppedWindow.hpp"
-#include "tasksTotalWindow.hpp"
-#include "tasksZombieWindow.hpp"
-#include "tasksWindow.hpp"
-#include "TIMEWindow.hpp"
-#include "topLoadWindow.hpp"
-#include "topTimeWindow.hpp"
-#include "topUpWindow.hpp"
-#include "topUsersWindow.hpp"
-#include "topWindow.hpp"
-#include "userInputWindow.hpp"
-#include "USERWindow.hpp"
-#include "VIRTWindow.hpp"
 
 // debug constants
 #define _CURSES 1
@@ -167,51 +122,12 @@ int main()
 
   // window related vars
   std::unordered_map<int, CursesWindow*> allWins;
-  MainWindow mainWin;
-  TopWindow topWin;
-  TasksWindow tasksWin;
-  CpuWindow cpuWin;
-  MemWindow memWin;
-  PIDWindow PIDWin;
-  USERWindow USERWin;
-  PRWindow PRWin;
-  NIWindow NIWin;
-  VIRTWindow VIRTWin;
-  RESWindow RESWin;
-  SHRWindow SHRWin;
-  SWindow SWin;
-  PercentCPUWindow PercentCPUWin;
-  PercentMEMWindow PercentMEMWin;
-  TIMEWindow TIMEWin;
-  COMMANDWindow COMMANDWin;
-  TopTimeWindow topTimeWin;
-  TopUpWindow topUpWin;
-  TopUsersWindow topUserWin;
-  TopLoadWindow topLoadWin;
-  TasksTotalWindow tasksTotalWin;
-  TasksRunningWindow tasksRunningWin;
-  TasksStoppedWindow tasksStoppedWin;
-  TasksSleepingWindow tasksSleepingWin;
-  TasksZombieWindow tasksZombieWin;
-  CpuUsWindow cpuUsWin;
-  CpuSyWindow cpuSyWin;
-  CpuNiWindow cpuNiWin;
-  CpuIdWindow cpuIdWin;
-  CpuWaWindow cpuWaWin;
-  CpuHiWindow cpuHiWin;
-  CpuSiWindow cpuSiWin;
-  CpuStWindow cpuStWin;
-  MiBMemTotalWindow miBMemTotalWin;
-  MiBMemFreeWindow  miBMemFreeWin;
-  MiBMemUsedWindow miBMemUsedWin;
-  MiBBuffCacheWindow miBBuffCacheWin;
-  MiBSwapTotalWindow miBSwapTotalWin;
-  MiBSwapFreeWindow miBSwapFreeWin;
-  MiBSwapUsedWindow miBSwapUsedWin;
-  MiBMemAvailWindow miBMemAvailWin;
-  UserInputWindow userInputWin;
-  HelpWindow helpWin;  
-  CpuGraphWindow cpuGraphWin;
+
+  for(int i = _MAINWIN; i < _CPUGRAPHWIN; i++)
+    {
+      CursesWindow newWindow;
+      allWins.insert(std::make_pair(i, &newWindow));
+    }
   
   
   // state related vars
@@ -229,51 +145,7 @@ int main()
   // ## initialize and setup curses ##
   initializeCurses();
 #endif
-  initializeWindows(allWins,
-		    mainWin,
-		    topWin,
-		    tasksWin,
-		    cpuWin,
-		    memWin,
-		    PIDWin,
-		    USERWin,
-		    PRWin,
-		    NIWin,
-		    VIRTWin,
-		    RESWin,
-		    SHRWin,
-		    SWin,
-		    PercentCPUWin,
-		    PercentMEMWin,
-		    TIMEWin,
-		    COMMANDWin,
-		    tasksTotalWin,
-		    tasksRunningWin,
-		    tasksStoppedWin,
-		    tasksSleepingWin,
-		    tasksZombieWin,
-		    cpuUsWin,
-		    cpuSyWin,
-		    cpuNiWin,
-		    cpuIdWin,
-		    cpuWaWin,
-		    cpuHiWin,
-		    cpuSiWin,
-		    cpuStWin,
-		    miBMemTotalWin,
-		    miBMemFreeWin,
-		    miBMemUsedWin,
-		    miBBuffCacheWin,
-		    miBSwapTotalWin,
-		    miBSwapFreeWin,
-		    miBSwapUsedWin,
-		    miBMemAvailWin,
-		    userInputWin,
-		    helpWin,
-		    cpuGraphWin);
-  
   defineWindows(allWins);
-  
   initializeProgramStates(progStates);
   
   // loop variables
@@ -286,8 +158,9 @@ int main()
   std::string timeString;
 
   colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
-  
+
   do{
+    /*
     time(&rawtime);
     timeinfo = localtime(&rawtime);
     pidsOld = pids;
@@ -497,7 +370,7 @@ int main()
       {
 	break;
       }
-    
+  */    
   } while(true);
 
   // cleanup
