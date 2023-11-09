@@ -130,6 +130,7 @@ int main()
   bool quit = false;
   int shiftY = 1;
   int shiftX = _PIDWIN;
+  bool graph = false;
   std::unordered_map<char, int> progStates;
 
 #if _CURSES    
@@ -309,7 +310,8 @@ int main()
 		       outPids.at(0),
 		       shiftY,
 		       shiftX,
-		       outPids.size() - 2);
+		       outPids.size() - 2,
+		       graph);
 
     // ## print process windows ##
     if(highlight == true)
@@ -321,6 +323,10 @@ int main()
       {
 	wattroff(allWins.at(sortState)->getWindow(),
 		 A_BOLD);
+      }
+    if(graph == true)
+      {
+	box(allWins.at(_CPUGRAPHWIN)->getWindow(), 'a', 'a');
       }
     
     updateWindowDimensions(allWins);
