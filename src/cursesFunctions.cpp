@@ -346,6 +346,7 @@ void defineWindows(std::unordered_map<int, CursesWindow*>& wins)
 				      startY,
 				      startX);
   // define COMMAND window
+  std::string commandLine = "COMMAND";
   numCols = 48;
   startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
   startX = wins.at(_PIDWIN)->getNumCols() +    
@@ -359,11 +360,15 @@ void defineWindows(std::unordered_map<int, CursesWindow*>& wins)
     wins.at(_PROCCPUWIN)->getNumCols() +    
     wins.at(_PROCMEMWIN)->getNumCols() +
     wins.at(_PROCTIMEWIN)->getNumCols() + 11;
+  for(int i = commandLine.length(); i < numCols; i++)
+    {
+      commandLine.push_back(' ');
+    }
   wins.at(_COMMANDWIN)->defineWindow(newwin(numLines,
 					    numCols,
 					    startY,
 					    startX), 
-				     "COMMAND",
+				     commandLine,
 				     numLines,
 				     numCols,
 				     startY,
