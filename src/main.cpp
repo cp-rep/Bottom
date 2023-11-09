@@ -271,6 +271,9 @@ int main()
 		    userInputWin,
 		    helpWin,
 		    cpuGraphWin);
+  
+  defineWindows(allWins);
+  
   initializeProgramStates(progStates);
   
   // loop variables
@@ -391,7 +394,7 @@ int main()
 
     // ## get user input ##
     std::vector<int> outPids;
-    int userInput = -1;
+    int userInput = 0;
 
     userInput = getch();
 
@@ -444,7 +447,7 @@ int main()
 		       shiftY,
 		       shiftX,
 		       outPids.size() - 2);
-    
+
     // ## print process windows ##
     if(highlight == true)
       {
