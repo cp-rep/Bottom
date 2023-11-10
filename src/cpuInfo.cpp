@@ -424,33 +424,39 @@ CPUUsage calcCPUUsage(const CPUInfo& cpuInfoStart,
   idle = endIdle - startIdle;
 
   usage.us = _MAXPERCENT * ((double) cpuInfoEnd.getUs() -
-		      (double)cpuInfoStart.getUs()) / total;
+			    (double)cpuInfoStart.getUs()) / total;
   
   usage.ni = _MAXPERCENT * ((double)cpuInfoEnd.getNi() -
-		      (double)cpuInfoStart.getNi()) / total;
+			    (double)cpuInfoStart.getNi()) / total;
   
   usage.sy = _MAXPERCENT * ((double)cpuInfoEnd.getSy() -
-		      (double)cpuInfoStart.getSy()) / total;
+			    (double)cpuInfoStart.getSy()) / total;
   
   usage.id = _MAXPERCENT * idle / total;
   
   usage.wa = _MAXPERCENT * ((double)cpuInfoEnd.getWa() -
-		      (double)cpuInfoStart.getWa()) / total;
+			    (double)cpuInfoStart.getWa()) / total;
   
   usage.irq = _MAXPERCENT * ((double)cpuInfoEnd.getIrq() -
-		       (double)cpuInfoStart.getIrq()) / total;
+			     (double)cpuInfoStart.getIrq()) / total;
   
   usage.sirq = _MAXPERCENT * ((double)cpuInfoEnd.getSirq() -
-			(double)cpuInfoStart.getSirq()) / total;
+			      (double)cpuInfoStart.getSirq()) / total;
   
   usage.st = _MAXPERCENT * ((double)cpuInfoEnd.getSt() -
-		    (double)cpuInfoStart.getSt()) / total;
+			    (double)cpuInfoStart.getSt()) / total;
   
   usage.gu = _MAXPERCENT * ((double)cpuInfoEnd.getGu() -
-		    (double)cpuInfoStart.getGu()) / total;
+			    (double)cpuInfoStart.getGu()) / total;
   
   usage.gun = _MAXPERCENT * ((double)cpuInfoEnd.getGun() -
-		     (double)cpuInfoStart.getGun()) / total;
+			     (double)cpuInfoStart.getGun()) / total;
+
+  usage.hi = _MAXPERCENT * ((double)cpuInfoEnd.getIrq() -
+			    (double)cpuInfoStart.getIrq()) / total;
+  
+  usage.si = _MAXPERCENT * ((double)cpuInfoEnd.getSirq() -
+			    (double)cpuInfoStart.getSirq()) / total;  
   
   usage.utilization = _MAXPERCENT * (total - idle) / total;
 
