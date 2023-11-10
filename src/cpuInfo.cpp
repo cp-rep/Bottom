@@ -1,13 +1,13 @@
 /*
-  File: cpuInfo.cpp
+  File:
+   cpuInfo.cpp
   
   Description:
-   The CPUInfo class function implementations from the
-   cpuInfo.hpp header file.
+   The CPUInfo class function implementations from the cpuInfo.hpp header file.
  */
 #include "cpuInfo.hpp"
 
-
+#define _MAXPERCENT 100.0
 
 /*
   Function:
@@ -19,22 +19,17 @@
 
   Output:
  */
-CPUInfo::CPUInfo(const double& ticks,
-		 const double& jiffs,
-		 const double& us,
-		 const double& ni,
-		 const double& sy,
-		 const double& id,
-		 const double& wa,
-		 const double& irq,
-		 const double& sirq,
-		 const double& hi,
-		 const double& st,
-		 const double& gu,
-		 const double& gun)
+CPUInfo::CPUInfo(const unsigned int& us,
+		 const unsigned int& ni,
+		 const unsigned int& sy,
+		 const unsigned int& id,
+		 const unsigned int& wa,
+		 const unsigned int& irq,
+		 const unsigned int& sirq,
+		 const unsigned int& st,
+		 const unsigned int& gu,
+		 const unsigned int& gun)
 {
-  setTicks(ticks);
-  setJiffs(jiffs);
   setUs(us);
   setNi(ni);
   setSy(sy);
@@ -42,190 +37,11 @@ CPUInfo::CPUInfo(const double& ticks,
   setWa(wa);
   setIrq(irq);
   setSirq(sirq);
-  setHi(hi);
   setSt(st);
   setGu(gu);
   setGun(gun);
 } // end of "CPUInfo constructor"
 
-
-
-/*
-  Function:
-   calculateJiffs
-
-  Description:
-
-  Input:
-
-  Output:
- */
-const double CPUInfo::calculateJiffs() const
-{
-  return
-    getUs() +
-    getNi() +
-    getSy() +
-    getId() +
-    getWa() +
-    getIrq() +
-    getSirq() +
-    getGu() +
-    getGun();
-} // end of "calculateJiffs"
-
-
-
-/*
-  Function:
-   getAvgUs
-
-  Description:
-
-  Input:
-
-  Output:
- */
-const double CPUInfo::getAvgUs() const
-{
-  return (getTicks() * getUs())/getJiffs();
-} // end of "getAvgUs"
-
-
-
-/*
-  Function:
-   getAvgHi
-
-  Description:
-
-  Input:
-
-  Output:
- */
-const double CPUInfo::getAvgHi() const
-{
-  return (100 * getHi())/getJiffs();
-} // end of "getAvgHi"
-
-
-
-/*
-  Function:
-   getAvgSy
-
-  Description:
-
-  Input:
-
-  Output:
- */
-const double CPUInfo::getAvgSy() const
-{
-  return (getTicks() * getSy())/getJiffs();  
-} // end of "getAvgSy"
-
-
-
-/*
-  Function:
-   getAvgNi
-
-  Description:
-
-  Input:
-
-  Output:
- */
-const double CPUInfo::getAvgNi() const
-{
-  return (getTicks() * getNi())/getJiffs();
-} // end of "getAvgNi"
-
-
-
-/*
-  Function:
-   getAvgId
-
-  Description:
-
-  Input:
-
-  Output:
- */
-const double CPUInfo::getAvgId() const
-{
-  return (getTicks() * getId())/getJiffs();
-} // end of "getAvgId"
-
-
-
-/*
-  Function:
-   getAvgWa
-
-  Description:
-
-  Input:
-
-  Output:
- */
-const double CPUInfo::getAvgWa() const
-{
-  return (getTicks() * getWa())/getJiffs();
-} // end of "getAvgWa"
-
-
-
-/*
-  Function:
-   getAvgSt
-
-  Description:
-
-  Input:
-
-  Output:
- */
-const double CPUInfo::getAvgSt() const
-{
-  return (getTicks() * getSt())/getJiffs();
-} // end of "getAvgSt"
-
-
-
-/*
-  Function:
-   setTicks
-
-  Description:
-
-  Input:
-
-  Output:
- */
-void CPUInfo::setTicks(const double& ticks)
-{
-  m_ticks = ticks;
-} // end of "setTicks"
-
-
-
-/*
-  Function:
-   setJiffs
-
-  Description:
-
-  Input:
-
-  Output:
- */
-void CPUInfo::setJiffs(const double& jiffs)
-{
-  m_jiffs = jiffs;
-} // end of "setJiffs"
 
 
 
@@ -239,7 +55,7 @@ void CPUInfo::setJiffs(const double& jiffs)
 
   Output:
  */
-void CPUInfo::setUs(const double& us)
+void CPUInfo::setUs(const unsigned int& us)
 {
   m_us = us;
 } // end of "setUs"
@@ -256,7 +72,7 @@ void CPUInfo::setUs(const double& us)
 
   Output:
  */
-void CPUInfo::setNi(const double& ni)
+void CPUInfo::setNi(const unsigned int& ni)
 {
   m_ni = ni;
 } // end of "setNi"
@@ -273,7 +89,7 @@ void CPUInfo::setNi(const double& ni)
 
   Output:
  */
-void CPUInfo::setSy(const double& sy)
+void CPUInfo::setSy(const unsigned int& sy)
 {
   m_sy = sy;
 } // end of "setSy"
@@ -290,7 +106,7 @@ void CPUInfo::setSy(const double& sy)
 
   Output:
  */
-void CPUInfo::setId(const double& id)
+void CPUInfo::setId(const unsigned int& id)
 {
   m_id = id;
 } // end of "setId"
@@ -307,7 +123,7 @@ void CPUInfo::setId(const double& id)
 
   Output:
  */
-void CPUInfo::setWa(const double& wa)
+void CPUInfo::setWa(const unsigned int& wa)
 {
   m_wa = wa;
 } // end of "setWa"
@@ -324,7 +140,7 @@ void CPUInfo::setWa(const double& wa)
 
   Output:
  */
-void CPUInfo::setIrq(const double& irq)
+void CPUInfo::setIrq(const unsigned int& irq)
 {
   m_irq = irq;
 } // end of "setIrq"
@@ -341,27 +157,10 @@ void CPUInfo::setIrq(const double& irq)
 
   Output:
  */
-void CPUInfo::setSirq(const double& sirq)
+void CPUInfo::setSirq(const unsigned int& sirq)
 {
   m_sirq = sirq;
 } // end of "setSirq"
-
-
-
-/*
-  Function:
-   setHi
-
-  Description:
-
-  Input:
-
-  Output:
- */
-void CPUInfo::setHi(const double& hi)
-{
-  m_hi = hi;
-} // end of "setHi"
 
 
 
@@ -375,7 +174,7 @@ void CPUInfo::setHi(const double& hi)
 
   Output:
  */
-void CPUInfo::setSt(const double& st)
+void CPUInfo::setSt(const unsigned int& st)
 {
   m_st = st;
 } // end of "setSt"
@@ -392,7 +191,7 @@ void CPUInfo::setSt(const double& st)
 
   Output:
 */
-void CPUInfo::setGu(const double& gu)
+void CPUInfo::setGu(const unsigned int& gu)
 {
   m_gu = gu;
 } // end of "setGu"
@@ -409,44 +208,10 @@ void CPUInfo::setGu(const double& gu)
 
   Output:
 */
-void CPUInfo::setGun(const double& gun)
+void CPUInfo::setGun(const unsigned int& gun)
 {
   m_gun = gun;
 } // end of "setGun"
-
-
-
-/*
-  Function:
-   getTicks
-
-  Description:
-
-  Input:
-
-  Output:
-*/
-const double& CPUInfo::getTicks() const
-{
-  return m_ticks;
-} // end of "getTicks"
-
-
-
-/*
-  Function:
-   getJiffs
-
-  Description:
-
-  Input:
-
-  Output:
-*/
-const double& CPUInfo::getJiffs() const
-{
-  return m_jiffs;
-} // end of "getJiffs"
 
 
 
@@ -460,7 +225,7 @@ const double& CPUInfo::getJiffs() const
 
   Output:
 */
-const double& CPUInfo::getUs() const
+const unsigned int& CPUInfo::getUs() const
 {
   return m_us;
 } // end of "getUs"
@@ -477,7 +242,7 @@ const double& CPUInfo::getUs() const
 
   Output:
 */
-const double& CPUInfo::getNi() const
+const unsigned int& CPUInfo::getNi() const
 {
   return m_ni;
 } // end of "getNi"
@@ -494,7 +259,7 @@ const double& CPUInfo::getNi() const
 
   Output:
 */
-const double& CPUInfo::getSy() const
+const unsigned int& CPUInfo::getSy() const
 {
   return m_sy;
 } // end of "getSy"
@@ -511,7 +276,7 @@ const double& CPUInfo::getSy() const
 
   Output:
 */
-const double& CPUInfo::getId() const
+const unsigned int& CPUInfo::getId() const
 {
   return m_id;
 } // end of "getId"
@@ -528,7 +293,7 @@ const double& CPUInfo::getId() const
 
   Output:
 */
-const double& CPUInfo::getWa() const
+const unsigned int& CPUInfo::getWa() const
 {
   return m_wa;
 } // end of "getWa"
@@ -545,7 +310,7 @@ const double& CPUInfo::getWa() const
 
   Output:
 */
-const double& CPUInfo::getIrq() const
+const unsigned int& CPUInfo::getIrq() const
 {
   return m_irq;
 } // end of "getIrq"
@@ -562,27 +327,10 @@ const double& CPUInfo::getIrq() const
 
   Output:
 */
-const double& CPUInfo::getSirq() const
+const unsigned int& CPUInfo::getSirq() const
 {
   return m_sirq;
 } // end of "getSirq"
-
-
-
-/*
-  Function:
-   getHi
-
-  Description:
-
-  Input:
-
-  Output:
-*/
-const double& CPUInfo::getHi() const
-{
-  return m_hi;
-} // end of "getHi"
 
 
 
@@ -596,7 +344,7 @@ const double& CPUInfo::getHi() const
 
   Output:
 */
-const double& CPUInfo::getSt() const
+const unsigned int& CPUInfo::getSt() const
 {
   return m_st;
 } // end of "getSt"
@@ -613,7 +361,7 @@ const double& CPUInfo::getSt() const
 
   Output:
 */
-const double& CPUInfo::getGu() const
+const unsigned int& CPUInfo::getGu() const
 {
   return m_gu;
 } // end of "getGu"
@@ -630,7 +378,81 @@ const double& CPUInfo::getGu() const
 
   Output:
 */
-const double& CPUInfo::getGun() const
+const unsigned int& CPUInfo::getGun() const
 {
   return m_gun;
 } // end of "getGun"
+
+
+
+/*
+  Function:
+   calcCPUUsage
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+CPUUsage calcCPUUsage(const CPUInfo& cpuInfoStart,
+		      const CPUInfo& cpuInfoEnd)
+{
+  CPUUsage usage;
+  unsigned long startIdle;
+  unsigned long endIdle;
+  unsigned long startNonIdle;
+  unsigned long endNonIdle;
+  unsigned long startTime;
+  unsigned long endTime;
+  unsigned long total;
+  unsigned long idle;
+  
+  startIdle = cpuInfoStart.getId() + cpuInfoStart.getWa();
+  endIdle = cpuInfoEnd.getId() + cpuInfoEnd.getWa();
+
+  startNonIdle = cpuInfoStart.getUs() + cpuInfoStart.getNi() +
+    cpuInfoStart.getSy() + cpuInfoStart.getIrq() + cpuInfoStart.getSirq() +
+    cpuInfoStart.getSt();
+  endNonIdle = cpuInfoEnd.getUs() + cpuInfoEnd.getNi() + cpuInfoEnd.getSy() +
+    cpuInfoEnd.getIrq() + cpuInfoEnd.getSirq() + cpuInfoEnd.getSt();
+
+  startTime = startIdle + startNonIdle;
+  endTime = endIdle + endNonIdle;
+
+  total = endTime - startTime;
+  idle = endIdle - startIdle;
+
+  usage.us = _MAXPERCENT * ((double) cpuInfoEnd.getUs() -
+		      (double)cpuInfoStart.getUs()) / total;
+  
+  usage.ni = _MAXPERCENT * ((double)cpuInfoEnd.getNi() -
+		      (double)cpuInfoStart.getNi()) / total;
+  
+  usage.sy = _MAXPERCENT * ((double)cpuInfoEnd.getSy() -
+		      (double)cpuInfoStart.getSy()) / total;
+  
+  usage.id = _MAXPERCENT * idle / total;
+  
+  usage.wa = _MAXPERCENT * ((double)cpuInfoEnd.getWa() -
+		      (double)cpuInfoStart.getWa()) / total;
+  
+  usage.irq = _MAXPERCENT * ((double)cpuInfoEnd.getIrq() -
+		       (double)cpuInfoStart.getIrq()) / total;
+  
+  usage.sirq = _MAXPERCENT * ((double)cpuInfoEnd.getSirq() -
+			(double)cpuInfoStart.getSirq()) / total;
+  
+  usage.st = _MAXPERCENT * ((double)cpuInfoEnd.getSt() -
+		    (double)cpuInfoStart.getSt()) / total;
+  
+  usage.gu = _MAXPERCENT * ((double)cpuInfoEnd.getGu() -
+		    (double)cpuInfoStart.getGu()) / total;
+  
+  usage.gun = _MAXPERCENT * ((double)cpuInfoEnd.getGun() -
+		     (double)cpuInfoStart.getGun()) / total;
+  
+  usage.utilization = _MAXPERCENT * (total - idle) / total;
+
+  return usage;
+} // end of "calcCPUUsage"
