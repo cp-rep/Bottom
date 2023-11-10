@@ -135,7 +135,7 @@ int main()
 
 #if _CURSES    
   // ## initialize and setup curses ##
-  initializeCurses();
+  //  initializeCurses();
 #endif
   initializeStartingWindows(allWins);
   defineStartingWindows(allWins);
@@ -149,10 +149,37 @@ int main()
   std::string filePath;
   std::string colorLine;
   std::string timeString;
-
-  //  colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
+  int interval = 1000000;
+  bool newInterval = true;
+  CPUInfo cpuInfoStart;
+  CPUInfo cpuInfoEnd;
+  CPUUsage cpuUsage;
+  
+  auto startTime = std::chrono::high_resolution_clock::now();
 
   do{
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>
+      (currentTime - startTime).count();
+    
+    // get initial CPU state
+    if(newInterval == true)
+      {
+	extractProcStat(cpuInfoStart,
+			_PROC_STAT);
+	newInterval = false;
+      }
+
+    if(elapsedTime >= interval)
+      {
+	extractProcStat(cpuInfoEnd,
+			_PROC_STAT);
+	cpuUsage = calcCPUUsage(cpuInfoStart, cpuInfoEnd);
+	startTime = currentTime;
+	newInterval = true;
+      }
+
+    /*
     time(&rawtime);
     timeinfo = localtime(&rawtime);
     pidsOld = pids;
@@ -275,14 +302,14 @@ int main()
 	else 
 	  {
 	    std::string outString = " Unknown command - try 'h' for help ";
-#if _CURSES	    
+#if _CURSES
 	    printBadInputString(allWins,
 				_MAINWIN,
 				_YOFFSET - 1,
 				0,
 				outString);
 	    refreshAllWins(allWins);
-	    doupdate();	  
+	    doupdate();
 	    sleep(1.75);
 #endif
 	  }
@@ -290,8 +317,7 @@ int main()
     
     flushinp();
 
-#if _CURSES    
-
+#if _CURSES
     // ## update states ##
     // update process sort state (changed by '<' and '>' user input)
     updateSortState(allProcessInfo,
@@ -368,7 +394,7 @@ int main()
       {
 	break;
       }
-
+*/
   } while(true);
 
   // cleanup
