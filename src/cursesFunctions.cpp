@@ -1187,6 +1187,7 @@ void printCpusData(const std::unordered_map<int, CursesWindow*>& wins,
 {
   std::string outString;
 
+  /*
   outString = doubleToStr(cpuInfo.getAvgUs(), 1);
   mvwaddstr(wins.at(_CPUUSWIN)->getWindow(),
 	    0,
@@ -1236,6 +1237,7 @@ void printCpusData(const std::unordered_map<int, CursesWindow*>& wins,
 	    0,
 	    wins.at(_CPUSTWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
+  */
 } // end of "printCpusData"
 
 
