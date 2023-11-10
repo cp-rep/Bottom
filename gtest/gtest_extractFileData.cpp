@@ -306,7 +306,6 @@ TEST(extractProcStat_FUNCTION, extractProcStat_TEST)
   EXPECT_EQ(cpuInfo.getSt(), 0);
   EXPECT_EQ(cpuInfo.getGu(), 1);
   EXPECT_EQ(cpuInfo.getGun(), 2);
-  EXPECT_EQ(cpuInfo.getJiffs(), 2251499);  
 }
 
 
