@@ -1,84 +1,82 @@
 /*
-  File: cpuInfo.hpp
+  File:
+   cpuInfo.hpp
   
   Description:
-  The CPUInfo class is used to store and calcualte CPU related values read from
-  "/proc/" directory files.
+   The CPUInfo class is used to store and calcualte CPU related values read from
+   "/proc/stat" directory file.
  */
 #ifndef CPUINFO_HPP
 #define CPUINFO_HPP
 
+struct CPUUsage{
+  double us;
+  double ni;
+  double sy;
+  double id;
+  double wa;
+  double irq;
+  double sirq;
+  double st;
+  double gu;
+  double gun;
+  double hi;
+  double si;
+  double utilization;
+};
+
 class CPUInfo{
 public:
-  CPUInfo(const double& ticks = 0,
-	  const double& jiffs = 0,
-	  const double& us = 0,
-	  const double& ni = 0,
-	  const double& sy = 0,
-	  const double& id = 0,
-	  const double& wa = 0,
-	  const double& irq = 0,
-	  const double& sirq = 0,
-	  const double& hi = 0,
-	  const double& st = 0,
-	  const double& gu = 0,
-	  const double& gun = 0);
+  CPUInfo(const unsigned int& us = 0,
+	  const unsigned int& ni = 0,
+	  const unsigned int& sy = 0,
+	  const unsigned int& id = 0,
+	  const unsigned int& wa = 0,
+	  const unsigned int& irq = 0,
+	  const unsigned int& sirq = 0,
+	  const unsigned int& st = 0,
+	  const unsigned int& gu = 0,
+	  const unsigned int& gun = 0);
 
-  // member functions
-  const double calculateJiffs() const;
-  const double getAvgUs() const;
-  const double getAvgHi() const;
-  const double getAvgSy() const;
-  const double getAvgNi() const;
-  const double getAvgId() const;
-  const double getAvgWa() const;
-  const double getAvgSt() const;
-  //const double getAvgUs() { return (100 - getAvgId()); }
-  
   // setters
-  void setTicks(const double& ticks);
-  void setJiffs(const double& jiffs);
-  void setUs(const double& us);
-  void setNi(const double& ni);
-  void setSy(const double& sy);
-  void setId(const double& id);
-  void setWa(const double& wa);
-  void setIrq(const double& irq);
-  void setSirq(const double& sirq);
-  void setHi(const double& hi);  
-  void setSt(const double& st);
-  void setGu(const double& gu);
-  void setGun(const double& gun);
+  void setUs(const unsigned int& us);
+  void setNi(const unsigned int& ni);
+  void setSy(const unsigned int& sy);
+  void setId(const unsigned int& id);
+  void setWa(const unsigned int& wa);
+  void setIrq(const unsigned int& irq);
+  void setSirq(const unsigned int& sirq);
+  void setSt(const unsigned int& st);
+  void setGu(const unsigned int& gu);
+  void setGun(const unsigned int& gun);
   
   // getters
-  const double& getTicks() const;
-  const double& getJiffs() const;
-  const double& getUs() const;
-  const double& getNi() const;
-  const double& getSy() const;
-  const double& getId() const;
-  const double& getWa() const;
-  const double& getIrq() const;
-  const double& getSirq() const;
-  const double& getHi() const;
-  const double& getSt() const;
-  const double& getGu() const;
-  const double& getGun() const;
+  const unsigned int& getUs() const;
+  const unsigned int& getNi() const;
+  const unsigned int& getSy() const;
+  const unsigned int& getId() const;
+  const unsigned int& getWa() const;
+  const unsigned int& getIrq() const;
+  const unsigned int& getSirq() const;
+  const unsigned int& getHi() const;
+  const unsigned int& getSt() const;
+  const unsigned int& getGu() const;
+  const unsigned int& getGun() const;
 
 private:
-  double m_ticks;
-  double m_jiffs;
-  double m_us;
-  double m_ni;
-  double m_sy;
-  double m_id;
-  double m_wa;
-  double m_irq;
-  double m_sirq;
-  double m_hi;
-  double m_st;
-  double m_gu;
-  double m_gun;
+  unsigned int m_us;
+  unsigned int m_ni;
+  unsigned int m_sy;
+  unsigned int m_id;
+  unsigned int m_wa;
+  unsigned int m_irq;
+  unsigned int m_sirq;
+  unsigned int m_st;
+  unsigned int m_gu;
+  unsigned int m_gun;
 };
+
+CPUUsage calcCPUUsage(const CPUInfo& cpuInfoStart,
+		      const CPUInfo& cpuInfoEnd);
 
 #endif
