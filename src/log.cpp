@@ -1,33 +1,33 @@
-// ============================================================================
-// File: log.cpp
-//
-// Description:
-//   The log.hpp class implementation.
-// ============================================================================
+/*
+ File:
+  log.cpp
+
+ Description:
+  The log.hpp class implementation.
+*/
 #include "log.hpp"
 #include <iostream>
 
 
 
-// ==== Log::Constructor ======================================================
-// Description:
-//   Constructs the Log object.  The incoming parameters are
-//   concatenated into a string that can be used as a pathname to a file.
-//
-// Input:
-//   pName - The path name to the directory a file is to be created in.
-//   fName - The name of the file to create.
-//   fNum  - The number of the file being created. (i.e. 0,..,N)
-//   fType - The file extension. (e.g. ".txt")
-//
-// Output:
-//   m_pName - The path name to the directory a file is to be created in.
-//   m_fName - The name of the file to create.
-//   m_fNum  - The number of the file being created. (i.e. 0,..,N)
-//   m_fType - The file extension. (e.g. ".txt")
-//   m_fullPath - A string containing the full path to the file to be created
-//                including the file Name.
-// ============================================================================
+/*
+  Function:
+   Constructor
+  
+ Description:
+   Constructs the Log object.  The incoming parameters are
+   concatenated into a string that can be used as a pathname to a file.
+
+ Input:
+   pName - The path name to the directory a file is to be created in.
+   fName - The name of the file to create.
+   fNum  - The number of the file being created. (i.e. 0,..,N)
+   fType - The file extension. (e.g. ".txt")
+
+ Output:
+  NONE
+
+*/
 Log::Log(const std::string& pName,
 	 const std::string& fName,
 	 const unsigned int fNum,
@@ -42,7 +42,7 @@ Log::Log(const std::string& pName,
   m_fileType = fType;
   tempNum += std::to_string(fNum);
   setFullPath(pName, fName, tempNum, fType);
-} // end of "Log::Constructor"
+} // end of "Constructor"
 
 
 
