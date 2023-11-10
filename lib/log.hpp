@@ -1,19 +1,12 @@
-// ============================================================================
-// File: log.hpp
-//
-// Description:
-//   A simple class that constructs an object with the goal of creating a file
-//   name. The file name is constructed with a number appended to it. The class
-//   provides a member function that can increment that file number.
-//
-//   This class is good to use for creating a numbered file system such as a
-//   simple logging system.
-//
-// Notes:
-//   - May be worth turning this into an extensible class that uses a
-//     std::vector<std::string> structure to store all file name components
-//     in the future.  It's use cases could expand.
-// ============================================================================
+/*
+ File:
+  log.hpp
+
+ Description:
+  This class is good to use for creating a numbered file system such as a
+  simple logging system.
+
+*/
 #ifndef LOG_HPP
 #define LOG_HPP
 #include <string>
