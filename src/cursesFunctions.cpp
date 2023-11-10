@@ -1183,61 +1183,59 @@ void printTasksData(const std::unordered_map<int, CursesWindow*>& wins,
    NONE
 */
 void printCpusData(const std::unordered_map<int, CursesWindow*>& wins,
-		   const CPUInfo& cpuInfo)
+		   const CPUUsage& cpuUsage)
 {
   std::string outString;
 
-  /*
-  outString = doubleToStr(cpuInfo.getAvgUs(), 1);
+  
+  outString = doubleToStr(cpuUsage.us, 1);
   mvwaddstr(wins.at(_CPUUSWIN)->getWindow(),
 	    0,
 	    wins.at(_CPUUSWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
   
-  outString = doubleToStr(cpuInfo.getAvgSy(), 1);
+  outString = doubleToStr(cpuUsage.sy, 1);  
   mvwaddstr(wins.at(_CPUSYWIN)->getWindow(),
 	    0,
 	    wins.at(_CPUSYWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
 
-  outString = doubleToStr(cpuInfo.getAvgNi(), 1);
+  outString = doubleToStr(cpuUsage.ni, 1);
   mvwaddstr(wins.at(_CPUNIWIN)->getWindow(),
 	    0,
 	    wins.at(_CPUNIWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
 
-  outString = doubleToStr(cpuInfo.getAvgId(), 1);
+  outString = doubleToStr(cpuUsage.id, 1);
   mvwaddstr(wins.at(_CPUIDWIN)->getWindow(),
 	    0,
 	    wins.at(_CPUIDWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
 
-  outString = doubleToStr(cpuInfo.getAvgWa(), 1);
+  outString = doubleToStr(cpuUsage.wa, 1);
   mvwaddstr(wins.at(_CPUWAWIN)->getWindow(),
 	    0,
 	    wins.at(_CPUWAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
 
-  
-  outString = doubleToStr(cpuInfo.getAvgHi(), 1);
+  outString = doubleToStr(cpuUsage.hi, 1);
   mvwaddstr(wins.at(_CPUHIWIN)->getWindow(),
 	    0,
 	    wins.at(_CPUHIWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
 
-  //outString = std::to_string(cpuInfo.getAvgSi());
-  outString = "0.0";
+
+  outString = doubleToStr(cpuUsage.si, 1);
   mvwaddstr(wins.at(_CPUSIWIN)->getWindow(),
 	    0,
 	    wins.at(_CPUSIWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
 
-  outString = doubleToStr(cpuInfo.getAvgSt(), 1);
+  outString = doubleToStr(cpuUsage.st, 1);
   mvwaddstr(wins.at(_CPUSTWIN)->getWindow(),
 	    0,
 	    wins.at(_CPUSTWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-  */
 } // end of "printCpusData"
 
 

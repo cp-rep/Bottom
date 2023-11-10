@@ -34,7 +34,7 @@ void attroffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
 void printTasksData(const std::unordered_map<int, CursesWindow*>& wins,
 		    const TaskInfo& taskInfo);
 void printCpusData(const std::unordered_map<int, CursesWindow*>& wins,
-		   const CPUInfo& cpuInfo);
+		   const CPUUsage& cpuUsage);
 void printMemMiBData(const std::unordered_map<int, CursesWindow*>& wins,
 		     const MemInfo& memInfo);
 void boldOnAllTopWins(std::unordered_map<int, CursesWindow*>& wins,
