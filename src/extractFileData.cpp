@@ -372,8 +372,6 @@ void extractProcStat(CPUInfo& cpuInfo,
   cpuInfo.setSt(stringToInt(parsedLine.at(8)));
   cpuInfo.setGu(stringToInt(parsedLine.at(9)));
   cpuInfo.setGun(stringToInt(parsedLine.at(10)));
-  cpuInfo.setTicks(ticks);
-  cpuInfo.setJiffs(cpuInfo.calculateJiffs());
 } // end of "extractProcStat"
 
 
