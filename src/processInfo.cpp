@@ -555,3 +555,16 @@ void ProcessInfo::setChanged(const bool& changed)
 {
   m_changed = changed;
 } // end of "setChanged"
+
+
+
+ProcCPUUsage calcProcCPUUsage(ProcessInfo& procStart, ProcessInfo& procEnd)
+{
+  ProcCPUUsage procCPUUsage;
+
+
+
+
+
+  return procCPUUsage;
+}

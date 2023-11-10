@@ -78,4 +78,14 @@ private:
   std::string m_commandUpper;
 };
 
+
+struct ProcCPUUsage{
+  double utime;
+  double cutime;
+  double pstart;
+  double percet;
+};
+
+ProcCPUUsage calcProcCPUUsage(ProcessInfo& procStart, ProcessInfo& procEnd);
+
 #endif
