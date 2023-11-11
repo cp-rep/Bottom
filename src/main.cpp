@@ -122,7 +122,8 @@ int main()
   std::vector<int> pids; // all currently allocated process PIDs
   std::vector<int> pidsOld; // previously found active PID
   std::vector<int> pidsDead; // PIDs that closed during loop
-  std::unordered_map<int, ProcessInfo*> allProcessInfo; // /proc/[pid]/ data
+  std::unordered_map<int, ProcessInfo*> procInfoStart; // /proc/[pid]/ data
+  std::unordered_map<int, ProcessInfo*> procInfoEnd;
   
   // window related vars
   std::unordered_map<int, CursesWindow*> allWins;
@@ -157,6 +158,7 @@ int main()
   int outerInterval = 1000000;
   int innerInterval = 1000000;
   bool newOuterInterval = true;
+  bool newInnerInterval = true;
 
   auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -204,7 +206,9 @@ int main()
     if(findDeadProcesses(pids, pidsOld, pidsDead))
       {
 	// free if any found
-	removeDeadProcesses(allProcessInfo, pidsDead);
+	removeDeadProcesses(procInfoStart, pidsDead);	
+	removeDeadProcesses(procInfoEnd, pidsDead);
+	
       }
 
     // extract data from /proc/uptime for very top window
@@ -237,53 +241,18 @@ int main()
     defineCpusLine(allTopLines);
     defineMemMiBLine(allTopLines);
     defineMemSwapLine(allTopLines);
+
     
     // update/add process data for still running and new found processes
-    for(int i = 0; i < pids.size(); i++)
-      {
-	// if new process was found, allocate it
-	if(allProcessInfo.count(pids.at(i)) == 0)
-	  {
-	    process = new ProcessInfo();
-	    allProcessInfo.insert(std::make_pair(pids.at(i), process));
-	  }
-	
-	// set pid of current process
-	allProcessInfo.at(pids.at(i))->setPID(pids.at(i));
+    extractProcessData(procInfoEnd,
+		       pids,
+		       memInfo,
+		       uptime,
+		       uptimeStrings);
 
-	// extract per process data (USER, PR, VIRT...)
-	// /proc/[pid]/status
-	filePath.clear();
-	filePath = _PROC + std::to_string(pids.at(i));
-	filePath.append(_STATUS);
-	extractProcPidStatus(allProcessInfo,
-			     pids.at(i),
-			     filePath);
-	
-	// /proc/uptime & /proc/[pid]/stat
-	filePath.clear();
-	filePath = _PROC + std::to_string(pids.at(i));
-	filePath.append(_STAT);
-	extractProcPidStat(allProcessInfo,
-			   memInfo,
-			   uptime,
-			   pids.at(i),
-			   uptimeStrings,
-			   filePath);
-
-	// extract COMMAND
-	// /proc/[pid]/comm
-	filePath.clear();
-	filePath = _PROC + std::to_string(pids.at(i));
-	filePath.append(_COMM);
-	extractProcPidComm(allProcessInfo,
-			   pids.at(i),
-			   filePath);
-      }
-    
     // count the extracted process states for task window
     // "Tasks: XXX total, X running..."
-    countProcessStates(allProcessInfo,
+    countProcessStates(procInfoEnd,
 		       taskInfo);
 
     // ## get user input ##
@@ -323,13 +292,13 @@ int main()
 #if _CURSES
     // ## update states ##
     // update process sort state (changed by '<' and '>' user input)
-    updateSortState(allProcessInfo,
+    updateSortState(procInfoEnd,
 		    pids,
 		    outPids,
 		    sortState);
     
     // program state
-    updateProgramState(allProcessInfo,
+    updateProgramState(procInfoEnd,
 		       allWins,
 		       progState,
 		       prevState,
@@ -374,7 +343,7 @@ int main()
     boldOffAllTopWins(allWins,
 		      A_BOLD);
     printProcs(allWins,
-	       allProcessInfo,
+	       procInfoEnd,
 	       outPids,
 	       shiftY,
 	       shiftX);
@@ -401,14 +370,15 @@ int main()
   } while(true);
 
   // cleanup
-  for(std::unordered_map<int, ProcessInfo*>::iterator it = allProcessInfo.begin();
-      it != allProcessInfo.end(); it++)
+  for(std::unordered_map<int, ProcessInfo*>::iterator it = procInfoEnd.begin();
+      it != procInfoEnd.end(); it++)
     {
       delete(it->second);
       it->second = nullptr;
     }
   
-  allProcessInfo.clear();
+  procInfoEnd.clear();
+  procInfoStart.clear();
 
 
 #if _LOG
