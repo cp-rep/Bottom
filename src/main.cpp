@@ -154,8 +154,8 @@ int main()
   std::string filePath;
   std::string colorLine;
   std::string timeString;
-  int interval = 1000000;
-  bool newInterval = true;
+  int outerInterval = 1000000;
+  bool newOuterInterval = true;
 
   auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -173,16 +173,16 @@ int main()
     auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>
       (currentTime - startTime).count();
 
-    if(newInterval == true)
+    if(newOuterInterval == true)
       {
 	// extract start data for CPU line
 	// "%Cpu(s): x.x us, x.x sy..."
 	extractProcStat(cpuInfoStart,
 			_PROC_STAT);
-	newInterval = false;
+	newOuterInterval = false;
       }
 
-    if(elapsedTime >= interval)
+    if(elapsedTime >= outerInterval)
       {
 	// extract end data for CPU line
 	extractProcStat(cpuInfoEnd,
@@ -193,7 +193,7 @@ int main()
 				cpuInfoEnd);
 	
 	startTime = currentTime;
-	newInterval = true;
+	newOuterInterval = true;
       }
     
     // get current active PIDS
