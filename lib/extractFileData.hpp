@@ -23,6 +23,11 @@
 #include "secondsToTime.hpp"
 
 
+void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+			const std::vector<int>& pids,
+			MemInfo& memInfo,
+			SecondsToTime& uptime,
+			std::vector<std::string>& uptimeStrings);
 void createFileCSV(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		   const std::string& filePath);
 bool makeDirectory(const std::string& dirPath);

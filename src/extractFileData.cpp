@@ -17,6 +17,71 @@
 
 /*
   Function:
+   extractProcessData
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+			const std::vector<int>& pids,
+			MemInfo& memInfo,
+			SecondsToTime& uptime,
+			std::vector<std::string>& uptimeStrings)
+{
+  std::string filePath;
+  ProcessInfo* process;  
+
+    // update/add process data for still running and new found processes
+    for(int i = 0; i < pids.size(); i++)
+      {
+	// if new process was found, allocate it
+	if(allProcessInfo.count(pids.at(i)) == 0)
+	  {
+	    process = new ProcessInfo();
+	    allProcessInfo.insert(std::make_pair(pids.at(i), process));
+	  }
+	
+	// set pid of current process
+	allProcessInfo.at(pids.at(i))->setPID(pids.at(i));
+
+	// extract per process data (USER, PR, VIRT...)
+	// /proc/[pid]/status
+	filePath.clear();
+	filePath = _PROC + std::to_string(pids.at(i));
+	filePath.append(_STATUS);
+	extractProcPidStatus(allProcessInfo,
+			     pids.at(i),
+			     filePath);
+	
+	// /proc/uptime & /proc/[pid]/stat
+	filePath.clear();
+	filePath = _PROC + std::to_string(pids.at(i));
+	filePath.append(_STAT);
+	extractProcPidStat(allProcessInfo,
+			   memInfo,
+			   uptime,
+			   pids.at(i),
+			   uptimeStrings,
+			   filePath);
+
+	// extract COMMAND
+	// /proc/[pid]/comm
+	filePath.clear();
+	filePath = _PROC + std::to_string(pids.at(i));
+	filePath.append(_COMM);
+	extractProcPidComm(allProcessInfo,
+			   pids.at(i),
+			   filePath);
+      }  
+} // end of "extractProcessData"
+
+
+
+/*
+  Function:
    CreateFileCSV
 
   Description:
