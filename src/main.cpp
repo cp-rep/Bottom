@@ -50,6 +50,9 @@
 #include "sortProcessLists.hpp"
 #include "taskInfo.hpp"
 
+#include <iterator>
+#include <sstream>
+
 // debug constants
 #define _CURSES 1
 #define _LOG 1
@@ -111,14 +114,16 @@ int main()
 #endif
   // process related vars
   MemInfo memInfo;
-  CPUInfo cpuInfo;
+  CPUInfo cpuInfoStart;
+  CPUInfo cpuInfoEnd;
+  CPUUsage cpuUsage;
   TaskInfo taskInfo;
   ProcessInfo* process;
   std::vector<int> pids; // all currently allocated process PIDs
   std::vector<int> pidsOld; // previously found active PID
   std::vector<int> pidsDead; // PIDs that closed during loop
   std::unordered_map<int, ProcessInfo*> allProcessInfo; // /proc/[pid]/ data
-
+  
   // window related vars
   std::unordered_map<int, CursesWindow*> allWins;
   
@@ -135,7 +140,7 @@ int main()
 
 #if _CURSES    
   // ## initialize and setup curses ##
-  //  initializeCurses();
+  initializeCurses();
 #endif
   initializeStartingWindows(allWins);
   defineStartingWindows(allWins);
@@ -151,35 +156,10 @@ int main()
   std::string timeString;
   int interval = 1000000;
   bool newInterval = true;
-  CPUInfo cpuInfoStart;
-  CPUInfo cpuInfoEnd;
-  CPUUsage cpuUsage;
-  
+
   auto startTime = std::chrono::high_resolution_clock::now();
 
   do{
-    auto currentTime = std::chrono::high_resolution_clock::now();
-    auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>
-      (currentTime - startTime).count();
-    
-    // get initial CPU state
-    if(newInterval == true)
-      {
-	extractProcStat(cpuInfoStart,
-			_PROC_STAT);
-	newInterval = false;
-      }
-
-    if(elapsedTime >= interval)
-      {
-	extractProcStat(cpuInfoEnd,
-			_PROC_STAT);
-	cpuUsage = calcCPUUsage(cpuInfoStart, cpuInfoEnd);
-	startTime = currentTime;
-	newInterval = true;
-      }
-
-    /*
     time(&rawtime);
     timeinfo = localtime(&rawtime);
     pidsOld = pids;
@@ -189,6 +169,33 @@ int main()
     uptimeStrings.clear();
     allTopLines.clear();
 
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>
+      (currentTime - startTime).count();
+
+    if(newInterval == true)
+      {
+	// extract start data for CPU line
+	// "%Cpu(s): x.x us, x.x sy..."
+	extractProcStat(cpuInfoStart,
+			_PROC_STAT);
+	newInterval = false;
+      }
+
+    if(elapsedTime >= interval)
+      {
+	// extract end data for CPU line
+	extractProcStat(cpuInfoEnd,
+			_PROC_STAT);
+
+	// calculate cpu averages
+	cpuUsage = calcCPUUsage(cpuInfoStart,
+				cpuInfoEnd);
+	
+	startTime = currentTime;
+	newInterval = true;
+      }
+    
     // get current active PIDS
     pids = findNumericDirs(_PROC);
 
@@ -208,11 +215,6 @@ int main()
     // extract data from /proc/loadavg for very top window
     extractProcLoadavg(loadAvgStrings,
 		       _PROC_LOADAVG);
-
-    // extract data for CPU Line
-    // "%Cpu(s): x.x us, x.x sy..."
-    extractProcStat(cpuInfo,
-		    _PROC_STAT);
 
     // extract data for MiB Mem and MiB swap
     // "MiB Mem: xxxx.xx total, xxxx.xx Free..."
@@ -282,13 +284,13 @@ int main()
     // "Tasks: XXX total, X running..."
     countProcessStates(allProcessInfo,
 		       taskInfo);
-    
+
     // ## get user input ##
     std::vector<int> outPids;
     int userInput = 0;
 
     userInput = getch();
-    
+
     // check for user input
     if(userInput != -1)
       {
@@ -365,7 +367,7 @@ int main()
     printTasksData(allWins,
 		   taskInfo);
     printCpusData(allWins,
-		  cpuInfo);
+		  cpuUsage);
     printMemMiBData(allWins,
 		    memInfo);
     boldOffAllTopWins(allWins,
@@ -394,7 +396,7 @@ int main()
       {
 	break;
       }
-*/
+
   } while(true);
 
   // cleanup
@@ -406,7 +408,8 @@ int main()
     }
   
   allProcessInfo.clear();
-  
+
+
 #if _LOG
   if(log.is_open())
     {
