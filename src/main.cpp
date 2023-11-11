@@ -118,7 +118,6 @@ int main()
   CPUInfo cpuInfoEnd;
   CPUUsage cpuUsage;
   TaskInfo taskInfo;
-  ProcessInfo* process;
   std::vector<int> pids; // all currently allocated process PIDs
   std::vector<int> pidsOld; // previously found active PID
   std::vector<int> pidsDead; // PIDs that closed during loop
@@ -167,7 +166,6 @@ int main()
     timeinfo = localtime(&rawtime);
     pidsOld = pids;
     pids.clear();
-    process = nullptr;
     loadAvgStrings.clear();
     uptimeStrings.clear();
     allTopLines.clear();
