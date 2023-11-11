@@ -155,6 +155,7 @@ int main()
   std::string colorLine;
   std::string timeString;
   int outerInterval = 1000000;
+  int innerInterval = 1000000;
   bool newOuterInterval = true;
 
   auto startTime = std::chrono::high_resolution_clock::now();
