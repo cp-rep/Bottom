@@ -43,6 +43,18 @@ ProcessInfo::ProcessInfo(const unsigned int& pid,
 } // end of "ProcessInfo Default Constructor"
 
 
+bool ProcessInfo::operator==(const ProcessInfo& other) const
+{
+  if(this->m_pid == other.getPID())
+    {
+      return true;
+    }
+  else
+    {
+      return false;
+    }
+}
+
 
 /*
   Function:

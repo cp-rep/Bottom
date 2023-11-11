@@ -32,6 +32,9 @@ public:
 	      const double& cstime = 0,	      
 	      const double& pstart = 0);
 
+  // operators
+  bool operator==(const ProcessInfo& other) const;
+
   // getters
   const unsigned int& getPID() const;
   const std::string& getUSER() const;
