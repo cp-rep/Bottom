@@ -24,7 +24,13 @@ public:
 	      const std::string& command = "",
 	      const std::string& processCPUTime = "N/A",
 	      const char& s = ' ',
-	      const bool& changed = false);
+	      const bool& changed = false,
+	      const std::string commandUpper = "",
+	      const double& utime = 0,
+	      const double& stime = 0,	      
+	      const double& cutime = 0,
+	      const double& cstime = 0,	      
+	      const double& pstart = 0);
 
   // getters
   const unsigned int& getPID() const;
@@ -42,6 +48,11 @@ public:
   const std::string& getCOMMAND() const;
   const std::string& getCOMMANDUpper() const;
   const bool& getChanged() const;
+  const double& getUTime() const { return m_utime; }
+  const double& getSTime() const { return m_stime; }
+  const double& getCUTime() const { return m_cutime; }
+  const double& getCSTime() const { return m_cstime; }
+  const double& getPStart() const { return m_pstart; }
   
   // setters
   void setPID(const unsigned int& pid);
@@ -59,7 +70,16 @@ public:
   void setCOMMAND(const std::string& command);
   void setCOMMANDUpper(const std::string& command);
   void setChanged(const bool& changed);
-  
+  void setUTime(const double& utime) { m_utime = utime; }
+  void setSTime(const double& stime) { m_stime = stime; }
+  void setCUTime(const double& cutime) { m_cutime = cutime; }
+  void setCSTime(const double& cstime) { m_cstime = cstime; }
+  void setPStart(const double& pstart) { m_pstart = pstart; }
+
+  // member functions
+  double calcProcCPUUsage(ProcessInfo& pInfoStart,
+			  ProcessInfo& pInfoEnd);
+      
 private:
   unsigned int m_pid;
   std::string m_user;
@@ -76,16 +96,11 @@ private:
   std::string m_command;
   bool m_changed;
   std::string m_commandUpper;
+  double m_utime;
+  double m_stime;
+  double m_cutime;
+  double m_cstime;  
+  double m_pstart;
 };
-
-
-struct ProcCPUUsage{
-  double utime;
-  double cutime;
-  double pstart;
-  double percet;
-};
-
-ProcCPUUsage calcProcCPUUsage(ProcessInfo& procStart, ProcessInfo& procEnd);
 
 #endif
