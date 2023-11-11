@@ -19,7 +19,13 @@ ProcessInfo::ProcessInfo(const unsigned int& pid,
 			 const std::string& command,
 			 const std::string& processCPUTime,
 			 const char& s,
-			 const bool& changed)
+			 const bool& changed,
+			 const std::string commandUpper,
+			 const double& utime,
+			 const double& stime,			 
+			 const double& cutime,
+			 const double& cstime,			 			 
+			 const double& pstart)
 {
   setPID(pid);
   setUSER(user);
@@ -558,13 +564,26 @@ void ProcessInfo::setChanged(const bool& changed)
 
 
 
-ProcCPUUsage calcProcCPUUsage(ProcessInfo& procStart, ProcessInfo& procEnd)
+/*
+  Function:
+   calcProcCPUUsage
+   
+  Description:
+
+  Input:
+
+  Output:
+
+*/
+double ProcessInfo::calcProcCPUUsage(ProcessInfo& pInfoStart,
+				     ProcessInfo& pInfoEnd)
 {
-  ProcCPUUsage procCPUUsage;
-
-
-
-
-
-  return procCPUUsage;
-}
+  double procCPUTime;
+  
+  procCPUTime = (pInfoEnd.getUTime() + pInfoEnd.getSTime() +
+		 pInfoEnd.getCUTime() + pInfoEnd.getCSTime()) -
+    (pInfoStart.getUTime() + pInfoStart.getSTime() +
+     pInfoStart.getCUTime() + pInfoStart.getPStart());
+    
+  return procCPUTime;
+} // end of "calcProcCPUUsage"
