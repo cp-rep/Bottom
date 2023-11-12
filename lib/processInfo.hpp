@@ -9,6 +9,7 @@
 #ifndef PROCESSINFO_HPP
 #define PROCESSINFO_HPP
 #include <string>
+#include <iostream>
 
 class ProcessInfo{
 public:
@@ -22,35 +23,37 @@ public:
 	      const double& cpuUsage = 0,
 	      const double& memUsage = 0,
 	      const std::string& command = "",
-	      const std::string& processCPUTime = "N/A",
+	      const std::string& processCPUTime = "",
 	      const char& s = ' ',
 	      const bool& changed = false,
-	      const std::string commandUpper = "",
 	      const double& utime = 0,
 	      const double& stime = 0,	      
 	      const double& cutime = 0,
 	      const double& cstime = 0,	      
 	      const double& pstart = 0);
 
+  ProcessInfo(const ProcessInfo& other);
+
   // operators
   bool operator==(const ProcessInfo& other) const;
+  ProcessInfo& operator=(const ProcessInfo& other);
 
   // getters
-  const unsigned int& getPID() const;
-  const std::string& getUSER() const;
-  const unsigned int& getPR() const;
-  const unsigned int& getNI() const;
-  const unsigned int& getVIRT() const;
-  const unsigned int& getRES() const;
-  const unsigned int& getSHR() const;
-  const char& getS() const;
-  const double& getCPUUsage() const;
-  const double& getMEMUsage() const;
-  const double& getCpuRawTime() const;
-  const std::string& getProcessCPUTime() const;
-  const std::string& getCOMMAND() const;
-  const std::string& getCOMMANDUpper() const;
-  const bool& getChanged() const;
+  const unsigned int& getPID() const { return m_pid; }
+  const std::string& getUSER() const { return m_user; }
+  const unsigned int& getPR() const { return m_pr; }
+  const unsigned int& getNI() const { return m_ni; }
+  const unsigned int& getVIRT() const { return m_virt; }
+  const unsigned int& getRES() const { return m_res; }
+  const unsigned int& getSHR() const { return m_shr; }
+  const char& getS() const { return m_s; }
+  const double& getCPUUsage() const { return m_cpuUsage; }
+  const double& getMEMUsage() const { return m_memUsage; }
+  const double& getCpuRawTime() const { return m_cpuRawTime; }
+  const std::string& getProcessCPUTime() const { return m_processCPUTime; }
+  const std::string& getCOMMAND() const { return m_command; }
+  const std::string& getCOMMANDUpper() const { return m_commandUpper; }
+  const bool& getChanged() const { return m_changed; }
   const double& getUTime() const { return m_utime; }
   const double& getSTime() const { return m_stime; }
   const double& getCUTime() const { return m_cutime; }
@@ -58,21 +61,22 @@ public:
   const double& getPStart() const { return m_pstart; }
   
   // setters
-  void setPID(const unsigned int& pid);
-  void setUSER(const std::string& user);
-  void setPR(const unsigned int& pr);
-  void setNI(const unsigned int& ni);
-  void setVIRT(const unsigned int& virt);
-  void setRES(const unsigned int& res);
-  void setSHR(const unsigned int& shr);
-  void setS(const char& s);
-  void setCPUUsage(const double& cpuUsage);
-  void setMEMUsage(const double& memUsage);
-  void setCpuRawTime(const double& cpuRawTime);
-  void setProcessCPUTime(const std::string& processCPUTime);
+  void setPID(const unsigned int& pid) { m_pid = pid; }
+  void setUSER(const std::string& user) { m_user = user; }
+  void setPR(const unsigned int& pr) { m_pr = pr; }
+  void setNI(const unsigned int& ni) { m_ni = ni; }
+  void setVIRT(const unsigned int& virt) { m_virt = virt; }
+  void setRES(const unsigned int& res) { m_res = res; }
+  void setSHR(const unsigned int& shr) { m_shr = shr; }
+  void setS(const char& s) { m_s = s; }
+  void setCPUUsage(const double& cpuUsage) { m_cpuUsage = cpuUsage; }
+  void setMEMUsage(const double& memUsage) { m_memUsage = memUsage; }
+  void setCpuRawTime(const double& cpuRawTime) { m_cpuRawTime = cpuRawTime; }
+  void setProcessCPUTime(const std::string& processCPUTime) { m_processCPUTime =
+      processCPUTime; }
   void setCOMMAND(const std::string& command);
   void setCOMMANDUpper(const std::string& command);
-  void setChanged(const bool& changed);
+  void setChanged(const bool& changed) { m_changed = changed; }
   void setUTime(const double& utime) { m_utime = utime; }
   void setSTime(const double& stime) { m_stime = stime; }
   void setCUTime(const double& cutime) { m_cutime = cutime; }
@@ -97,13 +101,15 @@ private:
   double m_cpuRawTime;
   std::string m_processCPUTime;
   std::string m_command;
+  std::string m_commandUpper;  
   bool m_changed;
-  std::string m_commandUpper;
   double m_utime;
   double m_stime;
   double m_cutime;
   double m_cstime;  
   double m_pstart;
 };
+
+std::ostream& operator<<(std::ostream& os, const ProcessInfo& processInfo);
 
 #endif

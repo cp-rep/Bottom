@@ -5,8 +5,6 @@
  */
 #include "processInfo.hpp"
 
-
-
 ProcessInfo::ProcessInfo(const unsigned int& pid,
 			 const std::string& user,
 			 const unsigned int& pr,
@@ -20,7 +18,6 @@ ProcessInfo::ProcessInfo(const unsigned int& pid,
 			 const std::string& processCPUTime,
 			 const char& s,
 			 const bool& changed,
-			 const std::string commandUpper,
 			 const double& utime,
 			 const double& stime,			 
 			 const double& cutime,
@@ -36,481 +33,236 @@ ProcessInfo::ProcessInfo(const unsigned int& pid,
   setSHR(shr);
   setCPUUsage(cpuUsage);
   setMEMUsage(memUsage);
+  setCOMMAND(command);  
   setProcessCPUTime(processCPUTime);
-  setCOMMAND(command);
-  setS(0);
-  setChanged(false);
+  setS(s);
+  setChanged(changed);
+  setUTime(utime);
+  setSTime(stime);
+  setCUTime(cutime);
+  setCSTime(cstime);
+  setPStart(pstart);
+  setCpuRawTime(0);
 } // end of "ProcessInfo Default Constructor"
 
 
+
+/*
+  Function:
+   Copy Constructor
+
+  Description:
+   Initializes a new ProcessInfo object with the incoming parameter.
+
+  Input:
+   other                - A reference to a constant ProcessInfo object
+                          used to initialize *this.
+
+  Output:
+   NONE
+*/
+ProcessInfo::ProcessInfo(const ProcessInfo& other)
+{
+  *this = other;
+} // end of "Copy Constructor"
+
+
+
+
+
+/*
+  Function:
+   Overloaded ==
+
+  Description:
+   Compares each member variable of the incoming ProcessInfo object to
+   those of *this.  Returns true if they are equal, false otherwise.
+
+  Input:
+   other                - A reference to a constant ProcessInfo object
+                          used to compare to *this.
+   
+
+  Output:
+   bool                 - The result of the comparison.  True if all
+                          member variables are equal, false otherwise.
+*/
 bool ProcessInfo::operator==(const ProcessInfo& other) const
 {
-  if(this->m_pid == other.getPID())
-    {
-      return true;
-    }
-  else
+  if(this->m_pid != other.getPID())
     {
       return false;
     }
-}
+  else if(this->m_user != other.getUSER())
+    {
+      return false;
+    }
+  else if(this->m_pr != other.getPR())
+    {
+      return false;
+    }
+  else if(this->m_ni != other.getNI())
+    {
+      return false;
+    }
+  else if(this->m_virt != other.getVIRT())
+    {
+      return false;
+    }
+  else if(this->m_res != other.getRES())
+    {
+      return false;
+    }
+  else if(this->m_shr != other.getSHR())
+    {
+      return false;
+    }
+  else if(this->m_s != other.getS())
+    {
+      return false;
+    }
+  else if(this->m_cpuUsage != other.getCPUUsage())
+    {
+      return false;
+    }
+  else if(this->m_memUsage != other.getMEMUsage())
+    {
+      return false;
+    }
+  else if(this->m_cpuRawTime != other.getCpuRawTime())
+    {
+      return false;
+    }
+  else if(this->m_processCPUTime != other.getProcessCPUTime())
+    {
+      return false;
+    }
+  else if(this->m_command != other.getCOMMAND())
+    {
+      return false;
+    }
+  else if(this->m_commandUpper != other.getCOMMANDUpper())
+    {
+      return false;
+    }
+  else if(this->m_changed != other.getChanged())
+    {
+      return false;
+    }
+  else if(this->m_utime != other.getUTime())
+    {
+      return false;
+    }
+  else if(this->m_stime != other.getSTime())
+    {
+      return false;
+    }
+  else if(this->m_cutime != other.getCUTime())
+    {
+      return false;
+    }
+  else if(this->m_cstime != other.getCSTime())
+    {
+      return false;
+    }
+  else if(this->m_pstart != other.getPStart())
+    {
+      return false;
+    }
+
+  return true;
+} // end of "Overloaded =="
+
 
 
 /*
   Function:
-   getPID
-   
+   Overloaded =
+
   Description:
+   Copies all of the ProcessInfo object parameters member variables
+   to those of *this.
 
   Input:
-
+   other                - A reference to a constant ProcessInfo object
+                          used to copy its member variables to *this.  
   Output:
+   ProcessInfo          - The reference to *this for concatenation.
 */
-const unsigned int& ProcessInfo::getPID() const
+ProcessInfo& ProcessInfo::operator=(const ProcessInfo& other)
 {
-  return m_pid;
-} // end of "getPID"
+  if(this != &other)
+    {
+      this->m_pid = other.getPID();
+      this->m_user = other.getUSER();
+      this->m_pr = other.getPR();
+      this->m_ni = other.getNI();
+      this->m_virt = other.getVIRT();
+      this->m_res = other.getRES();
+      this->m_shr = other.getSHR();
+      this->m_s = other.getS();
+      this->m_cpuUsage = other.getCPUUsage();
+      this->m_memUsage = other.getMEMUsage();
+      this->m_cpuRawTime = other.getCpuRawTime();
+      this->m_processCPUTime = other.getProcessCPUTime();
+      this->m_command = other.getCOMMAND();
+      this->m_commandUpper = other.getCOMMANDUpper();
+      this->m_changed = other.getChanged();
+      this->m_utime = other.getUTime();
+      this->m_stime = other.getSTime();
+      this->m_cutime = other.getCUTime();
+      this->m_cstime = other.getCSTime();
+      this->m_pstart = other.getPStart();
+    }
+
+  return *this;
+} // end of "Overloaded ="
 
 
 
 /*
   Function:
-   getUSER
-   
+   Overloaded <<
+
   Description:
+   Allows the output stream to use ProcessInfo objects as arguments.
 
   Input:
-
-  Output:
-*/
-const std::string& ProcessInfo::getUSER() const
-{
-  return m_user;
-} // end of "getUSER"
-
-
-
-/*
-  Function:
-   getPR
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-const unsigned int& ProcessInfo::getPR() const
-{
-  return m_pr;
-} // end of "getPR"
-
-
-
-/*
-  Function:
-   getNI
-  Description:
-
-  Input:
-
-  Output:
-*/
-const unsigned int& ProcessInfo::getNI() const
-{
-  return m_ni;
-} // end of "getNI"
-
-
-
-/*
-  Function:
-   getVIRT
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-const unsigned int& ProcessInfo::getVIRT() const
-{
-  return m_virt;
-} // end of "getVIRT"
-
-
-
-/*
-  Function:
-   getRES
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-const unsigned int& ProcessInfo::getRES() const
-{
-  return m_res;
-} // end of "getRES"
-
-
-
-/*
-  Function:
-   getSHR
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-const unsigned int& ProcessInfo::getSHR() const
-{
-  return m_shr;
-} // end of "getSHR"
-
-
-
-/*
-  Function:
-   getS
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-const char& ProcessInfo::getS() const
-{
-  return m_s;
-} // end of "getS"
-
-
-
-/*
-  Function:
-   getCPUUsage
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-const double& ProcessInfo::getCPUUsage() const
-{
-  return m_cpuUsage;
-} // end of "getCPUUsage"
-
-
-
-/*
-  Function:
-   getMEMUsage
+   os                   - A reference to an ostream object being used
+                          to call its output stream with ProcessInfo
+			  objects.
   
-  Description:
-
-  Input:
-
-  Output:
-*/
-const double& ProcessInfo::getMEMUsage() const
-{
-  return m_memUsage;
-} // end of "getMEMUsage"
-
-
-
-/*
-  Function:
-   getCpuRawTime
-   
-  Description:
-
-  Input:
+   processInfo          - A reference to a const ProcessInfo object that
+                          is being used to print its data to stdout.
 
   Output:
+   ostream              - A reference to the output stream parameter for
+                          concatenation.
 */
-const double& ProcessInfo::getCpuRawTime() const
+std::ostream& operator<<(std::ostream& os, const ProcessInfo& processInfo)
 {
-  return m_cpuRawTime;
-} // end of "getCpuRawTime"
-
-
-
-/*
-  Function:
-   getProcessCPUTime
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-const std::string& ProcessInfo::getProcessCPUTime() const
-{
-  return m_processCPUTime;
-} // end of "getProcessCPUTime"
-
-
-
-/*
-  Function:
-   getCOMMANDUpper
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-const std::string& ProcessInfo::getCOMMANDUpper() const
-{
-  return m_commandUpper;
-} // end of "getCOMMANDUpper"
-
-
-
-/*
-  Function:
-   getCOMMAND
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-const std::string& ProcessInfo::getCOMMAND() const
-{
-  return m_command;
-} // end of "getCOMMAND"
-
-
-
-/*
-  Function:
-   getChanged
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-const bool& ProcessInfo::getChanged() const
-{
-  return m_changed;
-} // end of "getChanged"
-
-
-
-/*
-  Function:
-   setPID
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-void ProcessInfo::setPID(const unsigned int& pid)
-{
-  m_pid = pid;
-} // end of "setPID"
-
-
-
-/*
-  Function:
-   setUSER
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-void ProcessInfo::setUSER(const std::string& user)
-{
-  m_user = user;
-} // end of "setUSER"
-
-
-
-/*
-  Function:
-   setPR
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-void ProcessInfo::setPR(const unsigned int& pr)
-{
-  m_pr = pr;
-} // end of "setPR"
-
-
-
-/*
-  Function:
-   setNI
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-void ProcessInfo::setNI(const unsigned int& ni)
-{
-  m_ni = ni;
-} // end of "setNI"
-
-
-
-/*
-  Function:
-   setVIRT
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-void ProcessInfo::setVIRT(const unsigned int& virt)
-{
-  m_virt = virt;
-} // end of "setVIRT"
-
-
-
-/*
-  Function:
-   setRES
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-void ProcessInfo::setRES(const unsigned int& res)
-{
-  m_res = res;
-} // end of "setRES"
-
-
-
-/*
-  Function:
-   setSHR
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-void ProcessInfo::setSHR(const unsigned int& shr)
-{
-  m_shr = shr;
-} // end of "setSHR"
-
-
-
-/*
-  Function:
-   setS
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-void ProcessInfo::setS(const char& s)
-{
-  m_s = s;
-} // end of "setS"
-
-
-
-/*
-  Function:
-   setCPUUsage
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-void ProcessInfo::setCPUUsage(const double& cpuUsage)
-{
-  m_cpuUsage = cpuUsage;
-} // end of "setCPUUsage"
-
-
-
-/*
-  Function:
-   setMEMUsage
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-void ProcessInfo::setMEMUsage(const double& memUsage)
-{
-  m_memUsage = memUsage;
-} // end of "setMEMUsage"
-
-
-
-/*
-  Function:
-   setCpuRawTime
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-void ProcessInfo::setCpuRawTime(const double& cpuRawTime)
-{
-  m_cpuRawTime = cpuRawTime;
-} // end of "setCpuRawTime"
-
-
-
-/*
-  Function:
-   setProcessCPUTime
-  
-  Description:
-
-  Input:
-
-  Output:
-*/
-void ProcessInfo::setProcessCPUTime(const std::string& processCPUTime)
-{
-  m_processCPUTime = processCPUTime;
-} // end of "setProcessCPUTime"
+  os << "PID: " << processInfo.getPID() << std::endl;
+  os << "USER: " << processInfo.getUSER() << std::endl;
+  os << "PR: " << processInfo.getPR() << std::endl;
+  os << "NI: " << processInfo.getNI() << std::endl;
+  os << "VIRT: " << processInfo.getVIRT() << std::endl;
+  os << "RES: " << processInfo.getRES() << std::endl;
+  os << "SHR: " << processInfo.getSHR() << std::endl;
+  os << "S: " << processInfo.getS() << std::endl;
+  os << "CPU Usage: " << processInfo.getCPUUsage() << std::endl;
+  os << "Mem Usage: " << processInfo.getMEMUsage() << std::endl;
+  os << "CPU Raw Time: " << processInfo.getCpuRawTime() << std::endl;
+  os << "Process CPU Time: " << processInfo.getProcessCPUTime() << std::endl;
+  os << "COMMAND: " << processInfo.getCOMMAND() << std::endl;
+  os << "COMMAND Upper: " << processInfo.getCOMMANDUpper() << std::endl;
+  os << "utime: " << processInfo.getUTime() << std::endl;
+  os << "stime: " << processInfo.getSTime() << std::endl;
+  os << "cutime: " << processInfo.getCUTime()<< std::endl;
+  os << "cstime: " << processInfo.getCSTime() << std::endl;
+  os << "pstart: " << processInfo.getPStart() << std::endl;
+
+  return os;
+} // end of "Overloaded <<"
 
 
 
@@ -529,7 +281,6 @@ void ProcessInfo::setCOMMAND(const std::string& command)
   m_command = command;
   setCOMMANDUpper(command);
 } // end of "setCOMMAND"
-
 
 
 /*
@@ -555,24 +306,6 @@ void ProcessInfo::setCOMMANDUpper(const std::string& command)
 	}
     }
 } // end of "getCOMMANDUpper"
-
-
-
-
-/*
-  Function:
-   setChanged
-   
-  Description:
-
-  Input:
-
-  Output:
-*/
-void ProcessInfo::setChanged(const bool& changed)
-{
-  m_changed = changed;
-} // end of "setChanged"
 
 
 
