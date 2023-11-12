@@ -1041,7 +1041,7 @@ void boldOffMemWins(std::unordered_map<int, CursesWindow*>& wins,
 
 /*
   Function:
-   attronBottomWins
+   colorOnBottomWins
 
   Description:
    Sets the a color pair attribute ON for the bottom windows.
@@ -1053,25 +1053,27 @@ void boldOffMemWins(std::unordered_map<int, CursesWindow*>& wins,
 			  that can be indexed by values in the file
 			  _cursesWinConsts.hpp.                  
 
-  attrs                 - An integer that represents a color pair initialized in
-                          the initializeCurses() function in this file.  The pre-defined
-			  parameter value is defined in _cursesWinConsts.hpp.
+  colorPair             - An integer that represents a color pair initialized in
+                          the initializeCurses() function in this file.  The
+			  pre-defined parameter value is defined in
+			  _cursesWinConsts.hpp.
   Output:
    NONE
 */
-void attronBottomWins(const std::unordered_map<int, CursesWindow*>& wins, int attrs)
+void colorOnBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
+		       int colorPair)
 {
   for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
     {
-      wattron(wins.at(i)->getWindow(), COLOR_PAIR(attrs));
+      wattron(wins.at(i)->getWindow(), COLOR_PAIR(colorPair));
     }
-} // end of "attronBottomWins"
+} // end of "colorOnBottomWins"
 
 
 
 /*
   Function:
-  attroffBottomWins
+   colorOffBottomWins
 
   Description:
    Sets the a color pair attribute OFF for the bottom windows.
@@ -1083,20 +1085,21 @@ void attronBottomWins(const std::unordered_map<int, CursesWindow*>& wins, int at
 			  that can be indexed by values in the file
 			  _cursesWinConsts.hpp.                
 
-  attrs                 - An integer that represents a color pair initialized in
-                          the initializeCurses() function in this file.  The pre-defined
-			  parameter value is defined in _cursesWinConsts.hpp.
+  colorPair             - An integer that represents a color pair initialized in
+                          the initializeCurses() function in this file.  The
+			  pre-defined parameter value is defined in
+			  _cursesWinConsts.hpp.
   Output:
    NONE
 */
-void attroffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
-		       int attrs)
+void colorOffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
+			int colorPair)
 {
   for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
     {
-      wattroff(wins.at(i)->getWindow(), COLOR_PAIR(attrs));
+      wattroff(wins.at(i)->getWindow(), COLOR_PAIR(colorPair));
     }  
-} // end of "atroffBottomWins"
+} // end of "colorOffBottomWins"
 
 
 
@@ -1524,6 +1527,10 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
   for(int i = 0; i < pidList.size(); i++)
     {
       int posY = i + shiftY;
+      if(procData.at(pidList.at(i))->getChanged() == true);
+	{
+	  //	  attronBottomWins(wins, A_BOLD);
+	}
 
       // ensure nothing is printed over the column titles
       if(posY != 0)
@@ -1670,6 +1677,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
             } 
 	}
+      //      attroffBottomWins(wins, A_BOLD);
     }
 } // end of "printProcs"
 

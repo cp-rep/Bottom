@@ -27,10 +27,10 @@ void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearBottomWins(const std::unordered_map<int, CursesWindow*>& wins);
-void attronBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
-		      int attrs);
-void attroffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
-		       int attrs);
+void colorOnBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
+		       int colorPair);
+void colorOffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
+			int colorPair);
 void printTasksData(const std::unordered_map<int, CursesWindow*>& wins,
 		    const TaskInfo& taskInfo);
 void printCpusData(const std::unordered_map<int, CursesWindow*>& wins,
