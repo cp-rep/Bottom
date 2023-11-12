@@ -50,9 +50,6 @@
 #include "sortProcessLists.hpp"
 #include "taskInfo.hpp"
 
-#include <iterator>
-#include <sstream>
-
 // debug constants
 #define _CURSES 1
 #define _LOG 1
@@ -112,20 +109,25 @@ int main()
       log << "Time and Date: " << asctime(timeinfo) << std::endl;
     }
 #endif
+  
   // process related vars
   MemInfo memInfo;
   CPUInfo cpuInfoStart;
   CPUInfo cpuInfoEnd;
   CPUUsage cpuUsage;
   TaskInfo taskInfo;
-  std::vector<int> pids; // all currently allocated process PIDs
-  std::vector<int> pidsOld; // previously found active PID
-  std::vector<int> pidsDead; // PIDs that closed during loop
-  std::unordered_map<int, ProcessInfo*> procInfoStart; // /proc/[pid]/ data
+  std::vector<int> pidsStartOld;
+  std::vector<int> pidsEndOld;
+  std::vector<int> pidsStart;
+  std::vector<int> pidsEnd;
+  std::vector<int> pidsStartDead;
+  std::vector<int> pidsEndDead;
+  std::unordered_map<int, ProcessInfo*> procInfoStart;
   std::unordered_map<int, ProcessInfo*> procInfoEnd;
   
   // window related vars
   std::unordered_map<int, CursesWindow*> allWins;
+  std::string colorLine;
   
   // state related vars
   int progState = 0;
@@ -152,38 +154,36 @@ int main()
   std::vector<std::string> loadAvgStrings;
   std::vector<std::string> uptimeStrings;
   std::string filePath;
-  std::string colorLine;
   std::string timeString;
-  int outerInterval = 1000000;
-  int innerInterval = 1000000;
-  bool newOuterInterval = true;
-  bool newInnerInterval = true;
-
+  std::vector<int> outPids;      
+  int interval = 1000000;
+  bool newInterval = true;
+  bool entered = false;
+  
   auto startTime = std::chrono::high_resolution_clock::now();
 
   do{
+    std::unordered_map<int, ProcessInfo*> procInfoOut;
     time(&rawtime);
     timeinfo = localtime(&rawtime);
-    pidsOld = pids;
-    pids.clear();
     loadAvgStrings.clear();
     uptimeStrings.clear();
     allTopLines.clear();
+    outPids.clear();
 
     auto currentTime = std::chrono::high_resolution_clock::now();
     auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>
       (currentTime - startTime).count();
 
-    if(newOuterInterval == true)
+    if(newInterval == true)
       {
 	// extract start data for CPU line
 	// "%Cpu(s): x.x us, x.x sy..."
 	extractProcStat(cpuInfoStart,
 			_PROC_STAT);
-	newOuterInterval = false;
       }
 
-    if(elapsedTime >= outerInterval)
+    else if(elapsedTime >= interval)
       {
 	// extract end data for CPU line
 	extractProcStat(cpuInfoEnd,
@@ -192,21 +192,6 @@ int main()
 	// calculate cpu averages
 	cpuUsage = calcCPUUsage(cpuInfoStart,
 				cpuInfoEnd);
-	
-	startTime = currentTime;
-	newOuterInterval = true;
-      }
-    
-    // get current active PIDS
-    pids = findNumericDirs(_PROC);
-
-    // find any processes that died during previous loop
-    if(findDeadProcesses(pids, pidsOld, pidsDead))
-      {
-	// free if any found
-	removeDeadProcesses(procInfoStart, pidsDead);	
-	removeDeadProcesses(procInfoEnd, pidsDead);
-	
       }
 
     // extract data from /proc/uptime for very top window
@@ -240,21 +225,65 @@ int main()
     defineMemMiBLine(allTopLines);
     defineMemSwapLine(allTopLines);
 
-    
-    // update/add process data for still running and new found processes
-    extractProcessData(procInfoEnd,
-		       pids,
-		       memInfo,
-		       uptime,
-		       uptimeStrings);
+    if(newInterval == true)
+      {
+	// get starting pids
+	pidsStartOld.clear();
+	pidsStartOld = pidsStart;
+	pidsStart.clear();
+	pidsStartDead.clear();
+	pidsStart = findNumericDirs(_PROC);
+
+	// find if any start interval pids died since last interval
+	if(findDeadProcesses(pidsStart, pidsStartOld, pidsStartDead))
+	  {
+	    removeDeadProcesses(procInfoStart, pidsStartDead);
+	  }
+
+	// extract per process data
+	extractProcessData(procInfoStart,
+			   pidsStart,
+			   memInfo,
+			   uptime,
+			   uptimeStrings);
+
+	// set interval flag
+	newInterval = false;
+      }    
+    else if(elapsedTime >= interval)
+      {
+	// get end interval pids
+	pidsEndOld.clear();
+	pidsEndOld = pidsStart;
+	pidsEnd.clear();
+	pidsEndDead.clear();
+	pidsEnd = findNumericDirs(_PROC);
+
+	// find if any end interval pids died since last interval
+	if(findDeadProcesses(pidsEnd, pidsEndOld, pidsEndDead))
+	  {
+	    removeDeadProcesses(procInfoEnd, pidsEndDead);
+	  } 	
+
+	// extract per process data
+	extractProcessData(procInfoEnd,
+			   pidsEnd,
+			   memInfo,
+			   uptime,
+			   uptimeStrings);
+	
+	// set flags and update the new start time for interval
+	entered = true;	
+	newInterval = true;
+	startTime = currentTime;
+      }
 
     // count the extracted process states for task window
     // "Tasks: XXX total, X running..."
-    countProcessStates(procInfoEnd,
+    countProcessStates(procInfoOut,
 		       taskInfo);
 
     // ## get user input ##
-    std::vector<int> outPids;
     int userInput = 0;
 
     userInput = getch();
@@ -272,6 +301,7 @@ int main()
 	else 
 	  {
 	    std::string outString = " Unknown command - try 'h' for help ";
+	    
 #if _CURSES
 	    printBadInputString(allWins,
 				_MAINWIN,
@@ -288,28 +318,6 @@ int main()
     flushinp();
 
 #if _CURSES
-    // ## update states ##
-    // update process sort state (changed by '<' and '>' user input)
-    updateSortState(procInfoEnd,
-		    pids,
-		    outPids,
-		    sortState);
-    
-    // program state
-    updateProgramState(procInfoEnd,
-		       allWins,
-		       progState,
-		       prevState,
-		       sortState,
-		       quit,
-		       highlight,
-		       outPids.at(0),
-		       shiftY,
-		       shiftX,
-		       outPids.size() - 2,
-		       graph);
-
-    // ## print process windows ##
     if(highlight == true)
       {
 	wattron(allWins.at(sortState)->getWindow(),
@@ -325,6 +333,7 @@ int main()
 	box(allWins.at(_CPUGRAPHWIN)->getWindow(), 'a', 'a');
       }
     
+    // ## update states and print ##
     updateWindowDimensions(allWins);
     colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());    
     clearAllWins(allWins);
@@ -340,24 +349,71 @@ int main()
 		    memInfo);
     boldOffAllTopWins(allWins,
 		      A_BOLD);
-    printProcs(allWins,
-	       procInfoEnd,
-	       outPids,
-	       shiftY,
-	       shiftX);
+    
+    if(entered == false)
+      {
+	updateSortState(procInfoStart,
+			pidsStart,
+			pidsStart,
+			sortState);
+	
+	updateProgramState(procInfoStart,
+			   allWins,
+			   progState,
+			   prevState,
+			   sortState,
+			   quit,
+			   highlight,
+			   pidsStart.at(0),
+			   shiftY,
+			   shiftX,
+			   pidsStart.size() - 2,
+			   graph);
+	printProcs(allWins,
+		   procInfoStart,
+		   pidsStart,
+		   shiftY,
+		   shiftX);
+      }
+    else
+      {
+	updateSortState(procInfoEnd,
+			pidsEnd,
+			outPids,
+			sortState);
+	updateProgramState(procInfoEnd,
+			   allWins,
+			   progState,
+			   prevState,
+			   sortState,
+			   quit,
+			   highlight,
+			   outPids.at(0),
+			   shiftY,
+			   shiftX,
+			   outPids.size() - 2,
+			   graph);
+	printProcs(allWins,
+		   procInfoEnd,
+		   outPids,
+		   shiftY,
+		   shiftX);
+      }
+    
     attronBottomWins(allWins,
 		     _BLACK_TEXT);
     printWindowNames(allWins);
     attroffBottomWins(allWins,
-		      _BLACK_TEXT);
+		      _BLACK_TEXT);    
     printLine(allWins,
 	      _YOFFSET,
 	      0,
 	      _BLACK_TEXT,
 	      _MAINWIN,
-	      colorLine);
+	      colorLine);    
     refreshAllWins(allWins);
-    doupdate();
+    doupdate();	    
+    
 #endif
 
     if(quit)
@@ -368,11 +424,20 @@ int main()
   } while(true);
 
   // cleanup
+
+  for(std::unordered_map<int, ProcessInfo*>::iterator it = procInfoStart.begin();
+      it != procInfoStart.end(); it++)
+    {
+      delete(it->second);
+      it->second = nullptr;
+      
+    }
   for(std::unordered_map<int, ProcessInfo*>::iterator it = procInfoEnd.begin();
       it != procInfoEnd.end(); it++)
     {
       delete(it->second);
       it->second = nullptr;
+      
     }
   
   procInfoEnd.clear();
