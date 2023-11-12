@@ -320,15 +320,9 @@ void ProcessInfo::setCOMMANDUpper(const std::string& command)
   Output:
 
 */
-double ProcessInfo::calcProcCPUUsage(ProcessInfo& pInfoStart,
+void ProcessInfo::calcProcCPUUsage(ProcessInfo& pInfoStart,
 				     ProcessInfo& pInfoEnd)
 {
-  double procCPUTime;
-  
-  procCPUTime = (pInfoEnd.getUTime() + pInfoEnd.getSTime() +
-		 pInfoEnd.getCUTime() + pInfoEnd.getCSTime()) -
-    (pInfoStart.getUTime() + pInfoStart.getSTime() +
-     pInfoStart.getCUTime() + pInfoStart.getPStart());
-    
-  return procCPUTime;
+  m_cpuUsage = (pInfoEnd.getUTime() + pInfoEnd.getSTime()) -
+    (pInfoStart.getUTime() + pInfoStart.getSTime());
 } // end of "calcProcCPUUsage"

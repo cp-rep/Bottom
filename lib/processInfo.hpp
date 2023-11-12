@@ -25,7 +25,7 @@ public:
 	      const std::string& command = "",
 	      const std::string& processCPUTime = "",
 	      const char& s = ' ',
-	      const bool& changed = false,
+	      const bool& changed = true,
 	      const double& utime = 0,
 	      const double& stime = 0,	      
 	      const double& cutime = 0,
@@ -84,8 +84,8 @@ public:
   void setPStart(const double& pstart) { m_pstart = pstart; }
 
   // member functions
-  double calcProcCPUUsage(ProcessInfo& pInfoStart,
-			  ProcessInfo& pInfoEnd);
+  void calcProcCPUUsage(ProcessInfo& pInfoStart,
+			ProcessInfo& pInfoEnd);
       
 private:
   unsigned int m_pid;
