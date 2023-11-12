@@ -35,5 +35,31 @@ TEST(CopyConstructor_FUNCTION, CopyConstructor_TEST)
 
   EXPECT_EQ(p1, p2);
 
+  ProcessInfo p3(0,
+		 "USER",
+		 2,
+		 3,
+		 4,
+		 5,
+		 6,
+		 7.7,
+		 8.8,
+		 "comm",
+		 "54321",
+		 'A',
+		 true,
+		 9,
+		 8,
+		 7,
+		 6,
+		 5);
+  if(p3 == p1)
+    {
+      EXPECT_EQ(1, 2);      
+    }
+  else
+    {
+      EXPECT_EQ(p2, p1);
+    }
 }
 
