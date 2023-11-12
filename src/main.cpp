@@ -7,14 +7,8 @@
 
   Program Description: 
     A rendition of the Top program using C++. It has been tested on Ubuntu and
-    Arch Linux.  Most if not all the current features should work on other Linux
-    distributions.
-
-  Controls:
-  - the 'x' key allows highlighting a particular column.
-  - the arrow keys allow shifting the windows left and right.
-  - the '<' and '>' keys change how the columns are sorted.
-  - the 'k' key allows the user to "kill" desired processes.
+    Arch Linux. However, most if not all the current features should work on
+    other Linux distributions.
 */
 #include <algorithm>
 #include <chrono>
@@ -159,11 +153,11 @@ int main()
   int interval = 1000000;
   bool newInterval = true;
   bool entered = false;
+  bool stateChanged = false;
 
   auto startTime = std::chrono::high_resolution_clock::now();
 
   do{
-    std::unordered_map<int, ProcessInfo*> procInfoOut;
     time(&rawtime);
     timeinfo = localtime(&rawtime);
     loadAvgStrings.clear();
@@ -175,6 +169,37 @@ int main()
     auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>
       (currentTime - startTime).count();
 
+    // erase extracted process data and reset interval if state was changed to
+    // prevent printing incorrect CPUUsage calculation
+    if(stateChanged == true)
+      {
+	currentTime = std::chrono::high_resolution_clock::now();
+	elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>
+	  (currentTime - startTime).count();
+
+	for(std::unordered_map<int, ProcessInfo*>::iterator
+	      it = procInfoStart.begin();
+	    it != procInfoStart.end(); it++)
+	  {
+	    delete(it->second);
+	    it->second = nullptr;
+	  }
+	for(std::unordered_map<int, ProcessInfo*>::iterator it
+	      = procInfoEnd.begin();
+	    it != procInfoEnd.end(); it++)
+	  {
+	    delete(it->second);
+	    it->second = nullptr;
+	  }
+
+	procInfoEnd.clear();
+	procInfoStart.clear();
+	
+	stateChanged = false;
+	entered = false;
+	newInterval = true;
+      }
+    
     if(newInterval == true)
       {
 	// extract start data for CPU line
@@ -263,8 +288,8 @@ int main()
 	if(findDeadProcesses(pidsEnd, pidsEndOld, pidsEndDead))
 	  {
 	    removeDeadProcesses(procInfoEnd, pidsEndDead);
-	  } 	
-
+	  }
+	
 	// extract per process data
 	extractProcessData(procInfoEnd,
 			   pidsEnd,
@@ -296,7 +321,6 @@ int main()
 				       *procInfoEnd.at(pidsEnd.at(i)));
 		    procInfoStart.at(pidsStart.at(j))->
 		      setCPUUsage(procInfoEnd.at(pidsEnd.at(i))->getCPUUsage());
-		    
 		  }
 	      }
 	  }
@@ -309,7 +333,7 @@ int main()
 
     // count the extracted process states for task window
     // "Tasks: XXX total, X running..."
-    countProcessStates(procInfoOut,
+    countProcessStates(procInfoEnd,
 		       taskInfo);
 
     // ## get user input ##
@@ -351,7 +375,7 @@ int main()
       {
 	box(allWins.at(_CPUGRAPHWIN)->getWindow(), '|', '_');
       }
-    
+
     updateWindowDimensions(allWins);
     colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
 
@@ -360,6 +384,7 @@ int main()
       {
 	clearAllWins(allWins);
       }
+    
     printTopWins(allWins,
 		 allTopLines);
     boldOnAllTopWins(allWins,
@@ -391,7 +416,8 @@ int main()
 			   shiftY,
 			   shiftX,
 			   pidsStart.size() - 2,
-			   graph);
+			   graph,
+			   stateChanged);
 	printProcs(allWins,
 		   procInfoStart,
 		   pidsStart,
@@ -413,7 +439,7 @@ int main()
 	refreshAllWins(allWins);
 	doupdate();	
       }
-    else
+    else if(stateChanged == false)
       {
 	updateSortState(procInfoEnd,
 			pidsEnd,
@@ -430,7 +456,8 @@ int main()
 			   shiftY,
 			   shiftX,
 			   outPids.size() - 2,
-			   graph);
+			   graph,
+			   stateChanged);
 	printProcs(allWins,
 		   procInfoEnd,
 		   outPids,
@@ -441,10 +468,10 @@ int main()
       }
 
     colorOnBottomWins(allWins,
-		     _BLACK_TEXT);
+		      _BLACK_TEXT);
     printWindowNames(allWins);
     colorOffBottomWins(allWins,
-		      _BLACK_TEXT);    
+		       _BLACK_TEXT);    
     printLine(allWins,
 	      _YOFFSET,
 	      0,
@@ -452,7 +479,7 @@ int main()
 	      _MAINWIN,
 	      colorLine);    
     refreshAllWins(allWins);
-    doupdate();
+    doupdate(); 
 
 #endif
 
@@ -464,14 +491,16 @@ int main()
   } while(true);
 
   // cleanup
-  for(std::unordered_map<int, ProcessInfo*>::iterator it = procInfoStart.begin();
+  for(std::unordered_map<int, ProcessInfo*>::iterator it
+	= procInfoStart.begin();
       it != procInfoStart.end(); it++)
     {
       delete(it->second);
       it->second = nullptr;
       
     }
-  for(std::unordered_map<int, ProcessInfo*>::iterator it = procInfoEnd.begin();
+  for(std::unordered_map<int, ProcessInfo*>::iterator it
+	= procInfoEnd.begin();
       it != procInfoEnd.end(); it++)
     {
       delete(it->second);
