@@ -16,6 +16,7 @@ add_executable(
     unit_tests
     gtest_extractFileData.cpp
     gtest_sortProcessLists.cpp
+    gtest_processInfo.cpp
     )
 
 # link the test source files to application source files
