@@ -30,7 +30,8 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			int& shiftY,
 			int& shiftX,
 			const int shiftDownMax,
-			bool& graph);
+			bool& graph,
+			bool& stateChanged);			
 void updateSortState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		     std::vector<int>& pids,
 		     std::vector<int>& outPids,

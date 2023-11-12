@@ -81,12 +81,14 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			int& shiftY,
 			int& shiftX,
 			const int shiftDownMax,
-			bool& graph)
+			bool& graph,
+			bool& stateChanged)
 {
   switch(progState)
     {
     case _STATEHELP: // help
       helpState(wins);
+      stateChanged = true;
       break;
     case _STATEQUIT: // quit
       quit = true;
@@ -105,6 +107,7 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       killState(allProcessInfo,
 		wins,
 		defaultKillPid);
+      stateChanged = true;      
       break;
     case _STATECPUGRAPH:
       if(graph == false)
@@ -207,7 +210,7 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
     default:
       break;
     }
-  
+
   progState = prevState;
 } // end of "changeProgramState"
 
