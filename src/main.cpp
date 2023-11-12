@@ -292,7 +292,6 @@ int main()
 	      }
 	  }
 
-
 	// set flags and update the new start time for interval
 	entered = true;	
 	newInterval = true;
@@ -397,8 +396,6 @@ int main()
       }
     else
       {
-	std::vector<int> dead;
-	findDeadProcesses(outPids, pidsStart, dead);
 	updateSortState(procInfoEnd,
 			pidsEnd,
 			outPids,
@@ -422,10 +419,10 @@ int main()
 		   shiftX);
       }
     
-    attronBottomWins(allWins,
+    colorOnBottomWins(allWins,
 		     _BLACK_TEXT);
     printWindowNames(allWins);
-    attroffBottomWins(allWins,
+    colorOffBottomWins(allWins,
 		      _BLACK_TEXT);    
     printLine(allWins,
 	      _YOFFSET,
@@ -441,6 +438,7 @@ int main()
       {
 	break;
       }
+    
   } while(true);
 
   // cleanup
