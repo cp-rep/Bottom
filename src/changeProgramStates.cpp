@@ -428,8 +428,8 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	      break;
 	    }
 	}
-      
-      refreshAllWins(wins);
+
+      wrefresh(wins.at(_USERINPUTWIN)->getWindow());
       doupdate();
     }
   
