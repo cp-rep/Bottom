@@ -1474,7 +1474,10 @@ void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins)
    Prints the bottom windows that contain process related data to the screen
    (PID, USER, PR, NI...). The control structures ensure that all printing is
    done in allocated screen space for the CursesWindow objects, both in
-   "row/column" screen position as well as memory.
+   "row/column" screen position as well as memory.  The if statements not only
+   test that the window exists before attempting to print, but they also
+   test the dynamic dimensions of the screen before printing in case there
+   is any window resizing done with the program is active.
 
    A simple loop is used to iterate over all the CursesWindow objects to
    print their data.
@@ -1627,7 +1630,6 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	     ( (wins.at(_PROCCPUWIN)->getNumCols() + wins.at(_PROCCPUWIN)->getStartX()) <
 	       wins.at(_MAINWIN)->getNumCols()))
             {
-
 	      outString = doubleToStr(procData.at(pidList.at(i))->getCPUUsage(), 1);
 	      mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
 			posY,
