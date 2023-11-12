@@ -2,9 +2,6 @@
   File: 
    main.cpp
 
-  Version: 
-   V0.1
-
   Program Description: 
     A rendition of the Top program using C++. It has been tested on Ubuntu and
     Arch Linux. However, most if not all the current features should work on
