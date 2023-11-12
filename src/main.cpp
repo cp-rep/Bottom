@@ -353,8 +353,13 @@ int main()
       }
     
     updateWindowDimensions(allWins);
-    colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());    
-    clearAllWins(allWins);
+    colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
+
+    // ensure to not clear the windows if entering certain states
+    if(userInput != _STATEKILL)
+      {
+	clearAllWins(allWins);
+      }
     printTopWins(allWins,
 		 allTopLines);
     boldOnAllTopWins(allWins,
