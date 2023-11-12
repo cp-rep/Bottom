@@ -31,6 +31,10 @@ void colorOnBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
 		       int colorPair);
 void colorOffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
 			int colorPair);
+void attrOnBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
+		      int attr);
+void attrOffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
+		       int attr);
 void printTasksData(const std::unordered_map<int, CursesWindow*>& wins,
 		    const TaskInfo& taskInfo);
 void printCpusData(const std::unordered_map<int, CursesWindow*>& wins,
@@ -60,7 +64,9 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 		const std::unordered_map<int, ProcessInfo*>& pUmap,
 		const std::vector<int>& pidList,
 		const int shiftY,
-		const int shiftX);
+		const int shiftX,
+		const int& sortState,
+		const bool& highlight);
 const std::string createColorLine(const int& len);
 void printLine(const std::unordered_map<int, CursesWindow*>& wins,
 	       const int& row,
