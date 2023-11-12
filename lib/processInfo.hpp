@@ -25,7 +25,7 @@ public:
 	      const std::string& command = "",
 	      const std::string& processCPUTime = "",
 	      const char& s = ' ',
-	      const bool& changed = true,
+	      const bool& changed = false,
 	      const double& utime = 0,
 	      const double& stime = 0,	      
 	      const double& cutime = 0,

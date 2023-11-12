@@ -36,7 +36,7 @@ ProcessInfo::ProcessInfo(const unsigned int& pid,
   setCOMMAND(command);  
   setProcessCPUTime(processCPUTime);
   setS(s);
-  setChanged(changed);
+  setChanged(false);
   setUTime(utime);
   setSTime(stime);
   setCUTime(cutime);
