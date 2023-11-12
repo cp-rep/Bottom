@@ -283,11 +283,20 @@ int main()
 		       *procInfoStart.at(pidsStart.at(j)))
 		      {
 			procInfoEnd.at(pidsEnd.at(i))->setChanged(false);
+			procInfoStart.at(pidsStart.at(j))->setChanged(false);
 		      }
-			
+		    else
+		      {
+			procInfoEnd.at(pidsEnd.at(i))->setChanged(true);
+			procInfoStart.at(pidsStart.at(j))->setChanged(true);
+		      }
+		    
 		    procInfoEnd.at(pidsEnd.at(i))->
 		      calcProcCPUUsage(*procInfoStart.at(pidsStart.at(j)),
 				       *procInfoEnd.at(pidsEnd.at(i)));
+		    procInfoStart.at(pidsStart.at(j))->
+		      setCPUUsage(procInfoEnd.at(pidsEnd.at(i))->getCPUUsage());
+		    
 		  }
 	      }
 	  }
@@ -338,22 +347,11 @@ int main()
 #if _CURSES    
     flushinp();
 
-    if(highlight == true)
-      {
-	wattron(allWins.at(sortState)->getWindow(),
-		A_BOLD);
-      }
-    else
-      {
-	wattroff(allWins.at(sortState)->getWindow(),
-		 A_BOLD);
-      }
     if(graph == true)
       {
 	box(allWins.at(_CPUGRAPHWIN)->getWindow(), '|', '_');
       }
     
-    // ## update states and print ##
     updateWindowDimensions(allWins);
     colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());    
     clearAllWins(allWins);
@@ -370,6 +368,7 @@ int main()
     boldOffAllTopWins(allWins,
 		      A_BOLD);
     
+    // ## update states and print ##
     if(entered == false)
       {
 	updateSortState(procInfoStart,
@@ -392,7 +391,22 @@ int main()
 		   procInfoStart,
 		   pidsStart,
 		   shiftY,
-		   shiftX);
+		   shiftX,
+		   sortState,
+		   highlight);		   
+	colorOnBottomWins(allWins,
+			  _BLACK_TEXT);
+	printWindowNames(allWins);
+	colorOffBottomWins(allWins,
+			   _BLACK_TEXT);    
+	printLine(allWins,
+		  _YOFFSET,
+		  0,
+		  _BLACK_TEXT,
+		  _MAINWIN,
+		  colorLine);    
+	refreshAllWins(allWins);
+	doupdate();	
       }
     else
       {
@@ -416,9 +430,11 @@ int main()
 		   procInfoEnd,
 		   outPids,
 		   shiftY,
-		   shiftX);
+		   shiftX,
+		   sortState,
+		   highlight);
       }
-    
+
     colorOnBottomWins(allWins,
 		     _BLACK_TEXT);
     printWindowNames(allWins);
@@ -431,7 +447,8 @@ int main()
 	      _MAINWIN,
 	      colorLine);    
     refreshAllWins(allWins);
-    doupdate();	    
+    doupdate();
+
 #endif
 
     if(quit)
