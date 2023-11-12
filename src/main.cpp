@@ -276,7 +276,7 @@ int main()
       {
 	// get end interval pids
 	pidsEndOld.clear();
-	pidsEndOld = pidsStart;
+	pidsEndOld = pidsEnd;
 	pidsEnd.clear();
 	pidsEndDead.clear();
 	pidsEnd = findNumericDirs(_PROC);
