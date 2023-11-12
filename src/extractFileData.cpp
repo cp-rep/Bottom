@@ -588,9 +588,12 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   if(lineString != "-1")
     {
       double utime = 0;
+      double stime = 0;
       double cutime = 0;
+      double cstime = 0;
       double pstart = 0;
       double percent = 0;
+      int startUsage;
 
       // use uptime values for helping calculate CPU usage
       percent = stringToDouble(uptimeStrings.at(0));      
@@ -612,13 +615,24 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 
       // get %CPU for current process
       utime = stringToInt(parsedLine.at(11));
-      cutime = stringToInt(parsedLine.at(12));
+      stime = stringToInt(parsedLine.at(12));
+      cutime = stringToInt(parsedLine.at(13));
+      cstime = stringToInt(parsedLine.at(14));
       pstart = stringToInt(parsedLine.at(19));
-      percent = (utime + cutime)/(uptime.getTotalSeconds() - (pstart/100));
+      allProcessInfo.at(currentPid)->setUTime(utime);
+      allProcessInfo.at(currentPid)->setSTime(stime);
+      allProcessInfo.at(currentPid)->setCUTime(cutime);
+      allProcessInfo.at(currentPid)->setCSTime(cstime);
+      allProcessInfo.at(currentPid)->setPStart(pstart);
+      startUsage = (utime + cutime)/(uptime.getTotalSeconds() - (pstart/100));
+      allProcessInfo.at(currentPid)->setCPUUsage(startUsage);
+      
+      
+
       /*
       percent = std::ceil(percent * 100);
       percent = percent /100;
-      */
+
 
       double tempDouble = percent;
       int tempInt;
@@ -635,7 +649,7 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	{
 	  allProcessInfo.at(currentPid)->setCPUUsage(0);
 	}
-
+      */
       // get TIME+ (CPU time)
       allProcessInfo.at(currentPid)->setCpuRawTime(utime + cutime);
       SecondsToTime timePlus((utime + cutime)/((double)sysconf(_SC_CLK_TCK)));
