@@ -159,7 +159,7 @@ int main()
   int interval = 1000000;
   bool newInterval = true;
   bool entered = false;
-  
+
   auto startTime = std::chrono::high_resolution_clock::now();
 
   do{
@@ -271,7 +271,28 @@ int main()
 			   memInfo,
 			   uptime,
 			   uptimeStrings);
-	
+
+	// find if any process data changed and calc cpu usage
+	for(int i = 0; i < pidsEnd.size(); i++)
+	  {
+	    for(int j = 0; j < pidsStart.size(); j++)
+	      {
+		if(pidsEnd.at(i) == pidsStart.at(j))
+		  {
+		    if(*procInfoEnd.at(pidsEnd.at(i)) ==
+		       *procInfoStart.at(pidsStart.at(j)))
+		      {
+			procInfoEnd.at(pidsEnd.at(i))->setChanged(false);
+		      }
+			
+		    procInfoEnd.at(pidsEnd.at(i))->
+		      calcProcCPUUsage(*procInfoStart.at(pidsStart.at(j)),
+				       *procInfoEnd.at(pidsEnd.at(i)));
+		  }
+	      }
+	  }
+
+
 	// set flags and update the new start time for interval
 	entered = true;	
 	newInterval = true;
@@ -311,13 +332,13 @@ int main()
 	    refreshAllWins(allWins);
 	    doupdate();
 	    sleep(1.75);
-#endif
+#endif	    
 	  }
       }
-    
+
+#if _CURSES    
     flushinp();
 
-#if _CURSES
     if(highlight == true)
       {
 	wattron(allWins.at(sortState)->getWindow(),
@@ -330,7 +351,7 @@ int main()
       }
     if(graph == true)
       {
-	box(allWins.at(_CPUGRAPHWIN)->getWindow(), 'a', 'a');
+	box(allWins.at(_CPUGRAPHWIN)->getWindow(), '|', '_');
       }
     
     // ## update states and print ##
@@ -356,7 +377,6 @@ int main()
 			pidsStart,
 			pidsStart,
 			sortState);
-	
 	updateProgramState(procInfoStart,
 			   allWins,
 			   progState,
@@ -377,6 +397,8 @@ int main()
       }
     else
       {
+	std::vector<int> dead;
+	findDeadProcesses(outPids, pidsStart, dead);
 	updateSortState(procInfoEnd,
 			pidsEnd,
 			outPids,
@@ -413,18 +435,15 @@ int main()
 	      colorLine);    
     refreshAllWins(allWins);
     doupdate();	    
-    
 #endif
 
     if(quit)
       {
 	break;
       }
-
   } while(true);
 
   // cleanup
-
   for(std::unordered_map<int, ProcessInfo*>::iterator it = procInfoStart.begin();
       it != procInfoStart.end(); it++)
     {
