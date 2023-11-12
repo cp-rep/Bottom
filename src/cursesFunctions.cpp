@@ -40,7 +40,7 @@ void initializeCurses()
   timeout(0);
   noecho();
   cbreak();
-  keypad(stdscr, false);
+  keypad(stdscr, true);
   nodelay(stdscr, true);
 } // end of "initializeCurses"
 
@@ -1103,6 +1103,29 @@ void colorOffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
 
 
 
+void attrOnBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
+		      int attr)
+{
+  for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
+    {
+      wattron(wins.at(i)->getWindow(), attr);
+    }  
+} // end of "colorOffBottomWins"
+
+
+
+
+void attrOffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
+		       int attr)
+{
+  for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
+    {
+      wattroff(wins.at(i)->getWindow(), attr);
+    }  
+} // end of "colorOffBottomWins"
+
+
+  
 /*
   Function:
    printTasksData
@@ -1520,27 +1543,36 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 		const std::unordered_map<int, ProcessInfo*>& procData,
 		const std::vector<int>& pidList,
 		const int shiftY,
-		const int shiftX)
+		const int shiftX,
+		const int& sortState,
+		const bool& highlight)
 {
   std::string outString;
 
   for(int i = 0; i < pidList.size(); i++)
     {
       int posY = i + shiftY;
-      if(procData.at(pidList.at(i))->getChanged() == true);
-	{
-	  //	  attronBottomWins(wins, A_BOLD);
-	}
-
+      
       // ensure nothing is printed over the column titles
       if(posY != 0)
 	{
+	  if(procData.at(pidList.at(i))->getChanged() == true)
+	    {
+	      attrOnBottomWins(wins, A_BOLD);
+	    }
+	  
 	  // PID
 	  if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr &&
 	     ( (wins.at(_PIDWIN)->getNumCols() + wins.at(_PIDWIN)->getStartX()) <
 	       wins.at(_MAINWIN)->getNumCols()))
 	       
 	    {
+	      if(highlight == true && sortState == _PIDWIN)
+		{
+		  wattron(wins.at(sortState)->getWindow(),
+			  A_BOLD); 
+		}
+	      
 	      outString = std::to_string(procData.at(pidList.at(i))->getPID());
 	      mvwaddstr(wins.at(_PIDWIN)->getWindow(),
 			posY,
@@ -1552,6 +1584,12 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	     ( (wins.at(_USERWIN)->getNumCols() + wins.at(_USERWIN)->getStartX()) <
 	       wins.at(_MAINWIN)->getNumCols()))
 	    {
+	      if(highlight == true && sortState == _USERWIN)
+		{
+		  wattron(wins.at(sortState)->getWindow(),
+			  A_BOLD); 
+		}
+	      
 	      outString = procData.at(pidList.at(i))->getUSER();
 	      mvwaddstr(wins.at(_USERWIN)->getWindow(),
 			posY,
@@ -1563,6 +1601,12 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	     ( (wins.at(_PRWIN)->getNumCols() + wins.at(_PRWIN)->getStartX()) <
 	       wins.at(_MAINWIN)->getNumCols()))
 	    {
+	      if(highlight == true && sortState == _PRWIN)
+		{
+		  wattron(wins.at(sortState)->getWindow(),
+			  A_BOLD); 
+		}
+	      
 	      const int tempPRVal = procData.at(pidList.at(i))->getPR();
 	      if(tempPRVal == -100)
 		{
@@ -1583,6 +1627,12 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	     ( (wins.at(_NIWIN)->getNumCols() + wins.at(_NIWIN)->getStartX()) <
 	       wins.at(_MAINWIN)->getNumCols()))	    
             {
+	      if(highlight == true && sortState == _NIWIN)
+		{
+		  wattron(wins.at(sortState)->getWindow(),
+			  A_BOLD); 
+		}
+	      
 	      outString = std::to_string(procData.at(pidList.at(i))->getNI());
 	      mvwaddstr(wins.at(_NIWIN)->getWindow(),
 			posY,
@@ -1594,6 +1644,12 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	     ( (wins.at(_VIRTWIN)->getNumCols() + wins.at(_VIRTWIN)->getStartX()) <
 	       wins.at(_MAINWIN)->getNumCols()))
             {
+	      if(highlight == true && sortState == _VIRTWIN)
+		{
+		  wattron(wins.at(sortState)->getWindow(),
+			  A_BOLD); 
+		}
+	      
 	      outString = std::to_string(procData.at(pidList.at(i))->getVIRT());
 	      mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
 			posY,
@@ -1605,6 +1661,12 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	     ( (wins.at(_RESWIN)->getNumCols() + wins.at(_RESWIN)->getStartX()) <
 	       wins.at(_MAINWIN)->getNumCols())	)    
             {
+	      if(highlight == true && sortState == _RESWIN)
+		{
+		  wattron(wins.at(sortState)->getWindow(),
+			  A_BOLD); 
+		}
+	      
 	      outString = std::to_string(procData.at(pidList.at(i))->getRES());
 	      mvwaddstr(wins.at(_RESWIN)->getWindow(),
 			posY,
@@ -1616,6 +1678,12 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	     ( (wins.at(_SHRWIN)->getNumCols() + wins.at(_SHRWIN)->getStartX()) <
 	       wins.at(_MAINWIN)->getNumCols()))	    
             {
+	      if(highlight == true && sortState == _SHRWIN)
+		{
+		  wattron(wins.at(sortState)->getWindow(),
+			  A_BOLD); 
+		}
+	      
 	      outString = std::to_string(procData.at(pidList.at(i))->getSHR());
 	      mvwaddstr(wins.at(_SHRWIN)->getWindow(),
 			posY,
@@ -1627,6 +1695,12 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	     ( (wins.at(_SWIN)->getNumCols() + wins.at(_SWIN)->getStartX()) <
 	       wins.at(_MAINWIN)->getNumCols()))
 	    {
+	      if(highlight == true && sortState == _SWIN)
+		{
+		  wattron(wins.at(sortState)->getWindow(),
+			  A_BOLD); 
+		}
+	      
 	      mvwaddch(wins.at(_SWIN)->getWindow(),
 		       posY,
 		       0,
@@ -1637,6 +1711,12 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	     ( (wins.at(_PROCCPUWIN)->getNumCols() + wins.at(_PROCCPUWIN)->getStartX()) <
 	       wins.at(_MAINWIN)->getNumCols()))
             {
+	      if(highlight == true && sortState == _PROCCPUWIN)
+		{
+		  wattron(wins.at(sortState)->getWindow(),
+			  A_BOLD); 
+		}
+	      
 	      outString = doubleToStr(procData.at(pidList.at(i))->getCPUUsage(), 1);
 	      mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
 			posY,
@@ -1648,6 +1728,12 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	     ( (wins.at(_PROCMEMWIN)->getNumCols() + wins.at(_PROCMEMWIN)->getStartX()) <
 	       wins.at(_MAINWIN)->getNumCols()))
             {
+	      if(highlight == true && sortState == _PROCMEMWIN)
+		{
+		  wattron(wins.at(sortState)->getWindow(),
+			  A_BOLD); 
+		}
+	      
 	      outString = doubleToStr(procData.at(pidList.at(i))->getMEMUsage(), 1);
 	      mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
 			posY,
@@ -1659,6 +1745,12 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	     ( (wins.at(_PROCTIMEWIN)->getNumCols() + wins.at(_PROCTIMEWIN)->getStartX()) <
 	       wins.at(_MAINWIN)->getNumCols()))
 	    {
+	      if(highlight == true && sortState == _PROCTIMEWIN)
+		{
+		  wattron(wins.at(sortState)->getWindow(),
+			  A_BOLD); 
+		}
+	      
 	      outString = procData.at(pidList.at(i))->getProcessCPUTime();
 	      mvwaddstr(wins.at(_PROCTIMEWIN)->getWindow(),
 			posY,
@@ -1670,16 +1762,27 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	     ( (wins.at(_COMMANDWIN)->getNumCols() + wins.at(_COMMANDWIN)->getStartX()) <
 	       wins.at(_MAINWIN)->getNumCols()))	    
             {
+	      if(highlight == true && sortState == _COMMANDWIN)
+		{
+		  wattron(wins.at(sortState)->getWindow(),
+			  A_BOLD); 
+		}
+	      
 	      outString = procData.at(pidList.at(i))->getCOMMAND();
 	      mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
 			posY,
 			0,
 			outString.c_str());
-            } 
+            }
+
+	  attrOffBottomWins(wins, A_BOLD);
 	}
-      //      attroffBottomWins(wins, A_BOLD);
     }
 } // end of "printProcs"
+
+
+
+
 
 
 
