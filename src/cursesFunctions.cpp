@@ -1244,14 +1244,14 @@ void printCpusData(const std::unordered_map<int, CursesWindow*>& wins,
 	    wins.at(_CPUWAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
 
-  outString = doubleToStr(cpuUsage.hi, 1);
+  outString = doubleToStr(cpuUsage.irq, 1);
   mvwaddstr(wins.at(_CPUHIWIN)->getWindow(),
 	    0,
 	    wins.at(_CPUHIWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
 
 
-  outString = doubleToStr(cpuUsage.si, 1);
+  outString = doubleToStr(cpuUsage.sirq, 1);
   mvwaddstr(wins.at(_CPUSIWIN)->getWindow(),
 	    0,
 	    wins.at(_CPUSIWIN)->getNumCols() - outString.length(),
