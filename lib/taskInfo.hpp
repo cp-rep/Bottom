@@ -27,24 +27,24 @@ public:
   const unsigned int calcTotal() const;
 
   // getters
-  const unsigned int& getRunning() const;
-  const unsigned int& getUnSleep() const;
-  const unsigned int& getInSleep() const;
-  const unsigned int& getStopped() const;
-  const unsigned int& getSleeping() const;
-  const unsigned int& getZombie() const;
-  const unsigned int& getIdle() const;
-  const unsigned int& getTotal() const;
+  const unsigned int& getRunning() const { return m_running; }
+  const unsigned int& getUnSleep() const { return m_unSleep; }
+  const unsigned int& getInSleep() const { return m_inSleep; }
+  const unsigned int& getStopped() const { return m_sleeping; }
+  const unsigned int& getSleeping() const { return m_stopped; }
+  const unsigned int& getZombie() const { return m_zombie; }
+  const unsigned int& getIdle() const { return m_idle; }
+  const unsigned int& getTotal() const { return m_total; }
   
   // setters
-  void setRunning(const unsigned int& running);
-  void setUnSleep(const unsigned int& unSleep);
-  void setInSleep(const unsigned int& inSleep);
-  void setSleeping(const unsigned int& sleeping);
-  void setStopped(const unsigned int& stopped);
-  void setZombie(const unsigned int& zombie);
-  void setIdle(const unsigned int& idle);
-  void setTotal(const unsigned int& total);
+  void setRunning(const unsigned int& running) { m_running = running; }
+  void setUnSleep(const unsigned int& unSleep) { m_unSleep = unSleep; }
+  void setInSleep(const unsigned int& inSleep) { m_inSleep = inSleep; }
+  void setSleeping(const unsigned int& sleeping) { m_sleeping = sleeping; }
+  void setStopped(const unsigned int& stopped) { m_stopped = stopped; }
+  void setZombie(const unsigned int& zombie) { m_zombie = zombie; }
+  void setIdle(const unsigned int& idle) { m_idle = idle; }
+  void setTotal(const unsigned int& total) { m_total = total; }
   
 private:
   unsigned int m_running;
