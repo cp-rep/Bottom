@@ -751,11 +751,11 @@ void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins)
 */
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
-
-  for(int i = _MAINWIN; i <= _TASKSZOMBIE; i++)
+  std::unordered_map<int, CursesWindow*>::const_iterator it;// = wins.begin();
+  for(it = wins.begin(); it != wins.end(); it++)
     {
-      werase(wins.at(i)->getWindow());
-    }  
+      werase(it->second->getWindow());
+    }
 } // end of "clearAllWins"
 
 
@@ -2175,12 +2175,41 @@ void printBadInputString(const std::unordered_map<int, CursesWindow*>& wins,
   Output:
   
 */
-void drawGraph(WINDOW* win,
-	       const int& numLines,
-	       const int& numCols,
-	       std::queue<double>& vals)
+void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
+	       const int& winName,
+	       std::queue<double> vals)
 {
-  //  mvwaddch(wins.at(_SWIN)->getWindow(),  
-
+  std::vector<double> valsCopy;  
+  int numLines = wins.at(winName)->getNumLines();
+  int numCols = wins.at(winName)->getNumCols();
   
+  while(!vals.empty())
+    {
+      valsCopy.push_back(vals.front());
+      vals.pop();
+    }
+
+  wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_BLACK_TEXT));
+
+  if(valsCopy.size() > 0)
+    {
+      for(int i = valsCopy.size() - 1, j = numCols; i >= 0 && j > 2; i--, j--)
+	{
+	  double val = valsCopy.at(i) / 100;
+	  int y = val * (numLines - 1);
+	  mvwaddch(wins.at(winName)->getWindow(),
+		   numLines - y,
+		   j - 2,
+		   ' ');
+	  for(int k = numLines - y; k < numLines - 1; k++)
+	    {
+	      mvwaddch(wins.at(winName)->getWindow(),
+		       k,
+		       j - 2,
+		       ' ');
+	    }
+	}
+    }
+
+  wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_WHITE_TEXT));
 } // end of "graphState"
