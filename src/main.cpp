@@ -113,6 +113,8 @@ int main()
   std::vector<int> pidsEnd;
   std::vector<int> pidsStartDead;
   std::vector<int> pidsEndDead;
+  std::set<std::string> users;
+  int numUsers;
   std::unordered_map<int, ProcessInfo*> procInfoStart;
   std::unordered_map<int, ProcessInfo*> procInfoEnd;
   
@@ -146,7 +148,7 @@ int main()
   std::vector<std::string> uptimeStrings;
   std::string filePath;
   std::string timeString;
-  std::vector<int> outPids;      
+  std::vector<int> outPids;
   int interval = 1000000;
   bool newInterval = true;
   bool entered = false;
@@ -155,6 +157,7 @@ int main()
   auto startTime = std::chrono::high_resolution_clock::now();
 
   do{
+    users.clear();
     time(&rawtime);
     timeinfo = localtime(&rawtime);
     loadAvgStrings.clear();
@@ -231,22 +234,6 @@ int main()
     extractProcMeminfo(memInfo,
 		       _PROC_MEMINFO);    
 
-    // set the time string with current military time
-    timeString = uptime.returnHHMMSS(timeinfo->tm_hour,
-				     timeinfo->tm_min,
-				     timeinfo->tm_sec);
-
-    // create the top lines for ouput
-    allTopLines.push_back(createTopLine(timeString,
-					uptime.getHours()/24,
-					uptime.getHours() % 24,
-					uptime.getMinutes(),
-					loadAvgStrings));
-    defineTasksLine(allTopLines);
-    defineCpusLine(allTopLines);
-    defineMemMiBLine(allTopLines);
-    defineMemSwapLine(allTopLines);
-
     if(newInterval == true)
       {
 	// get starting pids
@@ -267,7 +254,9 @@ int main()
 			   pidsStart,
 			   memInfo,
 			   uptime,
-			   uptimeStrings);
+			   uptimeStrings,
+			   users);
+	numUsers = users.size();
 
 	// set interval flag
 	newInterval = false;
@@ -292,7 +281,9 @@ int main()
 			   pidsEnd,
 			   memInfo,
 			   uptime,
-			   uptimeStrings);
+			   uptimeStrings,
+			   users);
+	numUsers = users.size();
 
 	// find if any process data changed and calc cpu usage
 	for(int i = 0; i < pidsEnd.size(); i++)
@@ -320,6 +311,25 @@ int main()
     // "Tasks: XXX total, X running..."
     countProcessStates(procInfoEnd,
 		       taskInfo);
+
+    // set the time string with current military time
+    timeString = uptime.returnHHMMSS(timeinfo->tm_hour,
+				     timeinfo->tm_min,
+				     timeinfo->tm_sec);
+
+
+
+    // create the top lines for ouput
+    allTopLines.push_back(createTopLine(timeString,
+					uptime.getHours()/24,
+					uptime.getHours() % 24,
+					uptime.getMinutes(),
+					loadAvgStrings,
+					numUsers));
+    defineTasksLine(allTopLines);
+    defineCpusLine(allTopLines);
+    defineMemMiBLine(allTopLines);
+    defineMemSwapLine(allTopLines);
 
     // ## get user input ##
     int userInput = 0;
