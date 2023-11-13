@@ -30,8 +30,8 @@ public:
   const unsigned int& getRunning() const { return m_running; }
   const unsigned int& getUnSleep() const { return m_unSleep; }
   const unsigned int& getInSleep() const { return m_inSleep; }
-  const unsigned int& getStopped() const { return m_sleeping; }
-  const unsigned int& getSleeping() const { return m_stopped; }
+  const unsigned int& getStopped() const { return m_stopped; }
+  const unsigned int& getSleeping() const { return m_sleeping; }
   const unsigned int& getZombie() const { return m_zombie; }
   const unsigned int& getIdle() const { return m_idle; }
   const unsigned int& getTotal() const { return m_total; }
