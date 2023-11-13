@@ -20,8 +20,6 @@ struct CPUUsage{
   double st;
   double gu;
   double gun;
-  double hi;
-  double si;
   double utilization;
 };
 
