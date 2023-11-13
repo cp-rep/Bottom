@@ -1556,8 +1556,8 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
       // ensure nothing is printed over the column titles
       if(posY != 0)
 	{
-	  if(procData.at(pidList.at(i))->getS() == 'R')
-	    procData.at(pidList.at(i))->getS() == 'Z')
+	  if(procData.at(pidList.at(i))->getS() == 'R'||
+	     procData.at(pidList.at(i))->getS() == 'Z')
 	    {
 	      attrOnBottomWins(wins, A_BOLD);
 	    }
