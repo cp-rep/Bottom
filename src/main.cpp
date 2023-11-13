@@ -301,18 +301,6 @@ int main()
 	      {
 		if(pidsEnd.at(i) == pidsStart.at(j))
 		  {
-		    if(*procInfoEnd.at(pidsEnd.at(i)) ==
-		       *procInfoStart.at(pidsStart.at(j)))
-		      {
-			procInfoEnd.at(pidsEnd.at(i))->setChanged(false);
-			procInfoStart.at(pidsStart.at(j))->setChanged(false);
-		      }
-		    else
-		      {
-			procInfoEnd.at(pidsEnd.at(i))->setChanged(true);
-			procInfoStart.at(pidsStart.at(j))->setChanged(true);
-		      }
-		    
 		    procInfoEnd.at(pidsEnd.at(i))->
 		      calcProcCPUUsage(*procInfoStart.at(pidsStart.at(j)),
 				       *procInfoEnd.at(pidsEnd.at(i)));
