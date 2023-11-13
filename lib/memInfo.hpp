@@ -29,30 +29,30 @@ public:
   const int calculateSwapUsed() const;
 
   // getters
-  const int& getMemTotal() const;
-  const int& getMemFree() const;
-  const int& getMemUsed() const;
-  const int& getBuffers() const;
-  const int& getCached() const;
-  const int& getBuffCache() const;
-  const int& getSReclaimable() const;
-  const int& getSwapTotal() const;
-  const int& getSwapFree() const;
-  const int& getSwapUsed() const;
-  const int& getMemAvailable() const;
+  const int& getMemTotal() const { return m_memTotal; }
+  const int& getMemFree() const { return m_memFree; }
+  const int& getMemUsed() const { return m_memUsed; }
+  const int& getBuffers() const { return m_buffers; }
+  const int& getCached() const { return m_cached; }
+  const int& getBuffCache() const { return m_buffCache; }
+  const int& getSReclaimable() const { return m_sreclaimable; }
+  const int& getSwapTotal() const { return m_swapTotal; }
+  const int& getSwapFree() const { return m_swapFree; }
+  const int& getSwapUsed() const { return m_swapUsed; }
+  const int& getMemAvailable() const { return m_memAvailable; }
 
   // setters
-  void setMemTotal(const int& memTotal);
-  void setMemFree(const int& memFree);
-  void setMemUsed(const int& memUsed);
-  void setBuffers(const int& buffers);
-  void setCached(const int& cached);
-  void setBuffCache(const int& buffCache);  
-  void setSReclaimable(const int& sreclaimable);
-  void setSwapTotal(const int& swapTotal);
-  void setSwapFree(const int& swapFree);
-  void setSwapUsed(const int& swapUsed);
-  void setMemAvailable(const int& memAvailable);
+  void setMemTotal(const int& memTotal) { m_memTotal = memTotal; }
+  void setMemFree(const int& memFree) { m_memFree = memFree; }
+  void setMemUsed(const int& memUsed) { m_memUsed = memUsed; }
+  void setBuffers(const int& buffers) { m_buffers = buffers; }
+  void setCached(const int& cached) { m_cached = cached; }
+  void setBuffCache(const int& buffCache) { m_buffCache = buffCache; }
+  void setSReclaimable(const int& sreclaimable) { m_sreclaimable = sreclaimable; }
+  void setSwapTotal(const int& swapTotal) { m_swapTotal = swapTotal; }
+  void setSwapFree(const int& swapFree) { m_swapFree = swapFree; }
+  void setSwapUsed(const int& swapUsed) { m_swapUsed = swapUsed; }
+  void setMemAvailable(const int& memAvailable) { m_memAvailable = memAvailable; }
   
 private:
   // member variables
