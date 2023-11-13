@@ -28,7 +28,7 @@ I wanted to write a small Linux process management utility that may be easier ex
 The main branch will maintain the stable version of Bottom.  It currently supports Arch Linux and Ubuntu which are the operating systems it has been tested on.  However, most Linux distributions should work just fine.
 
 ## Current Challenges/Known Issues
-Some information does not match one to one to Top.  One such example are the CPU User Time and System Time averages and related values.  These need to be measured over a duration to get the correct average usage rates.  These calculations will eventually be rectified in the threaded branch down the line.  Another example is the number of users logged into the system which are not correct and currently set to 0.  All Research has pointed towards that data being retrieved from the '/var/run/utmp' file which requires a UTMP dump or some other method to interface with it such as non-standard libraries like 'libutempter'.
+Bottom has high CPU usage and also represents the current number of users differently than Top.  For the high CPU Usage, this is an obvious fix to thread the program and will be implemented.  For the number of users, this data is most effectively gathered from '/var/run/utmp'.  Unfortunately, this file varies between platforms.  I have considered writing platform specific code to read from it, however, I have recently discovered in testing that Top reports the number of current users differently between Linux distributions. Unless motivated otherwise, Bottom reports the number of users based upon the different users strings reported in the "USER" column.
 
 ## Future Changes/Additions I Would Like to Implement
 - Web-based features.
