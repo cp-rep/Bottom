@@ -661,7 +661,7 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	}
       */
       // get TIME+ (CPU time)
-      allProcessInfo.at(currentPid)->setCpuRawTime(utime + cutime);
+      allProcessInfo.at(currentPid)->setCpuRawTime(utime + stime);
       SecondsToTime timePlus((utime + cutime)/((double)sysconf(_SC_CLK_TCK)));
       std::string timePlusString = timePlus.returnHHMMSS(timePlus.getHours(),
 							 timePlus.getMinutes(),
