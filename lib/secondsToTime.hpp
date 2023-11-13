@@ -28,16 +28,16 @@ public:
 			   const unsigned int& seconds) const;
   
   // getters
-  const unsigned int& getHours() const;
-  const unsigned int& getMinutes() const;
-  const unsigned int& getSeconds() const;
-  const float& getTotalSeconds() const;
+  const unsigned int& getHours() const { return m_hours; }
+  const unsigned int& getMinutes() const { return m_minutes; }
+  const unsigned int& getSeconds() const { return m_seconds; }
+  const float& getTotalSeconds() const { return m_totalSeconds; }
   
   // setters
-  void setHours(const unsigned int& hours);
-  void setMinutes(const unsigned int& minutes);
-  void setSeconds(const unsigned int& seconds);
-  void setTotalSeconds(const float& totalSeconds);
+  void setHours(const unsigned int& hours) { m_hours = hours; }
+  void setMinutes(const unsigned int& minutes) { m_minutes = minutes; }
+  void setSeconds(const unsigned int& seconds) { m_seconds = seconds; }
+  void setTotalSeconds(const float& totalSeconds) { m_totalSeconds = totalSeconds; }
   
 private:
   // member variables
