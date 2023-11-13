@@ -391,8 +391,14 @@ int main()
 
     if(graph == true)
       {
+	cpuGraphCurrMaxLines = ((allWins.at(_MAINWIN)->getNumLines() - _YOFFSET)/2) - 3;
+	cpuGraphCurrMaxCols = (allWins.at(_MAINWIN)->getNumCols() -
+			       allWins.at(_COMMANDWIN)->getNumCols() -
+			       allWins.at(_COMMANDWIN)->getStartX() - 3);
+	
 	// box(allWins.at(_CPUGRAPHWIN)->getWindow(), '|', '_');
-	drawGraph(cpuGraphCurrMaxLines,
+	drawGraph(allWins.at(_CPUGRAPHWIN)->getWindow(),
+		  cpuGraphCurrMaxLines,
 		  cpuGraphCurrMaxCols,
 		  cpuUsageVals);
       }
@@ -501,8 +507,8 @@ int main()
 	      colorLine);    
     refreshAllWins(allWins);
     doupdate(); 
-
-    usleep(50000);    
+    usleep(50000);
+    
 #endif
 
     if(quit)
