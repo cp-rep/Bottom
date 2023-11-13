@@ -145,7 +145,7 @@ CPUUsage calcCPUUsage(const CPUInfo& cpuInfoStart,
   usage.gun = _MAXPERCENT * ((double)cpuInfoEnd.getGun() -
 			     (double)cpuInfoStart.getGun()) / total;
 
-  usage.utilization = _MAXPERCENT * (total - idle) / total;
+  usage.utilization = _MAXPERCENT - usage.id;
 
   return usage;
 } // end of "calcCPUUsage"
