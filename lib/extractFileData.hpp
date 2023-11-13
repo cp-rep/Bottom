@@ -7,12 +7,13 @@
 #ifndef EXTRACTFILEDATA_HPP
 #define EXTRACTFILEDATA_HPP
 #include <cmath>
+#include <cstring>
 #include <filesystem>
+#include <set>
 #include <string>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <cstring>
 #include <unordered_map>
 #include <vector>
 #include "_fileConsts.hpp"
@@ -27,7 +28,8 @@ void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			const std::vector<int>& pids,
 			MemInfo& memInfo,
 			SecondsToTime& uptime,
-			std::vector<std::string>& uptimeStrings);
+			std::vector<std::string>& uptimeStrings,
+			std::set<std::string>& users);
 void createFileCSV(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		   const std::string& filePath);
 bool makeDirectory(const std::string& dirPath);
@@ -64,10 +66,12 @@ const std::string createTopLine(const std::string HHMMSS,
 				const int numDays,
 				const int numHours,
 				const int numMinutes,
-				const std::vector<std::string> parsedLoadAvg);
+				const std::vector<std::string> parsedLoadAvg,
+				const int& numUsers);				
 void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			  const int currentPid,
-			  std::string& filePath);
+			  std::string& filePath,
+			  std::set<std::string>& users);			  
 void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			MemInfo& memInfo,
 			SecondsToTime& uptime,

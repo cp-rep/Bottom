@@ -15,6 +15,7 @@
 #include <ncurses.h>
 
 
+
 /*
   Function:
    extractProcessData
@@ -29,7 +30,8 @@ void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			const std::vector<int>& pids,
 			MemInfo& memInfo,
 			SecondsToTime& uptime,
-			std::vector<std::string>& uptimeStrings)
+			std::vector<std::string>& uptimeStrings,
+			std::set<std::string>& users)
 {
   std::string filePath;
   ProcessInfo* process;  
@@ -54,7 +56,8 @@ void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	filePath.append(_STATUS);
 	extractProcPidStatus(allProcessInfo,
 			     pids.at(i),
-			     filePath);
+			     filePath,
+			     users);
 	
 	// /proc/uptime & /proc/[pid]/stat
 	filePath.clear();
@@ -468,7 +471,8 @@ void extractProcStat(CPUInfo& cpuInfo,
 */
 void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			  const int currentPid,
-			  std::string& filePath)
+			  std::string& filePath,
+			  std::set<std::string>& users)
 {
   std::string lineString;
   std::string fileLine;
@@ -496,13 +500,19 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	}
       else
 	{
-	  allProcessInfo.at(currentPid)->setUSER(userData.pw_name);
+	  allProcessInfo.at(currentPid)->setUSER("");
 	}
     }
   else
     {
-      allProcessInfo.at(currentPid)->setUSER("-1");
+      allProcessInfo.at(currentPid)->setUSER("");
     }
+
+  // store user type in set for counting later
+  if(users.count(allProcessInfo.at(currentPid)->getUSER()) == 0)
+    {
+      users.insert(allProcessInfo.at(currentPid)->getUSER());
+    }	  
   
   // get VIRT
   lineString = returnFileLineByPhrase(filePath, "VmSize");
@@ -775,7 +785,8 @@ const std::string createTopLine(const std::string HHMMSS,
 				const int numDays,
 				const int numHours,
 				const int numMinutes,
-				const std::vector<std::string> parsedLoadAvg)
+				const std::vector<std::string> parsedLoadAvg,
+				const int& numUsers)
 {
   std::string tempTopString;
   tempTopString.append("top - ");
@@ -817,13 +828,23 @@ const std::string createTopLine(const std::string HHMMSS,
       tempTopString.append(std::to_string(numDays));      
       tempTopString.append(" days, ");
     }
-    tempTopString.append(" 0");
-    tempTopString.append(" users,  load average: ");
-    tempTopString.append(parsedLoadAvg.at(0));
-    tempTopString.append(", ");
-    tempTopString.append(parsedLoadAvg.at(1));
-    tempTopString.append(", ");
-    tempTopString.append(parsedLoadAvg.at(2));
+  
+  tempTopString.append(std::to_string(numUsers));
+
+  if(numUsers == 1)
+    {
+      tempTopString.append(" user,  load average: ");
+    }
+  else
+    {
+      tempTopString.append(" users,  load average: ");
+    }
+  
+  tempTopString.append(parsedLoadAvg.at(0));
+  tempTopString.append(", ");
+  tempTopString.append(parsedLoadAvg.at(1));
+  tempTopString.append(", ");
+  tempTopString.append(parsedLoadAvg.at(2));
 
     return tempTopString;
 } // end of "createTopLine"
