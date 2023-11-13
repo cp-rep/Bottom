@@ -502,6 +502,7 @@ int main()
     refreshAllWins(allWins);
     doupdate(); 
 
+    usleep(50000);    
 #endif
 
     if(quit)
