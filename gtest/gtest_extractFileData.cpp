@@ -315,6 +315,7 @@ TEST(extractProcPidStatus_FUNCTION, extractProcPidStatus_TEST)
   std::unordered_map<int, ProcessInfo*> allProcessInfo;
   std::string filePath = "./gtest/proc_pid_status.txt";
   ProcessInfo* process;
+  std::set<std::string> users;
 
   process = new ProcessInfo();
   allProcessInfo.insert(std::make_pair(1, process));
@@ -322,7 +323,8 @@ TEST(extractProcPidStatus_FUNCTION, extractProcPidStatus_TEST)
   // extract data from file path
   extractProcPidStatus(allProcessInfo,
 		       1,
-		       filePath);
+		       filePath,
+		       users);
 
   // test that the user was extracted correctly
   EXPECT_EQ(allProcessInfo.at(1)->getUSER(), "root");
