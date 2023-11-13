@@ -39,29 +39,28 @@ public:
 	  const unsigned int& gun = 0);
 
   // setters
-  void setUs(const unsigned int& us);
-  void setNi(const unsigned int& ni);
-  void setSy(const unsigned int& sy);
-  void setId(const unsigned int& id);
-  void setWa(const unsigned int& wa);
-  void setIrq(const unsigned int& irq);
-  void setSirq(const unsigned int& sirq);
-  void setSt(const unsigned int& st);
-  void setGu(const unsigned int& gu);
-  void setGun(const unsigned int& gun);
+  void setUs(const unsigned int& us) { m_us = us; }
+  void setNi(const unsigned int& ni) { m_ni = ni; }
+  void setSy(const unsigned int& sy) { m_sy = sy; }
+  void setId(const unsigned int& id) { m_id = id; }
+  void setWa(const unsigned int& wa) { m_wa = wa; }
+  void setIrq(const unsigned int& irq) { m_irq = irq; }
+  void setSirq(const unsigned int& sirq) { m_sirq = sirq; }
+  void setSt(const unsigned int& st) { m_st = st; }
+  void setGu(const unsigned int& gu) { m_gu = gu; }
+  void setGun(const unsigned int& gun) { m_gun = gun; }
   
   // getters
-  const unsigned int& getUs() const;
-  const unsigned int& getNi() const;
-  const unsigned int& getSy() const;
-  const unsigned int& getId() const;
-  const unsigned int& getWa() const;
-  const unsigned int& getIrq() const;
-  const unsigned int& getSirq() const;
-  const unsigned int& getHi() const;
-  const unsigned int& getSt() const;
-  const unsigned int& getGu() const;
-  const unsigned int& getGun() const;
+  const unsigned int& getUs() const { return m_us; }
+  const unsigned int& getNi() const { return m_ni; }
+  const unsigned int& getSy() const { return m_sy; }
+  const unsigned int& getId() const { return m_id; }
+  const unsigned int& getWa() const { return m_wa; }
+  const unsigned int& getIrq() const { return m_irq; }
+  const unsigned int& getSirq() const { return m_sirq; }
+  const unsigned int& getSt() const { return m_st; }
+  const unsigned int& getGu() const { return m_gu; }
+  const unsigned int& getGun() const { return m_gun; }
 
 private:
   unsigned int m_us;
