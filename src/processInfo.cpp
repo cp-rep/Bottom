@@ -129,7 +129,6 @@ bool ProcessInfo::operator==(const ProcessInfo& other) const
     {
       return false;
     }
-  /*
   else if(this->m_cpuRawTime != other.getCpuRawTime())
     {
       return false;
@@ -144,7 +143,6 @@ bool ProcessInfo::operator==(const ProcessInfo& other) const
     {
       return false;
     }
-  */
   else if(this->m_commandUpper != other.getCOMMANDUpper())
     {
       return false;
