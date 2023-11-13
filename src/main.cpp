@@ -19,6 +19,7 @@
 #include <limits>
 #include <ncurses.h>
 #include <pwd.h>
+#include <queue>
 #include <unordered_map>
 #include <unistd.h>
 #include <set>
@@ -140,6 +141,17 @@ int main()
   initializeStartingWindows(allWins);
   defineStartingWindows(allWins);
   initializeProgramStates(progStates);
+
+
+  // graph related vars
+  std::queue<double> cpuUsageVals;
+  const int cpuGraphMaxLines = ((allWins.at(_MAINWIN)->getNumLines() - _YOFFSET)/2) - 2;
+  const int cpuGraphMaxCols = (allWins.at(_MAINWIN)->getNumCols() -
+			       allWins.at(_COMMANDWIN)->getNumCols() -
+			       allWins.at(_COMMANDWIN)->getStartX() - 2);
+  int cpuGraphCurrMaxLines;
+  int cpuGraphCurrMaxCols;
+
   
   // loop variables
   SecondsToTime uptime;
@@ -219,6 +231,17 @@ int main()
 				cpuInfoEnd);
       }
 
+    if(cpuUsageVals.empty() || cpuUsageVals.size() < cpuGraphMaxCols)
+      {
+	cpuUsageVals.push(cpuUsage.utilization);
+      }
+    else
+      {
+	cpuUsageVals.pop();
+	cpuUsageVals.push(cpuUsage.utilization);
+      }
+    
+
     // extract data from /proc/uptime for very top window
     // "current time, # users, load avg"    
     extractProcUptime(uptime,
@@ -285,7 +308,7 @@ int main()
 			   users);
 	numUsers = users.size();
 
-	// find if any process data changed and calc cpu usage
+	// find if any process data changed and calc per process cpu usage
 	for(int i = 0; i < pidsEnd.size(); i++)
 	  {
 	    for(int j = 0; j < pidsStart.size(); j++)
@@ -306,7 +329,7 @@ int main()
 	newInterval = true;
 	startTime = currentTime;
       }
-
+    
     // count the extracted process states for task window
     // "Tasks: XXX total, X running..."
     countProcessStates(procInfoEnd,
@@ -368,7 +391,10 @@ int main()
 
     if(graph == true)
       {
-	box(allWins.at(_CPUGRAPHWIN)->getWindow(), '|', '_');
+	// box(allWins.at(_CPUGRAPHWIN)->getWindow(), '|', '_');
+	drawGraph(cpuGraphCurrMaxLines,
+		  cpuGraphCurrMaxCols,
+		  cpuUsageVals);
       }
 
     updateWindowDimensions(allWins);
