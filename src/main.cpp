@@ -131,7 +131,7 @@ int main()
   bool quit = false;
   int shiftY = 1;
   int shiftX = _PIDWIN;
-  bool graph = false;
+  bool cpuGraph = false;
   std::unordered_map<char, int> progStates;
 
 #if _CURSES    
@@ -146,11 +146,8 @@ int main()
   // graph related vars
   std::queue<double> cpuUsageVals;
   const int cpuGraphMaxLines = ((allWins.at(_MAINWIN)->getNumLines() - _YOFFSET)/2) - 2;
-  const int cpuGraphMaxCols = (allWins.at(_MAINWIN)->getNumCols() -
-			       allWins.at(_COMMANDWIN)->getNumCols() -
-			       allWins.at(_COMMANDWIN)->getStartX() - 2);
-  int cpuGraphCurrMaxLines;
-  int cpuGraphCurrMaxCols;
+  const int cpuGraphMaxCols = allWins.at(_MAINWIN)->getNumCols() -
+    allWins.at(_COMMANDWIN)->getNumCols() - 2;
 
   
   // loop variables
@@ -219,7 +216,6 @@ int main()
 	extractProcStat(cpuInfoStart,
 			_PROC_STAT);
       }
-
     else if(elapsedTime >= interval)
       {
 	// extract end data for CPU line
@@ -229,18 +225,18 @@ int main()
 	// calculate cpu averages
 	cpuUsage = calcCPUUsage(cpuInfoStart,
 				cpuInfoEnd);
-      }
 
-    if(cpuUsageVals.empty() || cpuUsageVals.size() < cpuGraphMaxCols)
-      {
-	cpuUsageVals.push(cpuUsage.utilization);
+	// store cpu utilization in queue for graph output
+	if(cpuUsageVals.empty() || cpuUsageVals.size() < cpuGraphMaxCols)
+	  {
+	    cpuUsageVals.push(cpuUsage.utilization);
+	  }
+	else
+	  {
+	    cpuUsageVals.pop();
+	    cpuUsageVals.push(cpuUsage.utilization);
+	  }	
       }
-    else
-      {
-	cpuUsageVals.pop();
-	cpuUsageVals.push(cpuUsage.utilization);
-      }
-    
 
     // extract data from /proc/uptime for very top window
     // "current time, # users, load avg"    
@@ -389,29 +385,23 @@ int main()
 #if _CURSES    
     flushinp();
 
-    if(graph == true)
+    // ensure to not clear the windows if entering certain states    
+    if(userInput != _STATEKILL)
       {
-	cpuGraphCurrMaxLines = ((allWins.at(_MAINWIN)->getNumLines() - _YOFFSET)/2) - 3;
-	cpuGraphCurrMaxCols = (allWins.at(_MAINWIN)->getNumCols() -
-			       allWins.at(_COMMANDWIN)->getNumCols() -
-			       allWins.at(_COMMANDWIN)->getStartX() - 3);
-	
-	// box(allWins.at(_CPUGRAPHWIN)->getWindow(), '|', '_');
-	drawGraph(allWins.at(_CPUGRAPHWIN)->getWindow(),
-		  cpuGraphCurrMaxLines,
-		  cpuGraphCurrMaxCols,
+	clearAllWins(allWins);
+      }
+
+    // draw cpu graph
+    if(cpuGraph == true)
+      {
+	box(allWins.at(_CPUGRAPHWIN)->getWindow(), '*', '*');
+	drawGraph(allWins,
+		  _CPUGRAPHWIN,
 		  cpuUsageVals);
       }
 
     updateWindowDimensions(allWins);
     colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
-
-    // ensure to not clear the windows if entering certain states
-    if(userInput != _STATEKILL)
-      {
-	clearAllWins(allWins);
-      }
-    
     printTopWins(allWins,
 		 allTopLines);
     boldOnAllTopWins(allWins,
@@ -424,7 +414,6 @@ int main()
 		    memInfo);
     boldOffAllTopWins(allWins,
 		      A_BOLD);
-    
     // ## update states and print ##
     if(entered == false)
       {
@@ -443,7 +432,7 @@ int main()
 			   shiftY,
 			   shiftX,
 			   pidsStart.size() - 2,
-			   graph,
+			   cpuGraph,
 			   stateChanged);
 	printProcs(allWins,
 		   procInfoStart,
@@ -463,8 +452,6 @@ int main()
 		  _BLACK_TEXT,
 		  _MAINWIN,
 		  colorLine);    
-	refreshAllWins(allWins);
-	doupdate();	
       }
     else if(stateChanged == false)
       {
@@ -483,7 +470,7 @@ int main()
 			   shiftY,
 			   shiftX,
 			   outPids.size() - 2,
-			   graph,
+			   cpuGraph,
 			   stateChanged);
 	printProcs(allWins,
 		   procInfoEnd,
@@ -493,7 +480,7 @@ int main()
 		   sortState,
 		   highlight);
       }
-
+    
     colorOnBottomWins(allWins,
 		      _BLACK_TEXT);
     printWindowNames(allWins);
@@ -504,11 +491,11 @@ int main()
 	      0,
 	      _BLACK_TEXT,
 	      _MAINWIN,
-	      colorLine);    
+	      colorLine);
     refreshAllWins(allWins);
-    doupdate(); 
+    doupdate();
     usleep(50000);
-    
+    // usleep(1000);    
 #endif
 
     if(quit)
@@ -538,7 +525,6 @@ int main()
   
   procInfoEnd.clear();
   procInfoStart.clear();
-
 
 #if _LOG
   if(log.is_open())
