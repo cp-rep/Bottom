@@ -9,6 +9,7 @@
 #ifndef CURSESFUNCTIONS_HPP
 #define CURSESFUNCTIONS_HPP
 #include <curses.h>
+#include <queue>
 #include <vector>
 #include <unordered_map>
 #include "byteConverter.hpp"
@@ -91,5 +92,7 @@ void printBadInputString(const std::unordered_map<int, CursesWindow*>& wins,
 			 const int& yOffset,
 			 const int& xOffset,
 			 const std::string& outString);
-void drawGraph();
+void drawGraph(const int& numLines,
+	       const int& numCols,
+	       std::queue<double>& cpuUsageVals);
 #endif

@@ -2173,7 +2173,10 @@ void printBadInputString(const std::unordered_map<int, CursesWindow*>& wins,
   Input:
 
   Output:
+  
 */
-void drawGraph()
+void drawGraph(const int& numLines,
+	       const int& numCols,
+	       std::queue<double>& cpuUsageVals)
 {
 } // end of "graphState"
