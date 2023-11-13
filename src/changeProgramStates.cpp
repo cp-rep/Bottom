@@ -116,7 +116,7 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	  CursesWindow* graphWindow = new CursesWindow();
 	  wins.insert(std::make_pair(_CPUGRAPHWIN, graphWindow));
 	  wins.at(_CPUGRAPHWIN)->defineWindow
-	    (newwin(((wins.at(_MAINWIN)->getNumLines() - _YOFFSET)/2) + 1,
+	    (newwin(((wins.at(_MAINWIN)->getNumLines() - _YOFFSET)/2) - 2,
 		    (wins.at(_MAINWIN)->getNumCols() -
 		     wins.at(_COMMANDWIN)->getNumCols() -
 		     wins.at(_COMMANDWIN)->getStartX()) - 2,
@@ -124,10 +124,10 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		    wins.at(_COMMANDWIN)->getStartX() +
 		    wins.at(_COMMANDWIN)->getNumCols() + 2),
 	     "Cpu Graph Win",
-	     ((wins.at(_MAINWIN)->getNumLines() - _YOFFSET)/2) + 1,
+	     ((wins.at(_MAINWIN)->getNumLines() - _YOFFSET)/2) - 2,
 	     (wins.at(_MAINWIN)->getNumCols() -
 	      wins.at(_COMMANDWIN)->getNumCols() -
-	      wins.at(_COMMANDWIN)->getStartX()) - 2,	     
+	      wins.at(_COMMANDWIN)->getStartX()) - 2,
 	     _YOFFSET + 1,
 	     wins.at(_COMMANDWIN)->getStartX() +
 	     wins.at(_COMMANDWIN)->getNumCols() + 2);
