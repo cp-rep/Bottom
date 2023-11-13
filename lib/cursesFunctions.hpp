@@ -92,7 +92,8 @@ void printBadInputString(const std::unordered_map<int, CursesWindow*>& wins,
 			 const int& yOffset,
 			 const int& xOffset,
 			 const std::string& outString);
-void drawGraph(const int& numLines,
+void drawGraph(WINDOW* win,
+	       const int& numLines,
 	       const int& numCols,
-	       std::queue<double>& cpuUsageVals);
+	       std::queue<double>& vals);
 #endif
