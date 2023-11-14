@@ -115,17 +115,20 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	  int numCols;
 	  int startY;
 	  int startX;
-	  numLines = (((wins.at(_MAINWIN)->getNumLines() - _YOFFSET)/2) - 2);
-	  numCols = ((wins.at(_MAINWIN)->getNumCols() -
-		      wins.at(_COMMANDWIN)->getNumCols() -
-		      wins.at(_COMMANDWIN)->getStartX()) - 2);
-	  startY = _YOFFSET + 1;
-	  startX = (wins.at(_COMMANDWIN)->getStartX() +
-		    wins.at(_COMMANDWIN)->getNumCols() + 2);
+	  /*
+	    numLines = (((wins.at(_MAINWIN)->getNumLines() - _YOFFSET)/2) - 2);
+	    numCols = ((wins.at(_MAINWIN)->getNumCols() -
+	    wins.at(_COMMANDWIN)->getNumCols() -
+	    wins.at(_COMMANDWIN)->getStartX()) - 2);
+	    startY = _YOFFSET + 1;
+	    startX = (wins.at(_COMMANDWIN)->getStartX() +
+	    wins.at(_COMMANDWIN)->getNumCols() + 2);
+
 
       if(cpuGraph == false)
       	{
-	  CursesWindow* graphWindow = new CursesWindow();
+
+	    CursesWindow* graphWindow = new CursesWindow();
 	  wins.insert(std::make_pair(_CPUGRAPHWIN, graphWindow));
 	  wins.at(_CPUGRAPHWIN)->defineWindow(newwin(numLines,
 						     numCols,
@@ -135,7 +138,8 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 					      numLines,
 					      numCols,
 					      startY,
-					      startX); 
+					      startX);
+
 	  cpuGraph = true;
 	  cpuGraphCount = 1;
 	}
@@ -172,7 +176,9 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	      cpuGraphCount = 0;
 	      cpuGraph = false;
 	    }
+
 	}
+	  */
       break;
     case _STATECSV: // output csv file
       makeDirectory(_CSV);
