@@ -96,7 +96,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				  startY,
 				  startX);
   numLines = 1;
-  numCols = numCols;
+  numCols = numCols - 100;
   startY = _YOFFSET - 6;
   startX = 0;
 
@@ -2004,11 +2004,15 @@ void drawBoxes(const std::unordered_map<int, CursesWindow*>& wins)
 {
   char val = 'a';
 
-  for(int i = 0; i < wins.size(); i++, val++)
+  std::unordered_map<int, CursesWindow*>::const_iterator it;
+  //  for(int i = 0; i < wins.size(); i++, val++)
+
+  for(it = wins.begin(); it != wins.end(); it++)
     {
-      if(wins.at(i)->getWindow() != nullptr)
+      val++;
+      if(it->second->getWindow() != nullptr)
 	{
-	  box(wins.at(i)->getWindow(), val, val);
+	  box(it->second->getWindow(), val, val);
 	}
     }
 } // end of "drawBoxes"
@@ -2182,34 +2186,55 @@ void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
   std::vector<double> valsCopy;  
   int numLines = wins.at(winName)->getNumLines();
   int numCols = wins.at(winName)->getNumCols();
+  int startY = wins.at(winName)->getStartY();
+  int startX = wins.at(winName)->getStartX();  
   
   while(!vals.empty())
     {
       valsCopy.push_back(vals.front());
       vals.pop();
     }
-
+  /*
   wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_BLACK_TEXT));
-
+  for(int i = 0, j = 0; i < numLines, j < numCols; i++, j++)
+    {
+      mvwaddch(wins.at(winName)->getWindow(),
+	       i,
+	       0,
+	       ' ');
+      mvwaddch(wins.at(winName)->getWindow(),
+	       i,
+	       numCols - 1,
+	       ' ');
+      mvwaddch(wins.at(winName)->getWindow(),
+	       0,
+	       j,
+	       ' ');
+      mvwaddch(wins.at(winName)->getWindow(),
+	       numLines - 1,
+	       j,
+	       ' ');
+    }
+  */
+  wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_BLACK_TEXT));  
   if(valsCopy.size() > 0)
     {
-      for(int i = valsCopy.size() - 1, j = numCols; i >= 0 && j > 2; i--, j--)
+      for(int i = valsCopy.size() - 1, j = numCols + 1; i >= 0 && j > 2; i--, j--)
 	{
 	  double val = valsCopy.at(i) / 100;
 	  int y = val * (numLines - 1);
 	  mvwaddch(wins.at(winName)->getWindow(),
 		   numLines - y,
-		   j - 2,
+		   j - 3,
 		   ' ');
 	  for(int k = numLines - y; k < numLines - 1; k++)
 	    {
 	      mvwaddch(wins.at(winName)->getWindow(),
 		       k,
-		       j - 2,
+		       j - 3,
 		       ' ');
 	    }
 	}
     }
-
   wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_WHITE_TEXT));
-} // end of "graphState"
+} // end of "graphState
