@@ -31,6 +31,7 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			int& shiftX,
 			const int shiftDownMax,
 			bool& cpuGraph,
+			bool& memGraph,
 			bool& stateChanged,
 			int& cpuGraphCount);
 void updateSortState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
