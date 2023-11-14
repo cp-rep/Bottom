@@ -82,7 +82,8 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			int& shiftX,
 			const int shiftDownMax,
 			bool& cpuGraph,
-			bool& stateChanged)
+			bool& stateChanged,
+			int& cpuGraphCount)
 {
   switch(progState)
     {
@@ -110,23 +111,22 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       stateChanged = true;      
       break;
     case _STATECPUGRAPH:
-      if(cpuGraph == false)
-      	{
-	  int numLines;
+      	  int numLines;
 	  int numCols;
 	  int startY;
 	  int startX;
-	  CursesWindow* graphWindow = new CursesWindow();
-	  
-	  wins.insert(std::make_pair(_CPUGRAPHWIN, graphWindow));
 	  numLines = (((wins.at(_MAINWIN)->getNumLines() - _YOFFSET)/2) - 2);
 	  numCols = ((wins.at(_MAINWIN)->getNumCols() -
 		      wins.at(_COMMANDWIN)->getNumCols() -
 		      wins.at(_COMMANDWIN)->getStartX()) - 2);
 	  startY = _YOFFSET + 1;
 	  startX = (wins.at(_COMMANDWIN)->getStartX() +
-		      wins.at(_COMMANDWIN)->getNumCols() + 2);
-	  
+		    wins.at(_COMMANDWIN)->getNumCols() + 2);
+
+      if(cpuGraph == false)
+      	{
+	  CursesWindow* graphWindow = new CursesWindow();
+	  wins.insert(std::make_pair(_CPUGRAPHWIN, graphWindow));
 	  wins.at(_CPUGRAPHWIN)->defineWindow(newwin(numLines,
 						     numCols,
 						     startY,
@@ -135,15 +135,43 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 					      numLines,
 					      numCols,
 					      startY,
-					      startX);
+					      startX); 
 	  cpuGraph = true;
+	  cpuGraphCount = 1;
 	}
       else
 	{
-	  wins.at(_CPUGRAPHWIN)->deleteWindow();
-	  delete(wins.at(_CPUGRAPHWIN));
-	  wins.erase(_CPUGRAPHWIN);	
-	  cpuGraph = false;  
+	  // resize logic
+	  if(cpuGraphCount == 1)
+	    {
+	      numLines = numLines/2;
+	      numCols = numCols/2;
+	      startX = wins.at(_MAINWIN)->getNumCols() - numCols - 1;
+	      
+	      if((numCols % 2) != 0)
+		{
+		  numCols++;
+		}
+	      else if((startX % 2) != 0)
+		{
+		  startX++;
+		}
+	      
+	      wins.at(_CPUGRAPHWIN)->setNumLines(numLines);
+	      wins.at(_CPUGRAPHWIN)->setNumCols(numCols);
+	      wins.at(_CPUGRAPHWIN)->setStartX(startX);	      
+	      wresize(wins.at(_CPUGRAPHWIN)->getWindow(), numLines, numCols);
+	      mvwin(wins.at(_CPUGRAPHWIN)->getWindow(), startY, startX);
+	      cpuGraphCount = 2;
+	    }
+	  else if(cpuGraphCount == 2)
+	    {
+	      wins.at(_CPUGRAPHWIN)->deleteWindow();
+	      delete(wins.at(_CPUGRAPHWIN));
+	      wins.erase(_CPUGRAPHWIN);
+	      cpuGraphCount = 0;
+	      cpuGraph = false;
+	    }
 	}
       break;
     case _STATECSV: // output csv file
