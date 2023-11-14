@@ -671,7 +671,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 					 startX);
   
   // define cpu graph
-  numLines = ((wins.at(_MAINWIN)->getNumLines() - _YOFFSET)/4);
+  numLines = 14;/*((wins.at(_MAINWIN)->getNumLines() - _YOFFSET)/4)*/
   numCols = (((wins.at(_MAINWIN)->getNumCols() -
 	       wins.at(_COMMANDWIN)->getNumCols() -
 	       wins.at(_COMMANDWIN)->getStartX())/2) - 2);
@@ -2259,10 +2259,11 @@ void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
     {
       for(int i = valsCopy.size() - 1, j = numCols + 1; i >= 0 && j > 3; i--)
 	{
-	  double val = valsCopy.at(i) / 100;
+	  double val = std::floor(valsCopy.back() / 10);
+	  val = val/10;
 	  int currVal = valsCopy.back();
 	  outString = std::to_string(currVal);
-	  int y = val * (numLines - 3);
+	  int y = val * (numLines - 4);
 
 	  wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_WHITE_TEXT));
 	  
@@ -2296,18 +2297,17 @@ void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
 	  wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_BLACK_TEXT));
 	  
 	  // draw graph bars
-	  for(int k = numLines - y; k < numLines - 1; k++)
+	  for(int k = 1; k <= y; k++)
 	    {
 	      mvwaddch(wins.at(winName)->getWindow(),
-		       k,
+		       numLines - k - 1,
 		       j - 3,
 		       ' ');
 	      mvwaddch(wins.at(winName)->getWindow(),
-		       k,
+		       numLines - k - 1,
 		       j - 4,
 		       ' ');
-	    }	  
-
+	    }
 	  j -= 2;
 	}
     }
