@@ -2005,8 +2005,6 @@ void drawBoxes(const std::unordered_map<int, CursesWindow*>& wins)
   char val = 'a';
 
   std::unordered_map<int, CursesWindow*>::const_iterator it;
-  //  for(int i = 0; i < wins.size(); i++, val++)
-
   for(it = wins.begin(); it != wins.end(); it++)
     {
       val++;
@@ -2186,55 +2184,89 @@ void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
   std::vector<double> valsCopy;  
   int numLines = wins.at(winName)->getNumLines();
   int numCols = wins.at(winName)->getNumCols();
-  int startY = wins.at(winName)->getStartY();
-  int startX = wins.at(winName)->getStartX();  
-  
+
   while(!vals.empty())
     {
       valsCopy.push_back(vals.front());
       vals.pop();
     }
-  /*
-  wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_BLACK_TEXT));
+
+  // print window border
   for(int i = 0, j = 0; i < numLines, j < numCols; i++, j++)
     {
       mvwaddch(wins.at(winName)->getWindow(),
 	       i,
 	       0,
-	       ' ');
+	       '*');
       mvwaddch(wins.at(winName)->getWindow(),
 	       i,
 	       numCols - 1,
-	       ' ');
+	       '*');
       mvwaddch(wins.at(winName)->getWindow(),
 	       0,
 	       j,
-	       ' ');
+	       '*');
       mvwaddch(wins.at(winName)->getWindow(),
 	       numLines - 1,
 	       j,
-	       ' ');
+	       '*');
     }
-  */
-  wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_BLACK_TEXT));  
+  
+  wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_BLACK_TEXT));
+
+  // print graph
   if(valsCopy.size() > 0)
     {
-      for(int i = valsCopy.size() - 1, j = numCols + 1; i >= 0 && j > 2; i--, j--)
+      for(int i = valsCopy.size() - 1, j = numCols + 1; i >= 0 && j > 3; i--)
 	{
 	  double val = valsCopy.at(i) / 100;
+	  int currVal = valsCopy.back();
+	  std::string outString = std::to_string(currVal);
 	  int y = val * (numLines - 1);
-	  mvwaddch(wins.at(winName)->getWindow(),
-		   numLines - y,
-		   j - 3,
-		   ' ');
+
+	  // print current utilization
+	  if(currVal < 10)
+	    {
+	      int outX = numCols - 2;
+	      mvwaddstr(wins.at(winName)->getWindow(),
+			1,
+			outX,
+			outString.c_str());
+	    }
+	  else if(currVal > 9 && currVal < 100)
+	    {
+	      int outX = numCols - 3;
+
+	      mvwaddstr(wins.at(winName)->getWindow(),
+			1,
+			outX,
+			outString.c_str());
+	    }
+	  else
+	    {
+	      int outX = numCols - 4;
+	      mvwaddstr(wins.at(winName)->getWindow(),
+			1,
+			outX,
+			outString.c_str());
+	    }
+
+	  // draw graph bars
 	  for(int k = numLines - y; k < numLines - 1; k++)
 	    {
 	      mvwaddch(wins.at(winName)->getWindow(),
 		       k,
 		       j - 3,
 		       ' ');
-	    }
+	      mvwaddch(wins.at(winName)->getWindow(),
+		       k,
+		       j - 4,
+		       ' ');
+	    }	  
+
+	  j -= 2;
 	}
     }
+  
   wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_WHITE_TEXT));
 } // end of "graphState
