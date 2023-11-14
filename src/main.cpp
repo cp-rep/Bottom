@@ -148,8 +148,8 @@ int main()
   std::queue<double> memUsageVals;  
   const int graphMaxCols = allWins.at(_MAINWIN)->getNumCols() -
     allWins.at(_COMMANDWIN)->getNumCols() - 2;
-  int cpuGraphCount = 0;
-  int memGraphCount = 0;
+  int cpuGraphCount = 1;
+  int memGraphCount = 1;
   
   // loop variables
   SecondsToTime uptime;
@@ -413,7 +413,7 @@ int main()
 		  cpuUsageVals,
 		  "CPU UTILIZATION %");
       }
-    
+
     if(memGraph == true)
       {
 	drawGraph(allWins,
@@ -455,6 +455,7 @@ int main()
 			   shiftX,
 			   pidsStart.size() - 2,
 			   cpuGraph,
+			   memGraph,
 			   stateChanged,
 			   cpuGraphCount);
 	printProcs(allWins,
@@ -494,6 +495,7 @@ int main()
 			   shiftX,
 			   outPids.size() - 2,
 			   cpuGraph,
+			   memGraph,
 			   stateChanged,
 			   cpuGraphCount);
 	printProcs(allWins,
