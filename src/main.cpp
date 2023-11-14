@@ -131,7 +131,7 @@ int main()
   bool quit = false;
   int shiftY = 1;
   int shiftX = _PIDWIN;
-  bool cpuGraph = false;
+  bool cpuGraph = true;
   std::unordered_map<char, int> progStates;
 
 #if _CURSES    
@@ -391,10 +391,10 @@ int main()
     if(cpuGraph == true)
       {
 
-	drawTopGraph(allWins,
+	drawGraph(allWins,
 		  _CPUGRAPHWIN,
 		  cpuUsageVals,
-		  "  CPU UTILIZATION ");
+		  "CPU UTILIZATION");
       }
 
     updateWindowDimensions(allWins);
