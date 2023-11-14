@@ -235,6 +235,14 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	  memGraph = true;
 	  memGraphCount = 1;
 	}
+      else
+	{
+	  wins.at(_MEMGRAPHWIN)->deleteWindow();
+	  delete(wins.at(_MEMGRAPHWIN));
+	  wins.erase(_MEMGRAPHWIN);
+	  memGraphCount = 0;
+	  memGraph = false;	  
+	}
       break;
     case _STATECSV: // output csv file
       makeDirectory(_CSV);
