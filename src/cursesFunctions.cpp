@@ -682,16 +682,15 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
   startY = _YOFFSET + 1;
   startX = wins.at(_MAINWIN)->getNumCols() - numCols;
   wins.at(_CPUGRAPHWIN)->defineWindow(newwin(numLines,
-						numCols,
-						startY,
-						startX),  
-					 "cpuGraph",
-					 numLines,
-					 numCols,
-					 startY,
-					 startX);
-	   
-
+					     numCols,
+					     startY,
+					     startX),  
+				      "cpuGraph",
+				      numLines,
+				      numCols,
+				      startY,
+				      startX);
+  /*
   // define mem graph
   startY = startY + numLines;
   wins.at(_MEMGRAPHWIN)->defineWindow(newwin(numLines,
@@ -702,7 +701,8 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				      numLines,
 				      numCols,
 				      startY,
-				      startX);  
+				      startX);
+  */
 } // end of "defineStartingWindows"
 
 
