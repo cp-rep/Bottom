@@ -62,7 +62,7 @@ void initializeCurses()
 */
 void initializeStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 {
-  for(int i = _MAINWIN; i <= _MIBMEMAVAILWIN; i++)
+  for(int i = _MAINWIN; i <= _CPUGRAPHWIN; i++)
     {
       CursesWindow* newWindow = new CursesWindow();
       wins.insert(std::make_pair(i, newWindow));
@@ -537,7 +537,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 					  numCols,
 					  startY,
 					  startX),  
-				   "Si",
+				   "si",
 				   numLines,
 				   numCols,
 				   startY,
@@ -669,6 +669,29 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 					 numCols,
 					 startY,
 					 startX);
+  
+  // define cpu graph
+  numLines = ((wins.at(_MAINWIN)->getNumLines() - _YOFFSET)/4);
+  numCols = (((wins.at(_MAINWIN)->getNumCols() -
+	       wins.at(_COMMANDWIN)->getNumCols() -
+	       wins.at(_COMMANDWIN)->getStartX())/2) - 2);
+  if(numCols %2 != 0)
+    {
+      numCols++;
+    }
+  startY = _YOFFSET + 1;
+  startX = wins.at(_MAINWIN)->getNumCols() - numCols;
+  wins.at(_CPUGRAPHWIN)->defineWindow(newwin(numLines,
+						numCols,
+						startY,
+						startX),  
+					 "cpuGraph",
+					 numLines,
+					 numCols,
+					 startY,
+					 startX);
+	   
+  
 } // end of "defineStartingWindows"
 
 
@@ -2176,7 +2199,7 @@ void printBadInputString(const std::unordered_map<int, CursesWindow*>& wins,
   Output:
   
 */
-void drawTopGraph(const std::unordered_map<int, CursesWindow*>& wins,
+void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
 		  const int& winName,
 		  std::queue<double> vals,
 		  std::string graphName)
@@ -2184,6 +2207,7 @@ void drawTopGraph(const std::unordered_map<int, CursesWindow*>& wins,
   std::vector<double> valsCopy;  
   int numLines = wins.at(winName)->getNumLines();
   int numCols = wins.at(winName)->getNumCols();
+  std::string outString = graphName;
 
   while(!vals.empty())
     {
@@ -2191,18 +2215,6 @@ void drawTopGraph(const std::unordered_map<int, CursesWindow*>& wins,
       vals.pop();
     }
 
-  std::string outString = graphName;
-
-  for(int i = outString.size(); i < numCols; i++)
-    {
-      outString.append(" ");
-    }
-
-  mvwaddstr(wins.at(winName)->getWindow(),
-	    0,
-	    0,
-	    outString.c_str());
-  
   // print window border
   for(int i = 0, j = 0; i < numLines, j < numCols; i++, j++)
     {
@@ -2215,11 +2227,31 @@ void drawTopGraph(const std::unordered_map<int, CursesWindow*>& wins,
 	       numCols - 1,
 	       '*');
       mvwaddch(wins.at(winName)->getWindow(),
+	       0,
+	       i,
+	       '*');
+      mvwaddch(wins.at(winName)->getWindow(),
+	       2,
+	       i,
+	       '*');            
+      mvwaddch(wins.at(winName)->getWindow(),
 	       numLines - 1,
 	       j,
 	       '*');
     }
+
+  wattron(wins.at(winName)->getWindow(), A_BOLD);
+  for(int i = outString.size(); i < numCols - 2; i++)
+    {
+      outString.append(" ");
+    }
+
+  mvwaddstr(wins.at(winName)->getWindow(),
+	    1,
+	    1,
+	    outString.c_str());
   
+
   wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_BLACK_TEXT));
 
   // print graph
@@ -2230,9 +2262,11 @@ void drawTopGraph(const std::unordered_map<int, CursesWindow*>& wins,
 	  double val = valsCopy.at(i) / 100;
 	  int currVal = valsCopy.back();
 	  outString = std::to_string(currVal);
-	  int y = val * (numLines - 1);
+	  int y = val * (numLines - 3);
 
-	  // print current 
+	  wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_WHITE_TEXT));
+	  
+	  // print current value
 	  if(currVal < 10)
 	    {
 	      int outX = numCols - 2;
@@ -2258,7 +2292,9 @@ void drawTopGraph(const std::unordered_map<int, CursesWindow*>& wins,
 			outX,
 			outString.c_str());
 	    }
-
+	  
+	  wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_BLACK_TEXT));
+	  
 	  // draw graph bars
 	  for(int k = numLines - y; k < numLines - 1; k++)
 	    {
@@ -2275,6 +2311,8 @@ void drawTopGraph(const std::unordered_map<int, CursesWindow*>& wins,
 	  j -= 2;
 	}
     }
-  
+
+  // reset ncurses attributes
+  wattroff(wins.at(winName)->getWindow(), A_BOLD);  
   wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_WHITE_TEXT));
-} // end of "graphState
+} // end of "drawGraph"
