@@ -2166,7 +2166,6 @@ void printBadInputString(const std::unordered_map<int, CursesWindow*>& wins,
 
 
 
-
 /*
   Function:
   
@@ -2177,9 +2176,10 @@ void printBadInputString(const std::unordered_map<int, CursesWindow*>& wins,
   Output:
   
 */
-void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
-	       const int& winName,
-	       std::queue<double> vals)
+void drawTopGraph(const std::unordered_map<int, CursesWindow*>& wins,
+		  const int& winName,
+		  std::queue<double> vals,
+		  std::string graphName)
 {
   std::vector<double> valsCopy;  
   int numLines = wins.at(winName)->getNumLines();
@@ -2191,6 +2191,18 @@ void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
       vals.pop();
     }
 
+  std::string outString = graphName;
+
+  for(int i = outString.size(); i < numCols; i++)
+    {
+      outString.append(" ");
+    }
+
+  mvwaddstr(wins.at(winName)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+  
   // print window border
   for(int i = 0, j = 0; i < numLines, j < numCols; i++, j++)
     {
@@ -2201,10 +2213,6 @@ void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
       mvwaddch(wins.at(winName)->getWindow(),
 	       i,
 	       numCols - 1,
-	       '*');
-      mvwaddch(wins.at(winName)->getWindow(),
-	       0,
-	       j,
 	       '*');
       mvwaddch(wins.at(winName)->getWindow(),
 	       numLines - 1,
@@ -2221,10 +2229,10 @@ void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
 	{
 	  double val = valsCopy.at(i) / 100;
 	  int currVal = valsCopy.back();
-	  std::string outString = std::to_string(currVal);
+	  outString = std::to_string(currVal);
 	  int y = val * (numLines - 1);
 
-	  // print current utilization
+	  // print current 
 	  if(currVal < 10)
 	    {
 	      int outX = numCols - 2;
