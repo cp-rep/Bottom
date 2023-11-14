@@ -147,6 +147,7 @@ int main()
   const int cpuGraphMaxLines = ((allWins.at(_MAINWIN)->getNumLines() - _YOFFSET)/2) - 2;
   const int cpuGraphMaxCols = allWins.at(_MAINWIN)->getNumCols() -
     allWins.at(_COMMANDWIN)->getNumCols() - 2;
+  int cpuGraphCount = 0;
   
   // loop variables
   SecondsToTime uptime;
@@ -333,8 +334,6 @@ int main()
 				     timeinfo->tm_min,
 				     timeinfo->tm_sec);
 
-
-
     // create the top lines for ouput
     allTopLines.push_back(createTopLine(timeString,
 					uptime.getHours()/24,
@@ -431,7 +430,8 @@ int main()
 			   shiftX,
 			   pidsStart.size() - 2,
 			   cpuGraph,
-			   stateChanged);
+			   stateChanged,
+			   cpuGraphCount);
 	printProcs(allWins,
 		   procInfoStart,
 		   pidsStart,
@@ -469,7 +469,8 @@ int main()
 			   shiftX,
 			   outPids.size() - 2,
 			   cpuGraph,
-			   stateChanged);
+			   stateChanged,
+			   cpuGraphCount);
 	printProcs(allWins,
 		   procInfoEnd,
 		   outPids,
