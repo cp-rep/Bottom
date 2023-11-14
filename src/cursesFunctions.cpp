@@ -690,7 +690,6 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				      numCols,
 				      startY,
 				      startX);
-  /*
   // define mem graph
   startY = startY + numLines;
   wins.at(_MEMGRAPHWIN)->defineWindow(newwin(numLines,
@@ -702,7 +701,6 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				      numCols,
 				      startY,
 				      startX);
-  */
 } // end of "defineStartingWindows"
 
 
