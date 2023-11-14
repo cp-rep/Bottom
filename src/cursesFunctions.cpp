@@ -62,7 +62,7 @@ void initializeCurses()
 */
 void initializeStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 {
-  for(int i = _MAINWIN; i <= _CPUGRAPHWIN; i++)
+  for(int i = _MAINWIN; i <= _MEMGRAPHWIN; i++)
     {
       CursesWindow* newWindow = new CursesWindow();
       wins.insert(std::make_pair(i, newWindow));
@@ -691,7 +691,18 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 					 startY,
 					 startX);
 	   
-  
+
+  // define mem graph
+  startY = startY + numLines;
+  wins.at(_MEMGRAPHWIN)->defineWindow(newwin(numLines,
+					     numCols,
+					     startY,
+					     startX),  
+				      "memGraph",
+				      numLines,
+				      numCols,
+				      startY,
+				      startX);  
 } // end of "defineStartingWindows"
 
 
@@ -2259,11 +2270,14 @@ void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
     {
       for(int i = valsCopy.size() - 1, j = numCols + 1; i >= 0 && j > 3; i--)
 	{
+	  // calc bar height
 	  double val = std::floor(valsCopy.back() / 10);
 	  val = val/10;
+	  int y = val * (numLines - 4);
+
+	  // get current utilization
 	  int currVal = valsCopy.back();
 	  outString = std::to_string(currVal);
-	  int y = val * (numLines - 4);
 
 	  wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_WHITE_TEXT));
 	  
