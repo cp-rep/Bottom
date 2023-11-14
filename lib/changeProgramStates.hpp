@@ -33,7 +33,8 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			bool& cpuGraph,
 			bool& memGraph,
 			bool& stateChanged,
-			int& cpuGraphCount);
+			int& cpuGraphCount,
+			int& memGraphCount);
 void updateSortState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		     std::vector<int>& pids,
 		     std::vector<int>& outPids,
