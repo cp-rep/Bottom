@@ -405,7 +405,6 @@ int main()
       }
 
     // draw cpu graph
-    /*
     if(cpuGraph == true)
       {
 
@@ -414,6 +413,7 @@ int main()
 		  cpuUsageVals,
 		  "CPU UTILIZATION %");
       }
+    
     if(memGraph == true)
       {
 	drawGraph(allWins,
@@ -421,7 +421,7 @@ int main()
 		  memUsageVals,
 		  "MAIN MEMORY USAGE %");
       }
-    */
+
     updateWindowDimensions(allWins);
     colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
     printTopWins(allWins,
