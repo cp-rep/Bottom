@@ -132,6 +132,7 @@ int main()
   int shiftY = 1;
   int shiftX = _PIDWIN;
   bool cpuGraph = true;
+  bool memGraph = true;
   std::unordered_map<char, int> progStates;
 
 #if _CURSES    
@@ -144,10 +145,11 @@ int main()
 
   // graph related vars
   std::queue<double> cpuUsageVals;
-  const int cpuGraphMaxLines = ((allWins.at(_MAINWIN)->getNumLines() - _YOFFSET)/2) - 2;
-  const int cpuGraphMaxCols = allWins.at(_MAINWIN)->getNumCols() -
+  std::queue<double> memUsageVals;  
+  const int graphMaxCols = allWins.at(_MAINWIN)->getNumCols() -
     allWins.at(_COMMANDWIN)->getNumCols() - 2;
   int cpuGraphCount = 0;
+  int memGraphCount = 0;
   
   // loop variables
   SecondsToTime uptime;
@@ -225,7 +227,7 @@ int main()
 				cpuInfoEnd);
 
 	// store cpu utilization in queue for graph output
-	if(cpuUsageVals.empty() || cpuUsageVals.size() < (cpuGraphMaxCols/2) + 1)
+	if(cpuUsageVals.empty() || cpuUsageVals.size() < (graphMaxCols/2) + 1)
 	  {
 	    cpuUsageVals.push(cpuUsage.utilization);
 	  }
@@ -233,9 +235,24 @@ int main()
 	  {
 	    cpuUsageVals.pop();
 	    cpuUsageVals.push(cpuUsage.utilization);
-	  }	
-      }
+	  }
 
+	double used = memInfo.getMemUsed();
+	double avail = memInfo.getMemAvailable();
+	double total = memInfo.getMemTotal();
+	double usage = 100 - ((avail/total) * 100);
+	
+	// store current memory utilization
+	if(memUsageVals.empty() || memUsageVals.size() < (graphMaxCols/2) + 1)
+	  {
+	    memUsageVals.push(usage);
+	  }
+	else
+	  {
+	    memUsageVals.pop();
+	    memUsageVals.push(usage);
+	  }
+      }
     // extract data from /proc/uptime for very top window
     // "current time, # users, load avg"    
     extractProcUptime(uptime,
@@ -394,7 +411,14 @@ int main()
 	drawGraph(allWins,
 		  _CPUGRAPHWIN,
 		  cpuUsageVals,
-		  "CPU UTILIZATION");
+		  "CPU UTILIZATION %");
+      }
+    if(memGraph == true)
+      {
+	drawGraph(allWins,
+		  _MEMGRAPHWIN,
+		  memUsageVals,
+		  "MAIN MEMORY USAGE %");
       }
 
     updateWindowDimensions(allWins);
@@ -520,18 +544,27 @@ int main()
       it->second = nullptr;
       
     }
-  
+
+  for(std::unordered_map<int, CursesWindow*>::iterator it
+	= allWins.begin();
+      it != allWins.end(); it++)
+    {
+      it->second->deleteWindow();
+    }
+
   procInfoEnd.clear();
   procInfoStart.clear();
-
+  allWins.clear();
+        
 #if _LOG
   if(log.is_open())
     {
       log.close();
     }
 #endif
+  
 #if _CURSES  
-  endwin();
+    endwin();
 #endif
   
   return 0;
