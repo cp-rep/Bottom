@@ -26,21 +26,22 @@
 */
 void initializeProgramStates(std::unordered_map<char, int>& progStates)
 {
-  progStates.insert(std::make_pair(_STATEHELP, 1)); // open help menu
-  progStates.insert(std::make_pair(_STATEQUIT, 1)); // quit
-  progStates.insert(std::make_pair(_STATEHL, 1)); // highlight column
-  progStates.insert(std::make_pair(_STATEKILL, 1)); // enter kill pid state
-  progStates.insert(std::make_pair(_STATECSV, 1)); // make csv file
-  progStates.insert(std::make_pair(_STATESORTLEFT, 1)); // update sort left
-  progStates.insert(std::make_pair(_STATESORTRIGHT, 1)); // update sort right
-  progStates.insert(std::make_pair(_STATEKEYLEFT, 1)); // 
+  progStates.insert(std::make_pair(_STATEHELP, 1)); 
+  progStates.insert(std::make_pair(_STATEQUIT, 1)); 
+  progStates.insert(std::make_pair(_STATEHL, 1)); 
+  progStates.insert(std::make_pair(_STATEKILL, 1));
+  progStates.insert(std::make_pair(_STATECSV, 1)); 
+  progStates.insert(std::make_pair(_STATESORTLEFT, 1));
+  progStates.insert(std::make_pair(_STATESORTRIGHT, 1));
+  progStates.insert(std::make_pair(_STATEKEYLEFT, 1));
   progStates.insert(std::make_pair(_STATEKEYRIGHT, 1));
-  progStates.insert(std::make_pair(_STATEKEYUP, 1)); 
+  progStates.insert(std::make_pair(_STATEKEYUP, 1));
   progStates.insert(std::make_pair(_STATEKEYDOWN, 1));
   progStates.insert(std::make_pair(_ALLMOUSEEVENTS, 1));
   progStates.insert(std::make_pair(_MOUSEPOSITIONS, 1));
   progStates.insert(std::make_pair(_WINRESIZEEVENT, 1));
-  progStates.insert(std::make_pair(_STATECPUGRAPH, 1));      
+  progStates.insert(std::make_pair(_STATECPUGRAPH, 1));
+  progStates.insert(std::make_pair(_STATEMEMGRAPH, 1));
 } // end of "initializeProgramStates"
 
 
@@ -84,8 +85,14 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			bool& cpuGraph,
 			bool& memGraph,
 			bool& stateChanged,
-			int& cpuGraphCount)
+			int& cpuGraphCount,
+			int& memGraphCount)
 {
+  int numLines;
+  int numCols;
+  int startY;
+  int startX;
+  
   switch(progState)
     {
     case _STATEHELP: // help
@@ -112,12 +119,7 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       stateChanged = true;      
       break;
     case _STATECPUGRAPH:
-      int numLines;
-      int numCols;
-      int startY;
-      int startX;
-
-      numLines = 14;/*((wins.at(_MAINWIN)->getNumLines() - _YOFFSET)/4)*/
+      numLines = 14;
       numCols = (((wins.at(_MAINWIN)->getNumCols() -
 		   wins.at(_COMMANDWIN)->getNumCols() -
 		   wins.at(_COMMANDWIN)->getStartX())/2) - 2);
@@ -189,13 +191,49 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			wins.at(_MEMGRAPHWIN)->getStartX());		
 		  
 		}
+	      
 	      wins.at(_CPUGRAPHWIN)->deleteWindow();
 	      delete(wins.at(_CPUGRAPHWIN));
 	      wins.erase(_CPUGRAPHWIN);
 	      cpuGraphCount = 0;
 	      cpuGraph = false;
 	    }
+	}
+      break;
+    case _STATEMEMGRAPH:
+      numLines = 14;
+      numCols = (((wins.at(_MAINWIN)->getNumCols() -
+		       wins.at(_COMMANDWIN)->getNumCols() -
+		       wins.at(_COMMANDWIN)->getStartX())/2) - 2);
+      startY = _YOFFSET + 1;
+      startX = wins.at(_MAINWIN)->getNumCols() - numCols;
 
+      if(memGraph == false)
+	{
+	  if(cpuGraph == true)
+	    {
+	      startY = wins.at(_CPUGRAPHWIN)->getNumLines() + _YOFFSET + 1;
+	    }
+	  else
+	    {
+	      startY = _YOFFSET + 1;
+	    }
+	  
+	  startX = wins.at(_MAINWIN)->getNumCols() - numCols;
+	  
+	  CursesWindow* graphWindow = new CursesWindow();
+	  wins.insert(std::make_pair(_MEMGRAPHWIN, graphWindow));
+	  wins.at(_MEMGRAPHWIN)->defineWindow(newwin(numLines,
+						     numCols,
+						     startY,
+						     startX),
+					      "_CPUGRAPHWIN",
+					      numLines,
+					      numCols,
+					      startY,
+					      startX);
+	  memGraph = true;
+	  memGraphCount = 1;
 	}
       break;
     case _STATECSV: // output csv file
