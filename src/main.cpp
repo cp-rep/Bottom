@@ -142,13 +142,11 @@ int main()
   defineStartingWindows(allWins);
   initializeProgramStates(progStates);
 
-
   // graph related vars
   std::queue<double> cpuUsageVals;
   const int cpuGraphMaxLines = ((allWins.at(_MAINWIN)->getNumLines() - _YOFFSET)/2) - 2;
   const int cpuGraphMaxCols = allWins.at(_MAINWIN)->getNumCols() -
     allWins.at(_COMMANDWIN)->getNumCols() - 2;
-
   
   // loop variables
   SecondsToTime uptime;
@@ -162,7 +160,6 @@ int main()
   bool newInterval = true;
   bool entered = false;
   bool stateChanged = false;
-
   auto startTime = std::chrono::high_resolution_clock::now();
 
   do{
@@ -227,7 +224,7 @@ int main()
 				cpuInfoEnd);
 
 	// store cpu utilization in queue for graph output
-	if(cpuUsageVals.empty() || cpuUsageVals.size() < cpuGraphMaxCols)
+	if(cpuUsageVals.empty() || cpuUsageVals.size() < (cpuGraphMaxCols/2) + 1)
 	  {
 	    cpuUsageVals.push(cpuUsage.utilization);
 	  }
@@ -394,10 +391,11 @@ int main()
     // draw cpu graph
     if(cpuGraph == true)
       {
-	box(allWins.at(_CPUGRAPHWIN)->getWindow(), '*', '*');
-	drawGraph(allWins,
+
+	drawTopGraph(allWins,
 		  _CPUGRAPHWIN,
-		  cpuUsageVals);
+		  cpuUsageVals,
+		  "  CPU UTILIZATION ");
       }
 
     updateWindowDimensions(allWins);
@@ -495,7 +493,6 @@ int main()
     refreshAllWins(allWins);
     doupdate();
     usleep(50000);
-    // usleep(1000);    
 #endif
 
     if(quit)
