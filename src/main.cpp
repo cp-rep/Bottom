@@ -518,7 +518,7 @@ int main()
 	      colorLine);
     refreshAllWins(allWins);
     doupdate();
-    usleep(50000);
+    usleep(15000);
 #endif
 
     if(quit)
