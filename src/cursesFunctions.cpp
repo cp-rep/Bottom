@@ -2271,7 +2271,7 @@ void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
       for(int i = valsCopy.size() - 1, j = numCols + 1; i >= 0 && j > 3; i--)
 	{
 	  // calc bar height
-	  double val = std::floor(valsCopy.back() / 10);
+	  double val = std::floor(valsCopy.at(i) / 10);
 	  val = val/10;
 	  int y = val * (numLines - 4);
 
