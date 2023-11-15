@@ -16,10 +16,13 @@ Bottom uses GTest for its unit testing.  GTest requires the GTest package and us
 - Enter command "./[output directory]/bin/unit_tests" from the ./Bottom base directory.  Some tests will fail due to file reading if not executed from the ./Bottom directory.
 
 ## Current Features and How to Use Them
+- The 'h' key enters the help menu with all current features.
 - The arrow keys allow shifting the windows left, right, up, and down.
 - The '<' and '>' keys determine which column to sort by.
 - The 'x' key allows highlighting a particular column.
 - The 'k' key allows the user to "kill" desired processes.
+- The 'c' key resizes and/or removes the cpu utilization window.
+- The 'm' key resizes and/or removes the main memory window.
 
 ## Why C++?
 I wanted to write a small Linux process management utility that may be easier expanded upon with experimental features. I don't have much interest in actually trying to submit this into any official Linux circles or ecosystems.
@@ -28,10 +31,14 @@ I wanted to write a small Linux process management utility that may be easier ex
 The main branch will maintain the stable version of Bottom.  It currently supports Arch Linux and Ubuntu which are the operating systems it has been tested on.  However, most Linux distributions should work just fine.
 
 ## Current Challenges/Known Issues
+There are some issues with the windows when Bottom is opened in a small window, or when resizing is done.  This will be fixed.
+
 The current number of users are not gathered the same as Top.  Top supposedly gathers its data from '/var/run/utmp'.  Unfortunately, this file varies between platforms.  I have considered writing platform specific code to read from it, however, I have recently discovered in testing that Top reports the number of current users differently between Linux distributions. Unless motivated otherwise, Bottom reports the number of users based upon the different users strings reported in the "USER" column.
 
 ## Future Changes/Additions I Would Like to Implement
+- Resizing issues.
+- Network Graph
 - Web-based features.
-- An interruptable delay via multithreading.
-- Process/Mem Statistics Graphs
-- Potentially many others.
+- Multithreading
+- Other standard OS tool features.
+- Potentially others.
