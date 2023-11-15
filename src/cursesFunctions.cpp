@@ -714,7 +714,9 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 
   Output:
 */
-void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
+void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
+			    const int& shiftX,
+			    const int& shiftY)
 {
   int numLines;
   int numCols;
@@ -726,13 +728,14 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
 
   // PID
   if(((wins.at(_PIDWIN)->getNumCols() + wins.at(_PIDWIN)->getStartX()) >
-      wins.at(_PIDWIN)->getNumCols())  && (wins.at(_PIDWIN)->getWindow() != nullptr))
+      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PIDWIN)->getWindow() != nullptr))
     {
       wins.at(_PIDWIN)->deleteWindow();
       wins.at(_PIDWIN)->setWindow(nullptr);
     }
   else if(((wins.at(_PIDWIN)->getNumCols() + wins.at(_PIDWIN)->getStartX()) <
-	   wins.at(_PIDWIN)->getNumCols())  && (wins.at(_PIDWIN)->getWindow() == nullptr))
+	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PIDWIN)->getWindow() ==
+						 nullptr) && shiftX <= _PIDWIN)
     {
       wins.at(_PIDWIN)->defineWindow(newwin(wins.at(_PIDWIN)->getNumLines(),
 					    wins.at(_PIDWIN)->getNumCols(),
@@ -744,24 +747,24 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
 				     wins.at(_PIDWIN)->getStartY(),
 				     wins.at(_PIDWIN)->getStartX());
     }
-
+  
   // USER
   if(((wins.at(_USERWIN)->getNumCols() + wins.at(_USERWIN)->getStartX()) >
-      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_USERWIN)->getWindow()
-					    != nullptr))
+      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_USERWIN)->getWindow() !=
+					    nullptr))
     {
       wins.at(_USERWIN)->deleteWindow();
       wins.at(_USERWIN)->setWindow(nullptr);
     }
   else if(((wins.at(_USERWIN)->getNumCols() + wins.at(_USERWIN)->getStartX()) <
 	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_USERWIN)->getWindow() ==
-						 nullptr))
+						 nullptr) && shiftX <= _USERWIN)
     {
       wins.at(_USERWIN)->defineWindow(newwin(wins.at(_USERWIN)->getNumLines(),
 					     wins.at(_USERWIN)->getNumCols(),
 					     wins.at(_USERWIN)->getStartY(),
 					     wins.at(_USERWIN)->getStartX()),
-				      "TIME+",
+				      "USER",
 				      wins.at(_USERWIN)->getNumLines(),
 				      wins.at(_USERWIN)->getNumCols(),
 				      wins.at(_USERWIN)->getStartY(),
@@ -778,7 +781,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
     }
   else if(((wins.at(_PRWIN)->getNumCols() + wins.at(_PRWIN)->getStartX()) <
 	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PRWIN)->getWindow() ==
-						 nullptr))
+						 nullptr) && shiftX <= _PRWIN)
     {
       wins.at(_PRWIN)->defineWindow(newwin(wins.at(_PRWIN)->getNumLines(),
 					   wins.at(_PRWIN)->getNumCols(),
@@ -801,7 +804,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
     }
   else if(((wins.at(_NIWIN)->getNumCols() + wins.at(_NIWIN)->getStartX()) <
 	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_NIWIN)->getWindow() ==
-						 nullptr))
+						 nullptr) && shiftX <= _NIWIN)
     {
       wins.at(_NIWIN)->defineWindow(newwin(wins.at(_NIWIN)->getNumLines(),
 					   wins.at(_NIWIN)->getNumCols(),
@@ -824,7 +827,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
     }
   else if(((wins.at(_VIRTWIN)->getNumCols() + wins.at(_VIRTWIN)->getStartX()) <
 	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_VIRTWIN)->getWindow() ==
-						 nullptr))
+						 nullptr) && shiftX <= _VIRTWIN)
     {
       wins.at(_VIRTWIN)->defineWindow(newwin(wins.at(_VIRTWIN)->getNumLines(),
 					     wins.at(_VIRTWIN)->getNumCols(),
@@ -847,7 +850,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
     }
   else if(((wins.at(_RESWIN)->getNumCols() + wins.at(_RESWIN)->getStartX()) <
 	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_RESWIN)->getWindow() ==
-						 nullptr))
+						 nullptr) && shiftX <= _RESWIN)
     {
       wins.at(_RESWIN)->defineWindow(newwin(wins.at(_RESWIN)->getNumLines(),
 					    wins.at(_RESWIN)->getNumCols(),
@@ -870,7 +873,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
     }
   else if(((wins.at(_SHRWIN)->getNumCols() + wins.at(_SHRWIN)->getStartX()) <
 	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_SHRWIN)->getWindow() ==
-						 nullptr))
+						 nullptr) && shiftX <= _SHRWIN)
     {
       wins.at(_SHRWIN)->defineWindow(newwin(wins.at(_SHRWIN)->getNumLines(),
 					    wins.at(_SHRWIN)->getNumCols(),
@@ -880,9 +883,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
 				     wins.at(_SHRWIN)->getNumLines(),
 				     wins.at(_SHRWIN)->getNumCols(),
 				     wins.at(_SHRWIN)->getStartY(),
-				     wins.at(_SHRWIN)->getStartX());      
-
-  
+				     wins.at(_SHRWIN)->getStartX());
     }
 
   // S
@@ -895,7 +896,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
     }
   else if(((wins.at(_SWIN)->getNumCols() + wins.at(_SWIN)->getStartX()) <
 	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_SWIN)->getWindow() ==
-						 nullptr))
+						 nullptr) && shiftX <= _SWIN)
     {
       wins.at(_SWIN)->defineWindow(newwin(wins.at(_SWIN)->getNumLines(),
 					  wins.at(_SWIN)->getNumCols(),
@@ -918,7 +919,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
     }
   else if(((wins.at(_PROCCPUWIN)->getNumCols() + wins.at(_PROCCPUWIN)->getStartX()) <
 	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PROCCPUWIN)->getWindow() ==
-						 nullptr))
+						 nullptr) && shiftX <= _PROCCPUWIN)
     {
       wins.at(_PROCCPUWIN)->defineWindow(newwin(wins.at(_PROCCPUWIN)->getNumLines(),
 						wins.at(_PROCCPUWIN)->getNumCols(),
@@ -941,7 +942,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
     }
   else if(((wins.at(_PROCMEMWIN)->getNumCols() + wins.at(_PROCMEMWIN)->getStartX()) <
 	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PROCMEMWIN)->getWindow() ==
-						 nullptr))
+						 nullptr) && shiftX <= _PROCMEMWIN)
     {
       wins.at(_PROCMEMWIN)->defineWindow(newwin(wins.at(_PROCMEMWIN)->getNumLines(),
 						wins.at(_PROCMEMWIN)->getNumCols(),
@@ -964,7 +965,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
     }
   else if(((wins.at(_PROCTIMEWIN)->getNumCols() + wins.at(_PROCTIMEWIN)->getStartX()) <
 	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PROCTIMEWIN)->getWindow() ==
-						 nullptr))
+						 nullptr) && shiftX <= _PROCTIMEWIN)
     {
       wins.at(_PROCTIMEWIN)->defineWindow(newwin(wins.at(_PROCTIMEWIN)->getNumLines(),
 						 wins.at(_PROCTIMEWIN)->getNumCols(),
@@ -986,7 +987,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
     }
   else if(((wins.at(_COMMANDWIN)->getNumCols() + wins.at(_COMMANDWIN)->getStartX()) <
 	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_COMMANDWIN)->getWindow() ==
-						 nullptr))
+						 nullptr) && shiftX <= _COMMANDWIN)
     {
       std::string commandLine = "COMMAND";
       for(int i = commandLine.length(); i < 48; i++)
@@ -1739,9 +1740,7 @@ void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins,
 		      const int& shiftX)
 {
   std::string outString;
-  if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr &&
-     ((wins.at(_PIDWIN)->getNumCols() + wins.at(_PIDWIN)->getStartX()) <
-      wins.at(_MAINWIN)->getNumCols()))
+  if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr)
     {
       // PID
       outString = wins.at(_PIDWIN)->getWindowName();
@@ -1751,9 +1750,7 @@ void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins,
 		outString.c_str());
     }
   // USER
-  if(shiftX <= _USERWIN && wins.at(_USERWIN)->getWindow() != nullptr &&
-     ((wins.at(_USERWIN)->getNumCols() + wins.at(_USERWIN)->getStartX()) <
-      wins.at(_MAINWIN)->getNumCols()))
+  if(shiftX <= _USERWIN && wins.at(_USERWIN)->getWindow() != nullptr)
     {
       outString = wins.at(_USERWIN)->getWindowName();
       mvwaddstr(wins.at(_USERWIN)->getWindow(),
@@ -1762,9 +1759,7 @@ void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins,
 		outString.c_str());
     }
   // PR
-  if(shiftX <= _PRWIN && wins.at(_PRWIN)->getWindow() != nullptr &&
-     ((wins.at(_PRWIN)->getNumCols() + wins.at(_PRWIN)->getStartX()) <
-      wins.at(_MAINWIN)->getNumCols()))
+  if(shiftX <= _PRWIN && wins.at(_PRWIN)->getWindow() != nullptr)
     {
       outString = wins.at(_PRWIN)->getWindowName();
       mvwaddstr(wins.at(_PRWIN)->getWindow(),
@@ -1773,9 +1768,7 @@ void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins,
 		outString.c_str());
     }
   // NI
-  if(shiftX <= _NIWIN && wins.at(_NIWIN)->getWindow() != nullptr &&
-     ((wins.at(_NIWIN)->getNumCols() + wins.at(_NIWIN)->getStartX()) <
-      wins.at(_MAINWIN)->getNumCols()))
+  if(shiftX <= _NIWIN && wins.at(_NIWIN)->getWindow() != nullptr)
     {
       outString = wins.at(_NIWIN)->getWindowName();
       mvwaddstr(wins.at(_NIWIN)->getWindow(),
@@ -1784,9 +1777,7 @@ void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins,
 		outString.c_str());
     }
   // VIRT
-  if(shiftX <= _VIRTWIN && wins.at(_VIRTWIN)->getWindow() != nullptr &&
-     ((wins.at(_VIRTWIN)->getNumCols() + wins.at(_VIRTWIN)->getStartX()) <
-      wins.at(_MAINWIN)->getNumCols()))
+  if(shiftX <= _VIRTWIN && wins.at(_VIRTWIN)->getWindow() != nullptr)
     {
       outString = wins.at(_VIRTWIN)->getWindowName();
       mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
@@ -1795,9 +1786,7 @@ void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins,
 		outString.c_str());
     }
   // RES
-  if(shiftX <= _RESWIN && wins.at(_RESWIN)->getWindow() != nullptr &&
-     ((wins.at(_RESWIN)->getNumCols() + wins.at(_RESWIN)->getStartX()) <
-      wins.at(_MAINWIN)->getNumCols()))
+  if(shiftX <= _RESWIN && wins.at(_RESWIN)->getWindow() != nullptr)
     {
       outString = wins.at(_RESWIN)->getWindowName();
       mvwaddstr(wins.at(_RESWIN)->getWindow(),
@@ -1806,10 +1795,8 @@ void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins,
 		outString.c_str());
     } 
   // SHR
-  if(shiftX <= _SHRWIN && wins.at(_SHRWIN)->getWindow() != nullptr &&
-     ((wins.at(_SHRWIN)->getNumCols() + wins.at(_SHRWIN)->getStartX()) <
-      wins.at(_MAINWIN)->getNumCols()))
-    {
+  if(shiftX <= _SHRWIN && wins.at(_SHRWIN)->getWindow() != nullptr)
+     {
       outString = wins.at(_SHRWIN)->getWindowName();
       mvwaddstr(wins.at(_SHRWIN)->getWindow(),
 		0,
@@ -1817,9 +1804,7 @@ void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins,
 		outString.c_str());
     } 
   // S
-  if(shiftX <= _SWIN && wins.at(_SWIN)->getWindow() != nullptr &&
-     ((wins.at(_SWIN)->getNumCols() + wins.at(_SWIN)->getStartX()) <
-      wins.at(_MAINWIN)->getNumCols()))
+  if(shiftX <= _SWIN && wins.at(_SWIN)->getWindow() != nullptr)
     {
       outString = wins.at(_SWIN)->getWindowName();
       mvwaddstr(wins.at(_SWIN)->getWindow(),
@@ -1828,9 +1813,7 @@ void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins,
 		outString.c_str());
     }
   // %CPU
-  if(shiftX <= _PROCCPUWIN && wins.at(_PROCCPUWIN)->getWindow() != nullptr &&
-     ((wins.at(_PROCCPUWIN)->getNumCols() + wins.at(_PROCCPUWIN)->getStartX()) <
-      wins.at(_MAINWIN)->getNumCols()))
+  if(shiftX <= _PROCCPUWIN && wins.at(_PROCCPUWIN)->getWindow() != nullptr)
     {
       outString = wins.at(_PROCCPUWIN)->getWindowName();
       mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
@@ -1839,9 +1822,7 @@ void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins,
 		outString.c_str());
     } 
   // %MEM
-  if(shiftX <= _PROCMEMWIN && wins.at(_PROCMEMWIN)->getWindow() != nullptr &&
-     ((wins.at(_PROCMEMWIN)->getNumCols() + wins.at(_PROCMEMWIN)->getStartX()) <
-      wins.at(_MAINWIN)->getNumCols()))
+  if(shiftX <= _PROCMEMWIN && wins.at(_PROCMEMWIN)->getWindow() != nullptr)
     {
       outString = wins.at(_PROCMEMWIN)->getWindowName();
       mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
@@ -1850,9 +1831,7 @@ void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins,
 		outString.c_str());
     } 
   // TIME+
-  if(shiftX <= _PROCTIMEWIN && wins.at(_PROCTIMEWIN)->getWindow() != nullptr &&
-     ((wins.at(_PROCTIMEWIN)->getNumCols() + wins.at(_PROCTIMEWIN)->getStartX()) <
-      wins.at(_MAINWIN)->getNumCols()))
+  if(shiftX <= _PROCTIMEWIN && wins.at(_PROCTIMEWIN)->getWindow() != nullptr)
     {
       outString = wins.at(_PROCTIMEWIN)->getWindowName();
       mvwaddstr(wins.at(_PROCTIMEWIN)->getWindow(),
@@ -1861,9 +1840,7 @@ void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins,
 		outString.c_str());
     } 
   // COMMAND
-  if((shiftX <= _COMMANDWIN) && (wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
-     ((wins.at(_COMMANDWIN)->getNumCols() + wins.at(_COMMANDWIN)->getStartX()) <
-      wins.at(_MAINWIN)->getNumCols()))
+  if(shiftX <= _COMMANDWIN && wins.at(_COMMANDWIN)->getWindow() != nullptr)
     {
 
       outString = wins.at(_COMMANDWIN)->getWindowName();
@@ -1947,9 +1924,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	    }
 	  
 	  // PID
-	  if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr &&
-	    ((wins.at(_PIDWIN)->getNumCols() + wins.at(_PIDWIN)->getStartX()) <
-	      wins.at(_MAINWIN)->getNumCols()))
+	  if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr)
 	    {
 	      if(highlight == true && sortState == _PIDWIN)
 		{
@@ -1964,9 +1939,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
 	    }
 	  // USER
-	  if(shiftX <= _USERWIN && wins.at(_USERWIN)->getWindow() != nullptr &&
-	     ((wins.at(_USERWIN)->getNumCols() + wins.at(_USERWIN)->getStartX()) <
-	       wins.at(_MAINWIN)->getNumCols()))
+	  if(shiftX <= _USERWIN && wins.at(_USERWIN)->getWindow() != nullptr)
 	    {
 	      if(highlight == true && sortState == _USERWIN)
 		{
@@ -1981,9 +1954,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
 	    }
 	  // PR
-	  if(shiftX <= _PRWIN && wins.at(_PRWIN)->getWindow() != nullptr &&
-	     ((wins.at(_PRWIN)->getNumCols() + wins.at(_PRWIN)->getStartX()) <
-	       wins.at(_MAINWIN)->getNumCols()))
+	  if(shiftX <= _PRWIN && wins.at(_PRWIN)->getWindow() != nullptr)
 	    {
 	      if(highlight == true && sortState == _PRWIN)
 		{
@@ -2007,9 +1978,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
 	    }	  
 	  // NI
-	  if(shiftX <= _NIWIN && wins.at(_NIWIN)->getWindow() != nullptr &&
-	     ((wins.at(_NIWIN)->getNumCols() + wins.at(_NIWIN)->getStartX()) <
-	       wins.at(_MAINWIN)->getNumCols()))
+	  if(shiftX <= _NIWIN && wins.at(_NIWIN)->getWindow() != nullptr)
             {
 	      if(highlight == true && sortState == _NIWIN)
 		{
@@ -2024,9 +1993,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
             }
 	  // VIRT
-	  if(shiftX <= _VIRTWIN && wins.at(_VIRTWIN)->getWindow() != nullptr &&
-	     ((wins.at(_VIRTWIN)->getNumCols() + wins.at(_VIRTWIN)->getStartX()) <
-	       wins.at(_MAINWIN)->getNumCols()))
+	  if(shiftX <= _VIRTWIN && wins.at(_VIRTWIN)->getWindow() != nullptr)
             {
 	      if(highlight == true && sortState == _VIRTWIN)
 		{
@@ -2041,9 +2008,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
             }
 	  // RES
-	  if(shiftX <= _RESWIN && wins.at(_RESWIN)->getWindow() != nullptr &&
-	     ((wins.at(_RESWIN)->getNumCols() + wins.at(_RESWIN)->getStartX()) <
-	      wins.at(_MAINWIN)->getNumCols()))
+	  if(shiftX <= _RESWIN && wins.at(_RESWIN)->getWindow() != nullptr)
             {
 	      if(highlight == true && sortState == _RESWIN)
 		{
@@ -2058,9 +2023,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
             }
 	  // SHR
-	  if(shiftX <= _SHRWIN && wins.at(_SHRWIN)->getWindow() != nullptr &&
-	     ((wins.at(_SHRWIN)->getNumCols() + wins.at(_SHRWIN)->getStartX()) <
-	       wins.at(_MAINWIN)->getNumCols()))
+	  if(shiftX <= _SHRWIN && wins.at(_SHRWIN)->getWindow() != nullptr)
             {
 	      if(highlight == true && sortState == _SHRWIN)
 		{
@@ -2075,9 +2038,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
             }
 	  // S
-	  if(shiftX <= _SWIN && wins.at(_SWIN)->getWindow() != nullptr &&
-	     ((wins.at(_SWIN)->getNumCols() + wins.at(_SWIN)->getStartX()) <
-	       wins.at(_MAINWIN)->getNumCols()))
+	  if(shiftX <= _SWIN && wins.at(_SWIN)->getWindow() != nullptr)
 	    {
 	      if(highlight == true && sortState == _SWIN)
 		{
@@ -2092,8 +2053,6 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
             }
 	  // %CPU
 	  if(shiftX <= _PROCCPUWIN && wins.at(_PROCCPUWIN)->getWindow() != nullptr)
-	    ((wins.at(_PROCCPUWIN)->getNumCols() + wins.at(_PROCCPUWIN)->getStartX()) <
-	     wins.at(_MAINWIN)->getNumCols()))
             {
 	      if(highlight == true && sortState == _PROCCPUWIN)
 		{
@@ -2108,9 +2067,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
             }
 	  // %MEM
-	  if(shiftX <= _PROCMEMWIN && wins.at(_PROCMEMWIN)->getWindow() != nullptr &&
-	     ((wins.at(_PROCMEMWIN)->getNumCols() + wins.at(_PROCMEMWIN)->getStartX()) <
-	       wins.at(_MAINWIN)->getNumCols()))
+	  if(shiftX <= _PROCMEMWIN && wins.at(_PROCMEMWIN)->getWindow() != nullptr)
             {
 	      if(highlight == true && sortState == _PROCMEMWIN)
 		{
@@ -2125,9 +2082,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
             }
 	  // TIME+
-	  if(shiftX <= _PROCTIMEWIN && wins.at(_PROCTIMEWIN)->getWindow() != nullptr &&
-	     ((wins.at(_PROCTIMEWIN)->getNumCols() + wins.at(_PROCTIMEWIN)->getStartX()) <
-	       wins.at(_MAINWIN)->getNumCols()))
+	  if(shiftX <= _PROCTIMEWIN && wins.at(_PROCTIMEWIN)->getWindow() != nullptr)
 	    {
 	      if(highlight == true && sortState == _PROCTIMEWIN)
 		{
@@ -2142,9 +2097,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			outString.c_str());
             }
 	  // COMMAND
-	  if(shiftX <= _COMMANDWIN && wins.at(_COMMANDWIN)->getWindow() != nullptr &&
-	    ((wins.at(_COMMANDWIN)->getNumCols() + wins.at(_COMMANDWIN)->getStartX()) <
-	     wins.at(_MAINWIN)->getNumCols()))
+	  if(shiftX <= _COMMANDWIN && wins.at(_COMMANDWIN)->getWindow() != nullptr)
             {
 	      if(highlight == true && sortState == _COMMANDWIN)
 		{
