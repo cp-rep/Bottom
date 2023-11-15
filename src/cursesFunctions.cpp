@@ -724,14 +724,38 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 			    const int& shiftX,
 			    const int& shiftY)
 {
+  bool deleted;
   int numLines;
   int numCols;
   
   getmaxyx(stdscr, numLines, numCols);
   wins.at(_MAINWIN)->setNumLines(numLines);
   wins.at(_MAINWIN)->setNumCols(numCols);
-  bool deleted = false;
+  deleted = false;
 
+  // handle top windows terminal resizing
+  for(int i = _TOPWIN; i <= _MIBMEMAVAILWIN; i++)
+    {
+      if(wins.at(i)->getNumCols() + wins.at(i)->getStartX() > numCols)
+	{
+	  wins.at(i)->deleteWindow();
+	  wins.at(i)->setWindow(nullptr);
+	}
+      else if(wins.at(i)->getWindow() == nullptr)
+	{
+	  wins.at(i)->defineWindow(newwin(wins.at(i)->getNumLines(),
+					  wins.at(i)->getNumCols(),
+					  wins.at(i)->getStartY(),
+					  wins.at(i)->getStartX()),
+				   wins.at(i)->getWindowName(),
+				   wins.at(i)->getNumLines(),
+				   wins.at(i)->getNumCols(),
+				   wins.at(i)->getStartY(),
+				   wins.at(i)->getStartX());
+	}
+    }
+
+  // handle process windows terminal resizing
   for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
     {
       // if window resize is too few columns or lines for the current windows
@@ -896,7 +920,7 @@ void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins)
 */
 void clearBottomWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
-  for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
+  for(int i = _PIDWIN; i <= _MIBMEMAVAILWIN; i++)
     {
       werase(wins.at(i)->getWindow());
     }
@@ -1484,7 +1508,7 @@ void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
 
 /*
   Function:
-  printWindowNames
+   printWindowNames
 
   Description:
    Prints the window names for the columns "PID, USER, PR, NI...". All "printed" data 
