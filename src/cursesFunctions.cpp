@@ -725,285 +725,28 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
   wins.at(_MAINWIN)->setNumLines(numLines);
   wins.at(_MAINWIN)->setNumCols(numCols);
 
-
-  // PID
-  if(((wins.at(_PIDWIN)->getNumCols() + wins.at(_PIDWIN)->getStartX()) >
-      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PIDWIN)->getWindow() != nullptr))
+  for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
     {
-      wins.at(_PIDWIN)->deleteWindow();
-      wins.at(_PIDWIN)->setWindow(nullptr);
-    }
-  else if(((wins.at(_PIDWIN)->getNumCols() + wins.at(_PIDWIN)->getStartX()) <
-	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PIDWIN)->getWindow() ==
-						 nullptr) && shiftX <= _PIDWIN)
-    {
-      wins.at(_PIDWIN)->defineWindow(newwin(wins.at(_PIDWIN)->getNumLines(),
-					    wins.at(_PIDWIN)->getNumCols(),
-					    wins.at(_PIDWIN)->getStartY(),
-					    wins.at(_PIDWIN)->getStartX()),
-				     "PID",
-				     wins.at(_PIDWIN)->getNumLines(),
-				     wins.at(_PIDWIN)->getNumCols(),
-				     wins.at(_PIDWIN)->getStartY(),
-				     wins.at(_PIDWIN)->getStartX());
-    }
-  
-  // USER
-  if(((wins.at(_USERWIN)->getNumCols() + wins.at(_USERWIN)->getStartX()) >
-      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_USERWIN)->getWindow() !=
-					    nullptr))
-    {
-      wins.at(_USERWIN)->deleteWindow();
-      wins.at(_USERWIN)->setWindow(nullptr);
-    }
-  else if(((wins.at(_USERWIN)->getNumCols() + wins.at(_USERWIN)->getStartX()) <
-	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_USERWIN)->getWindow() ==
-						 nullptr) && shiftX <= _USERWIN)
-    {
-      wins.at(_USERWIN)->defineWindow(newwin(wins.at(_USERWIN)->getNumLines(),
-					     wins.at(_USERWIN)->getNumCols(),
-					     wins.at(_USERWIN)->getStartY(),
-					     wins.at(_USERWIN)->getStartX()),
-				      "USER",
-				      wins.at(_USERWIN)->getNumLines(),
-				      wins.at(_USERWIN)->getNumCols(),
-				      wins.at(_USERWIN)->getStartY(),
-				      wins.at(_USERWIN)->getStartX());
-    }
-
-  // PR
-  if(((wins.at(_PRWIN)->getNumCols() + wins.at(_PRWIN)->getStartX()) >
-      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PRWIN)->getWindow()
-					    != nullptr))
-    {
-      wins.at(_PRWIN)->deleteWindow();
-      wins.at(_PRWIN)->setWindow(nullptr);
-    }
-  else if(((wins.at(_PRWIN)->getNumCols() + wins.at(_PRWIN)->getStartX()) <
-	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PRWIN)->getWindow() ==
-						 nullptr) && shiftX <= _PRWIN)
-    {
-      wins.at(_PRWIN)->defineWindow(newwin(wins.at(_PRWIN)->getNumLines(),
-					   wins.at(_PRWIN)->getNumCols(),
-					   wins.at(_PRWIN)->getStartY(),
-					   wins.at(_PRWIN)->getStartX()),
-				    "PR",
-				    wins.at(_PRWIN)->getNumLines(),
-				    wins.at(_PRWIN)->getNumCols(),
-				    wins.at(_PRWIN)->getStartY(),
-				    wins.at(_PRWIN)->getStartX());
-    }
-  
-  // NI
-  if(((wins.at(_NIWIN)->getNumCols() + wins.at(_NIWIN)->getStartX()) >
-      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_NIWIN)->getWindow()
-					    != nullptr))
-    {
-      wins.at(_NIWIN)->deleteWindow();
-      wins.at(_NIWIN)->setWindow(nullptr);
-    }
-  else if(((wins.at(_NIWIN)->getNumCols() + wins.at(_NIWIN)->getStartX()) <
-	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_NIWIN)->getWindow() ==
-						 nullptr) && shiftX <= _NIWIN)
-    {
-      wins.at(_NIWIN)->defineWindow(newwin(wins.at(_NIWIN)->getNumLines(),
-					   wins.at(_NIWIN)->getNumCols(),
-					   wins.at(_NIWIN)->getStartY(),
-					   wins.at(_NIWIN)->getStartX()),
-				    "NI",
-				    wins.at(_NIWIN)->getNumLines(),
-				    wins.at(_NIWIN)->getNumCols(),
-				    wins.at(_NIWIN)->getStartY(),
-				    wins.at(_NIWIN)->getStartX());
-    }
-
-  // virt
-  if(((wins.at(_VIRTWIN)->getNumCols() + wins.at(_VIRTWIN)->getStartX()) >
-      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_VIRTWIN)->getWindow()
-					    != nullptr))
-    {
-      wins.at(_VIRTWIN)->deleteWindow();
-      wins.at(_VIRTWIN)->setWindow(nullptr);
-    }
-  else if(((wins.at(_VIRTWIN)->getNumCols() + wins.at(_VIRTWIN)->getStartX()) <
-	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_VIRTWIN)->getWindow() ==
-						 nullptr) && shiftX <= _VIRTWIN)
-    {
-      wins.at(_VIRTWIN)->defineWindow(newwin(wins.at(_VIRTWIN)->getNumLines(),
-					     wins.at(_VIRTWIN)->getNumCols(),
-					     wins.at(_VIRTWIN)->getStartY(),
-					     wins.at(_VIRTWIN)->getStartX()),
-				      "VIRT",
-				      wins.at(_VIRTWIN)->getNumLines(),
-				      wins.at(_VIRTWIN)->getNumCols(),
-				      wins.at(_VIRTWIN)->getStartY(),
-				      wins.at(_VIRTWIN)->getStartX());
-    }
-
-  // res
-  if(((wins.at(_RESWIN)->getNumCols() + wins.at(_RESWIN)->getStartX()) >
-      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_RESWIN)->getWindow()
-					    != nullptr))
-    {
-      wins.at(_RESWIN)->deleteWindow();
-      wins.at(_RESWIN)->setWindow(nullptr);
-    }
-  else if(((wins.at(_RESWIN)->getNumCols() + wins.at(_RESWIN)->getStartX()) <
-	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_RESWIN)->getWindow() ==
-						 nullptr) && shiftX <= _RESWIN)
-    {
-      wins.at(_RESWIN)->defineWindow(newwin(wins.at(_RESWIN)->getNumLines(),
-					    wins.at(_RESWIN)->getNumCols(),
-					    wins.at(_RESWIN)->getStartY(),
-					    wins.at(_RESWIN)->getStartX()),
-				     "RES",
-				     wins.at(_RESWIN)->getNumLines(),
-				     wins.at(_RESWIN)->getNumCols(),
-				     wins.at(_RESWIN)->getStartY(),
-				     wins.at(_RESWIN)->getStartX());
-    }
-
-  // shr
-  if(((wins.at(_SHRWIN)->getNumCols() + wins.at(_SHRWIN)->getStartX()) >
-      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_SHRWIN)->getWindow()
-					    != nullptr))
-    {
-      wins.at(_SHRWIN)->deleteWindow();
-      wins.at(_SHRWIN)->setWindow(nullptr);
-    }
-  else if(((wins.at(_SHRWIN)->getNumCols() + wins.at(_SHRWIN)->getStartX()) <
-	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_SHRWIN)->getWindow() ==
-						 nullptr) && shiftX <= _SHRWIN)
-    {
-      wins.at(_SHRWIN)->defineWindow(newwin(wins.at(_SHRWIN)->getNumLines(),
-					    wins.at(_SHRWIN)->getNumCols(),
-					    wins.at(_SHRWIN)->getStartY(),
-					    wins.at(_SHRWIN)->getStartX()),
-				     "SHR",
-				     wins.at(_SHRWIN)->getNumLines(),
-				     wins.at(_SHRWIN)->getNumCols(),
-				     wins.at(_SHRWIN)->getStartY(),
-				     wins.at(_SHRWIN)->getStartX());
-    }
-
-  // S
-  if(((wins.at(_SWIN)->getNumCols() + wins.at(_SWIN)->getStartX()) >
-      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_SWIN)->getWindow()
-					    != nullptr))
-    {
-      wins.at(_SWIN)->deleteWindow();
-      wins.at(_SWIN)->setWindow(nullptr);
-    }
-  else if(((wins.at(_SWIN)->getNumCols() + wins.at(_SWIN)->getStartX()) <
-	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_SWIN)->getWindow() ==
-						 nullptr) && shiftX <= _SWIN)
-    {
-      wins.at(_SWIN)->defineWindow(newwin(wins.at(_SWIN)->getNumLines(),
-					  wins.at(_SWIN)->getNumCols(),
-					  wins.at(_SWIN)->getStartY(),
-					  wins.at(_SWIN)->getStartX()),
-				   "S",
-				   wins.at(_SWIN)->getNumLines(),
-				   wins.at(_SWIN)->getNumCols(),
-				   wins.at(_SWIN)->getStartY(),
-				   wins.at(_SWIN)->getStartX());
-    }  
-
-  // %CPU
-  if(((wins.at(_PROCCPUWIN)->getNumCols() + wins.at(_PROCCPUWIN)->getStartX()) >
-      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PROCCPUWIN)->getWindow()
-					    != nullptr))
-    {
-      wins.at(_PROCCPUWIN)->deleteWindow();
-      wins.at(_PROCCPUWIN)->setWindow(nullptr);
-    }
-  else if(((wins.at(_PROCCPUWIN)->getNumCols() + wins.at(_PROCCPUWIN)->getStartX()) <
-	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PROCCPUWIN)->getWindow() ==
-						 nullptr) && shiftX <= _PROCCPUWIN)
-    {
-      wins.at(_PROCCPUWIN)->defineWindow(newwin(wins.at(_PROCCPUWIN)->getNumLines(),
-						wins.at(_PROCCPUWIN)->getNumCols(),
-						wins.at(_PROCCPUWIN)->getStartY(),
-						wins.at(_PROCCPUWIN)->getStartX()),
-					 "%CPU",
-					 wins.at(_PROCCPUWIN)->getNumLines(),
-					 wins.at(_PROCCPUWIN)->getNumCols(),
-					 wins.at(_PROCCPUWIN)->getStartY(),
-					 wins.at(_PROCCPUWIN)->getStartX());
-    }
-  
-  //% mem
-  if(((wins.at(_PROCMEMWIN)->getNumCols() + wins.at(_PROCMEMWIN)->getStartX()) >
-      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PROCMEMWIN)->getWindow()
-					    != nullptr))
-    {
-      wins.at(_PROCMEMWIN)->deleteWindow();
-      wins.at(_PROCMEMWIN)->setWindow(nullptr);
-    }
-  else if(((wins.at(_PROCMEMWIN)->getNumCols() + wins.at(_PROCMEMWIN)->getStartX()) <
-	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PROCMEMWIN)->getWindow() ==
-						 nullptr) && shiftX <= _PROCMEMWIN)
-    {
-      wins.at(_PROCMEMWIN)->defineWindow(newwin(wins.at(_PROCMEMWIN)->getNumLines(),
-						wins.at(_PROCMEMWIN)->getNumCols(),
-						wins.at(_PROCMEMWIN)->getStartY(),
-						wins.at(_PROCMEMWIN)->getStartX()),
-					 "%MEM",
-					 wins.at(_PROCMEMWIN)->getNumLines(),
-					 wins.at(_PROCMEMWIN)->getNumCols(),
-					 wins.at(_PROCMEMWIN)->getStartY(),
-					 wins.at(_PROCMEMWIN)->getStartX());
-    }
-  
-  // TIME+
-  if(((wins.at(_PROCTIMEWIN)->getNumCols() + wins.at(_PROCTIMEWIN)->getStartX()) >
-      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PROCTIMEWIN)->getWindow()
-					    != nullptr))
-    {
-      wins.at(_PROCTIMEWIN)->deleteWindow();
-      wins.at(_PROCTIMEWIN)->setWindow(nullptr);
-    }
-  else if(((wins.at(_PROCTIMEWIN)->getNumCols() + wins.at(_PROCTIMEWIN)->getStartX()) <
-	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PROCTIMEWIN)->getWindow() ==
-						 nullptr) && shiftX <= _PROCTIMEWIN)
-    {
-      wins.at(_PROCTIMEWIN)->defineWindow(newwin(wins.at(_PROCTIMEWIN)->getNumLines(),
-						 wins.at(_PROCTIMEWIN)->getNumCols(),
-						 wins.at(_PROCTIMEWIN)->getStartY(),
-						 wins.at(_PROCTIMEWIN)->getStartX()),
-					  "TIME+",
-					  wins.at(_PROCTIMEWIN)->getNumLines(),
-					  wins.at(_PROCTIMEWIN)->getNumCols(),
-					  wins.at(_PROCTIMEWIN)->getStartY(),
-					  wins.at(_PROCTIMEWIN)->getStartX());
-    }
-  
-  // COMMAND
-  if(((wins.at(_COMMANDWIN)->getNumCols() + wins.at(_COMMANDWIN)->getStartX()) >
-      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_COMMANDWIN)->getWindow() != nullptr))
-    {
-      wins.at(_COMMANDWIN)->deleteWindow();
-      wins.at(_COMMANDWIN)->setWindow(nullptr);
-    }
-  else if(((wins.at(_COMMANDWIN)->getNumCols() + wins.at(_COMMANDWIN)->getStartX()) <
-	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_COMMANDWIN)->getWindow() ==
-						 nullptr) && shiftX <= _COMMANDWIN)
-    {
-      std::string commandLine = "COMMAND";
-      for(int i = commandLine.length(); i < 48; i++)
+      if(((wins.at(i)->getNumCols() + wins.at(i)->getStartX()) >
+	  wins.at(_MAINWIN)->getNumCols())  && (wins.at(i)->getWindow() != nullptr))
 	{
-	  commandLine.push_back(' ');
+	  wins.at(i)->deleteWindow();
+	  wins.at(i)->setWindow(nullptr);
 	}
-
-      wins.at(_COMMANDWIN)->defineWindow(newwin(wins.at(_COMMANDWIN)->getNumLines(),
-						wins.at(_COMMANDWIN)->getNumCols(),
-						wins.at(_COMMANDWIN)->getStartY(),
-						wins.at(_COMMANDWIN)->getStartX()),
-					 commandLine,
-				         wins.at(_COMMANDWIN)->getNumLines(),
-					 wins.at(_COMMANDWIN)->getNumCols(),
-					 wins.at(_COMMANDWIN)->getStartY(),
-					 wins.at(_COMMANDWIN)->getStartX());
+      else if(((wins.at(i)->getNumCols() + wins.at(i)->getStartX()) <
+	       wins.at(_MAINWIN)->getNumCols())  && (wins.at(i)->getWindow() ==
+						     nullptr) && shiftX <= i)
+	{
+	  wins.at(i)->defineWindow(newwin(wins.at(i)->getNumLines(),
+					  wins.at(i)->getNumCols(),
+					  wins.at(i)->getStartY(),
+					  wins.at(i)->getStartX()),
+				   wins.at(i)->getWindowName(),
+				   wins.at(i)->getNumLines(),
+				   wins.at(i)->getNumCols(),
+				   wins.at(i)->getStartY(),
+				   wins.at(i)->getStartX());      
+	}
     }
 } // end of "updateWindowDimensions"
 
@@ -1909,11 +1652,10 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 		const bool& highlight)
 {
   std::string outString;
-
+  
   for(int i = 0; i < pidList.size(); i++)
     {
       int posY = i + shiftY;
-      
       // ensure nothing is printed over the column titles
       if(posY != 0)
 	{
@@ -1924,193 +1666,160 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	    }
 	  
 	  // PID
-	  if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr)
+	  if(highlight == true && sortState == _PIDWIN)
 	    {
-	      if(highlight == true && sortState == _PIDWIN)
-		{
-		  wattron(wins.at(sortState)->getWindow(),
-			  A_BOLD); 
-		}
-	      
-	      outString = std::to_string(procData.at(pidList.at(i))->getPID());
-	      mvwaddstr(wins.at(_PIDWIN)->getWindow(),
-			posY,
-			wins.at(_PIDWIN)->getNumCols() - outString.length(),
-			outString.c_str());
+	      wattron(wins.at(sortState)->getWindow(),
+		      A_BOLD); 
 	    }
+	      
+	  outString = std::to_string(procData.at(pidList.at(i))->getPID());
+	  mvwaddstr(wins.at(_PIDWIN)->getWindow(),
+		    posY,
+		    wins.at(_PIDWIN)->getNumCols() - outString.length(),
+		    outString.c_str());
 	  // USER
-	  if(shiftX <= _USERWIN && wins.at(_USERWIN)->getWindow() != nullptr)
+	  if(highlight == true && sortState == _USERWIN)
 	    {
-	      if(highlight == true && sortState == _USERWIN)
-		{
-		  wattron(wins.at(sortState)->getWindow(),
-			  A_BOLD); 
-		}
-	      
-	      outString = procData.at(pidList.at(i))->getUSER();
-	      mvwaddstr(wins.at(_USERWIN)->getWindow(),
-			posY,
-			0,
-			outString.c_str());
+	      wattron(wins.at(sortState)->getWindow(),
+		      A_BOLD); 
 	    }
-	  // PR
-	  if(shiftX <= _PRWIN && wins.at(_PRWIN)->getWindow() != nullptr)
-	    {
-	      if(highlight == true && sortState == _PRWIN)
-		{
-		  wattron(wins.at(sortState)->getWindow(),
-			  A_BOLD); 
-		}
 	      
-	      const int tempPRVal = procData.at(pidList.at(i))->getPR();
-	      if(tempPRVal == -100)
-		{
-		  outString = "rt";
-		}
-	      else
-		{
-		  outString = std::to_string(tempPRVal);
-		}
+	  outString = procData.at(pidList.at(i))->getUSER();
+	  mvwaddstr(wins.at(_USERWIN)->getWindow(),
+		    posY,
+		    0,
+		    outString.c_str());
+	  // PR
+	  if(highlight == true && sortState == _PRWIN)
+	    {
+	      wattron(wins.at(sortState)->getWindow(),
+		      A_BOLD); 
+	    }
+	      
+	  const int tempPRVal = procData.at(pidList.at(i))->getPR();
+	  if(tempPRVal == -100)
+	    {
+	      outString = "rt";
+	    }
+	  else
+	    {
+	      outString = std::to_string(tempPRVal);
+	    }
 
-	      mvwaddstr(wins.at(_PRWIN)->getWindow(),
-			posY,
-			wins.at(_PRWIN)->getNumCols() - outString.length(),
-			outString.c_str());
-	    }	  
+	  mvwaddstr(wins.at(_PRWIN)->getWindow(),
+		    posY,
+		    wins.at(_PRWIN)->getNumCols() - outString.length(),
+		    outString.c_str());
 	  // NI
 	  if(shiftX <= _NIWIN && wins.at(_NIWIN)->getWindow() != nullptr)
-            {
-	      if(highlight == true && sortState == _NIWIN)
-		{
-		  wattron(wins.at(sortState)->getWindow(),
-			  A_BOLD); 
-		}
+	    if(highlight == true && sortState == _NIWIN)
+	      {
+		wattron(wins.at(sortState)->getWindow(),
+			A_BOLD); 
+	      }
 	      
-	      outString = std::to_string(procData.at(pidList.at(i))->getNI());
-	      mvwaddstr(wins.at(_NIWIN)->getWindow(),
-			posY,
-			wins.at(_NIWIN)->getNumCols() - outString.length(),
-			outString.c_str());
-            }
+	  outString = std::to_string(procData.at(pidList.at(i))->getNI());
+	  mvwaddstr(wins.at(_NIWIN)->getWindow(),
+		    posY,
+		    wins.at(_NIWIN)->getNumCols() - outString.length(),
+		    outString.c_str());
 	  // VIRT
-	  if(shiftX <= _VIRTWIN && wins.at(_VIRTWIN)->getWindow() != nullptr)
-            {
-	      if(highlight == true && sortState == _VIRTWIN)
-		{
-		  wattron(wins.at(sortState)->getWindow(),
-			  A_BOLD); 
-		}
+	  if(highlight == true && sortState == _VIRTWIN)
+	    {
+	      wattron(wins.at(sortState)->getWindow(),
+		      A_BOLD); 
+	    }
 	      
-	      outString = std::to_string(procData.at(pidList.at(i))->getVIRT());
-	      mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
-			posY,
-			wins.at(_VIRTWIN)->getNumCols() - outString.length(),
-			outString.c_str());
-            }
+	  outString = std::to_string(procData.at(pidList.at(i))->getVIRT());
+	  mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
+		    posY,
+		    wins.at(_VIRTWIN)->getNumCols() - outString.length(),
+		    outString.c_str());
 	  // RES
-	  if(shiftX <= _RESWIN && wins.at(_RESWIN)->getWindow() != nullptr)
-            {
-	      if(highlight == true && sortState == _RESWIN)
-		{
-		  wattron(wins.at(sortState)->getWindow(),
-			  A_BOLD); 
-		}
-	      
-	      outString = std::to_string(procData.at(pidList.at(i))->getRES());
-	      mvwaddstr(wins.at(_RESWIN)->getWindow(),
-			posY,
-			wins.at(_RESWIN)->getNumCols() - outString.length(),
-			outString.c_str());
-            }
+	  if(highlight == true && sortState == _RESWIN)
+	    {
+	      wattron(wins.at(sortState)->getWindow(),
+		      A_BOLD); 
+	    }
+	  outString = std::to_string(procData.at(pidList.at(i))->getRES());
+	  mvwaddstr(wins.at(_RESWIN)->getWindow(),
+		    posY,
+		    wins.at(_RESWIN)->getNumCols() - outString.length(),
+		    outString.c_str());
 	  // SHR
-	  if(shiftX <= _SHRWIN && wins.at(_SHRWIN)->getWindow() != nullptr)
-            {
-	      if(highlight == true && sortState == _SHRWIN)
-		{
-		  wattron(wins.at(sortState)->getWindow(),
-			  A_BOLD); 
-		}
+	  if(highlight == true && sortState == _SHRWIN)
+	    {
+	      wattron(wins.at(sortState)->getWindow(),
+		      A_BOLD); 
+	    }
 	      
-	      outString = std::to_string(procData.at(pidList.at(i))->getSHR());
-	      mvwaddstr(wins.at(_SHRWIN)->getWindow(),
-			posY,
-			wins.at(_SHRWIN)->getNumCols() - outString.length(),
-			outString.c_str());
-            }
+	  outString = std::to_string(procData.at(pidList.at(i))->getSHR());
+	  mvwaddstr(wins.at(_SHRWIN)->getWindow(),
+		    posY,
+		    wins.at(_SHRWIN)->getNumCols() - outString.length(),
+		    outString.c_str());
 	  // S
-	  if(shiftX <= _SWIN && wins.at(_SWIN)->getWindow() != nullptr)
+	  if(highlight == true && sortState == _SWIN)
 	    {
-	      if(highlight == true && sortState == _SWIN)
-		{
-		  wattron(wins.at(sortState)->getWindow(),
-			  A_BOLD); 
-		}
+	      wattron(wins.at(sortState)->getWindow(),
+		      A_BOLD); 
+	    }
 	      
-	      mvwaddch(wins.at(_SWIN)->getWindow(),
-		       posY,
-		       0,
-		       procData.at(pidList.at(i))->getS());
-            }
+	  mvwaddch(wins.at(_SWIN)->getWindow(),
+		   posY,
+		   0,
+		   procData.at(pidList.at(i))->getS());
 	  // %CPU
-	  if(shiftX <= _PROCCPUWIN && wins.at(_PROCCPUWIN)->getWindow() != nullptr)
-            {
-	      if(highlight == true && sortState == _PROCCPUWIN)
-		{
-		  wattron(wins.at(sortState)->getWindow(),
-			  A_BOLD); 
-		}
-	      
-	      outString = doubleToStr(procData.at(pidList.at(i))->getCPUUsage(), 1);
-	      mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
-			posY,
-			wins.at(_PROCCPUWIN)->getNumCols() - outString.length(),
-			outString.c_str());
-            }
-	  // %MEM
-	  if(shiftX <= _PROCMEMWIN && wins.at(_PROCMEMWIN)->getWindow() != nullptr)
-            {
-	      if(highlight == true && sortState == _PROCMEMWIN)
-		{
-		  wattron(wins.at(sortState)->getWindow(),
-			  A_BOLD); 
-		}
-	      
-	      outString = doubleToStr(procData.at(pidList.at(i))->getMEMUsage(), 1);
-	      mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
-			posY,
-			wins.at(_PROCMEMWIN)->getNumCols() - outString.length(),
-			outString.c_str());
-            }
-	  // TIME+
-	  if(shiftX <= _PROCTIMEWIN && wins.at(_PROCTIMEWIN)->getWindow() != nullptr)
+	  if(highlight == true && sortState == _PROCCPUWIN)
 	    {
-	      if(highlight == true && sortState == _PROCTIMEWIN)
-		{
-		  wattron(wins.at(sortState)->getWindow(),
-			  A_BOLD); 
-		}
+	      wattron(wins.at(sortState)->getWindow(),
+		      A_BOLD); 
+	    }
 	      
-	      outString = procData.at(pidList.at(i))->getProcessCPUTime();
-	      mvwaddstr(wins.at(_PROCTIMEWIN)->getWindow(),
-			posY,
-			wins.at(_PROCTIMEWIN)->getNumCols() - outString.length(),
-			outString.c_str());
-            }
+	  outString = doubleToStr(procData.at(pidList.at(i))->getCPUUsage(), 1);
+	  mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
+		    posY,
+		    wins.at(_PROCCPUWIN)->getNumCols() - outString.length(),
+		    outString.c_str());
+	  // %MEM
+	  if(highlight == true && sortState == _PROCMEMWIN)
+	    {
+	      wattron(wins.at(sortState)->getWindow(),
+		      A_BOLD); 
+	    }
+	      
+	  outString = doubleToStr(procData.at(pidList.at(i))->getMEMUsage(), 1);
+	  mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
+		    posY,
+		    wins.at(_PROCMEMWIN)->getNumCols() - outString.length(),
+		    outString.c_str());
+
+	  // TIME+
+
+	  if(highlight == true && sortState == _PROCTIMEWIN)
+	    {
+	      wattron(wins.at(sortState)->getWindow(),
+		      A_BOLD); 
+	    }
+	      
+	  outString = procData.at(pidList.at(i))->getProcessCPUTime();
+	  mvwaddstr(wins.at(_PROCTIMEWIN)->getWindow(),
+		    posY,
+		    wins.at(_PROCTIMEWIN)->getNumCols() - outString.length(),
+		    outString.c_str());
+
 	  // COMMAND
-	  if(shiftX <= _COMMANDWIN && wins.at(_COMMANDWIN)->getWindow() != nullptr)
-            {
-	      if(highlight == true && sortState == _COMMANDWIN)
-		{
-		  wattron(wins.at(sortState)->getWindow(),
-			  A_BOLD); 
-		}
+	  if(highlight == true && sortState == _COMMANDWIN)
+	    {
+	      wattron(wins.at(sortState)->getWindow(),
+		      A_BOLD); 
+	    }
 	      
-	      outString = procData.at(pidList.at(i))->getCOMMAND();
-	      mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
-			posY,
-			0,
-			outString.c_str());
-            }
+	  outString = procData.at(pidList.at(i))->getCOMMAND();
+	  mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
+		    posY,
+		    0,
+		    outString.c_str());
 
 	  attrOffBottomWins(wins, A_BOLD);
 	}
