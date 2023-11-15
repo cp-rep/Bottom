@@ -404,10 +404,9 @@ int main()
 	clearAllWins(allWins);
       }
 
-    // draw cpu graph
+    // draw graphs
     if(cpuGraph == true)
       {
-
 	drawGraph(allWins,
 		  _CPUGRAPHWIN,
 		  cpuUsageVals,
@@ -421,9 +420,7 @@ int main()
 		  memUsageVals,
 		  "MAIN MEMORY USAGE %");
       }
-
-    updateWindowDimensions(allWins);
-    colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
+      
     printTopWins(allWins,
 		 allTopLines);
     boldOnAllTopWins(allWins,
@@ -436,6 +433,17 @@ int main()
 		    memInfo);
     boldOffAllTopWins(allWins,
 		      A_BOLD);
+    updateWindowDimensions(allWins,
+			   shiftX,
+			   shiftY);
+    colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
+    printLine(allWins,
+	      _YOFFSET,
+	      0,
+	      _BLACK_TEXT,
+	      _MAINWIN,
+	      colorLine);
+
     // ## update states and print ##
     if(entered == false)
       {
@@ -459,24 +467,24 @@ int main()
 			   stateChanged,
 			   cpuGraphCount,
 			   memGraphCount);
+
 	printProcs(allWins,
 		   procInfoStart,
 		   pidsStart,
 		   shiftY,
 		   shiftX,
 		   sortState,
-		   highlight);		   
+		   highlight);
 	colorOnBottomWins(allWins,
 			  _BLACK_TEXT);
-	printWindowNames(allWins);
+
+	printWindowNames(allWins,
+			 shiftY,
+			 shiftX);
+
 	colorOffBottomWins(allWins,
-			   _BLACK_TEXT);    
-	printLine(allWins,
-		  _YOFFSET,
-		  0,
-		  _BLACK_TEXT,
-		  _MAINWIN,
-		  colorLine);    
+			   _BLACK_TEXT);	
+
       }
     else if(stateChanged == false)
       {
@@ -500,6 +508,7 @@ int main()
 			   stateChanged,
 			   cpuGraphCount,
 			   memGraphCount);
+	
 	printProcs(allWins,
 		   procInfoEnd,
 		   outPids,
@@ -507,19 +516,20 @@ int main()
 		   shiftX,
 		   sortState,
 		   highlight);
+
+
+	colorOnBottomWins(allWins,
+			  _BLACK_TEXT);
+
+
+	printWindowNames(allWins,
+			 shiftY,
+			 shiftX);
+
+	colorOffBottomWins(allWins,
+			   _BLACK_TEXT);	
       }
     
-    colorOnBottomWins(allWins,
-		      _BLACK_TEXT);
-    printWindowNames(allWins);
-    colorOffBottomWins(allWins,
-		       _BLACK_TEXT);    
-    printLine(allWins,
-	      _YOFFSET,
-	      0,
-	      _BLACK_TEXT,
-	      _MAINWIN,
-	      colorLine);
     refreshAllWins(allWins);
     doupdate();
     usleep(15000);
