@@ -706,7 +706,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 
 /*
   Function:
-  updateWindowDimensions
+   updateWindowDimensions
 
   Description:
 
@@ -733,7 +733,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	  wins.at(i)->deleteWindow();
 	  wins.at(i)->setWindow(nullptr);
 	}
-      else if(((wins.at(i)->getNumCols() + wins.at(i)->getStartX()) <
+      else if(((wins.at(i)->getNumCols() + wins.at(i)->getStartX()) <=
 	       wins.at(_MAINWIN)->getNumCols())  && (wins.at(i)->getWindow() ==
 						     nullptr) && shiftX <= i)
 	{
@@ -745,7 +745,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 				   wins.at(i)->getNumLines(),
 				   wins.at(i)->getNumCols(),
 				   wins.at(i)->getStartY(),
-				   wins.at(i)->getStartX());      
+				   wins.at(i)->getStartX());
 	}
     }
 } // end of "updateWindowDimensions"
