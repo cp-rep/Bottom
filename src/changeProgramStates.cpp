@@ -985,6 +985,68 @@ void helpState(std::unordered_map<int, CursesWindow*>& wins)
 	    _WHITE_TEXT,
 	    _HELPWIN,
 	    outString);
+
+  // 'c' cpu window
+  yOffset += 2;
+  xOffset = 0;
+  outString = " - The '";
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+  xOffset += outString.length();
+  outString = "c";
+  wattron(wins.at(_HELPWIN)->getWindow(),
+	  A_BOLD);
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+  wattroff(wins.at(_HELPWIN)->getWindow(),
+	   A_BOLD);
+  xOffset += outString.length();
+  outString = "' key resizes and/or removes the cpu utilization window.";
+    printLine(wins,
+	      yOffset,
+	      xOffset,
+	      _WHITE_TEXT,
+	      _HELPWIN,
+	      outString);
+
+  // 'm' mem window
+  yOffset += 2;
+  xOffset = 0;
+  outString = " - The '";
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+  xOffset += outString.length();
+  outString = "m";
+  wattron(wins.at(_HELPWIN)->getWindow(),
+	  A_BOLD);
+  printLine(wins,
+	    yOffset,
+	    xOffset,
+	    _WHITE_TEXT,
+	    _HELPWIN,
+	    outString);
+  wattroff(wins.at(_HELPWIN)->getWindow(),
+	   A_BOLD);
+  xOffset += outString.length();
+  outString = "' key resizes and/or removes the main memory usage window.";
+    printLine(wins,
+	      yOffset,
+	      xOffset,
+	      _WHITE_TEXT,
+	      _HELPWIN,
+	      outString);
     
   // refresh and update windows
   wrefresh(wins.at(_MAINWIN)->getWindow());
