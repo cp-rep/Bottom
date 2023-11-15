@@ -206,6 +206,10 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       numCols = (((wins.at(_MAINWIN)->getNumCols() -
 		       wins.at(_COMMANDWIN)->getNumCols() -
 		       wins.at(_COMMANDWIN)->getStartX())/2) - 2);
+      if(numCols %2 != 0)
+	{
+	  numCols++;
+	}      
       startY = _YOFFSET + 1;
       startX = wins.at(_MAINWIN)->getNumCols() - numCols;
 
@@ -251,10 +255,10 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		{
 		  startY = _YOFFSET + 1;
 		}
-	      
+
 	      wins.at(_MEMGRAPHWIN)->setNumLines(numLines);
 	      wins.at(_MEMGRAPHWIN)->setNumCols(numCols);
-	      wins.at(_MEMGRAPHWIN)->setStartX(startY);	      
+	      wins.at(_MEMGRAPHWIN)->setStartY(startY);	      
 	      wins.at(_MEMGRAPHWIN)->setStartX(startX);
 	      
  	      wresize(wins.at(_MEMGRAPHWIN)->getWindow(),
