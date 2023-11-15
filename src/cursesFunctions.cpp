@@ -709,10 +709,16 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
    updateWindowDimensions
 
   Description:
+   Updates the currently allocated process window sizes in the case of
+   a terminal resize that would impact their output or functionality.
 
   Input:
-
+   wins                 - A reference to an unordered map that will be used to store
+                          each CursesWindow object defined in this function.  The
+                          key is from _cursesWinConsts.hpp and will match the 
+                          corresponding CursesWindow object as value.
   Output:
+   NONE
 */
 void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 			    const int& shiftX,
@@ -724,27 +730,44 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
   getmaxyx(stdscr, numLines, numCols);
   wins.at(_MAINWIN)->setNumLines(numLines);
   wins.at(_MAINWIN)->setNumCols(numCols);
+  bool deleted = false;
 
   for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
     {
-      if(((wins.at(i)->getNumCols() + wins.at(i)->getStartX()) >
-	  wins.at(_MAINWIN)->getNumCols())  && (wins.at(i)->getWindow() != nullptr))
+      // if window resize is too few columns or lines for the current windows
+      if( (wins.at(i)->getNumCols() + wins.at(i)->getStartX() > numCols) ||
+	  (numLines != wins.at(_COMMANDWIN)->getNumLines() + _YOFFSET) )
 	{
+	  // delete them
 	  wins.at(i)->deleteWindow();
+	  wins.at(i)->setWindow(nullptr);
+	  deleted = true;
 	}
-      else if(((wins.at(i)->getNumCols() + wins.at(i)->getStartX()) <=
-	       wins.at(_MAINWIN)->getNumCols())  && (wins.at(i)->getWindow() ==
-						     nullptr) && shiftX <= i)
+    }
+
+  // sanity check
+  if(deleted == true)
+    {
+      for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
 	{
-	  wins.at(i)->defineWindow(newwin(wins.at(i)->getNumLines(),
-					  wins.at(i)->getNumCols(),
-					  wins.at(i)->getStartY(),
-					  wins.at(i)->getStartX()),
-				   wins.at(i)->getWindowName(),
-				   wins.at(i)->getNumLines(),
-				   wins.at(i)->getNumCols(),
-				   wins.at(i)->getStartY(),
-				   wins.at(i)->getStartX());
+	  // check if a window should be allocated
+	  if( (wins.at(i)->getWindow() == nullptr) && (shiftX <= i) &&
+	      (numLines > _YOFFSET) )
+	    {
+	      int len = wins.at(i)->getNumCols() + wins.at(i)->getStartX();
+	      if(len <= numCols)
+		{
+		  wins.at(i)->defineWindow(newwin(numLines - _YOFFSET,
+						  wins.at(i)->getNumCols(),
+						  wins.at(i)->getStartY(),
+						  wins.at(i)->getStartX()),
+					   wins.at(i)->getWindowName(),
+					   numLines - _YOFFSET,
+					   wins.at(i)->getNumCols(),
+					   wins.at(i)->getStartY(),
+					   wins.at(i)->getStartX());
+		}
+	    }
 	}
     }
 } // end of "updateWindowDimensions"
@@ -1815,6 +1838,13 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	    }
 	      
 	  outString = procData.at(pidList.at(i))->getCOMMAND();
+
+	  size_t maxLen = wins.at(_COMMANDWIN)->getNumCols();
+	  if(maxLen > outString.length())
+	    {
+	      outString = outString.substr(0, maxLen);
+	    }
+	  
 	  mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
 		    posY,
 		    0,
@@ -1964,6 +1994,9 @@ void shiftBottomWinsLeft(std::unordered_map<int, CursesWindow*>& wins,
       mvwin(wins.at(currWin)->getWindow(),
 	    wins.at(currWin)->getStartY(),
 	    wins.at(currWin)->getStartX());
+
+      // update the numlines of the window
+      wins.at(currWin)->setNumLines(wins.at(_MAINWIN)->getNumLines() - _YOFFSET);
     }
 } // end of "shiftBottomWinsLeft"
 
@@ -1995,7 +2028,6 @@ void shiftBottomWinsRight(std::unordered_map<int, CursesWindow*>& wins,
   int currWin = shiftX;
   int totalShifts = 0;
 
-
   wins.at(shiftX - 1)->setStartX(0);
 
   // get the total number of needed shifts
@@ -2008,14 +2040,16 @@ void shiftBottomWinsRight(std::unordered_map<int, CursesWindow*>& wins,
       wins.at(currWin)->setStartX(wins.at(currWin - 1)->getStartX() +
 				  wins.at(currWin - 1)->getNumCols() +
 				  1);
+      
       // move the window to the new starting position
       mvwin(wins.at(currWin)->getWindow(),
 	    wins.at(currWin)->getStartY(),
 	    wins.at(currWin)->getStartX());
     }
 
-  // create the starting window now that the windows have been shifted
-  wins.at(shiftX - 1)->createWindow(wins.at(shiftX - 1)->getNumLines(),
+  // create the starting window now that the windows have been shifted and
+  // update the numlines of the window
+  wins.at(shiftX - 1)->createWindow(wins.at(_MAINWIN)->getNumLines() - _YOFFSET,
 				    wins.at(shiftX - 1)->getNumCols(),
 				    wins.at(shiftX - 1)->getStartY(),
 				    wins.at(shiftX - 1)->getStartX());
