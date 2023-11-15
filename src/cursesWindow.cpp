@@ -117,7 +117,7 @@ void CursesWindow::defineWindow(WINDOW* win,
 				const int& startX)
 {
   m_window = win;
-  m_windowName.append(windowName);
+  m_windowName = windowName;
   m_numLines = numLines;
   m_numCols = numCols;
   m_startY = startY;
