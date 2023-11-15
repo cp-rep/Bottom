@@ -149,7 +149,7 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			startY + numLines,
 			wins.at(_MEMGRAPHWIN)->getStartX());		
 		  
-	    }	  
+	    }
 	  cpuGraph = true;
 	  cpuGraphCount = 1;
 	}
@@ -164,13 +164,14 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	      wins.at(_CPUGRAPHWIN)->setNumLines(numLines);
 	      wins.at(_CPUGRAPHWIN)->setNumCols(numCols);
 	      wins.at(_CPUGRAPHWIN)->setStartX(startX);
-	      wins.at(_MEMGRAPHWIN)->setStartY(startY +
+	      wins.at(_CPUGRAPHWIN)->setStartY(startY +
 					       wins.at
 					       (_CPUGRAPHWIN)->getNumLines());
+	      
 	      if(memGraph == true)
 		{
 		  mvwin(wins.at(_MEMGRAPHWIN)->getWindow(),
-			wins.at(_MEMGRAPHWIN)->getStartY(),
+			wins.at(_CPUGRAPHWIN)->getNumLines() + _YOFFSET + 1,
 			wins.at(_MEMGRAPHWIN)->getStartX());
 		}
 
@@ -227,7 +228,7 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 						     numCols,
 						     startY,
 						     startX),
-					      "_CPUGRAPHWIN",
+					      "_MEMGRAPHWIN",
 					      numLines,
 					      numCols,
 					      startY,
@@ -237,11 +238,42 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	}
       else
 	{
-	  wins.at(_MEMGRAPHWIN)->deleteWindow();
-	  delete(wins.at(_MEMGRAPHWIN));
-	  wins.erase(_MEMGRAPHWIN);
-	  memGraphCount = 0;
-	  memGraph = false;	  
+	  if(memGraphCount == 1)
+	    {
+	      numLines = ((numLines - 4) * 2) + 4;
+	      numCols = ((numCols + 2) * 2) - 2;
+	      startX = wins.at(_MAINWIN)->getNumCols() - numCols;
+	      if(cpuGraph == true)
+		{
+		  startY = wins.at(_CPUGRAPHWIN)->getNumLines() + _YOFFSET + 1;
+		}
+	      else
+		{
+		  startY = _YOFFSET + 1;
+		}
+	      
+	      wins.at(_MEMGRAPHWIN)->setNumLines(numLines);
+	      wins.at(_MEMGRAPHWIN)->setNumCols(numCols);
+	      wins.at(_MEMGRAPHWIN)->setStartX(startY);	      
+	      wins.at(_MEMGRAPHWIN)->setStartX(startX);
+	      
+ 	      wresize(wins.at(_MEMGRAPHWIN)->getWindow(),
+		      numLines,
+		      numCols);
+	      mvwin(wins.at(_MEMGRAPHWIN)->getWindow(),
+		    startY,
+		    startX);	      
+
+	      memGraphCount = 2;
+	    }
+	  else if (memGraphCount == 2)
+	    {
+	      wins.at(_MEMGRAPHWIN)->deleteWindow();
+	      delete(wins.at(_MEMGRAPHWIN));
+	      wins.erase(_MEMGRAPHWIN);
+	      memGraphCount = 0;
+	      memGraph = false;
+	    }
 	}
       break;
     case _STATECSV: // output csv file
