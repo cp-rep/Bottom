@@ -337,33 +337,18 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
     case _STATEKEYLEFT:
       if(shiftX > _PIDWIN)
 	{
-	  // check room to shift
-	  if(((wins.at(_COMMANDWIN)->getNumCols() + wins.at(_COMMANDWIN)->getStartX()) <=
-	       wins.at(_MAINWIN)->getNumCols()) &&
-	      ((wins.at(_COMMANDWIN)->getNumLines() + wins.at(_COMMANDWIN)->getStartY()) <=
-		wins.at(_MAINWIN)->getNumLines()))
-	    {
-	
-	      shiftBottomWinsRight(wins,
-				   shiftX);
-	      shiftX--;
-	    }
+	  shiftBottomWinsRight(wins,
+			       shiftX);
+	  shiftX--;
 	}
       break;
     case _STATEKEYRIGHT:
       if(shiftX < _COMMANDWIN)
 	{
+	  shiftBottomWinsLeft(wins,
+			      shiftX);
+	  shiftX++;
 
-	  if(((wins.at(_COMMANDWIN)->getNumCols() + wins.at(_COMMANDWIN)->getStartX()) <
-	       wins.at(_MAINWIN)->getNumCols() - 1) &&
-	      ((wins.at(_COMMANDWIN)->getNumLines() + wins.at(_COMMANDWIN)->getStartY()) <=
-	       wins.at(_MAINWIN)->getNumLines()))
-	    {
-
-	      shiftBottomWinsLeft(wins,
-				  shiftX);
-	      shiftX++;
-	    }
 	}
       break;      
     default:
