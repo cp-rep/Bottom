@@ -4,7 +4,7 @@
 
   Description:
    Function implementations for the cursesFunctions.hpp header file.
- */
+*/
 #include "cursesFunctions.hpp"
 #include <algorithm>
 
@@ -12,7 +12,7 @@
 
 /*
   Function:
-   initializeCurses
+  initializeCurses
 
   Description:
    Initializes the curses stdscr and curses datastructures.  This function
@@ -669,9 +669,8 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 					 numCols,
 					 startY,
 					 startX);
-  
   // define cpu graph
-  numLines = 14;/*((wins.at(_MAINWIN)->getNumLines() - _YOFFSET)/4)*/
+  numLines = 14;
   numCols = (((wins.at(_MAINWIN)->getNumCols() -
 	       wins.at(_COMMANDWIN)->getNumCols() -
 	       wins.at(_COMMANDWIN)->getStartX())/2) - 2);
@@ -704,24 +703,314 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 } // end of "defineStartingWindows"
 
 
+
+/*
+  Function:
+  updateWindowDimensions
+
+  Description:
+
+  Input:
+
+  Output:
+*/
 void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
 {
   int numLines;
   int numCols;
-  int startY = 0;
-  int startX = 0;
   
   getmaxyx(stdscr, numLines, numCols);
-  
   wins.at(_MAINWIN)->setNumLines(numLines);
-  wins.at(_MAINWIN)->setNumCols(numCols);  
-}
+  wins.at(_MAINWIN)->setNumCols(numCols);
+
+
+  // PID
+  if(((wins.at(_PIDWIN)->getNumCols() + wins.at(_PIDWIN)->getStartX()) >
+      wins.at(_PIDWIN)->getNumCols())  && (wins.at(_PIDWIN)->getWindow() != nullptr))
+    {
+      wins.at(_PIDWIN)->deleteWindow();
+      wins.at(_PIDWIN)->setWindow(nullptr);
+    }
+  else if(((wins.at(_PIDWIN)->getNumCols() + wins.at(_PIDWIN)->getStartX()) <
+	   wins.at(_PIDWIN)->getNumCols())  && (wins.at(_PIDWIN)->getWindow() == nullptr))
+    {
+      wins.at(_PIDWIN)->defineWindow(newwin(wins.at(_PIDWIN)->getNumLines(),
+					    wins.at(_PIDWIN)->getNumCols(),
+					    wins.at(_PIDWIN)->getStartY(),
+					    wins.at(_PIDWIN)->getStartX()),
+				     "PID",
+				     wins.at(_PIDWIN)->getNumLines(),
+				     wins.at(_PIDWIN)->getNumCols(),
+				     wins.at(_PIDWIN)->getStartY(),
+				     wins.at(_PIDWIN)->getStartX());
+    }
+
+  // USER
+  if(((wins.at(_USERWIN)->getNumCols() + wins.at(_USERWIN)->getStartX()) >
+      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_USERWIN)->getWindow()
+					    != nullptr))
+    {
+      wins.at(_USERWIN)->deleteWindow();
+      wins.at(_USERWIN)->setWindow(nullptr);
+    }
+  else if(((wins.at(_USERWIN)->getNumCols() + wins.at(_USERWIN)->getStartX()) <
+	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_USERWIN)->getWindow() ==
+						 nullptr))
+    {
+      wins.at(_USERWIN)->defineWindow(newwin(wins.at(_USERWIN)->getNumLines(),
+					     wins.at(_USERWIN)->getNumCols(),
+					     wins.at(_USERWIN)->getStartY(),
+					     wins.at(_USERWIN)->getStartX()),
+				      "TIME+",
+				      wins.at(_USERWIN)->getNumLines(),
+				      wins.at(_USERWIN)->getNumCols(),
+				      wins.at(_USERWIN)->getStartY(),
+				      wins.at(_USERWIN)->getStartX());
+    }
+
+  // PR
+  if(((wins.at(_PRWIN)->getNumCols() + wins.at(_PRWIN)->getStartX()) >
+      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PRWIN)->getWindow()
+					    != nullptr))
+    {
+      wins.at(_PRWIN)->deleteWindow();
+      wins.at(_PRWIN)->setWindow(nullptr);
+    }
+  else if(((wins.at(_PRWIN)->getNumCols() + wins.at(_PRWIN)->getStartX()) <
+	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PRWIN)->getWindow() ==
+						 nullptr))
+    {
+      wins.at(_PRWIN)->defineWindow(newwin(wins.at(_PRWIN)->getNumLines(),
+					   wins.at(_PRWIN)->getNumCols(),
+					   wins.at(_PRWIN)->getStartY(),
+					   wins.at(_PRWIN)->getStartX()),
+				    "PR",
+				    wins.at(_PRWIN)->getNumLines(),
+				    wins.at(_PRWIN)->getNumCols(),
+				    wins.at(_PRWIN)->getStartY(),
+				    wins.at(_PRWIN)->getStartX());
+    }
+  
+  // NI
+  if(((wins.at(_NIWIN)->getNumCols() + wins.at(_NIWIN)->getStartX()) >
+      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_NIWIN)->getWindow()
+					    != nullptr))
+    {
+      wins.at(_NIWIN)->deleteWindow();
+      wins.at(_NIWIN)->setWindow(nullptr);
+    }
+  else if(((wins.at(_NIWIN)->getNumCols() + wins.at(_NIWIN)->getStartX()) <
+	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_NIWIN)->getWindow() ==
+						 nullptr))
+    {
+      wins.at(_NIWIN)->defineWindow(newwin(wins.at(_NIWIN)->getNumLines(),
+					   wins.at(_NIWIN)->getNumCols(),
+					   wins.at(_NIWIN)->getStartY(),
+					   wins.at(_NIWIN)->getStartX()),
+				    "NI",
+				    wins.at(_NIWIN)->getNumLines(),
+				    wins.at(_NIWIN)->getNumCols(),
+				    wins.at(_NIWIN)->getStartY(),
+				    wins.at(_NIWIN)->getStartX());
+    }
+
+  // virt
+  if(((wins.at(_VIRTWIN)->getNumCols() + wins.at(_VIRTWIN)->getStartX()) >
+      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_VIRTWIN)->getWindow()
+					    != nullptr))
+    {
+      wins.at(_VIRTWIN)->deleteWindow();
+      wins.at(_VIRTWIN)->setWindow(nullptr);
+    }
+  else if(((wins.at(_VIRTWIN)->getNumCols() + wins.at(_VIRTWIN)->getStartX()) <
+	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_VIRTWIN)->getWindow() ==
+						 nullptr))
+    {
+      wins.at(_VIRTWIN)->defineWindow(newwin(wins.at(_VIRTWIN)->getNumLines(),
+					     wins.at(_VIRTWIN)->getNumCols(),
+					     wins.at(_VIRTWIN)->getStartY(),
+					     wins.at(_VIRTWIN)->getStartX()),
+				      "VIRT",
+				      wins.at(_VIRTWIN)->getNumLines(),
+				      wins.at(_VIRTWIN)->getNumCols(),
+				      wins.at(_VIRTWIN)->getStartY(),
+				      wins.at(_VIRTWIN)->getStartX());
+    }
+
+  // res
+  if(((wins.at(_RESWIN)->getNumCols() + wins.at(_RESWIN)->getStartX()) >
+      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_RESWIN)->getWindow()
+					    != nullptr))
+    {
+      wins.at(_RESWIN)->deleteWindow();
+      wins.at(_RESWIN)->setWindow(nullptr);
+    }
+  else if(((wins.at(_RESWIN)->getNumCols() + wins.at(_RESWIN)->getStartX()) <
+	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_RESWIN)->getWindow() ==
+						 nullptr))
+    {
+      wins.at(_RESWIN)->defineWindow(newwin(wins.at(_RESWIN)->getNumLines(),
+					    wins.at(_RESWIN)->getNumCols(),
+					    wins.at(_RESWIN)->getStartY(),
+					    wins.at(_RESWIN)->getStartX()),
+				     "RES",
+				     wins.at(_RESWIN)->getNumLines(),
+				     wins.at(_RESWIN)->getNumCols(),
+				     wins.at(_RESWIN)->getStartY(),
+				     wins.at(_RESWIN)->getStartX());
+    }
+
+  // shr
+  if(((wins.at(_SHRWIN)->getNumCols() + wins.at(_SHRWIN)->getStartX()) >
+      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_SHRWIN)->getWindow()
+					    != nullptr))
+    {
+      wins.at(_SHRWIN)->deleteWindow();
+      wins.at(_SHRWIN)->setWindow(nullptr);
+    }
+  else if(((wins.at(_SHRWIN)->getNumCols() + wins.at(_SHRWIN)->getStartX()) <
+	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_SHRWIN)->getWindow() ==
+						 nullptr))
+    {
+      wins.at(_SHRWIN)->defineWindow(newwin(wins.at(_SHRWIN)->getNumLines(),
+					    wins.at(_SHRWIN)->getNumCols(),
+					    wins.at(_SHRWIN)->getStartY(),
+					    wins.at(_SHRWIN)->getStartX()),
+				     "SHR",
+				     wins.at(_SHRWIN)->getNumLines(),
+				     wins.at(_SHRWIN)->getNumCols(),
+				     wins.at(_SHRWIN)->getStartY(),
+				     wins.at(_SHRWIN)->getStartX());      
+
+  
+    }
+
+  // S
+  if(((wins.at(_SWIN)->getNumCols() + wins.at(_SWIN)->getStartX()) >
+      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_SWIN)->getWindow()
+					    != nullptr))
+    {
+      wins.at(_SWIN)->deleteWindow();
+      wins.at(_SWIN)->setWindow(nullptr);
+    }
+  else if(((wins.at(_SWIN)->getNumCols() + wins.at(_SWIN)->getStartX()) <
+	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_SWIN)->getWindow() ==
+						 nullptr))
+    {
+      wins.at(_SWIN)->defineWindow(newwin(wins.at(_SWIN)->getNumLines(),
+					  wins.at(_SWIN)->getNumCols(),
+					  wins.at(_SWIN)->getStartY(),
+					  wins.at(_SWIN)->getStartX()),
+				   "S",
+				   wins.at(_SWIN)->getNumLines(),
+				   wins.at(_SWIN)->getNumCols(),
+				   wins.at(_SWIN)->getStartY(),
+				   wins.at(_SWIN)->getStartX());
+    }  
+
+  // %CPU
+  if(((wins.at(_PROCCPUWIN)->getNumCols() + wins.at(_PROCCPUWIN)->getStartX()) >
+      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PROCCPUWIN)->getWindow()
+					    != nullptr))
+    {
+      wins.at(_PROCCPUWIN)->deleteWindow();
+      wins.at(_PROCCPUWIN)->setWindow(nullptr);
+    }
+  else if(((wins.at(_PROCCPUWIN)->getNumCols() + wins.at(_PROCCPUWIN)->getStartX()) <
+	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PROCCPUWIN)->getWindow() ==
+						 nullptr))
+    {
+      wins.at(_PROCCPUWIN)->defineWindow(newwin(wins.at(_PROCCPUWIN)->getNumLines(),
+						wins.at(_PROCCPUWIN)->getNumCols(),
+						wins.at(_PROCCPUWIN)->getStartY(),
+						wins.at(_PROCCPUWIN)->getStartX()),
+					 "%CPU",
+					 wins.at(_PROCCPUWIN)->getNumLines(),
+					 wins.at(_PROCCPUWIN)->getNumCols(),
+					 wins.at(_PROCCPUWIN)->getStartY(),
+					 wins.at(_PROCCPUWIN)->getStartX());
+    }
+  
+  //% mem
+  if(((wins.at(_PROCMEMWIN)->getNumCols() + wins.at(_PROCMEMWIN)->getStartX()) >
+      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PROCMEMWIN)->getWindow()
+					    != nullptr))
+    {
+      wins.at(_PROCMEMWIN)->deleteWindow();
+      wins.at(_PROCMEMWIN)->setWindow(nullptr);
+    }
+  else if(((wins.at(_PROCMEMWIN)->getNumCols() + wins.at(_PROCMEMWIN)->getStartX()) <
+	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PROCMEMWIN)->getWindow() ==
+						 nullptr))
+    {
+      wins.at(_PROCMEMWIN)->defineWindow(newwin(wins.at(_PROCMEMWIN)->getNumLines(),
+						wins.at(_PROCMEMWIN)->getNumCols(),
+						wins.at(_PROCMEMWIN)->getStartY(),
+						wins.at(_PROCMEMWIN)->getStartX()),
+					 "%MEM",
+					 wins.at(_PROCMEMWIN)->getNumLines(),
+					 wins.at(_PROCMEMWIN)->getNumCols(),
+					 wins.at(_PROCMEMWIN)->getStartY(),
+					 wins.at(_PROCMEMWIN)->getStartX());
+    }
+  
+  // TIME+
+  if(((wins.at(_PROCTIMEWIN)->getNumCols() + wins.at(_PROCTIMEWIN)->getStartX()) >
+      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PROCTIMEWIN)->getWindow()
+					    != nullptr))
+    {
+      wins.at(_PROCTIMEWIN)->deleteWindow();
+      wins.at(_PROCTIMEWIN)->setWindow(nullptr);
+    }
+  else if(((wins.at(_PROCTIMEWIN)->getNumCols() + wins.at(_PROCTIMEWIN)->getStartX()) <
+	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_PROCTIMEWIN)->getWindow() ==
+						 nullptr))
+    {
+      wins.at(_PROCTIMEWIN)->defineWindow(newwin(wins.at(_PROCTIMEWIN)->getNumLines(),
+						 wins.at(_PROCTIMEWIN)->getNumCols(),
+						 wins.at(_PROCTIMEWIN)->getStartY(),
+						 wins.at(_PROCTIMEWIN)->getStartX()),
+					  "TIME+",
+					  wins.at(_PROCTIMEWIN)->getNumLines(),
+					  wins.at(_PROCTIMEWIN)->getNumCols(),
+					  wins.at(_PROCTIMEWIN)->getStartY(),
+					  wins.at(_PROCTIMEWIN)->getStartX());
+    }
+  
+  // COMMAND
+  if(((wins.at(_COMMANDWIN)->getNumCols() + wins.at(_COMMANDWIN)->getStartX()) >
+      wins.at(_MAINWIN)->getNumCols())  && (wins.at(_COMMANDWIN)->getWindow() != nullptr))
+    {
+      wins.at(_COMMANDWIN)->deleteWindow();
+      wins.at(_COMMANDWIN)->setWindow(nullptr);
+    }
+  else if(((wins.at(_COMMANDWIN)->getNumCols() + wins.at(_COMMANDWIN)->getStartX()) <
+	   wins.at(_MAINWIN)->getNumCols())  && (wins.at(_COMMANDWIN)->getWindow() ==
+						 nullptr))
+    {
+      std::string commandLine = "COMMAND";
+      for(int i = commandLine.length(); i < 48; i++)
+	{
+	  commandLine.push_back(' ');
+	}
+
+      wins.at(_COMMANDWIN)->defineWindow(newwin(wins.at(_COMMANDWIN)->getNumLines(),
+						wins.at(_COMMANDWIN)->getNumCols(),
+						wins.at(_COMMANDWIN)->getStartY(),
+						wins.at(_COMMANDWIN)->getStartX()),
+					 commandLine,
+				         wins.at(_COMMANDWIN)->getNumLines(),
+					 wins.at(_COMMANDWIN)->getNumCols(),
+					 wins.at(_COMMANDWIN)->getStartY(),
+					 wins.at(_COMMANDWIN)->getStartX());
+    }
+} // end of "updateWindowDimensions"
 
 
 
 /*
   Function:
-  refreshAllWins
+   refreshAllWins
 
   Description:
    Refreshes all currently active and defined CursesWindow objects.
@@ -729,9 +1018,9 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
   Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type. wins contains pointers
-			  to all currently allocated CursesWindow objects
-			  that can be indexed by values in the file
-			  _cursesWinConsts.hpp.                
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by values in the file
+                          _cursesWinConsts.hpp.                
   Output:
    NONE
 */
@@ -766,24 +1055,25 @@ void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins)
 
 /*
   Function:
-  clearAllWins
+   clearAllWins
 
   Description:
-   Clears all currently active and defined CursesWindow object screens. All "erased" data is 
-   stored in the screen buffer waiting for a call to refresh() to erase it.
+   Clears all currently active and defined CursesWindow object screens. All
+   "erased" data is stored in the screen buffer waiting for a call to refresh()
+   to erase it.
 
   Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type. wins contains pointers
-			  to all currently allocated CursesWindow objects
-			  that can be indexed by values in the file
-			  _cursesWinConsts.hpp.              
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by values in the file
+                          _cursesWinConsts.hpp.              
   Output:
    NONE
 */
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
-  std::unordered_map<int, CursesWindow*>::const_iterator it;// = wins.begin();
+  std::unordered_map<int, CursesWindow*>::const_iterator it;
   for(it = wins.begin(); it != wins.end(); it++)
     {
       werase(it->second->getWindow());
@@ -794,7 +1084,7 @@ void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins)
 
 /*
   Function:
-  clearTopWins
+   clearTopWins
 
   Description:
    Clears currently active and defined CursesWindow object screens for the top
@@ -804,9 +1094,9 @@ void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins)
   Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type. wins contains pointers
-			  to all currently allocated CursesWindow objects
-			  that can be indexed by values in the file
-			  _cursesWinConsts.hpp.            
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by values in the file
+                          _cursesWinConsts.hpp.            
   Output:
    NONE
 */
@@ -832,9 +1122,9 @@ void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins)
   Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type. wins contains pointers
-			  to all currently allocated CursesWindow objects
-			  that can be indexed by values in the file
-			  _cursesWinConsts.hpp.          
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by values in the file
+                          _cursesWinConsts.hpp.          
   Output:
    NONE
 */
@@ -859,14 +1149,14 @@ void clearBottomWins(const std::unordered_map<int, CursesWindow*>& wins)
   Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type. wins contains pointers
-			  to all currently allocated CursesWindow objects
-			  that can be indexed by values in the file
-			  _cursesWinConsts.hpp.        
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by values in the file
+                          _cursesWinConsts.hpp.        
   Output:
    NONE
 */
 void boldOnAllTopWins(std::unordered_map<int, CursesWindow*>& wins,
-		     int attrs)
+		      int attrs)
 {
   for(int i = _TASKSTOTAL; i <= _MIBMEMAVAILWIN; i++)
     {
@@ -887,14 +1177,14 @@ void boldOnAllTopWins(std::unordered_map<int, CursesWindow*>& wins,
   Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type. wins contains pointers
-			  to all currently allocated CursesWindow objects
-			  that can be indexed by values in the file
-			  _cursesWinConsts.hpp.      
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by values in the file
+                          _cursesWinConsts.hpp.      
   Output:
    NONE
 */
 void boldOffAllTopWins(std::unordered_map<int, CursesWindow*>& wins,
-		     int attrs)
+		       int attrs)
 {
   for(int i = _TASKSTOTAL; i <= _TASKSZOMBIE; i++)
     {
@@ -913,10 +1203,10 @@ void boldOffAllTopWins(std::unordered_map<int, CursesWindow*>& wins,
 
   Input:
    wins                 - A reference to a const unordered map
-                          <int, CursesWindow*> type. wins contains pointers
-			  to all currently allocated CursesWindow objects
-			  that can be indexed by values in the file
-			  _cursesWinConsts.hpp.    
+                         <int, CursesWindow*> type. wins contains pointers
+                         to all currently allocated CursesWindow objects
+                         that can be indexed by values in the file
+                         _cursesWinConsts.hpp.    
   Output:
    NONE
 */
@@ -933,7 +1223,7 @@ void boldOnTasksWins(std::unordered_map<int, CursesWindow*>& wins,
 
 /*
   Function:
-   boldOffTasksWins
+  boldOffTasksWins
 
   Description:
    Sets the bold attribute OFF for the "Tasks window" values.
@@ -1444,82 +1734,144 @@ void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
   Output:
    NONE
 */
-void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins)
+void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins,
+		      const int& shiftY,
+		      const int& shiftX)
 {
   std::string outString;
-
-  // PID
-  outString = wins.at(_PIDWIN)->getWindowName();
-  mvwaddstr(wins.at(_PIDWIN)->getWindow(),
-	    0,
-	    wins.at(_PIDWIN)->getNumCols() - outString.length(),
-	    outString.c_str());
+  if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr &&
+     ((wins.at(_PIDWIN)->getNumCols() + wins.at(_PIDWIN)->getStartX()) <
+      wins.at(_MAINWIN)->getNumCols()))
+    {
+      // PID
+      outString = wins.at(_PIDWIN)->getWindowName();
+      mvwaddstr(wins.at(_PIDWIN)->getWindow(),
+		0,
+		wins.at(_PIDWIN)->getNumCols() - outString.length(),
+		outString.c_str());
+    }
   // USER
-  outString = wins.at(_USERWIN)->getWindowName();
-  mvwaddstr(wins.at(_USERWIN)->getWindow(),
-	    0,
-	    0,
-	    outString.c_str());
+  if(shiftX <= _USERWIN && wins.at(_USERWIN)->getWindow() != nullptr &&
+     ((wins.at(_USERWIN)->getNumCols() + wins.at(_USERWIN)->getStartX()) <
+      wins.at(_MAINWIN)->getNumCols()))
+    {
+      outString = wins.at(_USERWIN)->getWindowName();
+      mvwaddstr(wins.at(_USERWIN)->getWindow(),
+		0,
+		0,
+		outString.c_str());
+    }
   // PR
-  outString = wins.at(_PRWIN)->getWindowName();
-  mvwaddstr(wins.at(_PRWIN)->getWindow(),
-	    0,
-	    wins.at(_PRWIN)->getNumCols() - outString.length(),
-	    outString.c_str());
+  if(shiftX <= _PRWIN && wins.at(_PRWIN)->getWindow() != nullptr &&
+     ((wins.at(_PRWIN)->getNumCols() + wins.at(_PRWIN)->getStartX()) <
+      wins.at(_MAINWIN)->getNumCols()))
+    {
+      outString = wins.at(_PRWIN)->getWindowName();
+      mvwaddstr(wins.at(_PRWIN)->getWindow(),
+		0,
+		wins.at(_PRWIN)->getNumCols() - outString.length(),
+		outString.c_str());
+    }
   // NI
-  outString = wins.at(_NIWIN)->getWindowName();
-  mvwaddstr(wins.at(_NIWIN)->getWindow(),
-	    0,
-	    wins.at(_NIWIN)->getNumCols() - outString.length(),
-	    outString.c_str());
+  if(shiftX <= _NIWIN && wins.at(_NIWIN)->getWindow() != nullptr &&
+     ((wins.at(_NIWIN)->getNumCols() + wins.at(_NIWIN)->getStartX()) <
+      wins.at(_MAINWIN)->getNumCols()))
+    {
+      outString = wins.at(_NIWIN)->getWindowName();
+      mvwaddstr(wins.at(_NIWIN)->getWindow(),
+		0,
+		wins.at(_NIWIN)->getNumCols() - outString.length(),
+		outString.c_str());
+    }
   // VIRT
-  outString = wins.at(_VIRTWIN)->getWindowName();
-  mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
-	    0,
-	    wins.at(_VIRTWIN)->getNumCols() - outString.length(),
-	    outString.c_str());
+  if(shiftX <= _VIRTWIN && wins.at(_VIRTWIN)->getWindow() != nullptr &&
+     ((wins.at(_VIRTWIN)->getNumCols() + wins.at(_VIRTWIN)->getStartX()) <
+      wins.at(_MAINWIN)->getNumCols()))
+    {
+      outString = wins.at(_VIRTWIN)->getWindowName();
+      mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
+		0,
+		wins.at(_VIRTWIN)->getNumCols() - outString.length(),
+		outString.c_str());
+    }
   // RES
-  outString = wins.at(_RESWIN)->getWindowName();
-  mvwaddstr(wins.at(_RESWIN)->getWindow(),
-	    0,
-	    wins.at(_RESWIN)->getNumCols() - outString.length(),
-	    outString.c_str());
+  if(shiftX <= _RESWIN && wins.at(_RESWIN)->getWindow() != nullptr &&
+     ((wins.at(_RESWIN)->getNumCols() + wins.at(_RESWIN)->getStartX()) <
+      wins.at(_MAINWIN)->getNumCols()))
+    {
+      outString = wins.at(_RESWIN)->getWindowName();
+      mvwaddstr(wins.at(_RESWIN)->getWindow(),
+		0,
+		wins.at(_RESWIN)->getNumCols() - outString.length(),
+		outString.c_str());
+    } 
   // SHR
-  outString = wins.at(_SHRWIN)->getWindowName();
-  mvwaddstr(wins.at(_SHRWIN)->getWindow(),
-	    0,
-	    wins.at(_SHRWIN)->getNumCols() - outString.length(),
-	    outString.c_str());
+  if(shiftX <= _SHRWIN && wins.at(_SHRWIN)->getWindow() != nullptr &&
+     ((wins.at(_SHRWIN)->getNumCols() + wins.at(_SHRWIN)->getStartX()) <
+      wins.at(_MAINWIN)->getNumCols()))
+    {
+      outString = wins.at(_SHRWIN)->getWindowName();
+      mvwaddstr(wins.at(_SHRWIN)->getWindow(),
+		0,
+		wins.at(_SHRWIN)->getNumCols() - outString.length(),
+		outString.c_str());
+    } 
   // S
-  outString = wins.at(_SWIN)->getWindowName();
-  mvwaddstr(wins.at(_SWIN)->getWindow(),
-	    0,
-	    wins.at(_SWIN)->getNumCols() - outString.length(),
-	    outString.c_str());
+  if(shiftX <= _SWIN && wins.at(_SWIN)->getWindow() != nullptr &&
+     ((wins.at(_SWIN)->getNumCols() + wins.at(_SWIN)->getStartX()) <
+      wins.at(_MAINWIN)->getNumCols()))
+    {
+      outString = wins.at(_SWIN)->getWindowName();
+      mvwaddstr(wins.at(_SWIN)->getWindow(),
+		0,
+		wins.at(_SWIN)->getNumCols() - outString.length(),
+		outString.c_str());
+    }
   // %CPU
-  outString = wins.at(_PROCCPUWIN)->getWindowName();
-  mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
-	    0,
-	    wins.at(_PROCCPUWIN)->getNumCols() - outString.length(),
-	    outString.c_str());
+  if(shiftX <= _PROCCPUWIN && wins.at(_PROCCPUWIN)->getWindow() != nullptr &&
+     ((wins.at(_PROCCPUWIN)->getNumCols() + wins.at(_PROCCPUWIN)->getStartX()) <
+      wins.at(_MAINWIN)->getNumCols()))
+    {
+      outString = wins.at(_PROCCPUWIN)->getWindowName();
+      mvwaddstr(wins.at(_PROCCPUWIN)->getWindow(),
+		0,
+		wins.at(_PROCCPUWIN)->getNumCols() - outString.length(),
+		outString.c_str());
+    } 
   // %MEM
-  outString = wins.at(_PROCMEMWIN)->getWindowName();
-  mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
-	    0,
-	    wins.at(_PROCMEMWIN)->getNumCols() - outString.length(),
-	    outString.c_str());
+  if(shiftX <= _PROCMEMWIN && wins.at(_PROCMEMWIN)->getWindow() != nullptr &&
+     ((wins.at(_PROCMEMWIN)->getNumCols() + wins.at(_PROCMEMWIN)->getStartX()) <
+      wins.at(_MAINWIN)->getNumCols()))
+    {
+      outString = wins.at(_PROCMEMWIN)->getWindowName();
+      mvwaddstr(wins.at(_PROCMEMWIN)->getWindow(),
+		0,
+		wins.at(_PROCMEMWIN)->getNumCols() - outString.length(),
+		outString.c_str());
+    } 
   // TIME+
-  outString = wins.at(_PROCTIMEWIN)->getWindowName();
-  mvwaddstr(wins.at(_PROCTIMEWIN)->getWindow(),
-	    0,
-	    wins.at(_PROCTIMEWIN)->getNumCols() - outString.length(),
-	    outString.c_str());
+  if(shiftX <= _PROCTIMEWIN && wins.at(_PROCTIMEWIN)->getWindow() != nullptr &&
+     ((wins.at(_PROCTIMEWIN)->getNumCols() + wins.at(_PROCTIMEWIN)->getStartX()) <
+      wins.at(_MAINWIN)->getNumCols()))
+    {
+      outString = wins.at(_PROCTIMEWIN)->getWindowName();
+      mvwaddstr(wins.at(_PROCTIMEWIN)->getWindow(),
+		0,
+		wins.at(_PROCTIMEWIN)->getNumCols() - outString.length(),
+		outString.c_str());
+    } 
   // COMMAND
-  outString = wins.at(_COMMANDWIN)->getWindowName();
-  mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
-	    0,
-	    0,
-	    outString.c_str());
+  if((shiftX <= _COMMANDWIN) && (wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
+     ((wins.at(_COMMANDWIN)->getNumCols() + wins.at(_COMMANDWIN)->getStartX()) <
+      wins.at(_MAINWIN)->getNumCols()))
+    {
+
+      outString = wins.at(_COMMANDWIN)->getWindowName();
+      mvwaddstr(wins.at(_COMMANDWIN)->getWindow(),
+		0,
+		0,
+		outString.c_str());
+    }
 } // end of "printWindowNames"
 
 
@@ -1596,9 +1948,8 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	  
 	  // PID
 	  if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr &&
-	     ( (wins.at(_PIDWIN)->getNumCols() + wins.at(_PIDWIN)->getStartX()) <
-	       wins.at(_MAINWIN)->getNumCols()))
-	       
+	    ((wins.at(_PIDWIN)->getNumCols() + wins.at(_PIDWIN)->getStartX()) <
+	      wins.at(_MAINWIN)->getNumCols()))
 	    {
 	      if(highlight == true && sortState == _PIDWIN)
 		{
@@ -1610,11 +1961,11 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	      mvwaddstr(wins.at(_PIDWIN)->getWindow(),
 			posY,
 			wins.at(_PIDWIN)->getNumCols() - outString.length(),
-			outString.c_str());	
+			outString.c_str());
 	    }
-	  // USER      
+	  // USER
 	  if(shiftX <= _USERWIN && wins.at(_USERWIN)->getWindow() != nullptr &&
-	     ( (wins.at(_USERWIN)->getNumCols() + wins.at(_USERWIN)->getStartX()) <
+	     ((wins.at(_USERWIN)->getNumCols() + wins.at(_USERWIN)->getStartX()) <
 	       wins.at(_MAINWIN)->getNumCols()))
 	    {
 	      if(highlight == true && sortState == _USERWIN)
@@ -1631,7 +1982,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	    }
 	  // PR
 	  if(shiftX <= _PRWIN && wins.at(_PRWIN)->getWindow() != nullptr &&
-	     ( (wins.at(_PRWIN)->getNumCols() + wins.at(_PRWIN)->getStartX()) <
+	     ((wins.at(_PRWIN)->getNumCols() + wins.at(_PRWIN)->getStartX()) <
 	       wins.at(_MAINWIN)->getNumCols()))
 	    {
 	      if(highlight == true && sortState == _PRWIN)
@@ -1657,8 +2008,8 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	    }	  
 	  // NI
 	  if(shiftX <= _NIWIN && wins.at(_NIWIN)->getWindow() != nullptr &&
-	     ( (wins.at(_NIWIN)->getNumCols() + wins.at(_NIWIN)->getStartX()) <
-	       wins.at(_MAINWIN)->getNumCols()))	    
+	     ((wins.at(_NIWIN)->getNumCols() + wins.at(_NIWIN)->getStartX()) <
+	       wins.at(_MAINWIN)->getNumCols()))
             {
 	      if(highlight == true && sortState == _NIWIN)
 		{
@@ -1674,7 +2025,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
             }
 	  // VIRT
 	  if(shiftX <= _VIRTWIN && wins.at(_VIRTWIN)->getWindow() != nullptr &&
-	     ( (wins.at(_VIRTWIN)->getNumCols() + wins.at(_VIRTWIN)->getStartX()) <
+	     ((wins.at(_VIRTWIN)->getNumCols() + wins.at(_VIRTWIN)->getStartX()) <
 	       wins.at(_MAINWIN)->getNumCols()))
             {
 	      if(highlight == true && sortState == _VIRTWIN)
@@ -1691,8 +2042,8 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
             }
 	  // RES
 	  if(shiftX <= _RESWIN && wins.at(_RESWIN)->getWindow() != nullptr &&
-	     ( (wins.at(_RESWIN)->getNumCols() + wins.at(_RESWIN)->getStartX()) <
-	       wins.at(_MAINWIN)->getNumCols())	)    
+	     ((wins.at(_RESWIN)->getNumCols() + wins.at(_RESWIN)->getStartX()) <
+	      wins.at(_MAINWIN)->getNumCols()))
             {
 	      if(highlight == true && sortState == _RESWIN)
 		{
@@ -1708,8 +2059,8 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
             }
 	  // SHR
 	  if(shiftX <= _SHRWIN && wins.at(_SHRWIN)->getWindow() != nullptr &&
-	     ( (wins.at(_SHRWIN)->getNumCols() + wins.at(_SHRWIN)->getStartX()) <
-	       wins.at(_MAINWIN)->getNumCols()))	    
+	     ((wins.at(_SHRWIN)->getNumCols() + wins.at(_SHRWIN)->getStartX()) <
+	       wins.at(_MAINWIN)->getNumCols()))
             {
 	      if(highlight == true && sortState == _SHRWIN)
 		{
@@ -1725,7 +2076,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
             }
 	  // S
 	  if(shiftX <= _SWIN && wins.at(_SWIN)->getWindow() != nullptr &&
-	     ( (wins.at(_SWIN)->getNumCols() + wins.at(_SWIN)->getStartX()) <
+	     ((wins.at(_SWIN)->getNumCols() + wins.at(_SWIN)->getStartX()) <
 	       wins.at(_MAINWIN)->getNumCols()))
 	    {
 	      if(highlight == true && sortState == _SWIN)
@@ -1740,9 +2091,9 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 		       procData.at(pidList.at(i))->getS());
             }
 	  // %CPU
-	  if(shiftX <= _PROCCPUWIN && wins.at(_PROCCPUWIN)->getWindow() != nullptr &&
-	     ( (wins.at(_PROCCPUWIN)->getNumCols() + wins.at(_PROCCPUWIN)->getStartX()) <
-	       wins.at(_MAINWIN)->getNumCols()))
+	  if(shiftX <= _PROCCPUWIN && wins.at(_PROCCPUWIN)->getWindow() != nullptr)
+	    ((wins.at(_PROCCPUWIN)->getNumCols() + wins.at(_PROCCPUWIN)->getStartX()) <
+	     wins.at(_MAINWIN)->getNumCols()))
             {
 	      if(highlight == true && sortState == _PROCCPUWIN)
 		{
@@ -1758,7 +2109,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
             }
 	  // %MEM
 	  if(shiftX <= _PROCMEMWIN && wins.at(_PROCMEMWIN)->getWindow() != nullptr &&
-	     ( (wins.at(_PROCMEMWIN)->getNumCols() + wins.at(_PROCMEMWIN)->getStartX()) <
+	     ((wins.at(_PROCMEMWIN)->getNumCols() + wins.at(_PROCMEMWIN)->getStartX()) <
 	       wins.at(_MAINWIN)->getNumCols()))
             {
 	      if(highlight == true && sortState == _PROCMEMWIN)
@@ -1775,7 +2126,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
             }
 	  // TIME+
 	  if(shiftX <= _PROCTIMEWIN && wins.at(_PROCTIMEWIN)->getWindow() != nullptr &&
-	     ( (wins.at(_PROCTIMEWIN)->getNumCols() + wins.at(_PROCTIMEWIN)->getStartX()) <
+	     ((wins.at(_PROCTIMEWIN)->getNumCols() + wins.at(_PROCTIMEWIN)->getStartX()) <
 	       wins.at(_MAINWIN)->getNumCols()))
 	    {
 	      if(highlight == true && sortState == _PROCTIMEWIN)
@@ -1792,8 +2143,8 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
             }
 	  // COMMAND
 	  if(shiftX <= _COMMANDWIN && wins.at(_COMMANDWIN)->getWindow() != nullptr &&
-	     ( (wins.at(_COMMANDWIN)->getNumCols() + wins.at(_COMMANDWIN)->getStartX()) <
-	       wins.at(_MAINWIN)->getNumCols()))	    
+	    ((wins.at(_COMMANDWIN)->getNumCols() + wins.at(_COMMANDWIN)->getStartX()) <
+	     wins.at(_MAINWIN)->getNumCols()))
             {
 	      if(highlight == true && sortState == _COMMANDWIN)
 		{
@@ -1812,10 +2163,6 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	}
     }
 } // end of "printProcs"
-
-
-
-
 
 
 
@@ -1948,15 +2295,15 @@ void shiftBottomWinsLeft(std::unordered_map<int, CursesWindow*>& wins,
       else
 	{
 	  startX = wins.at(currWin - 1)->getStartX() +
-	           wins.at(currWin - 1)->getNumCols() +
-	           1;
+	    wins.at(currWin - 1)->getNumCols() +
+	    1;
 	}
       // move the windows until the total shifts have been reached
       wins.at(currWin)->setStartX(startX);
       mvwin(wins.at(currWin)->getWindow(),
 	    wins.at(currWin)->getStartY(),
 	    wins.at(currWin)->getStartX());
-    }  
+    }
 } // end of "shiftBottomWinsLeft"
 
 
@@ -1986,8 +2333,8 @@ void shiftBottomWinsRight(std::unordered_map<int, CursesWindow*>& wins,
 {
   int currWin = shiftX;
   int totalShifts = 0;
-  
-  // delete the current window at x-position "0" freeing it from memory  
+
+
   wins.at(shiftX - 1)->setStartX(0);
 
   // get the total number of needed shifts
@@ -2011,6 +2358,7 @@ void shiftBottomWinsRight(std::unordered_map<int, CursesWindow*>& wins,
 				    wins.at(shiftX - 1)->getNumCols(),
 				    wins.at(shiftX - 1)->getStartY(),
 				    wins.at(shiftX - 1)->getStartX());
+
 } // end of "shiftBottomWinsRight"
 
 
