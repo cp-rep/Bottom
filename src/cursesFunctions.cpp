@@ -731,7 +731,6 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	  wins.at(_MAINWIN)->getNumCols())  && (wins.at(i)->getWindow() != nullptr))
 	{
 	  wins.at(i)->deleteWindow();
-	  wins.at(i)->setWindow(nullptr);
 	}
       else if(((wins.at(i)->getNumCols() + wins.at(i)->getStartX()) <=
 	       wins.at(_MAINWIN)->getNumCols())  && (wins.at(i)->getWindow() ==
