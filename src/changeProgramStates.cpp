@@ -118,20 +118,21 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		defaultKillPid);
       stateChanged = true;      
       break;
-    case _STATECPUGRAPH:
+    case _STATECPUGRAPH: // cpu graph state
       numLines = 14;
       numCols = (((wins.at(_MAINWIN)->getNumCols() -
 		   wins.at(_COMMANDWIN)->getNumCols() -
 		   wins.at(_COMMANDWIN)->getStartX())/2) - 2);
       if(numCols %2 != 0)
 	{
-	  numCols++;
+	  numCols--;
 	}
       startY = _YOFFSET + 1;
       startX = wins.at(_MAINWIN)->getNumCols() - numCols;
       
       if(cpuGraph == false)
       	{
+	  // create window
 	  CursesWindow* graphWindow = new CursesWindow();
 	  wins.insert(std::make_pair(_CPUGRAPHWIN, graphWindow));
 	  wins.at(_CPUGRAPHWIN)->defineWindow(newwin(numLines,
@@ -143,6 +144,7 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 					      numCols,
 					      startY,
 					      startX);
+	  // update mem graph
 	  if(memGraph == true)
 	    {
 	      mvwin(wins.at(_MEMGRAPHWIN)->getWindow(),
@@ -167,7 +169,7 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	      wins.at(_CPUGRAPHWIN)->setStartY(startY +
 					       wins.at
 					       (_CPUGRAPHWIN)->getNumLines());
-	      
+	      // update mem graph
 	      if(memGraph == true)
 		{
 		  mvwin(wins.at(_MEMGRAPHWIN)->getWindow(),
@@ -193,6 +195,7 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		  
 		}
 	      
+	      // delete window
 	      wins.at(_CPUGRAPHWIN)->deleteWindow();
 	      delete(wins.at(_CPUGRAPHWIN));
 	      wins.erase(_CPUGRAPHWIN);
@@ -208,7 +211,7 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		       wins.at(_COMMANDWIN)->getStartX())/2) - 2);
       if(numCols %2 != 0)
 	{
-	  numCols++;
+	  numCols--;
 	}      
       startY = _YOFFSET + 1;
       startX = wins.at(_MAINWIN)->getNumCols() - numCols;
@@ -334,17 +337,27 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
     case _STATEKEYLEFT:
       if(shiftX > _PIDWIN)
 	{
-	  shiftBottomWinsRight(wins,
-			       shiftX);
-	  shiftX--;
+	  // check room to shift
+	  if((wins.at(_COMMANDWIN)->getNumCols() + wins.at(_COMMANDWIN)->getStartX()) <
+	     wins.at(_MAINWIN)->getNumCols())
+	    {	  
+	      shiftBottomWinsRight(wins,
+				   shiftX);
+	      shiftX--;
+	    }
 	}
       break;
     case _STATEKEYRIGHT:
       if(shiftX < _COMMANDWIN)
 	{
-	  shiftBottomWinsLeft(wins,
-			      shiftX);
-	  shiftX++;
+	  // check room to shift
+	  if((wins.at(_COMMANDWIN)->getNumCols() + wins.at(_COMMANDWIN)->getStartX()) <
+	     wins.at(_MAINWIN)->getNumCols())
+	    {	  	  
+	      shiftBottomWinsLeft(wins,
+				  shiftX);
+	      shiftX++;
+	    }
 	}
       break;      
     default:
