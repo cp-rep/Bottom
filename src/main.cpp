@@ -131,8 +131,8 @@ int main()
   bool quit = false;
   int shiftY = 1;
   int shiftX = _PIDWIN;
-  bool cpuGraph = true;
-  bool memGraph = true;
+  bool cpuGraph = false;
+  bool memGraph = false;
   std::unordered_map<char, int> progStates;
 
 #if _CURSES    
@@ -148,8 +148,8 @@ int main()
   std::queue<double> memUsageVals;  
   const int graphMaxCols = allWins.at(_MAINWIN)->getNumCols() -
     allWins.at(_COMMANDWIN)->getNumCols() - 2;
-  int cpuGraphCount = 1;
-  int memGraphCount = 1;
+  int cpuGraphCount = 0;
+  int memGraphCount = 0;
   
   // loop variables
   SecondsToTime uptime;
