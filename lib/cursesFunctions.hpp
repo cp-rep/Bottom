@@ -60,7 +60,9 @@ void boldOffMemWins(std::unordered_map<int, CursesWindow*>& wins,
 		    int attrs);
 void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
 		  const std::vector<std::string>& allTopLines);
-void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins);
+void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins,
+		      const int& shiftY,
+		      const int& shiftX);
 void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 		const std::unordered_map<int, ProcessInfo*>& pUmap,
 		const std::vector<int>& pidList,
