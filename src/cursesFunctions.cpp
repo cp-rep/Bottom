@@ -80,7 +80,7 @@ void initializeStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 
   Output:
 */
-void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
+void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 {
   int numLines;
   int numCols;
@@ -299,7 +299,18 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				     numCols,
 				     startY,
 				     startX);
-  
+}
+
+
+
+/*
+ */
+void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
+{
+  int numLines;
+  int numCols;
+  int startY;
+  int startX;
   // top Win
   numLines = 1;
   startY = _YOFFSET - 6;
@@ -566,6 +577,14 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 					  _MEMDATAWINCOLS,
 					  _SWAPMEMSTARTY,
 					  _MEMAVAILDATASTARTX);
+}
+
+
+
+/*
+ */
+void defineGraphWinStartVals(std::unordered_map<int, CursesWindow*>& wins)
+{
   /*  
   // define cpu graph
   numLines = 14;
@@ -600,7 +619,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				      startY,
 				      startX);
   */
-} // end of "defineStartingWindows"
+}
 
 
 

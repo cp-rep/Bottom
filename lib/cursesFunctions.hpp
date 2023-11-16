@@ -21,7 +21,9 @@
 
 void initializeCurses();
 void initializeStartingWindows(std::unordered_map<int, CursesWindow*>& wins);
-void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins);
+void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins);
+void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins);
+void defineGraphWinStartVals(std::unordered_map<int, CursesWindow*>& wins);
 void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 			    const int& shiftX,
 			    const int& shiftY);
