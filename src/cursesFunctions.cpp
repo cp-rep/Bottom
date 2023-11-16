@@ -95,11 +95,12 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				  numCols,
 				  startY,
 				  startX);
+
+  // top Win
   numLines = 1;
   numCols = numCols - 100;
   startY = _YOFFSET - 6;
   startX = 0;
-
   wins.at(_TOPWIN)->defineWindow(newwin(numLines,
 					numCols,
 					startY,
@@ -108,59 +109,10 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				 numLines,
 				 numCols,
 				 startY,
-				 startX);  
-
-  // define tasks window
-  numLines = 1;
-  numCols = numCols;
-  startY = _YOFFSET - 5;
-  startX = 0;
-  wins.at(_TASKSWIN)->defineWindow(newwin(numLines,
-					  numCols,
-					  startY,
-					  startX),
-				   "Tasks",
-				   numLines,
-				   numCols,
-				   startY,
-				   startX);
-  // define cpu window
-  numLines = 1;
-  numCols = numCols;
-  startY = _YOFFSET - 4;
-  startX = 0;
-  wins.at(_CPUWIN)->defineWindow(newwin(numLines,
-					numCols,
-					startY,
-					startX),
-				 "CPU",
-				 numLines,
-				 numCols,
-				 startY,
 				 startX);
-  // define mem window
-  numLines = 2;
-  numCols = numCols;
-  startY = _YOFFSET - 3;
-  startX = 0;  
-  wins.at(_MEMWIN)->defineWindow(newwin(numLines,
-					numCols,
-					startY,
-					startX),
-				 "MEM",
-				 numLines,
-				 numCols,
-				 startY,
-				 startX);
-
   // define PID window
-  numLines = wins.at(_MAINWIN)-> getNumLines() -
-    wins.at(_MEMWIN)->getNumLines() -
-    wins.at(_CPUWIN)->getNumLines() -
-    wins.at(_TASKSWIN)->getNumLines() -
-    wins.at(_TOPWIN)->getNumLines() - 1;
-  numCols = 7;
-  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
+  numCols = _PIDWINCOLS;
+  startY = _YOFFSET;
   startX = 0;
   wins.at(_PIDWIN)->defineWindow(newwin(numLines,
 					numCols,
@@ -172,9 +124,9 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				 startY,
 				 startX);
   // define USER window
-  numCols = 8;
-  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
-  startX = wins.at(_PIDWIN)->getNumCols() + 1;
+  numCols = _USERWINCOLS;
+  startY = _YOFFSET;
+  startX = _PIDWINCOLS + 1;
   wins.at(_USERWIN)->defineWindow(newwin(numLines,
 					 numCols,
 					 startY,
@@ -185,10 +137,9 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				  startY,
 				  startX);
   // define PR window
-  numCols = 3;
-  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
-  startX = wins.at(_PIDWIN)->getNumCols() +
-    wins.at(_USERWIN)->getNumCols() + 2;
+  numCols = _PRWINCOLS;
+  startY = _YOFFSET;
+  startX = _PIDWINCOLS + _USERWINCOLS + 2;
   wins.at(_PRWIN)->defineWindow(newwin(numLines,
 				       numCols,
 				       startY,
@@ -199,11 +150,9 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				startY,
 				startX);
   // define NI window
-  numCols = 3;
-  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
-  startX = wins.at(_PIDWIN)->getNumCols() +
-    wins.at(_USERWIN)->getNumCols() +
-    wins.at(_PRWIN)->getNumCols() + 3;
+  numCols = _NIWINCOLS;
+  startY = _YOFFSET;
+  startX =_PIDWINCOLS + _USERWINCOLS + _PRWINCOLS + 3;
   wins.at(_NIWIN)->defineWindow(newwin(numLines,
 				       numCols,
 				       startY,
@@ -214,12 +163,10 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				startY,
 				startX);
   // define VIRT window
-  numCols = 7;
-  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
-  startX = wins.at(_PIDWIN)->getNumCols() +
-    wins.at(_USERWIN)->getNumCols() +
-    wins.at(_PRWIN)->getNumCols() +
-    wins.at(_NIWIN)->getNumCols() + 4;
+  numCols = _VIRTWINCOLS;
+  startY = _YOFFSET;
+  startX =_PIDWINCOLS + _USERWINCOLS + _PRWINCOLS +
+    _NIWINCOLS + 4;
   wins.at(_VIRTWIN)->defineWindow(newwin(numLines,
 					 numCols,
 					 startY,
@@ -230,13 +177,10 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				  startY,
 				  startX);
   // define RES window
-  numCols = 6;
-  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
-  startX = wins.at(_PIDWIN)->getNumCols() +
-    wins.at(_USERWIN)->getNumCols() +
-    wins.at(_PRWIN)->getNumCols() +
-    wins.at(_NIWIN)->getNumCols() + 
-    wins.at(_VIRTWIN)->getNumCols() + 5;    
+  numCols = _RESWINCOLS;
+  startY = _YOFFSET;
+  startX =_PIDWINCOLS + _USERWINCOLS + _PRWINCOLS +
+    _NIWINCOLS + _VIRTWINCOLS + 5;  
   wins.at(_RESWIN)->defineWindow(newwin(numLines,
 					numCols,
 					startY,
@@ -247,14 +191,10 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				 startY,
 				 startX);
   // define SHR window
-  numCols = 6;
-  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
-  startX = wins.at(_PIDWIN)->getNumCols() +
-    wins.at(_USERWIN)->getNumCols() +
-    wins.at(_PRWIN)->getNumCols() +
-    wins.at(_NIWIN)->getNumCols() + 
-    wins.at(_VIRTWIN)->getNumCols() +
-    wins.at(_RESWIN)->getNumCols() + 6;
+  numCols = _SHRWINCOLS;
+  startY = _YOFFSET;
+  startX =_PIDWINCOLS + _USERWINCOLS + _PRWINCOLS +
+    _VIRTWINCOLS + _RESWINCOLS + _NIWINCOLS +6;
   wins.at(_SHRWIN)->defineWindow(newwin(numLines,
 					numCols,
 					startY,
@@ -265,15 +205,11 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				 startY,
 				 startX);
   // define S window
-  numCols = 1;
-  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
-  startX = wins.at(_PIDWIN)->getNumCols() +
-    wins.at(_USERWIN)->getNumCols() +
-    wins.at(_PRWIN)->getNumCols() +
-    wins.at(_NIWIN)->getNumCols() + 
-    wins.at(_VIRTWIN)->getNumCols() +
-    wins.at(_RESWIN)->getNumCols() +
-    wins.at(_SHRWIN)->getNumCols() + 7;
+  numCols = _SWINCOLS;
+  startY = _YOFFSET;
+  startX =_PIDWINCOLS + _USERWINCOLS + _PRWINCOLS +
+    _VIRTWINCOLS + _RESWINCOLS + _SHRWINCOLS +
+    _NIWINCOLS + 7;
   wins.at(_SWIN)->defineWindow(newwin(numLines,
 				      numCols,
 				      startY,
@@ -284,16 +220,11 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 			       startY,
 			       startX);
   // define %CPU window
-  numCols = 5;
-  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
-  startX = wins.at(_PIDWIN)->getNumCols() +
-    wins.at(_USERWIN)->getNumCols() +
-    wins.at(_PRWIN)->getNumCols() +
-    wins.at(_NIWIN)->getNumCols() + 
-    wins.at(_VIRTWIN)->getNumCols() +
-    wins.at(_RESWIN)->getNumCols() +
-    wins.at(_SHRWIN)->getNumCols() +
-    wins.at(_SWIN)->getNumCols() + 8;
+  numCols = _PROCCPUWINCOLS;
+  startY = _YOFFSET;
+  startX =_PIDWINCOLS + _USERWINCOLS + _PRWINCOLS +
+    _VIRTWINCOLS + _RESWINCOLS + _SHRWINCOLS +
+    _SWINCOLS + _NIWINCOLS + 8;  
   wins.at(_PROCCPUWIN)->defineWindow(newwin(numLines,
 					    numCols,
 					    startY,
@@ -304,17 +235,11 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				     startY,
 				     startX);
   // define %MEM window
-  numCols = 5;
-  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
-  startX = wins.at(_PIDWIN)->getNumCols() +    
-    wins.at(_USERWIN)->getNumCols() +
-    wins.at(_PRWIN)->getNumCols() +
-    wins.at(_NIWIN)->getNumCols() + 
-    wins.at(_VIRTWIN)->getNumCols() +
-    wins.at(_RESWIN)->getNumCols() +
-    wins.at(_SHRWIN)->getNumCols() +
-    wins.at(_SWIN)->getNumCols() +     
-    wins.at(_PROCCPUWIN)->getNumCols() + 9;
+  numCols = _PROCMEMWINCOLS;
+  startY = _YOFFSET;
+  startX =_PIDWINCOLS + _USERWINCOLS + _PRWINCOLS +
+    _VIRTWINCOLS + _RESWINCOLS + _SHRWINCOLS +
+    _SWINCOLS + _PROCCPUWINCOLS + _NIWINCOLS + 9;
   wins.at(_PROCMEMWIN)->defineWindow(newwin(numLines,
 					    numCols,
 					    startY,
@@ -325,18 +250,12 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				     startY,
 				     startX);
   // define TIME+ window
-  numCols = 9;
-  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
-  startX = wins.at(_PIDWIN)->getNumCols() +
-    wins.at(_USERWIN)->getNumCols() +
-    wins.at(_PRWIN)->getNumCols() +
-    wins.at(_NIWIN)->getNumCols() + 
-    wins.at(_VIRTWIN)->getNumCols() +
-    wins.at(_RESWIN)->getNumCols() +
-    wins.at(_SHRWIN)->getNumCols() +
-    wins.at(_SWIN)->getNumCols() +     
-    wins.at(_PROCCPUWIN)->getNumCols() +    
-    wins.at(_PROCMEMWIN)->getNumCols() + 10;  
+  numCols = _PROCTIMEWINCOLS;
+  startY = _YOFFSET;
+  startX =_PIDWINCOLS + _USERWINCOLS + _PRWINCOLS +
+    _VIRTWINCOLS + _RESWINCOLS + _SHRWINCOLS +
+    _SWINCOLS + _PROCCPUWINCOLS + _PROCMEMWINCOLS +
+    _NIWINCOLS + 10;
   wins.at(_PROCTIMEWIN)->defineWindow(newwin(numLines,
 					     numCols,
 					     startY,
@@ -347,24 +266,18 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				      startY,
 				      startX);
   // define COMMAND window
+  numCols = _COMMANDWINCOLS;
+  startY = _YOFFSET;
+  startX =_PIDWINCOLS + _USERWINCOLS + _PRWINCOLS +
+    _VIRTWINCOLS + _RESWINCOLS + _SHRWINCOLS +
+    _SWINCOLS + _PROCCPUWINCOLS + _PROCMEMWINCOLS +
+    _PROCTIMEWINCOLS + _NIWINCOLS + 11;  
   std::string commandLine = "COMMAND";
-  numCols = 48;
-  startY = wins.at(_MEMWIN)->getStartY() + _YOFFSET - 3;
-  startX = wins.at(_PIDWIN)->getNumCols() +    
-    wins.at(_USERWIN)->getNumCols() +
-    wins.at(_PRWIN)->getNumCols() +
-    wins.at(_NIWIN)->getNumCols() + 
-    wins.at(_VIRTWIN)->getNumCols() +
-    wins.at(_RESWIN)->getNumCols() +
-    wins.at(_SHRWIN)->getNumCols() +
-    wins.at(_SWIN)->getNumCols() +     
-    wins.at(_PROCCPUWIN)->getNumCols() +    
-    wins.at(_PROCMEMWIN)->getNumCols() +
-    wins.at(_PROCTIMEWIN)->getNumCols() + 11;
   for(int i = commandLine.length(); i < numCols; i++)
     {
       commandLine.push_back(' ');
     }
+  
   wins.at(_COMMANDWIN)->defineWindow(newwin(numLines,
 					    numCols,
 					    startY,
@@ -374,7 +287,38 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				     numCols,
 				     startY,
 				     startX);
-  // define TasksTotalWindow
+  
+  // top Win
+  numLines = 1;
+  numCols = wins.at(_MAINWIN)->getNumCols() - 100;
+  startY = _YOFFSET - 6;
+  startX = 0;
+  wins.at(_TOPWIN)->defineWindow(newwin(numLines,
+					numCols,
+					startY,
+					startX),
+				 "top",
+				 numLines,
+				 numCols,
+				 startY,
+				 startX);  
+  
+  // define tasks window
+  numLines = 1;
+  numCols = wins.at(_MAINWIN)->getNumCols() - 100;
+  startY = _YOFFSET - 5;
+  startX = 0;
+  wins.at(_TASKSWIN)->defineWindow(newwin(numLines,
+					  numCols,
+					  startY,
+					  startX),
+				   "Tasks",
+				   numLines,
+				   numCols,
+				   startY,
+				   startX);
+  
+    // define TasksTotalWindow
   numCols = 4;
   numLines = 1;
   startY = 1;
@@ -388,6 +332,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				     numCols,
 				     startY,
 				     startX);
+  
   // define TasksRunningWindow
   numCols = 4;
   numLines = 1;
@@ -402,6 +347,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				       numCols,
 				       startY,
 				       startX);
+  
   // define TasksSleepingWindow
   numCols = 4;
   numLines = 1;
@@ -416,6 +362,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 					numCols,
 					startY,
 					startX);
+  
   // define TasksStoppedWindow
   numCols = 4;
   numLines = 1;
@@ -430,6 +377,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				       numCols,
 				       startY,
 				       startX);
+  
   // define TasksZombieWindow
   numCols = 4;
   numLines = 1;
@@ -444,6 +392,22 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				      numCols,
 				      startY,
 				      startX);
+
+  // define cpu window
+  numLines = 1;
+  numCols = wins.at(_MAINWIN)->getNumCols() - 100;
+  startY = _YOFFSET - 4;
+  startX = 0;
+  wins.at(_CPUWIN)->defineWindow(newwin(numLines,
+					numCols,
+					startY,
+					startX),
+				 "CPU",
+				 numLines,
+				 numCols,
+				 startY,
+				 startX);
+  
   // define cpu user time window
   numCols = 5;
   numLines = 1;
@@ -458,6 +422,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				   numCols,
 				   startY,
 				   startX);
+  
   // define cpu system time window
   numCols = 5;
   numLines = 1;
@@ -472,6 +437,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				   numCols,
 				   startY,
 				   startX);
+  
   // define cpu user nice time window
   numCols = 5;
   numLines = 1;
@@ -486,6 +452,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				   numCols,
 				   startY,
 				   startX);
+  
   // define cpu idle time window
   numCols = 5;
   numLines = 1;
@@ -500,6 +467,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				   numCols,
 				   startY,
 				   startX);
+  
   // define cpu wait time window
   numCols = 5;
   numLines = 1;
@@ -514,6 +482,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				   numCols,
 				   startY,
 				   startX);
+  
   // define cpu hardware interrupt time window
   numCols = 5;
   numLines = 1;
@@ -528,6 +497,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				   numCols,
 				   startY,
 				   startX);
+  
   // define cpu software interrupt time window
   numCols = 5;
   numLines = 1;
@@ -542,6 +512,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				   numCols,
 				   startY,
 				   startX);
+  
   // define cpu steal time window
   numCols = 5;
   numLines = 1;
@@ -557,6 +528,21 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				   startY,
 				   startX);
 
+  // define mem window
+  numLines = 2;
+  numCols = wins.at(_MAINWIN)->getNumCols() - 100;
+  startY = _YOFFSET - 3;
+  startX = 0;  
+  wins.at(_MEMWIN)->defineWindow(newwin(numLines,
+					numCols,
+					startY,
+					startX),
+				 "MEM",
+				 numLines,
+				 numCols,
+				 startY,
+				 startX);
+  
   // define MiB mem total window
   numCols = 9;
   numLines = 1;
@@ -571,6 +557,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				      numCols,
 				      startY,
 				      startX);
+  
   // define MiB mem free window
   numCols = 9;
   numLines = 1;
@@ -585,6 +572,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				     numCols,
 				     startY,
 				     startX);
+  
   // define MiB mem Used window
   numCols = 9;
   numLines = 1;
@@ -599,6 +587,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				     numCols,
 				     startY,
 				     startX);
+  
   // define buff cache window
   numCols = 9;
   numLines = 1;
@@ -613,6 +602,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 					  numCols,
 					  startY,
 					  startX);
+  
   // define MiB swap total window
   numCols = 9;
   numLines = 1;
@@ -627,6 +617,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 					  numCols,
 					  startY,
 					  startX);
+  
   // define MiB swap free window
   numCols = 9;
   numLines = 1;
