@@ -1502,7 +1502,80 @@ void printTasksDataWins(const std::unordered_map<int, CursesWindow*>& wins,
 
 /*
   Function:
-   printCpusData
+   printCpuWins
+
+  Description
+
+  Input:
+
+  Output:
+   NONE
+*/
+void printCpuWins(const std::unordered_map<int, CursesWindow*>& wins)
+{
+  std::string outString;
+
+  
+  outString = "%Cpu(s):";
+  mvwaddstr(wins.at(_CPUWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+  
+  outString = "us,";
+  mvwaddstr(wins.at(_CPUUSWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+
+  outString = "sy,";
+  mvwaddstr(wins.at(_CPUSYWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());  
+
+  outString = "ni,";
+  mvwaddstr(wins.at(_CPUNIWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+
+  outString = "id,";
+  mvwaddstr(wins.at(_CPUIDWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+
+  outString = "wa,";
+  mvwaddstr(wins.at(_CPUWAWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+
+  outString = "hi,";
+  mvwaddstr(wins.at(_CPUHIWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+
+  outString = "si,";
+  mvwaddstr(wins.at(_CPUSIWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+
+  outString = "st";
+  mvwaddstr(wins.at(_CPUSTWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+} // end of "printCpuWins"
+
+
+
+/*
+  Function:
+   printCpuDataWins
 
   Description:
    Prints the data values stored in the cpuInfo parameter to the corresponding
@@ -1522,8 +1595,8 @@ void printTasksDataWins(const std::unordered_map<int, CursesWindow*>& wins,
   Output:
    NONE
 */
-void printCpusData(const std::unordered_map<int, CursesWindow*>& wins,
-		   const CPUUsage& cpuUsage)
+void printCpuDataWins(const std::unordered_map<int, CursesWindow*>& wins,
+		      const CPUUsage& cpuUsage)
 {
   std::string outString;
 
@@ -1576,13 +1649,112 @@ void printCpusData(const std::unordered_map<int, CursesWindow*>& wins,
 	    0,
 	    wins.at(_CPUSTDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-} // end of "printCpusData"
+} // end of "printCpuDataWins'
+
 
 
 
 /*
   Function:
-   printMemMiBData
+   printMemWins
+
+  Description:
+
+  Input:
+
+  Output:
+   NONE
+*/
+void printMemWins(const std::unordered_map<int, CursesWindow*>& wins)
+{
+  std::string outString;
+  
+  outString = "MiB Mem :";
+  mvwaddstr(wins.at(_MEMWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+
+  outString = "total,";
+  mvwaddstr(wins.at(_MEMTOTALWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+  
+  outString = "free,";
+  mvwaddstr(wins.at(_MEMFREEWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+  
+  outString = "used,";
+  mvwaddstr(wins.at(_MEMUSEDWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+  
+  outString = "buff/cache";
+  mvwaddstr(wins.at(_MEMBUFFCACHEWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+} // end of "printMemWins"
+
+
+
+
+/*
+  Function:
+   printSwapWins
+
+  Description:
+
+  Input:
+
+  Output:
+   NONE
+*/
+void printSwapWins(const std::unordered_map<int, CursesWindow*>& wins)
+{
+  std::string outString;
+  
+  outString = "MiB Swap:";
+  mvwaddstr(wins.at(_SWAPWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+
+  
+  outString = "total,";
+  mvwaddstr(wins.at(_SWAPTOTALWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+  
+  outString = "free,";
+  mvwaddstr(wins.at(_SWAPFREEWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+
+  outString = "used,";
+  mvwaddstr(wins.at(_SWAPUSEDWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+  
+  outString = "avail Mem";
+  mvwaddstr(wins.at(_MEMAVAILWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+} // end of "printSwapWins"
+
+
+
+/*
+  Function:
+   printMemDataWins
 
   Description:
    Prints the data values stored in the memInfo parameter to the corresponding
@@ -1602,8 +1774,8 @@ void printCpusData(const std::unordered_map<int, CursesWindow*>& wins,
   Output:
    NONE
 */
-void printMemMiBData(const std::unordered_map<int, CursesWindow*>& wins,
-		     const MemInfo& memInfo)
+void printMemDataWins(const std::unordered_map<int, CursesWindow*>& wins,
+		      const MemInfo& memInfo)
 {
   std::string outString;
   outString = doubleToStr(KiBToMiB(memInfo.getMemTotal()), 1);
@@ -1646,7 +1818,7 @@ void printMemMiBData(const std::unordered_map<int, CursesWindow*>& wins,
 	    0,
 	    wins.at(_MEMAVAILDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-} // end of "printMemMiBData"
+} // end of "printMemDataWins"
 
 
 
