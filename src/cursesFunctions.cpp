@@ -327,81 +327,56 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				   numCols,
 				   startY,
 				   startX);
-  
-  // define TasksTotalWindow
-  numCols = _TASKSDATAWINCOLS;
-  numLines = 1;
-  startY = _TASKSDATASTARTY;
-  startX = _TASKSTOTALDATASTARTX;
-  wins.at(_TASKSTOTALDATAWIN)->defineWindow(newwin(numLines,
-						   numCols,
-						   startY,
-						   startX),
+
+  wins.at(_TASKSTOTALDATAWIN)->defineWindow(newwin(1,
+						   _TASKSDATAWINCOLS,
+						   _TASKSDATASTARTY,
+						   _TASKSTOTALDATASTARTX),
 					    "total",
-					    numLines,
-					    numCols,
-					    startY,
-					    startX);
-  
-  // define TasksRunningWindow
-  numCols = _TASKSDATAWINCOLS;
-  numLines = 1;
-  startY = _TASKSDATASTARTY;  
-  startX = _TASKSRUNDATASTARTX;
-  wins.at(_TASKSRUNDATAWIN)->defineWindow(newwin(numLines,
-						 numCols,
-						 startY,
-						 startX),
+					    1,
+					    _TASKSDATAWINCOLS,
+					    _TASKSDATASTARTY,
+					    _TASKSTOTALDATASTARTX);
+
+  wins.at(_TASKSRUNDATAWIN)->defineWindow(newwin(1,
+						 _TASKSDATAWINCOLS,
+						 _TASKSDATASTARTY,
+						 _TASKSRUNDATASTARTX),
 					  "running",
-					  numLines,
-					  numCols,
-					  startY,
-					  startX);
+					  1,
+					  _TASKSDATAWINCOLS,
+					  _TASKSDATASTARTY,
+					  _TASKSRUNDATASTARTX);
   
-  // define TasksSleepingWindow
-  numCols = _TASKSDATAWINCOLS;
-  numLines = 1;
-  startY = _TASKSDATASTARTY;  
-  startX = _TASKSSLEEPDATASTARTX;
-  wins.at(_TASKSSLEEPDATAWIN)->defineWindow(newwin(numLines,
-						   numCols,
-						   startY,
-						   startX),
+  wins.at(_TASKSSLEEPDATAWIN)->defineWindow(newwin(1,
+						   _TASKSDATAWINCOLS,
+						   _TASKSDATASTARTY,
+						   _TASKSSLEEPDATASTARTX),
 					    "sleeping",
-					    numLines,
-					    numCols,
-					    startY,
-					    startX);
+					    1,
+					    _TASKSDATAWINCOLS,
+					    _TASKSDATASTARTY,
+					    _TASKSSLEEPDATASTARTX);
   
-  // define TasksStoppedWindow
-  numCols = _TASKSDATAWINCOLS;
-  numLines = 1;
-  startY = _TASKSDATASTARTY;  
-  startX = _TASKSSTOPDATASTARTX;
-  wins.at(_TASKSSTOPDATAWIN)->defineWindow(newwin(numLines,
-						  numCols,
-						  startY,
-						  startX),
+  wins.at(_TASKSSTOPDATAWIN)->defineWindow(newwin(1,
+						  _TASKSDATAWINCOLS,
+						  _TASKSDATASTARTY,
+						  _TASKSSTOPDATASTARTX),
 					   "stopped",
-					   numLines,
-					   numCols,
-					   startY,
-					   startX);
+					   1,
+					   _TASKSDATAWINCOLS,
+					   _TASKSDATASTARTY,
+					   _TASKSSTOPDATASTARTX);
   
-  // define TasksZombieWindow
-  numCols = _TASKSDATAWINCOLS;
-  numLines = 1;
-  startY = _TASKSDATASTARTY;  
-  startX = _TASKSZOMBDATASTARTX;
-  wins.at(_TASKSZOMBDATAWIN)->defineWindow(newwin(numLines,
-						  numCols,
-						  startY,
-						  startX),
+  wins.at(_TASKSZOMBDATAWIN)->defineWindow(newwin(1,
+						  _TASKSDATAWINCOLS,
+						  _TASKSDATASTARTY,
+						  _TASKSZOMBDATASTARTX),
 					   "zombie",
-					   numLines,
-					   numCols,
-					   startY,
-					   startX);
+					   1,
+					   _TASKSDATAWINCOLS,
+					   _TASKSDATASTARTY,
+					   _TASKSZOMBDATASTARTX);
 
   // define cpu window
   numLines = 1;
@@ -418,125 +393,85 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				 startY,
 				 startX);
   
-  // define cpu user time window
-  numCols = _CPUDATAWINCOLS;
-  numLines = 1;
-  startY = _CPUDATASTARTY;
-  startX = _CPUUSDATASTARTX;
-  wins.at(_CPUUSDATAWIN)->defineWindow(newwin(numLines,
-					      numCols,
-					      startY,
-					      startX),
+  wins.at(_CPUUSDATAWIN)->defineWindow(newwin(1,
+					      _CPUDATAWINCOLS,
+					      _CPUDATASTARTY,
+					      _CPUUSDATASTARTX),
 				       "us",
-				       numLines,
-				       numCols,
-				       startY,
-				       startX);
-
-  // define cpu system time window
-  numCols = _CPUDATAWINCOLS;
-  numLines = 1;
-  startY = _CPUDATASTARTY;
-  startX = _CPUSYDATASTARTX;
-  wins.at(_CPUSYDATAWIN)->defineWindow(newwin(numLines,
-					      numCols,
-					      startY,
-					      startX),
+				       1,
+				       _CPUDATAWINCOLS,
+				       _CPUDATASTARTY,
+				       _CPUUSDATASTARTX);
+  
+  wins.at(_CPUSYDATAWIN)->defineWindow(newwin(1,
+					      _CPUDATAWINCOLS,
+					      _CPUDATASTARTY,
+					      _CPUSYDATASTARTX),
 				       "sy",
-				       numLines,
-				       numCols,
-				       startY,
-				       startX);
+				       1,
+				       _CPUDATAWINCOLS,
+				       _CPUDATASTARTY,
+				       _CPUSYDATASTARTX); 
   
-  // define cpu user nice time window
-  numCols = _CPUDATAWINCOLS;
-  numLines = 1;
-  startY = _CPUDATASTARTY;
-  startX = _CPUNIDATASTARTX;
-  wins.at(_CPUNIDATAWIN)->defineWindow(newwin(numLines,
-					      numCols,
-					      startY,
-					      startX),
+  wins.at(_CPUNIDATAWIN)->defineWindow(newwin(1,
+					      _CPUDATAWINCOLS,
+					      _CPUDATASTARTY,
+					      _CPUNIDATASTARTX),
 				       "ni",
-				       numLines,
-				       numCols,
-				       startY,
-				       startX);
+				       1,
+				       _CPUDATAWINCOLS,
+				       _CPUDATASTARTY,
+				       _CPUNIDATASTARTX);
   
-  // define cpu idle time window
-  numCols = _CPUDATAWINCOLS;
-  numLines = 1;
-  startY = _CPUDATASTARTY;
-  startX = _CPUIDDATASTARTX;
-  wins.at(_CPUIDDATAWIN)->defineWindow(newwin(numLines,
-					      numCols,
-					      startY,
-					      startX),
+  wins.at(_CPUIDDATAWIN)->defineWindow(newwin(1,
+					      _CPUDATAWINCOLS,
+					      _CPUDATASTARTY,
+					      _CPUIDDATASTARTX),	      
 				       "id",
-				       numLines,
-				       numCols,
-				       startY,
-				       startX);
+				       1,
+				       _CPUDATAWINCOLS,
+				       _CPUDATASTARTY,
+				       _CPUIDDATASTARTX);
   
-  // define cpu wait time window
-  numCols = _CPUDATAWINCOLS;
-  numLines = 1;
-  startY = _CPUDATASTARTY;
-  startX = _CPUWADATASTARTX;
-  wins.at(_CPUWADATAWIN)->defineWindow(newwin(numLines,
-					      numCols,
-					      startY,
-					      startX),
+  wins.at(_CPUWADATAWIN)->defineWindow(newwin(1,
+					      _CPUDATAWINCOLS,
+					      _CPUDATASTARTY,
+					      _CPUWADATASTARTX),	      
 				       "wa",
-				       numLines,
-				       numCols,
-				       startY,
-				       startX);
+				       1,
+				       _CPUDATAWINCOLS,
+				       _CPUDATASTARTY,
+				       _CPUWADATASTARTX);
   
-  // define cpu hardware interrupt time window
-  numCols = _CPUDATAWINCOLS;  
-  numLines = 1;
-  startY = _CPUDATASTARTY;
-  startX = _CPUHIDATASTARTX;
-  wins.at(_CPUHIDATAWIN)->defineWindow(newwin(numLines,
-					      numCols,
-					      startY,
-					      startX),  
+  wins.at(_CPUHIDATAWIN)->defineWindow(newwin(1,
+					      _CPUDATAWINCOLS,
+					      _CPUDATASTARTY,
+					      _CPUHIDATASTARTX),
 				       "hi",
-				       numLines,
-				       numCols,
-				       startY,
-				       startX);
+				       1,
+				       _CPUDATAWINCOLS,
+				       _CPUDATASTARTY,
+				       _CPUHIDATASTARTX);
   
-  // define cpu software interrupt time window
-  numCols = _CPUDATAWINCOLS;
-  numLines = 1;
-  startY = _CPUDATASTARTY;
-  startX = _CPUSIDATASTARTX;
-  wins.at(_CPUSIDATAWIN)->defineWindow(newwin(numLines,
-					      numCols,
-					      startY,
-					      startX),  
+  wins.at(_CPUSIDATAWIN)->defineWindow(newwin(1,
+					      _CPUDATAWINCOLS,
+					      _CPUDATASTARTY,
+					      _CPUSIDATASTARTX),	      
 				       "si",
-				       numLines,
-				       numCols,
-				       startY,
-				       startX);
+				       1,
+				       _CPUDATAWINCOLS,
+				       _CPUDATASTARTY,
+				       _CPUSIDATASTARTX);
   
-  // define cpu steal time window
-  numCols = _CPUDATAWINCOLS;
-  numLines = 1;
-  startY = _CPUDATASTARTY;
-  startX = _CPUSTDATASTARTX;
-  wins.at(_CPUSTDATAWIN)->defineWindow(newwin(numLines,
-					      numCols,
-					      startY,
-					      startX),  
+  wins.at(_CPUSTDATAWIN)->defineWindow(newwin(1,
+					      _CPUDATAWINCOLS,
+					      _CPUDATASTARTY,
+					      _CPUSTDATASTARTX),
 				       "St",
-				       numLines,
-				       numCols,
-				       startY,
-				       startX);
+				       1,
+				       _CPUDATAWINCOLS,
+				       _CPUDATASTARTY,
+				       _CPUSTDATASTARTX);
 
   // define mem window
   numLines = 1;
@@ -553,126 +488,85 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				 startY,
 				 startX);
   
-  // define MiB mem total window
-  numCols = _MEMDATAWINCOLS;
-  numLines = 1;
-  startY = _MAINMEMSTARTY;
-  startX = _MAINMEMTOTALDATASTARTX;
-  wins.at(_MIBTOTALDATAWIN)->defineWindow(newwin(numLines,
-						 numCols,
-						 startY,
-						 startX),  
+  wins.at(_MAINMEMTOTALDATAWIN)->defineWindow(newwin(1,
+						 _MEMDATAWINCOLS,
+						 _MAINMEMSTARTY,
+						 _MAINMEMTOTALDATASTARTX),  
 					  "total",
-					  numLines,
-					  numCols,
-					  startY,
-					  startX);
+					  1,
+					  _MEMDATAWINCOLS,
+					  _MAINMEMSTARTY,
+					  _MAINMEMTOTALDATASTARTX);
   
-  // define MiB mem free window
-  numCols = _MEMDATAWINCOLS;
-  numLines = 1;
-  startY = _MAINMEMSTARTY;
-  startX = _MAINMEMFREEDATASTARTX;
-  wins.at(_MIBFREEDATAWIN)->defineWindow(newwin(numLines,
-						numCols,
-						startY,
-						startX),  
+  wins.at(_MAINMEMFREEDATAWIN)->defineWindow(newwin(1,
+						_MEMDATAWINCOLS,
+						_MAINMEMSTARTY,
+						_MAINMEMFREEDATASTARTX),
 					 "free",
-					 numLines,
-					 numCols,
-					 startY,
-					 startX);
+					 1,
+					 _MEMDATAWINCOLS,
+					 _MAINMEMSTARTY,
+					 _MAINMEMFREEDATASTARTX);
   
-  // define MiB mem Used window
-  numCols = _MEMDATAWINCOLS;  
-  numLines = 1;
-  startY = _MAINMEMSTARTY;
-  startX = _MAINMEMUSEDDATASTARTX;
-  wins.at(_MIBUSEDDATAWIN)->defineWindow(newwin(numLines,
-						numCols,
-						startY,
-						startX),  
+  wins.at(_MAINMEMUSEDDATAWIN)->defineWindow(newwin(1,
+						_MEMDATAWINCOLS,
+						_MAINMEMSTARTY,
+						_MAINMEMUSEDDATASTARTX),
 					 "used",
-					 numLines,
-					 numCols,
-					 startY,
-					 startX);
+					 1,
+					 _MEMDATAWINCOLS,
+					 _MAINMEMSTARTY,
+					 _MAINMEMUSEDDATASTARTX);
   
-  // define buff cache window
-  numCols = _MEMDATAWINCOLS;  
-  numLines = 1;
-  startY = _MAINMEMSTARTY;
-  startX = _MAINMEMBUFFCACHEDATASTARTX;
-  wins.at(_MIBBUFFCACHEDATAWIN)->defineWindow(newwin(numLines,
-						     numCols,
-						     startY,
-						     startX),  
+  wins.at(_MAINMEMBUFFCACHEDATAWIN)->defineWindow(newwin(1,
+						     _MEMDATAWINCOLS,
+						     _MAINMEMSTARTY,
+						     _MAINMEMBUFFCACHEDATASTARTX),
 					      "buff/cache",
-					      numLines,
-					      numCols,
-					      startY,
-					      startX);
-  
-  // define MiB swap total window
-  numCols = _MEMDATAWINCOLS;  
-  numLines = 1;
-  startY = _SWAPMEMSTARTY;
-  startX = _SWAPMEMTOTALDATASTARTX;
-  wins.at(_MIBSWAPTOTALDATAWIN)->defineWindow(newwin(numLines,
-						     numCols,
-						     startY,
-						     startX),  
+					      1,
+					      _MEMDATAWINCOLS,
+					      _MAINMEMSTARTY,
+					      _MAINMEMBUFFCACHEDATASTARTX);
+
+  wins.at(_SWAPMEMTOTALDATAWIN)->defineWindow(newwin(1,
+						     _MEMDATAWINCOLS,
+						     _SWAPMEMSTARTY,
+						     _SWAPMEMTOTALDATASTARTX),  
 					      "total",
-					      numLines,
-					      numCols,
-					      startY,
-					      startX);
-  
-  // define MiB swap free window
-  numCols = _MEMDATAWINCOLS;
-  numLines = 1;
-  startY = _SWAPMEMSTARTY;
-  startX = _SWAPMEMFREEDATASTARTX;
-  wins.at(_MIBSWAPFREEDATAWIN)->defineWindow(newwin(numLines,
-						    numCols,
-						    startY,
-						    startX),  
+					      1,
+					      _MEMDATAWINCOLS,
+					      _SWAPMEMSTARTY,
+					      _SWAPMEMTOTALDATASTARTX);
+
+  wins.at(_SWAPMEMFREEDATAWIN)->defineWindow(newwin(1,
+						    _MEMDATAWINCOLS,
+						    _SWAPMEMSTARTY,
+						    _SWAPMEMFREEDATASTARTX),
 					     "free",
-					     numLines,
-					     numCols,
-					     startY,
-					     startX);
+					     1,
+					     _MEMDATAWINCOLS,
+					     _SWAPMEMSTARTY,
+					     _SWAPMEMFREEDATASTARTX);
   
-  // define MiB swap used window
-  numCols = _MEMDATAWINCOLS;  
-  numLines = 1;
-  startY = _SWAPMEMSTARTY;
-  startX = _SWAPMEMUSEDDATASTARTX;
-  wins.at(_MIBSWAPUSEDDATAWIN)->defineWindow(newwin(numLines,
-						    numCols,
-						    startY,
-						    startX),  
+  wins.at(_SWAPMEMUSEDDATAWIN)->defineWindow(newwin(1,
+						    _MEMDATAWINCOLS,
+						    _SWAPMEMSTARTY,
+						    _SWAPMEMUSEDDATASTARTX),
 					     "used",
-					     numLines,
-					     numCols,
-					     startY,
-					     startX);
-  
-  // define MiB Swap avail mem window
-  numCols = _MEMDATAWINCOLS;  
-  numLines = 1;
-  startY = _SWAPMEMSTARTY;
-  startX = _MEMAVAILDATASTARTX;
-  wins.at(_MIBMEMAVAILDATAWIN)->defineWindow(newwin(numLines,
-						    numCols,
-						    startY,
-						    startX),  
-					     "avail Mem",
-					     numLines,
-					     numCols,
-					     startY,
-					     startX);
-  
+					     1,
+					     _MEMDATAWINCOLS,
+					     _SWAPMEMSTARTY,
+					     _SWAPMEMUSEDDATASTARTX);
+  wins.at(_MEMAVAILDATAWIN)->defineWindow(newwin(1,
+						 _MEMDATAWINCOLS,
+						 _SWAPMEMSTARTY,
+						 _MEMAVAILDATASTARTX),
+					  "avail Mem",
+					  1,
+					  _MEMDATAWINCOLS,
+					  _SWAPMEMSTARTY,
+					  _MEMAVAILDATASTARTX);
+  /*  
   // define cpu graph
   numLines = 14;
   numCols = (((wins.at(_MAINWIN)->getNumCols() -
@@ -705,6 +599,7 @@ void defineStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 				      numCols,
 				      startY,
 				      startX);
+  */
 } // end of "defineStartingWindows"
 
 
@@ -739,7 +634,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
   deleted = false;
 
   // handle top windows terminal resizing
-  for(int i = _TOPWIN; i <= _MIBMEMAVAILDATAWIN; i++)
+  for(int i = _TOPWIN; i <= _MEMAVAILDATAWIN; i++)
     {
       if(wins.at(i)->getNumCols() + wins.at(i)->getStartX() > numCols)
 	{
@@ -925,7 +820,7 @@ void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins)
 */
 void clearBottomWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
-  for(int i = _PIDWIN; i <= _MIBMEMAVAILDATAWIN; i++)
+  for(int i = _PIDWIN; i <= _MEMAVAILDATAWIN; i++)
     {
       werase(wins.at(i)->getWindow());
     }
@@ -953,7 +848,7 @@ void clearBottomWins(const std::unordered_map<int, CursesWindow*>& wins)
 void boldOnAllTopWins(std::unordered_map<int, CursesWindow*>& wins,
 		      int attrs)
 {
-  for(int i = _TASKSTOTALDATAWIN; i <= _MIBMEMAVAILDATAWIN; i++)
+  for(int i = _TASKSTOTALDATAWIN; i <= _MEMAVAILDATAWIN; i++)
     {
       wattron(wins.at(i)->getWindow(), A_BOLD);
     }
@@ -981,7 +876,7 @@ void boldOnAllTopWins(std::unordered_map<int, CursesWindow*>& wins,
 void boldOffAllTopWins(std::unordered_map<int, CursesWindow*>& wins,
 		       int attrs)
 {
-  for(int i = _TASKSTOTALDATAWIN; i <= _MIBMEMAVAILDATAWIN; i++)
+  for(int i = _TASKSTOTALDATAWIN; i <= _MEMAVAILDATAWIN; i++)
     {
       wattron(wins.at(i)->getWindow(), A_BOLD);
     }
@@ -1118,7 +1013,7 @@ void boldOffCpusWins(std::unordered_map<int, CursesWindow*>& wins,
 void boldOnMemWins(std::unordered_map<int, CursesWindow*>& wins,
 		     int attrs)
 {
-  for(int i = _MIBTOTALDATAWIN; i <= _MIBMEMAVAILDATAWIN; i++)
+  for(int i = _MAINMEMTOTALDATAWIN; i <= _MEMAVAILDATAWIN; i++)
     {
       wattron(wins.at(i)->getWindow(), A_BOLD);
     }
@@ -1146,7 +1041,7 @@ void boldOnMemWins(std::unordered_map<int, CursesWindow*>& wins,
 void boldOffMemWins(std::unordered_map<int, CursesWindow*>& wins,
 		     int attrs)
 {
-  for(int i = _MIBTOTALDATAWIN; i <= _MIBMEMAVAILDATAWIN; i++)
+  for(int i = _MAINMEMTOTALDATAWIN; i <= _MEMAVAILDATAWIN; i++)
     {
       wattroff(wins.at(i)->getWindow(), A_BOLD);
     }
@@ -1408,52 +1303,44 @@ void printMemMiBData(const std::unordered_map<int, CursesWindow*>& wins,
 {
   std::string outString;
   outString = doubleToStr(KiBToMiB(memInfo.getMemTotal()), 1);
-  mvwaddstr(wins.at(_MIBTOTALDATAWIN)->getWindow(),
+  mvwaddstr(wins.at(_MAINMEMTOTALDATAWIN)->getWindow(),
 	    0,
-	    wins.at(_MIBTOTALDATAWIN)->getNumCols() - outString.length(),
+	    wins.at(_MAINMEMTOTALDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-  
   outString = doubleToStr(KiBToMiB(memInfo.getMemFree()), 1);
-  mvwaddstr(wins.at(_MIBFREEDATAWIN)->getWindow(),
+  mvwaddstr(wins.at(_MAINMEMFREEDATAWIN)->getWindow(),
 	    0,
-	    wins.at(_MIBFREEDATAWIN)->getNumCols() - outString.length(),
+	    wins.at(_MAINMEMFREEDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-
   outString = doubleToStr(KiBToMiB(memInfo.getMemUsed()), 1);
-  mvwaddstr(wins.at(_MIBUSEDDATAWIN)->getWindow(),
+  mvwaddstr(wins.at(_MAINMEMUSEDDATAWIN)->getWindow(),
 	    0,
-	    wins.at(_MIBUSEDDATAWIN)->getNumCols() - outString.length(),
+	    wins.at(_MAINMEMUSEDDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-
   outString = doubleToStr(KiBToMiB(memInfo.getBuffCache()), 1);
-  mvwaddstr(wins.at(_MIBBUFFCACHEDATAWIN)->getWindow(),
+  mvwaddstr(wins.at(_MAINMEMBUFFCACHEDATAWIN)->getWindow(),
 	    0,
-	    wins.at(_MIBBUFFCACHEDATAWIN)->getNumCols() - outString.length(),
+	    wins.at(_MAINMEMBUFFCACHEDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-
   outString = doubleToStr(KiBToMiB(memInfo.getSwapTotal()), 1);
-  mvwaddstr(wins.at(_MIBSWAPTOTALDATAWIN)->getWindow(),
+  mvwaddstr(wins.at(_SWAPMEMTOTALDATAWIN)->getWindow(),
 	    0,
-	    wins.at(_MIBSWAPTOTALDATAWIN)->getNumCols() - outString.length(),
+	    wins.at(_SWAPMEMTOTALDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-
-  
   outString = doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1);
-  mvwaddstr(wins.at(_MIBSWAPFREEDATAWIN)->getWindow(),
+  mvwaddstr(wins.at(_SWAPMEMFREEDATAWIN)->getWindow(),
 	    0,
-	    wins.at(_MIBSWAPFREEDATAWIN)->getNumCols() - outString.length(),
+	    wins.at(_SWAPMEMFREEDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-
   outString = doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1);
-  mvwaddstr(wins.at(_MIBSWAPUSEDDATAWIN)->getWindow(),
+  mvwaddstr(wins.at(_SWAPMEMUSEDDATAWIN)->getWindow(),
 	    0,
-	    wins.at(_MIBSWAPUSEDDATAWIN)->getNumCols() - outString.length(),
+	    wins.at(_SWAPMEMUSEDDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-
   outString = doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1);
-  mvwaddstr(wins.at(_MIBMEMAVAILDATAWIN)->getWindow(),
+  mvwaddstr(wins.at(_MEMAVAILDATAWIN)->getWindow(),
 	    0,
-	    wins.at(_MIBMEMAVAILDATAWIN)->getNumCols() - outString.length(),
+	    wins.at(_MEMAVAILDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
 } // end of "printMemMiBData"
 
