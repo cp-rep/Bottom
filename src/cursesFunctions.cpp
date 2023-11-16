@@ -111,23 +111,6 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				  startY,
 				  startX);
 
-  /*
-  // top Win
-  numLines = 1;
-  numCols = numCols - 100;
-  startY = _YOFFSET - 6;
-  startX = 0;
-  wins.at(_TOPWIN)->defineWindow(newwin(numLines,
-					numCols,
-					startY,
-					startX),
-				 "top",
-				 numLines,
-				 numCols,
-				 startY,
-				 startX);
-  */
-  
   // define PID window
   numCols = _PIDWINCOLS;
   startY = _YOFFSET;
@@ -324,41 +307,6 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
  */
 void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 {
-  int numLines;
-  int numCols;
-  int startY;
-  int startX;
-  // top Win
-  numLines = 1;
-  startY = _YOFFSET - 6;
-  startX = 0;
-  /*
-  wins.at(_TOPWIN)->defineWindow(newwin(numLines,
-					numCols,
-					startY,
-					startX),
-				 "top",
-				 numLines,
-				 numCols,
-				 startY,
-				 startX);  
-
-
-  // define tasks window
-  numLines = 1;
-  startY = _YOFFSET - 5;
-  startX = 0;
-  wins.at(_TASKSWIN)->defineWindow(newwin(numLines,
-					  numCols,
-					  startY,
-					  startX),
-				   "Tasks",
-				   numLines,
-				   numCols,
-				   startY,
-				   startX);
-  */
-
   wins.at(_TASKSTOTALDATAWIN)->defineWindow(newwin(1,
 						   _TASKSDATAWINCOLS,
 						   _TASKSDATASTARTY,
@@ -408,23 +356,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					   _TASKSDATAWINCOLS,
 					   _TASKSDATASTARTY,
 					   _TASKSZOMBDATASTARTX);
-
-  /*
-  // define cpu window
-  numLines = 1;
-  numCols = wins.at(_MAINWIN)->getNumCols() - 100;
-  startY = _YOFFSET - 4;
-  startX = 0;
-  wins.at(_CPUWIN)->defineWindow(newwin(numLines,
-					numCols,
-					startY,
-					startX),
-				 "CPU",
-				 numLines,
-				 numCols,
-				 startY,
-				 startX);
-  */
   
   wins.at(_CPUUSDATAWIN)->defineWindow(newwin(1,
 					      _CPUDATAWINCOLS,
@@ -506,23 +437,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				       _CPUDATASTARTY,
 				       _CPUSTDATASTARTX);
 
-  /*
-  // define mem window
-  numLines = 1;
-  numCols = wins.at(_MAINWIN)->getNumCols() - 100;
-  startY = _YOFFSET - 3;
-  startX = 0;  
-  wins.at(_MEMWIN)->defineWindow(newwin(numLines,
-					numCols,
-					startY,
-					startX),
-				 "MEM",
-				 numLines,
-				 numCols,
-				 startY,
-				 startX);
-  */
-  
   wins.at(_MAINMEMTOTALDATAWIN)->defineWindow(newwin(1,
 						 _MEMDATAWINCOLS,
 						 _MAINMEMSTARTY,
