@@ -44,8 +44,9 @@ void attrOnBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
 		      int attr);
 void attrOffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
 		       int attr);
-void printTasksData(const std::unordered_map<int, CursesWindow*>& wins,
-		    const TaskInfo& taskInfo);
+void printTasksWins(const std::unordered_map<int, CursesWindow*>& wins);
+void printTasksDataWins(const std::unordered_map<int, CursesWindow*>& wins,
+			const TaskInfo& taskInfo);
 void printCpusData(const std::unordered_map<int, CursesWindow*>& wins,
 		   const CPUUsage& cpuUsage);
 void printMemMiBData(const std::unordered_map<int, CursesWindow*>& wins,

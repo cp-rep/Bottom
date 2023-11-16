@@ -1385,10 +1385,64 @@ void attrOffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
 } // end of "colorOffBottomWins"
 
 
-  
+
 /*
   Function:
-   printTasksData
+   printTasksWins
+
+  Description:
+
+  Input:
+
+  Output:
+   NONE
+*/
+void printTasksWins(const std::unordered_map<int, CursesWindow*>& wins)
+{
+  std::string outString;
+
+  outString = "Tasks:";
+  mvwaddstr(wins.at(_TASKSWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+
+  outString = "total,";
+  mvwaddstr(wins.at(_TASKSTOTALWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+
+  outString = "running,";
+  mvwaddstr(wins.at(_TASKSRUNWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+
+  outString = "sleeping,";
+  mvwaddstr(wins.at(_TASKSSLEEPWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+
+  outString = "stopped,";
+  mvwaddstr(wins.at(_TASKSSTOPWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+
+  outString = "zombie";
+  mvwaddstr(wins.at(_TASKSZOMBWIN)->getWindow(),
+	    0,
+	    wins.at(_TASKSZOMBWIN)->getNumCols() - outString.length(),
+	    outString.c_str());
+} // end of "printTasksWins"
+
+
+
+/*
+  Function:
+   printTasksDataWins
 
   Description:
    Prints the data values stored in the taskInfo parameter to the corresponding
@@ -1408,8 +1462,8 @@ void attrOffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
   Output:
    NONE
 */
-void printTasksData(const std::unordered_map<int, CursesWindow*>& wins,
-		    const TaskInfo& taskInfo)
+void printTasksDataWins(const std::unordered_map<int, CursesWindow*>& wins,
+			const TaskInfo& taskInfo)
 {
   std::string outString;
 
@@ -1442,7 +1496,7 @@ void printTasksData(const std::unordered_map<int, CursesWindow*>& wins,
 	    0,
 	    wins.at(_TASKSZOMBDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-} // end of "printTasksData"
+} // end of "printTasksDataWins"
 
 
 
