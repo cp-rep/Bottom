@@ -47,6 +47,21 @@ void initializeCurses()
 
 
 /*
+
+ */
+void resetToWinStartState(std::unordered_map<int, CursesWindow*>& wins)
+{
+  clearAllWins(wins);
+  wins.clear();
+  initializeStartingWindows(wins);
+  defineProcWinsStartVals(wins);
+  defineTopWinsStartVals(wins);
+  defineGraphWinStartVals(wins);
+} // end of "resetToWinStartState"
+
+
+
+/*
   Function:
    initializeStartingWindows
    
@@ -299,7 +314,7 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				     numCols,
 				     startY,
 				     startX);
-}
+} // end of "defineProcWinsStartVals"
 
 
 
@@ -577,7 +592,7 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					  _MEMDATAWINCOLS,
 					  _SWAPMEMSTARTY,
 					  _MEMAVAILDATASTARTX);
-}
+} // end of "defineTopWinsStartVals"
 
 
 
@@ -619,7 +634,7 @@ void defineGraphWinStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				      startY,
 				      startX);
   */
-}
+} // end of "defineGraphWinStartVals"
 
 
 

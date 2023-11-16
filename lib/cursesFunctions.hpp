@@ -20,6 +20,7 @@
 #include "_cursesWinConsts.hpp"
 
 void initializeCurses();
+void resetToWinStartState(std::unordered_map<int, CursesWindow*>& wins);
 void initializeStartingWindows(std::unordered_map<int, CursesWindow*>& wins);
 void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins);
 void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins);
