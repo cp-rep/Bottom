@@ -586,12 +586,11 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				       _TASKSWINSTARTY,
 				       _TASKSZOMBWINSTARTX);
 
-  /*
   wins.at(_CPUWIN)->defineWindow(newwin(1,
 					_CPUWINCOLS,
 					_CPUWINSTARTY,
 					_CPUWINSTARTX),
-				 "us,",
+				 "_CPUWIN",
 				 1,
 				 _CPUWINCOLS,
 				 _CPUWINSTARTY,
@@ -677,7 +676,7 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				   _CPUWINSTARTY,
 				   _CPUSTWINSTARTX);
 
-
+  /*
   wins.at(_MEMTOTALWIN)->defineWindow(newwin(1,
 						 _MEMWINCOLS,
 						 _MEMWINSTARTY,
