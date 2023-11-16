@@ -590,7 +590,7 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					_CPUWINCOLS,
 					_CPUWINSTARTY,
 					_CPUWINSTARTX),
-				 "_CPUWIN",
+				 "%CPU(s):",
 				 1,
 				 _CPUWINCOLS,
 				 _CPUWINSTARTY,
@@ -676,47 +676,57 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				   _CPUWINSTARTY,
 				   _CPUSTWINSTARTX);
 
-  /*
-  wins.at(_MEMTOTALWIN)->defineWindow(newwin(1,
-						 _MEMWINCOLS,
-						 _MEMWINSTARTY,
-						 _MEMTOTALWINSTARTX),  
-					  "total,",
-					  1,
-					  _MEMDATAWINCOLS,
-					  _MEMWINSTARTY,
-					  _MEMTOTALWINSTARTX);
-  
-  wins.at(_MEMFREEWIN)->defineWindow(newwin(1,
-						_MEMDATAWINCOLS,
-						_MEMWINSTARTY,
-						_MEMFREEWINSTARTX),
-					 "free,",
-					 1,
-					 _MEMWINCOLS,
-					 _MEMWINSTARTY,
-					 _MEMFREEDATAWINSTARTX);
-  
-  wins.at(_MEMUSEDWIN)->defineWindow(newwin(1,
-						_MEMWINCOLS,
-						_MEMWINSTARTY,
-						_MEMUSEDDATAWINSTARTX),
-					 "used,",
-					 1,
-					 _MEMWINCOLS,
-					 _MEMWINSTARTY,
-					 _MEMUSEDWINSTARTX);
-  
-  wins.at(_MEMBUFFCACHEWIN)->defineWindow(newwin(1,
-						     _MEMWINCOLS,
-						     _MEMWINSTARTY,
-						     _MEMBUFFCACHEDATAWINSTARTX),
-					      "buff/cache",
-					      1,
-					      _MEMDATAWINCOLS,
-					      _MEMWINSTARTY,
-					      _MEMBUFFCACHEWINSTARTX);
+  wins.at(_MEMWIN)->defineWindow(newwin(1,
+					_MEMWINCOLS,
+					_MEMWINSTARTY,
+					_MEMWINSTARTX),  
+				 "MiB Mem :",
+				 1,
+				 _MEMWINCOLS,
+				 _MEMWINSTARTY,
+				 _MEMWINSTARTX);
 
+  wins.at(_MEMTOTALWIN)->defineWindow(newwin(1,
+					     _MEMTOTALWINCOLS,
+					     _MEMWINSTARTY,
+					     _MEMTOTALWINSTARTX),  
+				      "total,",
+				      1,
+				      _MEMTOTALWINCOLS,
+				      _MEMWINSTARTY,
+				      _MEMTOTALWINSTARTX);
+
+
+  wins.at(_MEMFREEWIN)->defineWindow(newwin(1,
+					    _MEMFREEWINCOLS,
+					    _MEMWINSTARTY,
+					    _MEMFREEWINSTARTX),
+					 "free,",
+				     1,
+				     _MEMFREEWINCOLS,
+				     _MEMWINSTARTY,
+				     _MEMFREEWINSTARTX);
+
+  wins.at(_MEMUSEDWIN)->defineWindow(newwin(1,
+					    _MEMUSEDWINCOLS,
+					    _MEMWINSTARTY,
+					    _MEMUSEDWINSTARTX),
+				     "used,",
+				     1,
+				     _MEMUSEDWINCOLS,
+				     _MEMWINSTARTY,
+				     _MEMUSEDWINSTARTX);
+
+  wins.at(_MEMBUFFCACHEWIN)->defineWindow(newwin(1,
+						 _MEMBUFFCACHEWINCOLS,
+						 _MEMWINSTARTY,
+						 _MEMBUFFCACHEWINSTARTX),
+					  "buff/cache",
+					  1,
+					  _MEMBUFFCACHEWINCOLS,
+					  _MEMWINSTARTY,
+					  _MEMBUFFCACHEWINSTARTX);
+  /*
   wins.at(_SWAPTOTALWIN)->defineWindow(newwin(1,
 						 _MEMWINCOLS,
 						 _SWAPWINSTARTY,
@@ -755,7 +765,7 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				      _MEMWINCOLS,
 				      _SWAPWINSTARTY,
 				      _MEMAVAILWINSTARTX);
-  */
+*/
 } // end of "defineTopWinsStartVals"
 
 
