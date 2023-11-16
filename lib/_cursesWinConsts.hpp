@@ -119,7 +119,7 @@ enum _WINS {
 #define _PROCTIMEWINCOLS 9
 #define _COMMANDWINCOLS 40
 
-// tasks window label consts
+// tasks window consts
 #define _TASKSWINSTARTY 1
 #define _TASKSWINCOLS 6
 #define _TASKSWINSTARTX 0
@@ -143,7 +143,7 @@ enum _WINS {
 #define _TASKSSTOPDATAWINSTARTX 44
 #define _TASKSZOMBDATAWINSTARTX 57
 
-// CPU label win consts
+// CPU win consts
 #define _CPUWINSTARTY 2
 #define _CPUWINCOLS 8
 #define _CPUWINSTARTX 0
@@ -176,43 +176,35 @@ enum _WINS {
 #define _CPUSIDATAWINSTARTX 62
 #define _CPUSTDATAWINSTARTX 71
 
-
-// main/swap mem window consts
+// mem window consts
+#define _MEMWINSTARTY 3
 #define _MEMWINCOLS 9
+#define _MEMWINSTARTX 0
+#define _MEMTOTALWINCOLS 6
+#define _MEMTOTALWINSTARTX 19
+#define _MEMFREEWINCOLS 5
+#define _MEMFREEWINSTARTX 35
+#define _MEMUSEDWINCOLS 5
+#define _MEMUSEDWINSTARTX 50
+#define _MEMBUFFCACHEWINCOLS 10
+#define _MEMBUFFCACHEWINSTARTX 65
 
-
-#define _MAINMEMWINSTARTY 3
-//#define _MAINMEMWINSTARTX
-
-
-#define _MAINMEMTOTALWINSTARTX 9
-//#define _MAINMEMTOTALWINSTART
-
-
-#define _MAINMEMFREEWINSTARTX 25
-
-
-#define _MAINMEMUSEDWINSTARTX 40
-
-
-#define _MAINMEMBUFFCACHEWINSTARTX 55
-
-
-
-#define _SWAPMEMWINSTARTY 4
-#define _SWAPMEMTOTALWINSTARTX 9
-#define _SWAPMEMFREEWINSTARTX 25
-#define _SWAPMEMUSEDWINSTARTX 40
+// swap window consts
+#define _SWAPWINSTARTY 4
+#define _SWAPTOTALWINSTARTX 9
+#define _SWAPFREEWINSTARTX 25
+#define _SWAPUSEDWINSTARTX 40
 #define _MEMAVAILWINSTARTX 55
 
-
-// main/swap mem data window consts
+// mem data window consts
 #define _MEMDATAWINCOLS 9
 #define _MEMWINSTARTY 3
 #define _MEMTOTALDATAWINSTARTX 9
 #define _MEMFREEDATAWINSTARTX 25
 #define _MEMUSEDDATAWINSTARTX 40
 #define _MEMBUFFCACHEDATAWINSTARTX 55
+
+// swap data window consts
 #define _SWAPWINSTARTY 4
 #define _SWAPTOTALDATAWINSTARTX 9
 #define _SWAPFREEDATAWINSTARTX 25
