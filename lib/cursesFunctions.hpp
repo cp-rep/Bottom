@@ -22,12 +22,17 @@
 void initializeCurses();
 void resetToWinStartState(std::unordered_map<int, CursesWindow*>& wins);
 void initializeStartingWindows(std::unordered_map<int, CursesWindow*>& wins);
-
+void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
+		   const std::string HHMMSS,
+		   const int numDays,
+		   const int numHours,
+		   const int numMinutes,
+		   const std::vector<std::string> parsedLoadAvg,
+		   const int& numUsers);
 void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins);
 void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins);
 void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins);
 void defineGraphWinStartVals(std::unordered_map<int, CursesWindow*>& wins);
-
 void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 			    const int& shiftX,
 			    const int& shiftY);

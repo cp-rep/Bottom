@@ -308,6 +308,209 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 
 /*
   Function:
+   defineTopWins
+
+  Description
+
+  Input:
+
+  Output:
+   NONE
+*/
+void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
+		   const std::string HHMMSS,
+		   const int numDays,
+		   const int numHours,
+		   const int numMinutes,
+		   const std::vector<std::string> parsedLoadAvg,
+		   const int& numUsers)
+{
+  std::string days = std::to_string(numDays);
+  std::string hours = std::to_string(numHours);
+  std::string minutes = std::to_string(numMinutes);
+  std::string users = std::to_string(numUsers);
+  int uptimeDataCols = 0;
+  int loadAvgWinCols = 0;
+  int userCols = 0;
+  int userDataCols = users.length();
+  int uptimePostCols = 0;
+  bool postWin = false;
+  int nextWinStartX = 0;
+
+  if(numDays < 1)
+    {
+      if(numHours < 1)
+	{
+	  uptimeDataCols = minutes.length();
+	  uptimePostCols = 4;  // 'min,'
+	  postWin = true;
+	}
+      else
+	{
+	  if(numHours < 10)
+	    {
+	      uptimeDataCols += 1;
+	    }
+	  
+	  uptimeDataCols += hours.length();
+	  uptimeDataCols += 4;
+	}
+    }
+  else if(numDays == 1)
+    {
+      uptimeDataCols = days.length();
+      uptimePostCols = 4; // 'day,'
+      postWin = true;
+    }
+  else
+    {
+      uptimeDataCols = days.length();
+      uptimePostCols = 5; // 'days,'
+      postWin = true;
+    }
+
+  if(numUsers == 1)
+    {
+      userCols = 5;
+    }
+  else
+    {
+      userCols = 6;
+    }
+  
+  for(int i = 0; i < 3; i++)
+    {
+      loadAvgWinCols += parsedLoadAvg.at(i).length();
+    }
+  
+  loadAvgWinCols += 4;
+
+  wins.at(_TOPWIN)->defineWindow(newwin(1,
+					_TOPWINCOLS,
+					_TOPWINSTARTY,
+					nextWinStartX),
+				 "top -",
+				 1,
+				 _TOPWINCOLS,
+				 _TOPWINSTARTY,
+				 nextWinStartX);
+
+
+  nextWinStartX = wins.at(_TOPWIN)->getNumCols() +
+    wins.at(_TOPWIN)->getStartX() + 1;
+  wins.at(_TOPCURRTIMEWIN)->defineWindow(newwin(1,
+						_TOPCURRTIMEWINCOLS,
+						_TOPWINSTARTY,
+						nextWinStartX),
+					 "XX:XX:XX",
+					 1,
+					 _TOPCURRTIMEWINCOLS,
+					 _TOPWINSTARTY,
+					 nextWinStartX);
+
+
+  nextWinStartX = wins.at(_TOPCURRTIMEWIN)->getNumCols() +
+    wins.at(_TOPCURRTIMEWIN)->getStartX() + 1;
+  wins.at(_TOPUPWIN)->defineWindow(newwin(1,
+					  _TOPUPWINCOLS,
+					  _TOPWINSTARTY,
+					  nextWinStartX),
+				   "up",
+				   1,
+				   _TOPUPWINCOLS,
+				   _TOPWINSTARTY,
+				   nextWinStartX);
+
+  nextWinStartX = wins.at(_TOPUPWIN)->getNumCols() +
+    wins.at(_TOPUPWIN)->getStartX() + 1;  
+  wins.at(_TOPUPDATAWIN)->defineWindow(newwin(1,
+					      uptimeDataCols,
+					      _TOPWINSTARTY,
+					      nextWinStartX),
+				       "",
+				       1,
+				       uptimeDataCols,
+				       _TOPWINSTARTY,
+				       nextWinStartX);
+
+  if(postWin == true)
+    {
+      nextWinStartX += wins.at(_TOPUPDATAWIN)->getNumCols() +
+	wins.at(_TOPUPDATAWIN)->getStartX() + 1;        
+      wins.at(_TOPUPPOSTWIN)->defineWindow(newwin(1,
+						  uptimePostCols,
+						  _TOPWINSTARTY,
+						  nextWinStartX),
+					   "",
+					   1,
+					   uptimePostCols,
+					   _TOPWINSTARTY,
+					   nextWinStartX);
+
+      nextWinStartX = wins.at(_TOPUPPOSTWIN)->getNumCols() +
+	wins.at(_TOPUPPOSTWIN)->getStartX() + 1;
+    }
+  else
+    {
+      nextWinStartX = wins.at(_TOPUPDATAWIN)->getNumCols() +
+	wins.at(_TOPUPDATAWIN)->getStartX() + 1;
+    }
+
+  if(userDataCols < 10)
+    {
+      userDataCols = 2;
+    }
+  wins.at(_TOPUSERDATAWIN)->defineWindow(newwin(1,
+						userDataCols,
+						_TOPWINSTARTY,
+						nextWinStartX),
+					 "",
+					 1,
+					 userDataCols,
+					 _TOPWINSTARTY,
+					 nextWinStartX);
+
+  nextWinStartX = wins.at(_TOPUSERDATAWIN)->getNumCols() +
+    wins.at(_TOPUSERDATAWIN)->getStartX() + 1;        
+  wins.at(_TOPUSERWIN)->defineWindow(newwin(1,
+					    _TOPUSERWINCOLS,
+					    _TOPWINSTARTY,
+					    nextWinStartX),
+				     "",
+				     1,
+				     _TOPUSERWINCOLS,
+				     _TOPWINSTARTY,
+				     nextWinStartX);
+
+  nextWinStartX = wins.at(_TOPUSERWIN)->getNumCols() +
+    wins.at(_TOPUSERWIN)->getStartX() + 2;
+  wins.at(_TOPLOADAVGWIN)->defineWindow(newwin(1,
+					       _TOPLOADAVGWINCOLS,
+					       _TOPWINSTARTY,
+					       nextWinStartX),
+					"",
+					1,
+					_TOPLOADAVGWINCOLS,
+					_TOPWINSTARTY,
+					nextWinStartX);
+
+  nextWinStartX = wins.at(_TOPLOADAVGWIN)->getNumCols() +
+    wins.at(_TOPLOADAVGWIN)->getStartX() + 1;
+  wins.at(_TOPLOADAVGDATAWIN)->defineWindow(newwin(1,
+						   loadAvgWinCols,
+						   _TOPWINSTARTY,
+						   nextWinStartX),
+					    "",
+					    1,
+					    loadAvgWinCols,
+					    _TOPWINSTARTY,
+					    nextWinStartX);
+} // end of "defineTopWins"
+
+
+
+/*
+  Function:
    defineTopWinsDataStartVals
 
   Description:
@@ -319,6 +522,7 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 */
 void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 {
+  
   wins.at(_TASKSTOTALDATAWIN)->defineWindow(newwin(1,
 						   _TASKSDATAWINCOLS,
 						   _TASKSDATAWINSTARTY,
