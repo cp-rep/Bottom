@@ -4,6 +4,13 @@
 #ifndef _CURSESWINCONSTS_HPP
 #define _CURSESWINCONSTS_HPP
 
+// color pair values
+enum CursesColors {
+  none,
+  _WHITE_TEXT,
+  _BLACK_TEXT
+} ;
+
 // window index constants
 enum _WINS {
   _MAINWIN,
@@ -50,15 +57,53 @@ enum _WINS {
   _HELPWIN // 40
 };
 
-// color pair values
-enum CursesColors {
-  none,
-  _WHITE_TEXT,
-  _BLACK_TEXT
-} ;
-
-// window count constants
-#define _BOTTOMWINTOTAL 12
+// window position constantsconstants
 #define _YOFFSET 6
+
+// window size constants
+#define _PIDWINCOLS 7
+#define _USERWINCOLS 8
+#define _PRWINCOLS 3
+#define _NIWINCOLS 3
+#define _VIRTWINCOLS 7
+#define _RESWINCOLS 6
+#define _SHRWINCOLS 6
+#define _SWINCOLS 1
+#define _PROCCPUWINCOLS 5
+#define _PROCMEMWINCOLS 5
+#define _PROCTIMEWINCOLS 9
+#define _COMMANDWINCOLS 40
+/*
+  _TOPWIN, 
+  _TASKSWIN,
+  _CPUWIN,
+  _MEMWIN,  
+  _TASKSTOTAL,
+  _TASKSRUNNING,
+  _TASKSSLEEPING,
+  _TASKSSTOPPED,
+  _TASKSZOMBIE,
+  _CPUUSWIN,
+  _CPUSYWIN,
+  _CPUNIWIN,
+  _CPUIDWIN,
+  _CPUWAWIN,
+  _CPUHIWIN,
+  _CPUSIWIN,
+  _CPUSTWIN,
+  _MIBTOTALWIN,
+  _MIBFREEWIN,
+  _MIBUSEDWIN,
+  _MIBBUFFCACHEWIN,
+  _MIBSWAPTOTALWIN,
+  _MIBSWAPFREEWIN,
+  _MIBSWAPUSEDWIN,
+  _MIBMEMAVAILWIN,
+  _CPUGRAPHWIN,
+  _MEMGRAPHWIN,
+  _USERINPUTWIN,
+  _HELPWIN // 40
+*/
+
 
 #endif
