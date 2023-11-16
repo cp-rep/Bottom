@@ -111,6 +111,7 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				  startY,
 				  startX);
 
+  /*
   // top Win
   numLines = 1;
   numCols = numCols - 100;
@@ -125,6 +126,7 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				 numCols,
 				 startY,
 				 startX);
+  */
   
   // define PID window
   numCols = _PIDWINCOLS;
@@ -330,6 +332,7 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
   numLines = 1;
   startY = _YOFFSET - 6;
   startX = 0;
+  /*
   wins.at(_TOPWIN)->defineWindow(newwin(numLines,
 					numCols,
 					startY,
@@ -339,7 +342,8 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				 numCols,
 				 startY,
 				 startX);  
-  
+
+
   // define tasks window
   numLines = 1;
   startY = _YOFFSET - 5;
@@ -353,6 +357,7 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				   numCols,
 				   startY,
 				   startX);
+  */
 
   wins.at(_TASKSTOTALDATAWIN)->defineWindow(newwin(1,
 						   _TASKSDATAWINCOLS,
@@ -404,6 +409,7 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					   _TASKSDATASTARTY,
 					   _TASKSZOMBDATASTARTX);
 
+  /*
   // define cpu window
   numLines = 1;
   numCols = wins.at(_MAINWIN)->getNumCols() - 100;
@@ -418,6 +424,7 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				 numCols,
 				 startY,
 				 startX);
+  */
   
   wins.at(_CPUUSDATAWIN)->defineWindow(newwin(1,
 					      _CPUDATAWINCOLS,
@@ -499,6 +506,7 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				       _CPUDATASTARTY,
 				       _CPUSTDATASTARTX);
 
+  /*
   // define mem window
   numLines = 1;
   numCols = wins.at(_MAINWIN)->getNumCols() - 100;
@@ -513,6 +521,7 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				 numCols,
 				 startY,
 				 startX);
+  */
   
   wins.at(_MAINMEMTOTALDATAWIN)->defineWindow(newwin(1,
 						 _MEMDATAWINCOLS,
@@ -668,7 +677,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
   deleted = false;
 
   // handle top windows terminal resizing
-  for(int i = _TOPWIN; i <= _MEMAVAILDATAWIN; i++)
+  for(int i = _TASKSTOTALDATAWIN; i <= _MEMAVAILDATAWIN; i++)
     {
       if(wins.at(i)->getNumCols() + wins.at(i)->getStartX() > numCols)
 	{
@@ -826,10 +835,13 @@ void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins)
 */
 void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
+  /*
   for(int i = _TOPWIN; i <= _MEMWIN; i++)
     {
       werase(wins.at(i)->getWindow());
-    }  
+
+    }
+  */
 } // end of "clearBottomWins"
 
 
@@ -1406,6 +1418,7 @@ void printMemMiBData(const std::unordered_map<int, CursesWindow*>& wins,
 void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
 		  const std::vector<std::string>& allTopLines)
 {
+  /*
   mvwaddstr(wins.at(_TOPWIN)->getWindow(),
 	    0,
 	    0,
@@ -1426,6 +1439,7 @@ void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
 	    1,
 	    0,
 	    allTopLines.at(4).c_str());
+  */
 } // end of "printTopWins"
 
 
