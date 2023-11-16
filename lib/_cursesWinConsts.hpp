@@ -30,6 +30,17 @@ enum _WINS {
   _PROCTIMEWIN,
   _COMMANDWIN,
 
+  // top win
+  _TOPWIN,
+  _TOPCURRTIMEWIN,
+  _TOPUPWIN,
+  _TOPUPDATAWIN,
+  _TOPUPPOSTWIN,
+  _TOPUSERDATAWIN,
+  _TOPUSERWIN,
+  _TOPLOADAVGWIN,
+  _TOPLOADAVGDATAWIN,
+  
   // tasks windows
   _TASKSWIN,
   _TASKSROWNAMEWIN,
@@ -118,6 +129,14 @@ enum _WINS {
 #define _PROCMEMWINCOLS 5
 #define _PROCTIMEWINCOLS 9
 #define _COMMANDWINCOLS 40
+
+// top window consts
+#define _TOPWINSTARTY 0
+#define _TOPWINCOLS 5
+#define _TOPCURRTIMEWINCOLS 8
+#define _TOPUPWINCOLS 2
+#define _TOPUSERWINCOLS 5
+#define _TOPLOADAVGWINCOLS 13
 
 // tasks window consts
 #define _TASKSWINSTARTY 1
