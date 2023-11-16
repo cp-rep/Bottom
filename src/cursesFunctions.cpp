@@ -55,7 +55,8 @@ void resetToWinStartState(std::unordered_map<int, CursesWindow*>& wins)
   wins.clear();
   initializeStartingWindows(wins);
   defineProcWinsStartVals(wins);
-  defineTopWinsStartVals(wins);
+  defineTopWinsStartVals(wins);    
+  defineTopWinsDataStartVals(wins);
   defineGraphWinStartVals(wins);
 } // end of "resetToWinStartState"
 
@@ -305,242 +306,484 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 
 /*
  */
-void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
+
+void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 {
   wins.at(_TASKSTOTALDATAWIN)->defineWindow(newwin(1,
 						   _TASKSDATAWINCOLS,
-						   _TASKSDATASTARTY,
-						   _TASKSTOTALDATASTARTX),
+						   _TASKSDATAWINSTARTY,
+						   _TASKSTOTALDATAWINSTARTX),
 					    "total",
 					    1,
 					    _TASKSDATAWINCOLS,
-					    _TASKSDATASTARTY,
-					    _TASKSTOTALDATASTARTX);
+					    _TASKSDATAWINSTARTY,
+					    _TASKSTOTALDATAWINSTARTX);
 
   wins.at(_TASKSRUNDATAWIN)->defineWindow(newwin(1,
 						 _TASKSDATAWINCOLS,
-						 _TASKSDATASTARTY,
-						 _TASKSRUNDATASTARTX),
+						 _TASKSDATAWINSTARTY,
+						 _TASKSRUNDATAWINSTARTX),
 					  "running",
 					  1,
 					  _TASKSDATAWINCOLS,
-					  _TASKSDATASTARTY,
-					  _TASKSRUNDATASTARTX);
+					  _TASKSDATAWINSTARTY,
+					  _TASKSRUNDATAWINSTARTX);
   
   wins.at(_TASKSSLEEPDATAWIN)->defineWindow(newwin(1,
 						   _TASKSDATAWINCOLS,
-						   _TASKSDATASTARTY,
-						   _TASKSSLEEPDATASTARTX),
+						   _TASKSDATAWINSTARTY,
+						   _TASKSSLEEPDATAWINSTARTX),
 					    "sleeping",
 					    1,
 					    _TASKSDATAWINCOLS,
-					    _TASKSDATASTARTY,
-					    _TASKSSLEEPDATASTARTX);
+					    _TASKSDATAWINSTARTY,
+					    _TASKSSLEEPDATAWINSTARTX);
   
   wins.at(_TASKSSTOPDATAWIN)->defineWindow(newwin(1,
 						  _TASKSDATAWINCOLS,
-						  _TASKSDATASTARTY,
-						  _TASKSSTOPDATASTARTX),
+						  _TASKSDATAWINSTARTY,
+						  _TASKSSTOPDATAWINSTARTX),
 					   "stopped",
 					   1,
 					   _TASKSDATAWINCOLS,
-					   _TASKSDATASTARTY,
-					   _TASKSSTOPDATASTARTX);
+					   _TASKSDATAWINSTARTY,
+					   _TASKSSTOPDATAWINSTARTX);
   
   wins.at(_TASKSZOMBDATAWIN)->defineWindow(newwin(1,
 						  _TASKSDATAWINCOLS,
-						  _TASKSDATASTARTY,
-						  _TASKSZOMBDATASTARTX),
+						  _TASKSDATAWINSTARTY,
+						  _TASKSZOMBDATAWINSTARTX),
 					   "zombie",
 					   1,
 					   _TASKSDATAWINCOLS,
-					   _TASKSDATASTARTY,
-					   _TASKSZOMBDATASTARTX);
+					   _TASKSDATAWINSTARTY,
+					   _TASKSZOMBDATAWINSTARTX);
   
   wins.at(_CPUUSDATAWIN)->defineWindow(newwin(1,
 					      _CPUDATAWINCOLS,
-					      _CPUDATASTARTY,
-					      _CPUUSDATASTARTX),
+					      _CPUDATAWINSTARTY,
+					      _CPUUSDATAWINSTARTX),
 				       "us",
 				       1,
 				       _CPUDATAWINCOLS,
-				       _CPUDATASTARTY,
-				       _CPUUSDATASTARTX);
+				       _CPUDATAWINSTARTY,
+				       _CPUUSDATAWINSTARTX);
   
   wins.at(_CPUSYDATAWIN)->defineWindow(newwin(1,
 					      _CPUDATAWINCOLS,
-					      _CPUDATASTARTY,
-					      _CPUSYDATASTARTX),
+					      _CPUDATAWINSTARTY,
+					      _CPUSYDATAWINSTARTX),
 				       "sy",
 				       1,
 				       _CPUDATAWINCOLS,
-				       _CPUDATASTARTY,
-				       _CPUSYDATASTARTX); 
+				       _CPUDATAWINSTARTY,
+				       _CPUSYDATAWINSTARTX); 
   
   wins.at(_CPUNIDATAWIN)->defineWindow(newwin(1,
 					      _CPUDATAWINCOLS,
-					      _CPUDATASTARTY,
-					      _CPUNIDATASTARTX),
+					      _CPUDATAWINSTARTY,
+					      _CPUNIDATAWINSTARTX),
 				       "ni",
 				       1,
 				       _CPUDATAWINCOLS,
-				       _CPUDATASTARTY,
-				       _CPUNIDATASTARTX);
+				       _CPUDATAWINSTARTY,
+				       _CPUNIDATAWINSTARTX);
   
   wins.at(_CPUIDDATAWIN)->defineWindow(newwin(1,
 					      _CPUDATAWINCOLS,
-					      _CPUDATASTARTY,
-					      _CPUIDDATASTARTX),	      
+					      _CPUDATAWINSTARTY,
+					      _CPUIDDATAWINSTARTX),	      
 				       "id",
 				       1,
 				       _CPUDATAWINCOLS,
-				       _CPUDATASTARTY,
-				       _CPUIDDATASTARTX);
+				       _CPUDATAWINSTARTY,
+				       _CPUIDDATAWINSTARTX);
   
   wins.at(_CPUWADATAWIN)->defineWindow(newwin(1,
 					      _CPUDATAWINCOLS,
-					      _CPUDATASTARTY,
-					      _CPUWADATASTARTX),	      
+					      _CPUDATAWINSTARTY,
+					      _CPUWADATAWINSTARTX),	      
 				       "wa",
 				       1,
 				       _CPUDATAWINCOLS,
-				       _CPUDATASTARTY,
-				       _CPUWADATASTARTX);
+				       _CPUDATAWINSTARTY,
+				       _CPUWADATAWINSTARTX);
   
   wins.at(_CPUHIDATAWIN)->defineWindow(newwin(1,
 					      _CPUDATAWINCOLS,
-					      _CPUDATASTARTY,
-					      _CPUHIDATASTARTX),
+					      _CPUDATAWINSTARTY,
+					      _CPUHIDATAWINSTARTX),
 				       "hi",
 				       1,
 				       _CPUDATAWINCOLS,
-				       _CPUDATASTARTY,
-				       _CPUHIDATASTARTX);
+				       _CPUDATAWINSTARTY,
+				       _CPUHIDATAWINSTARTX);
   
   wins.at(_CPUSIDATAWIN)->defineWindow(newwin(1,
 					      _CPUDATAWINCOLS,
-					      _CPUDATASTARTY,
-					      _CPUSIDATASTARTX),	      
+					      _CPUDATAWINSTARTY,
+					      _CPUSIDATAWINSTARTX),	      
 				       "si",
 				       1,
 				       _CPUDATAWINCOLS,
-				       _CPUDATASTARTY,
-				       _CPUSIDATASTARTX);
+				       _CPUDATAWINSTARTY,
+				       _CPUSIDATAWINSTARTX);
   
   wins.at(_CPUSTDATAWIN)->defineWindow(newwin(1,
 					      _CPUDATAWINCOLS,
-					      _CPUDATASTARTY,
-					      _CPUSTDATASTARTX),
+					      _CPUDATAWINSTARTY,
+					      _CPUSTDATAWINSTARTX),
 				       "St",
 				       1,
 				       _CPUDATAWINCOLS,
-				       _CPUDATASTARTY,
-				       _CPUSTDATASTARTX);
+				       _CPUDATAWINSTARTY,
+				       _CPUSTDATAWINSTARTX);
 
-  wins.at(_MAINMEMTOTALDATAWIN)->defineWindow(newwin(1,
+  wins.at(_MEMTOTALDATAWIN)->defineWindow(newwin(1,
 						 _MEMDATAWINCOLS,
-						 _MAINMEMSTARTY,
-						 _MAINMEMTOTALDATASTARTX),  
+						 _MEMWINSTARTY,
+						 _MEMTOTALDATAWINSTARTX),  
 					  "total",
 					  1,
 					  _MEMDATAWINCOLS,
-					  _MAINMEMSTARTY,
-					  _MAINMEMTOTALDATASTARTX);
+					  _MEMWINSTARTY,
+					  _MEMTOTALDATAWINSTARTX);
   
-  wins.at(_MAINMEMFREEDATAWIN)->defineWindow(newwin(1,
+  wins.at(_MEMFREEDATAWIN)->defineWindow(newwin(1,
 						_MEMDATAWINCOLS,
-						_MAINMEMSTARTY,
-						_MAINMEMFREEDATASTARTX),
+						_MEMWINSTARTY,
+						_MEMFREEDATAWINSTARTX),
 					 "free",
 					 1,
 					 _MEMDATAWINCOLS,
-					 _MAINMEMSTARTY,
-					 _MAINMEMFREEDATASTARTX);
+					 _MEMWINSTARTY,
+					 _MEMFREEDATAWINSTARTX);
   
-  wins.at(_MAINMEMUSEDDATAWIN)->defineWindow(newwin(1,
+  wins.at(_MEMUSEDDATAWIN)->defineWindow(newwin(1,
 						_MEMDATAWINCOLS,
-						_MAINMEMSTARTY,
-						_MAINMEMUSEDDATASTARTX),
+						_MEMWINSTARTY,
+						_MEMUSEDDATAWINSTARTX),
 					 "used",
 					 1,
 					 _MEMDATAWINCOLS,
-					 _MAINMEMSTARTY,
-					 _MAINMEMUSEDDATASTARTX);
+					 _MEMWINSTARTY,
+					 _MEMUSEDDATAWINSTARTX);
   
-  wins.at(_MAINMEMBUFFCACHEDATAWIN)->defineWindow(newwin(1,
+  wins.at(_MEMBUFFCACHEDATAWIN)->defineWindow(newwin(1,
 						     _MEMDATAWINCOLS,
-						     _MAINMEMSTARTY,
-						     _MAINMEMBUFFCACHEDATASTARTX),
+						     _MEMWINSTARTY,
+						     _MEMBUFFCACHEDATAWINSTARTX),
 					      "buff/cache",
 					      1,
 					      _MEMDATAWINCOLS,
-					      _MAINMEMSTARTY,
-					      _MAINMEMBUFFCACHEDATASTARTX);
+					      _MEMWINSTARTY,
+					      _MEMBUFFCACHEDATAWINSTARTX);
 
-  wins.at(_SWAPMEMTOTALDATAWIN)->defineWindow(newwin(1,
+  wins.at(_SWAPTOTALDATAWIN)->defineWindow(newwin(1,
 						     _MEMDATAWINCOLS,
-						     _SWAPMEMSTARTY,
-						     _SWAPMEMTOTALDATASTARTX),  
+						     _SWAPWINSTARTY,
+						     _SWAPTOTALDATAWINSTARTX),  
 					      "total",
 					      1,
 					      _MEMDATAWINCOLS,
-					      _SWAPMEMSTARTY,
-					      _SWAPMEMTOTALDATASTARTX);
+					      _SWAPWINSTARTY,
+					      _SWAPTOTALDATAWINSTARTX);
 
-  wins.at(_SWAPMEMFREEDATAWIN)->defineWindow(newwin(1,
+  wins.at(_SWAPFREEDATAWIN)->defineWindow(newwin(1,
 						    _MEMDATAWINCOLS,
-						    _SWAPMEMSTARTY,
-						    _SWAPMEMFREEDATASTARTX),
+						    _SWAPWINSTARTY,
+						    _SWAPFREEDATAWINSTARTX),
 					     "free",
 					     1,
 					     _MEMDATAWINCOLS,
-					     _SWAPMEMSTARTY,
-					     _SWAPMEMFREEDATASTARTX);
+					     _SWAPWINSTARTY,
+					     _SWAPFREEDATAWINSTARTX);
   
-  wins.at(_SWAPMEMUSEDDATAWIN)->defineWindow(newwin(1,
+  wins.at(_SWAPUSEDDATAWIN)->defineWindow(newwin(1,
 						    _MEMDATAWINCOLS,
-						    _SWAPMEMSTARTY,
-						    _SWAPMEMUSEDDATASTARTX),
+						    _SWAPWINSTARTY,
+						    _SWAPUSEDDATAWINSTARTX),
 					     "used",
 					     1,
 					     _MEMDATAWINCOLS,
-					     _SWAPMEMSTARTY,
-					     _SWAPMEMUSEDDATASTARTX);
+					     _SWAPWINSTARTY,
+					     _SWAPUSEDDATAWINSTARTX);
   wins.at(_MEMAVAILDATAWIN)->defineWindow(newwin(1,
 						 _MEMDATAWINCOLS,
-						 _SWAPMEMSTARTY,
-						 _MEMAVAILDATASTARTX),
+						 _SWAPWINSTARTY,
+						 _MEMAVAILDATAWINSTARTX),
 					  "avail Mem",
 					  1,
 					  _MEMDATAWINCOLS,
-					  _SWAPMEMSTARTY,
-					  _MEMAVAILDATASTARTX);
+					  _SWAPWINSTARTY,
+					  _MEMAVAILDATAWINSTARTX);
+} // end of "defineTopWinsDataStartVals"
+
+
+
+/*
+
+ */
+void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
+{
+  wins.at(_TASKSWIN)->defineWindow(newwin(1,
+					  _TASKSWINCOLS,
+					  _TASKSWINSTARTY,
+					  _TASKSWINSTARTX),
+				   "Tasks:",
+				   1,
+				   _TASKSWINCOLS,
+				   _TASKSWINSTARTY,
+				   _TASKSWINSTARTX);
+  
+  wins.at(_TASKSTOTALWIN)->defineWindow(newwin(1,
+					       _TASKSTOTALWINCOLS,
+					       _TASKSWINSTARTY,
+					       _TASKSTOTALWINSTARTX),
+					"total,",
+					1,
+					_TASKSTOTALWINCOLS,
+					_TASKSWINSTARTY,
+					_TASKSTOTALWINSTARTX);
+
+  wins.at(_TASKSRUNWIN)->defineWindow(newwin(1,
+					     _TASKSRUNWINCOLS,
+					     _TASKSWINSTARTY,
+					     _TASKSRUNWINSTARTX),
+				      "running,",
+				      1,
+				      _TASKSRUNWINCOLS,
+				      _TASKSWINSTARTY,
+				      _TASKSRUNWINSTARTX);
+  
+  wins.at(_TASKSSLEEPWIN)->defineWindow(newwin(1,
+					       _TASKSSLEEPWINCOLS,
+					       _TASKSWINSTARTY,
+					       _TASKSSLEEPWINSTARTX),
+					"sleeping,",
+					1,
+					_TASKSSLEEPWINCOLS,
+					_TASKSWINSTARTY,
+					_TASKSSLEEPWINSTARTX);
+  
+  wins.at(_TASKSSTOPWIN)->defineWindow(newwin(1,
+					      _TASKSSTOPWINCOLS,
+					      _TASKSWINSTARTY,
+					      _TASKSSTOPWINSTARTX),
+				       "stopped,",
+				       1,
+				       _TASKSSTOPWINCOLS,
+				       _TASKSWINSTARTY,
+				       _TASKSSTOPWINSTARTX);
+  
+  wins.at(_TASKSZOMBWIN)->defineWindow(newwin(1,
+					      _TASKSZOMBWINCOLS,
+					      _TASKSWINSTARTY,
+					      _TASKSZOMBWINSTARTX),
+				       "zombie",
+				       1,
+				       _TASKSZOMBWINCOLS,
+				       _TASKSWINSTARTY,
+				       _TASKSZOMBWINSTARTX);
+
+  /*
+  wins.at(_CPUWIN)->defineWindow(newwin(1,
+					_CPUWINCOLS,
+					_CPUWINSTARTY,
+					_CPUWINSTARTX),
+				 "us,",
+				 1,
+				 _CPUWINCOLS,
+				 _CPUWINSTARTY,
+				 _CPUWINSTARTX);
+  
+  wins.at(_CPUUSWIN)->defineWindow(newwin(1,
+					  _CPUUSWINCOLS,
+					  _CPUWINSTARTY,
+					  _CPUUSWINSTARTX),
+				   "us,",
+				   1,
+				   _CPUUSWINCOLS,
+				   _CPUWINSTARTY,
+				   _CPUUSWINSTARTX);
+  
+  wins.at(_CPUSYWIN)->defineWindow(newwin(1,
+					  _CPUSYWINCOLS,
+					  _CPUWINSTARTY,
+					  _CPUSYWINSTARTX),
+				   "sy,",
+				   1,
+				   _CPUSYWINCOLS,
+				   _CPUWINSTARTY,
+				   _CPUSYWINSTARTX); 
+  
+  wins.at(_CPUNIWIN)->defineWindow(newwin(1,
+					  _CPUNIWINCOLS,
+					  _CPUWINSTARTY,
+					  _CPUNIWINSTARTX),
+				   "ni,",
+				   1,
+				   _CPUNIWINCOLS,
+				   _CPUWINSTARTY,
+				   _CPUNIWINSTARTX);
+  
+  wins.at(_CPUIDWIN)->defineWindow(newwin(1,
+					  _CPUIDWINCOLS,
+					  _CPUWINSTARTY,
+					  _CPUIDWINSTARTX),	      
+				   "id,",
+				   1,
+				   _CPUIDWINCOLS,
+				   _CPUWINSTARTY,
+				   _CPUIDWINSTARTX);
+  
+  wins.at(_CPUWAWIN)->defineWindow(newwin(1,
+					  _CPUWAWINCOLS,
+					  _CPUWINSTARTY,
+					  _CPUWAWINSTARTX),	      
+				   "wa,",
+				   1,
+				   _CPUWAWINCOLS,
+				   _CPUWINSTARTY,
+				   _CPUWAWINSTARTX);
+  
+  wins.at(_CPUHIWIN)->defineWindow(newwin(1,
+					  _CPUHIWINCOLS,
+					  _CPUWINSTARTY,
+					  _CPUHIWINSTARTX),
+				   "hi,",
+				   1,
+				   _CPUHIWINCOLS,
+				   _CPUWINSTARTY,
+				   _CPUHIWINSTARTX);
+  
+  wins.at(_CPUSIWIN)->defineWindow(newwin(1,
+					  _CPUSIWINCOLS,
+					  _CPUWINSTARTY,
+					  _CPUSIWINSTARTX),	      
+				   "si,",
+				   1,
+				   _CPUSIWINCOLS,
+				   _CPUWINSTARTY,
+				   _CPUSIWINSTARTX);
+  
+  wins.at(_CPUSTWIN)->defineWindow(newwin(1,
+					  _CPUSTWINCOLS,
+					  _CPUWINSTARTY,
+					  _CPUSTWINSTARTX),
+				   "st",
+				   1,
+				   _CPUSTWINCOLS,
+				   _CPUWINSTARTY,
+				   _CPUSTWINSTARTX);
+
+
+  wins.at(_MEMTOTALWIN)->defineWindow(newwin(1,
+						 _MEMWINCOLS,
+						 _MEMWINSTARTY,
+						 _MEMTOTALWINSTARTX),  
+					  "total,",
+					  1,
+					  _MEMDATAWINCOLS,
+					  _MEMWINSTARTY,
+					  _MEMTOTALWINSTARTX);
+  
+  wins.at(_MEMFREEWIN)->defineWindow(newwin(1,
+						_MEMDATAWINCOLS,
+						_MEMWINSTARTY,
+						_MEMFREEWINSTARTX),
+					 "free,",
+					 1,
+					 _MEMWINCOLS,
+					 _MEMWINSTARTY,
+					 _MEMFREEDATAWINSTARTX);
+  
+  wins.at(_MEMUSEDWIN)->defineWindow(newwin(1,
+						_MEMWINCOLS,
+						_MEMWINSTARTY,
+						_MEMUSEDDATAWINSTARTX),
+					 "used,",
+					 1,
+					 _MEMWINCOLS,
+					 _MEMWINSTARTY,
+					 _MEMUSEDWINSTARTX);
+  
+  wins.at(_MEMBUFFCACHEWIN)->defineWindow(newwin(1,
+						     _MEMWINCOLS,
+						     _MEMWINSTARTY,
+						     _MEMBUFFCACHEDATAWINSTARTX),
+					      "buff/cache",
+					      1,
+					      _MEMDATAWINCOLS,
+					      _MEMWINSTARTY,
+					      _MEMBUFFCACHEWINSTARTX);
+
+  wins.at(_SWAPTOTALWIN)->defineWindow(newwin(1,
+						 _MEMWINCOLS,
+						 _SWAPWINSTARTY,
+						 _SWAPTOTALWINSTARTX),  
+					  "total,",
+					  1,
+					  _MEMWINCOLS,
+					  _SWAPWINSTARTY,
+					  _SWAPTOTALWINSTARTX);
+
+  wins.at(_SWAPFREEWIN)->defineWindow(newwin(1,
+						_MEMWINCOLS,
+						_SWAPWINSTARTY,
+						_SWAPFREEDATAWINSTARTX),
+					 "free,",
+					 1,
+					 _MEMWINCOLS,
+					 _SWAPWINSTARTY,
+					 _SWAPFREEWINSTARTX);
+  
+  wins.at(_SWAPUSEDWIN)->defineWindow(newwin(1,
+						_MEMWINCOLS,
+						_SWAPWINSTARTY,
+						_SWAPUSEDWINSTARTX),
+					 "used,",
+					 1,
+					 _MEMWINCOLS,
+					 _SWAPWINSTARTY,
+					 _SWAPUSEDWINSTARTX);
+  wins.at(_MEMAVAILWIN)->defineWindow(newwin(1,
+					     _MEMWINCOLS,
+					     _SWAPWINSTARTY,
+					     _MEMAVAILWINSTARTX),
+				      "avail Mem",
+				      1,
+				      _MEMWINCOLS,
+				      _SWAPWINSTARTY,
+				      _MEMAVAILWINSTARTX);
+  */
 } // end of "defineTopWinsStartVals"
 
 
 
 /*
  */
+
 void defineGraphWinStartVals(std::unordered_map<int, CursesWindow*>& wins)
 {
   /*  
   // define cpu graph
   numLines = 14;
   numCols = (((wins.at(_MAINWIN)->getNumCols() -
-	       wins.at(_COMMANDWIN)->getNumCols() -
-	       wins.at(_COMMANDWIN)->getStartX())/2) - 2);
+  wins.at(_COMMANDWIN)->getNumCols() -
+  wins.at(_COMMANDWIN)->getStartX())/2) - 2);
   if(numCols %2 != 0)
-    {
-      numCols++;
-    }
+  {
+  numCols++;
+  }
   startY = _YOFFSET + 1;
   startX = wins.at(_MAINWIN)->getNumCols() - numCols;
   wins.at(_CPUGRAPHWIN)->defineWindow(newwin(numLines,
-					     numCols,
-					     startY,
-					     startX),  
-				      "cpuGraph",
-				      numLines,
+  numCols,
+  startY,
+  startX),  
+  "cpuGraph",
+  numLines,
 				      numCols,
 				      startY,
 				      startX);
@@ -973,7 +1216,7 @@ void boldOffCpusWins(std::unordered_map<int, CursesWindow*>& wins,
 void boldOnMemWins(std::unordered_map<int, CursesWindow*>& wins,
 		     int attrs)
 {
-  for(int i = _MAINMEMTOTALDATAWIN; i <= _MEMAVAILDATAWIN; i++)
+  for(int i = _MEMTOTALDATAWIN; i <= _MEMAVAILDATAWIN; i++)
     {
       wattron(wins.at(i)->getWindow(), A_BOLD);
     }
@@ -1001,7 +1244,7 @@ void boldOnMemWins(std::unordered_map<int, CursesWindow*>& wins,
 void boldOffMemWins(std::unordered_map<int, CursesWindow*>& wins,
 		     int attrs)
 {
-  for(int i = _MAINMEMTOTALDATAWIN; i <= _MEMAVAILDATAWIN; i++)
+  for(int i = _MEMTOTALDATAWIN; i <= _MEMAVAILDATAWIN; i++)
     {
       wattroff(wins.at(i)->getWindow(), A_BOLD);
     }
@@ -1263,39 +1506,39 @@ void printMemMiBData(const std::unordered_map<int, CursesWindow*>& wins,
 {
   std::string outString;
   outString = doubleToStr(KiBToMiB(memInfo.getMemTotal()), 1);
-  mvwaddstr(wins.at(_MAINMEMTOTALDATAWIN)->getWindow(),
+  mvwaddstr(wins.at(_MEMTOTALDATAWIN)->getWindow(),
 	    0,
-	    wins.at(_MAINMEMTOTALDATAWIN)->getNumCols() - outString.length(),
+	    wins.at(_MEMTOTALDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
   outString = doubleToStr(KiBToMiB(memInfo.getMemFree()), 1);
-  mvwaddstr(wins.at(_MAINMEMFREEDATAWIN)->getWindow(),
+  mvwaddstr(wins.at(_MEMFREEDATAWIN)->getWindow(),
 	    0,
-	    wins.at(_MAINMEMFREEDATAWIN)->getNumCols() - outString.length(),
+	    wins.at(_MEMFREEDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
   outString = doubleToStr(KiBToMiB(memInfo.getMemUsed()), 1);
-  mvwaddstr(wins.at(_MAINMEMUSEDDATAWIN)->getWindow(),
+  mvwaddstr(wins.at(_MEMUSEDDATAWIN)->getWindow(),
 	    0,
-	    wins.at(_MAINMEMUSEDDATAWIN)->getNumCols() - outString.length(),
+	    wins.at(_MEMUSEDDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
   outString = doubleToStr(KiBToMiB(memInfo.getBuffCache()), 1);
-  mvwaddstr(wins.at(_MAINMEMBUFFCACHEDATAWIN)->getWindow(),
+  mvwaddstr(wins.at(_MEMBUFFCACHEDATAWIN)->getWindow(),
 	    0,
-	    wins.at(_MAINMEMBUFFCACHEDATAWIN)->getNumCols() - outString.length(),
+	    wins.at(_MEMBUFFCACHEDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
   outString = doubleToStr(KiBToMiB(memInfo.getSwapTotal()), 1);
-  mvwaddstr(wins.at(_SWAPMEMTOTALDATAWIN)->getWindow(),
+  mvwaddstr(wins.at(_SWAPTOTALDATAWIN)->getWindow(),
 	    0,
-	    wins.at(_SWAPMEMTOTALDATAWIN)->getNumCols() - outString.length(),
+	    wins.at(_SWAPTOTALDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
   outString = doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1);
-  mvwaddstr(wins.at(_SWAPMEMFREEDATAWIN)->getWindow(),
+  mvwaddstr(wins.at(_SWAPFREEDATAWIN)->getWindow(),
 	    0,
-	    wins.at(_SWAPMEMFREEDATAWIN)->getNumCols() - outString.length(),
+	    wins.at(_SWAPFREEDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
   outString = doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1);
-  mvwaddstr(wins.at(_SWAPMEMUSEDDATAWIN)->getWindow(),
+  mvwaddstr(wins.at(_SWAPUSEDDATAWIN)->getWindow(),
 	    0,
-	    wins.at(_SWAPMEMUSEDDATAWIN)->getNumCols() - outString.length(),
+	    wins.at(_SWAPUSEDDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
   outString = doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1);
   mvwaddstr(wins.at(_MEMAVAILDATAWIN)->getWindow(),
@@ -1953,11 +2196,15 @@ void shiftBottomWinsRight(std::unordered_map<int, CursesWindow*>& wins,
 */
 void drawBoxes(const std::unordered_map<int, CursesWindow*>& wins)
 {
-  char val = 'a';
+  char val = 'A';
 
   std::unordered_map<int, CursesWindow*>::const_iterator it;
   for(it = wins.begin(); it != wins.end(); it++)
     {
+      if(val == '[')
+	{
+	  val = 'A';
+	}
       val++;
       if(it->second->getWindow() != nullptr)
 	{
