@@ -89,12 +89,14 @@ void initializeStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
 
 /*
   Function:
-
+   defineProcWinsStartVals
+   
   Description:
 
   Input:
 
   Output:
+   NONE
 */
 void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 {
@@ -305,15 +307,23 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 
 
 /*
- */
+  Function:
+   defineTopWinsDataStartVals
 
+  Description:
+
+  Input:
+
+  Output:
+   NONE
+*/
 void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 {
   wins.at(_TASKSTOTALDATAWIN)->defineWindow(newwin(1,
 						   _TASKSDATAWINCOLS,
 						   _TASKSDATAWINSTARTY,
 						   _TASKSTOTALDATAWINSTARTX),
-					    "total",
+					    "total,",
 					    1,
 					    _TASKSDATAWINCOLS,
 					    _TASKSDATAWINSTARTY,
@@ -323,7 +333,7 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 						 _TASKSDATAWINCOLS,
 						 _TASKSDATAWINSTARTY,
 						 _TASKSRUNDATAWINSTARTX),
-					  "running",
+					  "running,",
 					  1,
 					  _TASKSDATAWINCOLS,
 					  _TASKSDATAWINSTARTY,
@@ -333,7 +343,7 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 						   _TASKSDATAWINCOLS,
 						   _TASKSDATAWINSTARTY,
 						   _TASKSSLEEPDATAWINSTARTX),
-					    "sleeping",
+					    "sleeping,",
 					    1,
 					    _TASKSDATAWINCOLS,
 					    _TASKSDATAWINSTARTY,
@@ -343,7 +353,7 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 						  _TASKSDATAWINCOLS,
 						  _TASKSDATAWINSTARTY,
 						  _TASKSSTOPDATAWINSTARTX),
-					   "stopped",
+					   "stopped,",
 					   1,
 					   _TASKSDATAWINCOLS,
 					   _TASKSDATAWINSTARTY,
@@ -363,7 +373,7 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					      _CPUDATAWINCOLS,
 					      _CPUDATAWINSTARTY,
 					      _CPUUSDATAWINSTARTX),
-				       "us",
+				       "us,",
 				       1,
 				       _CPUDATAWINCOLS,
 				       _CPUDATAWINSTARTY,
@@ -373,7 +383,7 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					      _CPUDATAWINCOLS,
 					      _CPUDATAWINSTARTY,
 					      _CPUSYDATAWINSTARTX),
-				       "sy",
+				       "sy,",
 				       1,
 				       _CPUDATAWINCOLS,
 				       _CPUDATAWINSTARTY,
@@ -383,7 +393,7 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					      _CPUDATAWINCOLS,
 					      _CPUDATAWINSTARTY,
 					      _CPUNIDATAWINSTARTX),
-				       "ni",
+				       "ni,",
 				       1,
 				       _CPUDATAWINCOLS,
 				       _CPUDATAWINSTARTY,
@@ -393,7 +403,7 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					      _CPUDATAWINCOLS,
 					      _CPUDATAWINSTARTY,
 					      _CPUIDDATAWINSTARTX),	      
-				       "id",
+				       "id,",
 				       1,
 				       _CPUDATAWINCOLS,
 				       _CPUDATAWINSTARTY,
@@ -403,7 +413,7 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					      _CPUDATAWINCOLS,
 					      _CPUDATAWINSTARTY,
 					      _CPUWADATAWINSTARTX),	      
-				       "wa",
+				       "wa,",
 				       1,
 				       _CPUDATAWINCOLS,
 				       _CPUDATAWINSTARTY,
@@ -413,7 +423,7 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					      _CPUDATAWINCOLS,
 					      _CPUDATAWINSTARTY,
 					      _CPUHIDATAWINSTARTX),
-				       "hi",
+				       "hi,",
 				       1,
 				       _CPUDATAWINCOLS,
 				       _CPUDATAWINSTARTY,
@@ -423,7 +433,7 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					      _CPUDATAWINCOLS,
 					      _CPUDATAWINSTARTY,
 					      _CPUSIDATAWINSTARTX),	      
-				       "si",
+				       "si,",
 				       1,
 				       _CPUDATAWINCOLS,
 				       _CPUDATAWINSTARTY,
@@ -433,7 +443,7 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					      _CPUDATAWINCOLS,
 					      _CPUDATAWINSTARTY,
 					      _CPUSTDATAWINSTARTX),
-				       "St",
+				       "st",
 				       1,
 				       _CPUDATAWINCOLS,
 				       _CPUDATAWINSTARTY,
@@ -443,7 +453,7 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 						 _MEMDATAWINCOLS,
 						 _MEMWINSTARTY,
 						 _MEMTOTALDATAWINSTARTX),  
-					  "total",
+					  "total,",
 					  1,
 					  _MEMDATAWINCOLS,
 					  _MEMWINSTARTY,
@@ -453,7 +463,7 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 						_MEMDATAWINCOLS,
 						_MEMWINSTARTY,
 						_MEMFREEDATAWINSTARTX),
-					 "free",
+					 "free,",
 					 1,
 					 _MEMDATAWINCOLS,
 					 _MEMWINSTARTY,
@@ -463,7 +473,7 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 						_MEMDATAWINCOLS,
 						_MEMWINSTARTY,
 						_MEMUSEDDATAWINSTARTX),
-					 "used",
+					 "used,",
 					 1,
 					 _MEMDATAWINCOLS,
 					 _MEMWINSTARTY,
@@ -483,7 +493,7 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 						     _MEMDATAWINCOLS,
 						     _SWAPWINSTARTY,
 						     _SWAPTOTALDATAWINSTARTX),  
-					      "total",
+					      "total,",
 					      1,
 					      _MEMDATAWINCOLS,
 					      _SWAPWINSTARTY,
@@ -493,7 +503,7 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 						    _MEMDATAWINCOLS,
 						    _SWAPWINSTARTY,
 						    _SWAPFREEDATAWINSTARTX),
-					     "free",
+					     "free,",
 					     1,
 					     _MEMDATAWINCOLS,
 					     _SWAPWINSTARTY,
@@ -503,7 +513,7 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 						    _MEMDATAWINCOLS,
 						    _SWAPWINSTARTY,
 						    _SWAPUSEDDATAWINSTARTX),
-					     "used",
+					     "used,",
 					     1,
 					     _MEMDATAWINCOLS,
 					     _SWAPWINSTARTY,
@@ -522,8 +532,16 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 
 
 /*
+  Function:
+   defineTopWinsStartVals
 
- */
+  Description:
+
+  Input:
+
+  Output:
+   NONE
+*/
 void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 {
   wins.at(_TASKSWIN)->defineWindow(newwin(1,
@@ -726,53 +744,73 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					  _MEMBUFFCACHEWINCOLS,
 					  _MEMWINSTARTY,
 					  _MEMBUFFCACHEWINSTARTX);
-  /*
+
+
+  wins.at(_SWAPWIN)->defineWindow(newwin(1,
+					 _SWAPWINCOLS,
+					 _SWAPWINSTARTY,
+					 _SWAPWINSTARTX),  
+				  "total,",
+				  1,
+				  _SWAPWINCOLS,
+				  _SWAPWINSTARTY,
+				  _SWAPWINSTARTX);
+  
+
   wins.at(_SWAPTOTALWIN)->defineWindow(newwin(1,
-						 _MEMWINCOLS,
+						 _SWAPTOTALWINCOLS,
 						 _SWAPWINSTARTY,
 						 _SWAPTOTALWINSTARTX),  
 					  "total,",
 					  1,
-					  _MEMWINCOLS,
+					  _SWAPTOTALWINCOLS,
 					  _SWAPWINSTARTY,
 					  _SWAPTOTALWINSTARTX);
 
   wins.at(_SWAPFREEWIN)->defineWindow(newwin(1,
-						_MEMWINCOLS,
-						_SWAPWINSTARTY,
-						_SWAPFREEDATAWINSTARTX),
-					 "free,",
-					 1,
-					 _MEMWINCOLS,
-					 _SWAPWINSTARTY,
-					 _SWAPFREEWINSTARTX);
-  
+					     _SWAPFREEWINCOLS,
+					     _SWAPWINSTARTY,
+					     _SWAPFREEWINSTARTX),
+				      "free,",
+				      1,
+				      _SWAPFREEWINCOLS,
+				      _SWAPWINSTARTY,
+				      _SWAPFREEWINSTARTX);
+
   wins.at(_SWAPUSEDWIN)->defineWindow(newwin(1,
-						_MEMWINCOLS,
+						_SWAPUSEDWINCOLS,
 						_SWAPWINSTARTY,
 						_SWAPUSEDWINSTARTX),
 					 "used,",
 					 1,
-					 _MEMWINCOLS,
+					 _SWAPUSEDWINCOLS,
 					 _SWAPWINSTARTY,
 					 _SWAPUSEDWINSTARTX);
+
   wins.at(_MEMAVAILWIN)->defineWindow(newwin(1,
-					     _MEMWINCOLS,
+					     _MEMAVAILWINCOLS,
 					     _SWAPWINSTARTY,
 					     _MEMAVAILWINSTARTX),
 				      "avail Mem",
 				      1,
-				      _MEMWINCOLS,
+				      _MEMAVAILWINCOLS,
 				      _SWAPWINSTARTY,
 				      _MEMAVAILWINSTARTX);
-*/
 } // end of "defineTopWinsStartVals"
 
 
 
 /*
- */
+  Function:
+   defineGraphWinStartVals
 
+  Description:
+
+  Input:
+
+  Output:
+   NONE
+*/
 void defineGraphWinStartVals(std::unordered_map<int, CursesWindow*>& wins)
 {
   /*  
@@ -809,7 +847,7 @@ void defineGraphWinStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				      startY,
 				      startX);
   */
-} // end of "defineGraphWinStartVals"
+} // end of "defineGraphWinsStartVals"
 
 
 
