@@ -140,7 +140,9 @@ int main()
   initializeCurses();
 #endif
   initializeStartingWindows(allWins);
-  defineStartingWindows(allWins);
+  defineProcWinsStartVals(allWins);
+  defineTopWinsStartVals(allWins);
+  defineGraphWinStartVals(allWins);
   initializeProgramStates(progStates);
 
   // graph related vars
@@ -253,6 +255,7 @@ int main()
 	    memUsageVals.push(usage);
 	  }
       }
+    
     // extract data from /proc/uptime for very top window
     // "current time, # users, load avg"    
     extractProcUptime(uptime,
@@ -352,6 +355,7 @@ int main()
 				     timeinfo->tm_sec);
 
     // create the top lines for ouput
+    /*
     allTopLines.push_back(createTopLine(timeString,
 					uptime.getHours()/24,
 					uptime.getHours() % 24,
@@ -362,6 +366,7 @@ int main()
     defineCpusLine(allTopLines);
     defineMemMiBLine(allTopLines);
     defineMemSwapLine(allTopLines);
+    */
 
     // ## get user input ##
     int userInput = 0;
@@ -420,9 +425,11 @@ int main()
 		  memUsageVals,
 		  "MAIN MEMORY USAGE %");
       }
-      
+
+    /*
     printTopWins(allWins,
 		 allTopLines);
+    */
     boldOnAllTopWins(allWins,
 		     A_BOLD);
     printTasksData(allWins,
@@ -467,7 +474,6 @@ int main()
 			   stateChanged,
 			   cpuGraphCount,
 			   memGraphCount);
-
 	printProcs(allWins,
 		   procInfoStart,
 		   pidsStart,
@@ -477,14 +483,11 @@ int main()
 		   highlight);
 	colorOnBottomWins(allWins,
 			  _BLACK_TEXT);
-
 	printWindowNames(allWins,
 			 shiftY,
 			 shiftX);
-
 	colorOffBottomWins(allWins,
 			   _BLACK_TEXT);	
-
       }
     else if(stateChanged == false)
       {
@@ -508,7 +511,6 @@ int main()
 			   stateChanged,
 			   cpuGraphCount,
 			   memGraphCount);
-	
 	printProcs(allWins,
 		   procInfoEnd,
 		   outPids,
@@ -516,12 +518,8 @@ int main()
 		   shiftX,
 		   sortState,
 		   highlight);
-
-
 	colorOnBottomWins(allWins,
 			  _BLACK_TEXT);
-
-
 	printWindowNames(allWins,
 			 shiftY,
 			 shiftX);
@@ -549,7 +547,6 @@ int main()
     {
       delete(it->second);
       it->second = nullptr;
-      
     }
   for(std::unordered_map<int, ProcessInfo*>::iterator it
 	= procInfoEnd.begin();
@@ -557,7 +554,6 @@ int main()
     {
       delete(it->second);
       it->second = nullptr;
-      
     }
 
   for(std::unordered_map<int, CursesWindow*>::iterator it
