@@ -131,7 +131,7 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
   // define USER window
   numCols = _USERWINCOLS;
   startY = _YOFFSET;
-  startX = _PIDWINCOLS + 1;
+  startX += _PIDWINCOLS + 1;
   wins.at(_USERWIN)->defineWindow(newwin(numLines,
 					 numCols,
 					 startY,
@@ -145,7 +145,7 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
   // define PR window
   numCols = _PRWINCOLS;
   startY = _YOFFSET;
-  startX = _PIDWINCOLS + _USERWINCOLS + 2;
+  startX += _USERWINCOLS + 1;
   wins.at(_PRWIN)->defineWindow(newwin(numLines,
 				       numCols,
 				       startY,
@@ -173,8 +173,7 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
   // define VIRT window
   numCols = _VIRTWINCOLS;
   startY = _YOFFSET;
-  startX =_PIDWINCOLS + _USERWINCOLS + _PRWINCOLS +
-    _NIWINCOLS + 4;
+  startX += _NIWINCOLS + 1;  
   wins.at(_VIRTWIN)->defineWindow(newwin(numLines,
 					 numCols,
 					 startY,
@@ -188,8 +187,7 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
   // define RES window
   numCols = _RESWINCOLS;
   startY = _YOFFSET;
-  startX =_PIDWINCOLS + _USERWINCOLS + _PRWINCOLS +
-    _NIWINCOLS + _VIRTWINCOLS + 5;  
+  startX += _VIRTWINCOLS + 1;
   wins.at(_RESWIN)->defineWindow(newwin(numLines,
 					numCols,
 					startY,
@@ -203,8 +201,7 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
   // define SHR window
   numCols = _SHRWINCOLS;
   startY = _YOFFSET;
-  startX =_PIDWINCOLS + _USERWINCOLS + _PRWINCOLS +
-    _VIRTWINCOLS + _RESWINCOLS + _NIWINCOLS +6;
+  startX += _RESWINCOLS + 1;
   wins.at(_SHRWIN)->defineWindow(newwin(numLines,
 					numCols,
 					startY,
@@ -218,9 +215,7 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
   // define S window
   numCols = _SWINCOLS;
   startY = _YOFFSET;
-  startX =_PIDWINCOLS + _USERWINCOLS + _PRWINCOLS +
-    _VIRTWINCOLS + _RESWINCOLS + _SHRWINCOLS +
-    _NIWINCOLS + 7;
+  startX += _SHRWINCOLS + 1;
   wins.at(_SWIN)->defineWindow(newwin(numLines,
 				      numCols,
 				      startY,
@@ -234,9 +229,7 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
   // define %CPU window
   numCols = _PROCCPUWINCOLS;
   startY = _YOFFSET;
-  startX =_PIDWINCOLS + _USERWINCOLS + _PRWINCOLS +
-    _VIRTWINCOLS + _RESWINCOLS + _SHRWINCOLS +
-    _SWINCOLS + _NIWINCOLS + 8;  
+  startX += _SWINCOLS + 1;
   wins.at(_PROCCPUWIN)->defineWindow(newwin(numLines,
 					    numCols,
 					    startY,
@@ -250,9 +243,7 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
   // define %MEM window
   numCols = _PROCMEMWINCOLS;
   startY = _YOFFSET;
-  startX =_PIDWINCOLS + _USERWINCOLS + _PRWINCOLS +
-    _VIRTWINCOLS + _RESWINCOLS + _SHRWINCOLS +
-    _SWINCOLS + _PROCCPUWINCOLS + _NIWINCOLS + 9;
+  startX += _PROCCPUWINCOLS  + 1;
   wins.at(_PROCMEMWIN)->defineWindow(newwin(numLines,
 					    numCols,
 					    startY,
@@ -266,10 +257,7 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
   // define TIME+ window
   numCols = _PROCTIMEWINCOLS;
   startY = _YOFFSET;
-  startX =_PIDWINCOLS + _USERWINCOLS + _PRWINCOLS +
-    _VIRTWINCOLS + _RESWINCOLS + _SHRWINCOLS +
-    _SWINCOLS + _PROCCPUWINCOLS + _PROCMEMWINCOLS +
-    _NIWINCOLS + 10;
+  startX += _PROCMEMWINCOLS  + 1;
   wins.at(_PROCTIMEWIN)->defineWindow(newwin(numLines,
 					     numCols,
 					     startY,
@@ -283,10 +271,7 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
   // define COMMAND window
   numCols = _COMMANDWINCOLS;
   startY = _YOFFSET;
-  startX =_PIDWINCOLS + _USERWINCOLS + _PRWINCOLS +
-    _VIRTWINCOLS + _RESWINCOLS + _SHRWINCOLS +
-    _SWINCOLS + _PROCCPUWINCOLS + _PROCMEMWINCOLS +
-    _PROCTIMEWINCOLS + _NIWINCOLS + 11;  
+  startX += _PROCTIMEWINCOLS  + 1;
   std::string commandLine = "COMMAND";
   for(int i = commandLine.length(); i < numCols; i++)
     {
@@ -405,7 +390,6 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
     }
   
   loadAvgWinCols += 4;
-  
   wins.at(_TOPWIN)->defineWindow(newwin(1,
 					_TOPWINCOLS,
 					_TOPWINSTARTY,
@@ -415,14 +399,11 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
 				 _TOPWINCOLS,
 				 _TOPWINSTARTY,
 				 nextWinStartX);
-
   outString = "top -";
   mvwaddstr(wins.at(_TOPWIN)->getWindow(),
 	    0,
 	    0,
 	    outString.c_str());
-
-
   nextWinStartX = wins.at(_TOPWIN)->getNumCols() +
     wins.at(_TOPWIN)->getStartX() + 1;
   wins.at(_TOPCURRTIMEWIN)->defineWindow(newwin(1,
@@ -434,7 +415,6 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
 					 _TOPCURRTIMEWINCOLS,
 					 _TOPWINSTARTY,
 					 nextWinStartX);
-
   outString = HHMMSS;
   mvwaddstr(wins.at(_TOPCURRTIMEWIN)->getWindow(),
 	    0,
@@ -452,18 +432,15 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
 				   _TOPUPWINCOLS,
 				   _TOPWINSTARTY,
 				   nextWinStartX);
-
   outString = "up";
   mvwaddstr(wins.at(_TOPUPWIN)->getWindow(),
 	    0,
 	    0,
 	    outString.c_str());  
-
   nextWinStartX = wins.at(_TOPUPWIN)->getNumCols() +
     wins.at(_TOPUPWIN)->getStartX() + 1;  
   wins.at(_TOPUPDATAWIN)->defineWindow(newwin(1,
 					      uptime.length(),
-					      //uptimeDataCols,
 					      _TOPWINSTARTY,
 					      nextWinStartX),
 				       "",
@@ -471,17 +448,15 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
 				       uptime.length(),
 				       _TOPWINSTARTY,
 				       nextWinStartX);
-
   outString = uptime;
   mvwaddstr(wins.at(_TOPUPDATAWIN)->getWindow(),
 	    0,
 	    0,
 	    outString.c_str());
 
-
   if(postWin == true)
     {
-      nextWinStartX += wins.at(_TOPUPDATAWIN)->getNumCols() +
+      nextWinStartX = wins.at(_TOPUPDATAWIN)->getNumCols() +
 	wins.at(_TOPUPDATAWIN)->getStartX() + 1;        
       wins.at(_TOPUPPOSTWIN)->defineWindow(newwin(1,
 						  uptimePostCols,
@@ -492,14 +467,11 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
 					   uptimePostCols,
 					   _TOPWINSTARTY,
 					   nextWinStartX);
-
       outString = timeType;
       mvwaddstr(wins.at(_TOPUPPOSTWIN)->getWindow(),
 		0,
 		0,
 		outString.c_str());  
-      
-
       nextWinStartX = wins.at(_TOPUPPOSTWIN)->getNumCols() +
 	wins.at(_TOPUPPOSTWIN)->getStartX() + 1;
     }
@@ -513,6 +485,7 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
     {
       userDataCols = 2;
     }
+  
   wins.at(_TOPUSERDATAWIN)->defineWindow(newwin(1,
 						userDataCols,
 						_TOPWINSTARTY,
@@ -527,7 +500,6 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
 	    0,
 	    0,
 	    outString.c_str());  
-
   nextWinStartX = wins.at(_TOPUSERDATAWIN)->getNumCols() +
     wins.at(_TOPUSERDATAWIN)->getStartX() + 1;        
   wins.at(_TOPUSERWIN)->defineWindow(newwin(1,
@@ -545,8 +517,6 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
 	    0,
 	    0,
 	    outString.c_str());  
-  
-
   nextWinStartX = wins.at(_TOPUSERWIN)->getNumCols() +
     wins.at(_TOPUSERWIN)->getStartX() + 2;
   wins.at(_TOPLOADAVGWIN)->defineWindow(newwin(1,
@@ -558,7 +528,6 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
 					_TOPLOADAVGWINCOLS,
 					_TOPWINSTARTY,
 					nextWinStartX);
-
   outString = "load average:";
   mvwaddstr(wins.at(_TOPLOADAVGWIN)->getWindow(),
 	    0,
