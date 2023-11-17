@@ -135,7 +135,6 @@ enum _WINS {
 #define _TOPWINCOLS 5
 #define _TOPCURRTIMEWINCOLS 8
 #define _TOPUPWINCOLS 2
-#define _TOPUSERWINCOLS 5
 #define _TOPLOADAVGWINCOLS 13
 
 // tasks window consts
