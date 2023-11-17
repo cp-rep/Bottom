@@ -82,7 +82,7 @@ void initializeStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
     {
       CursesWindow* newWindow = new CursesWindow();
       wins.insert(std::make_pair(i, newWindow));
-    }  
+    }
 } // end of "initializeStartingWindows"
 
 
@@ -581,7 +581,6 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					    _TASKSDATAWINCOLS,
 					    _TASKSDATAWINSTARTY,
 					    _TASKSTOTALDATAWINSTARTX);
-
   wins.at(_TASKSRUNDATAWIN)->defineWindow(newwin(1,
 						 _TASKSDATAWINCOLS,
 						 _TASKSDATAWINSTARTY,
@@ -591,7 +590,6 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					  _TASKSDATAWINCOLS,
 					  _TASKSDATAWINSTARTY,
 					  _TASKSRUNDATAWINSTARTX);
-  
   wins.at(_TASKSSLEEPDATAWIN)->defineWindow(newwin(1,
 						   _TASKSDATAWINCOLS,
 						   _TASKSDATAWINSTARTY,
@@ -601,7 +599,6 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					    _TASKSDATAWINCOLS,
 					    _TASKSDATAWINSTARTY,
 					    _TASKSSLEEPDATAWINSTARTX);
-  
   wins.at(_TASKSSTOPDATAWIN)->defineWindow(newwin(1,
 						  _TASKSDATAWINCOLS,
 						  _TASKSDATAWINSTARTY,
@@ -611,7 +608,6 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					   _TASKSDATAWINCOLS,
 					   _TASKSDATAWINSTARTY,
 					   _TASKSSTOPDATAWINSTARTX);
-  
   wins.at(_TASKSZOMBDATAWIN)->defineWindow(newwin(1,
 						  _TASKSDATAWINCOLS,
 						  _TASKSDATAWINSTARTY,
@@ -621,7 +617,6 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					   _TASKSDATAWINCOLS,
 					   _TASKSDATAWINSTARTY,
 					   _TASKSZOMBDATAWINSTARTX);
-  
   wins.at(_CPUUSDATAWIN)->defineWindow(newwin(1,
 					      _CPUDATAWINCOLS,
 					      _CPUDATAWINSTARTY,
@@ -631,7 +626,6 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				       _CPUDATAWINCOLS,
 				       _CPUDATAWINSTARTY,
 				       _CPUUSDATAWINSTARTX);
-  
   wins.at(_CPUSYDATAWIN)->defineWindow(newwin(1,
 					      _CPUDATAWINCOLS,
 					      _CPUDATAWINSTARTY,
@@ -641,7 +635,6 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				       _CPUDATAWINCOLS,
 				       _CPUDATAWINSTARTY,
 				       _CPUSYDATAWINSTARTX); 
-  
   wins.at(_CPUNIDATAWIN)->defineWindow(newwin(1,
 					      _CPUDATAWINCOLS,
 					      _CPUDATAWINSTARTY,
@@ -651,7 +644,6 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				       _CPUDATAWINCOLS,
 				       _CPUDATAWINSTARTY,
 				       _CPUNIDATAWINSTARTX);
-  
   wins.at(_CPUIDDATAWIN)->defineWindow(newwin(1,
 					      _CPUDATAWINCOLS,
 					      _CPUDATAWINSTARTY,
@@ -661,7 +653,6 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				       _CPUDATAWINCOLS,
 				       _CPUDATAWINSTARTY,
 				       _CPUIDDATAWINSTARTX);
-  
   wins.at(_CPUWADATAWIN)->defineWindow(newwin(1,
 					      _CPUDATAWINCOLS,
 					      _CPUDATAWINSTARTY,
@@ -671,7 +662,6 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				       _CPUDATAWINCOLS,
 				       _CPUDATAWINSTARTY,
 				       _CPUWADATAWINSTARTX);
-  
   wins.at(_CPUHIDATAWIN)->defineWindow(newwin(1,
 					      _CPUDATAWINCOLS,
 					      _CPUDATAWINSTARTY,
@@ -681,7 +671,6 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				       _CPUDATAWINCOLS,
 				       _CPUDATAWINSTARTY,
 				       _CPUHIDATAWINSTARTX);
-  
   wins.at(_CPUSIDATAWIN)->defineWindow(newwin(1,
 					      _CPUDATAWINCOLS,
 					      _CPUDATAWINSTARTY,
@@ -691,7 +680,6 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				       _CPUDATAWINCOLS,
 				       _CPUDATAWINSTARTY,
 				       _CPUSIDATAWINSTARTX);
-  
   wins.at(_CPUSTDATAWIN)->defineWindow(newwin(1,
 					      _CPUDATAWINCOLS,
 					      _CPUDATAWINSTARTY,
@@ -701,7 +689,6 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				       _CPUDATAWINCOLS,
 				       _CPUDATAWINSTARTY,
 				       _CPUSTDATAWINSTARTX);
-
   wins.at(_MEMTOTALDATAWIN)->defineWindow(newwin(1,
 						 _MEMDATAWINCOLS,
 						 _MEMWINSTARTY,
@@ -711,7 +698,6 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					  _MEMDATAWINCOLS,
 					  _MEMWINSTARTY,
 					  _MEMTOTALDATAWINSTARTX);
-  
   wins.at(_MEMFREEDATAWIN)->defineWindow(newwin(1,
 						_MEMDATAWINCOLS,
 						_MEMWINSTARTY,
@@ -721,7 +707,6 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					 _MEMDATAWINCOLS,
 					 _MEMWINSTARTY,
 					 _MEMFREEDATAWINSTARTX);
-  
   wins.at(_MEMUSEDDATAWIN)->defineWindow(newwin(1,
 						_MEMDATAWINCOLS,
 						_MEMWINSTARTY,
@@ -731,7 +716,6 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					 _MEMDATAWINCOLS,
 					 _MEMWINSTARTY,
 					 _MEMUSEDDATAWINSTARTX);
-  
   wins.at(_MEMBUFFCACHEDATAWIN)->defineWindow(newwin(1,
 						     _MEMDATAWINCOLS,
 						     _MEMWINSTARTY,
@@ -741,7 +725,6 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					      _MEMDATAWINCOLS,
 					      _MEMWINSTARTY,
 					      _MEMBUFFCACHEDATAWINSTARTX);
-
   wins.at(_SWAPTOTALDATAWIN)->defineWindow(newwin(1,
 						     _MEMDATAWINCOLS,
 						     _SWAPWINSTARTY,
@@ -751,7 +734,6 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					      _MEMDATAWINCOLS,
 					      _SWAPWINSTARTY,
 					      _SWAPTOTALDATAWINSTARTX);
-
   wins.at(_SWAPFREEDATAWIN)->defineWindow(newwin(1,
 						    _MEMDATAWINCOLS,
 						    _SWAPWINSTARTY,
@@ -761,7 +743,6 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					     _MEMDATAWINCOLS,
 					     _SWAPWINSTARTY,
 					     _SWAPFREEDATAWINSTARTX);
-  
   wins.at(_SWAPUSEDDATAWIN)->defineWindow(newwin(1,
 						    _MEMDATAWINCOLS,
 						    _SWAPWINSTARTY,
@@ -1124,19 +1105,18 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 			    const int& shiftX,
 			    const int& shiftY)
 {
-  bool deleted;
   int numLines;
   int numCols;
   
   getmaxyx(stdscr, numLines, numCols);
   wins.at(_MAINWIN)->setNumLines(numLines);
   wins.at(_MAINWIN)->setNumCols(numCols);
-  deleted = false;
 
   // handle top windows terminal resizing
-  for(int i = _TASKSTOTALDATAWIN; i <= _MEMAVAILDATAWIN; i++)
+  for(int i = _TOPWIN; i <= _MEMAVAILDATAWIN; i++)
     {
-      if(wins.at(i)->getNumCols() + wins.at(i)->getStartX() > numCols)
+      if(wins.at(i)->getNumCols() + wins.at(i)->getStartX() > numCols ||
+	 wins.at(i)->getStartY() >= numLines)
 	{
 	  wins.at(i)->deleteWindow();
 	  wins.at(i)->setWindow(nullptr);
@@ -1165,35 +1145,40 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	  // delete them
 	  wins.at(i)->deleteWindow();
 	  wins.at(i)->setWindow(nullptr);
-	  deleted = true;
 	}
     }
 
-  // sanity check
-  if(deleted == true)
+  for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
     {
-      for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
+      // check if a window should be allocated
+      if( (wins.at(i)->getWindow() == nullptr) && (shiftX <= i) &&
+	  (numLines > _YOFFSET) )
 	{
-	  // check if a window should be allocated
-	  if( (wins.at(i)->getWindow() == nullptr) && (shiftX <= i) &&
-	      (numLines > _YOFFSET) )
+	  int len = wins.at(i)->getNumCols() + wins.at(i)->getStartX();
+	  if(len <= numCols)
 	    {
-	      int len = wins.at(i)->getNumCols() + wins.at(i)->getStartX();
-	      if(len <= numCols)
-		{
-		  wins.at(i)->defineWindow(newwin(numLines - _YOFFSET,
-						  wins.at(i)->getNumCols(),
-						  wins.at(i)->getStartY(),
-						  wins.at(i)->getStartX()),
-					   wins.at(i)->getWindowName(),
-					   numLines - _YOFFSET,
-					   wins.at(i)->getNumCols(),
-					   wins.at(i)->getStartY(),
-					   wins.at(i)->getStartX());
-		}
+	      wins.at(i)->defineWindow(newwin(numLines - _YOFFSET,
+					      wins.at(i)->getNumCols(),
+					      wins.at(i)->getStartY(),
+					      wins.at(i)->getStartX()),
+				       wins.at(i)->getWindowName(),
+				       numLines - _YOFFSET,
+				       wins.at(i)->getNumCols(),
+				       wins.at(i)->getStartY(),
+				       wins.at(i)->getStartX());
 	    }
 	}
     }
+
+  // print the color line to the main win
+  std::string colorLine = createColorLine(wins.at(_MAINWIN)->getNumCols());
+  printLine(wins,
+	    _YOFFSET,
+	    0,
+	    _BLACK_TEXT,
+	    _MAINWIN,
+	    colorLine);
+  refreshAllWins(wins);  
 } // end of "updateWindowDimensions"
 
 
