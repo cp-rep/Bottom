@@ -1113,7 +1113,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
   wins.at(_MAINWIN)->setNumCols(numCols);
 
   // handle top windows terminal resizing
-  for(int i = _TOPWIN; i <= _MEMAVAILDATAWIN; i++)
+  for(int i = _TASKSWIN; i <= _MEMAVAILDATAWIN; i++)
     {
       if(wins.at(i)->getNumCols() + wins.at(i)->getStartX() > numCols ||
 	 wins.at(i)->getStartY() >= numLines)
