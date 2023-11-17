@@ -1047,24 +1047,27 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 */
 void defineGraphWinStartVals(std::unordered_map<int, CursesWindow*>& wins)
 {
-  /*  
+  int numLines;
+  int numCols;
+  int startY;
+  int startX;
   // define cpu graph
   numLines = 14;
   numCols = (((wins.at(_MAINWIN)->getNumCols() -
-  wins.at(_COMMANDWIN)->getNumCols() -
-  wins.at(_COMMANDWIN)->getStartX())/2) - 2);
+	       wins.at(_COMMANDWIN)->getNumCols() -
+	       wins.at(_COMMANDWIN)->getStartX())/2) - 2);
   if(numCols %2 != 0)
-  {
-  numCols++;
-  }
+    {
+      numCols++;
+    }
   startY = _YOFFSET + 1;
   startX = wins.at(_MAINWIN)->getNumCols() - numCols;
   wins.at(_CPUGRAPHWIN)->defineWindow(newwin(numLines,
-  numCols,
-  startY,
-  startX),  
-  "cpuGraph",
-  numLines,
+					     numCols,
+					     startY,
+					     startX),  
+				      "cpuGraph",
+				      numLines,
 				      numCols,
 				      startY,
 				      startX);
@@ -1080,7 +1083,6 @@ void defineGraphWinStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				      numCols,
 				      startY,
 				      startX);
-  */
 } // end of "defineGraphWinsStartVals"
 
 
@@ -1103,10 +1105,14 @@ void defineGraphWinStartVals(std::unordered_map<int, CursesWindow*>& wins)
 */
 void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 			    const int& shiftX,
-			    const int& shiftY)
+			    const int& shiftY,
+			    bool& cpuGraph,
+			    bool& memGraph)
 {
   int numLines;
   int numCols;
+  int startY;
+  int startX;
   
   getmaxyx(stdscr, numLines, numCols);
   wins.at(_MAINWIN)->setNumLines(numLines);
@@ -1167,6 +1173,69 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 				       wins.at(i)->getStartY(),
 				       wins.at(i)->getStartX());
 	    }
+	}
+    }
+
+  if(cpuGraph == true)
+    {
+      numLines = _GRAPHWINLINES;
+      numCols = (((wins.at(_MAINWIN)->getNumCols() -
+		   wins.at(_COMMANDWIN)->getNumCols() -
+		   wins.at(_COMMANDWIN)->getStartX())/2) - 2);
+      if(numCols %2 != 0)
+	{
+	  numCols--;
+	}
+      startY = _YOFFSET + 1;
+      startX = wins.at(_MAINWIN)->getNumCols() - numCols;
+
+      if((wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
+	 (startX > wins.at(_COMMANDWIN)->getStartX() + wins.at(_COMMANDWIN)->getNumCols()) &&
+	 (startX + numCols  <= wins.at(_MAINWIN)->getNumCols()) &&
+	 (startY + numLines < wins.at(_MAINWIN)->getNumLines()) &&
+	 (wins.at(_CPUGRAPHWIN)->getWindow() == nullptr) &&
+	 numCols > 22)
+	{
+	  wins.at(_CPUGRAPHWIN)->defineWindow(newwin(numLines,
+						     numCols,
+						     startY,
+						     startX),
+					      "_CPUGRAPHWIN",
+					      numLines,
+					      numCols,
+					      startY,
+					      startX);
+	}
+      else if( (wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
+	       (startX > wins.at(_COMMANDWIN)->getStartX() + wins.at(_COMMANDWIN)->getNumCols()) &&
+	       (startX + numCols  <= wins.at(_MAINWIN)->getNumCols()) &&
+	       (startY + numLines < wins.at(_MAINWIN)->getNumLines()) &&
+	       (wins.at(_CPUGRAPHWIN)->getWindow() != nullptr) &&
+	       (numCols > 22) )
+	{
+	  wins.at(_CPUGRAPHWIN)->deleteWindow();
+	  wins.at(_CPUGRAPHWIN)->defineWindow(newwin(numLines,
+						     numCols,
+						     startY,
+						     startX),
+					      "_CPUGRAPHWIN",
+					      numLines,
+					      numCols,
+					      startY,
+					      startX);
+	}
+      else
+	{
+	  wins.at(_CPUGRAPHWIN)->deleteWindow();
+	  wins.at(_CPUGRAPHWIN)->setWindow(nullptr);
+	}
+    }
+  else
+    {
+      if(wins.at(_CPUGRAPHWIN)->getWindow() != nullptr)
+	{
+	  wins.at(_CPUGRAPHWIN)->deleteWindow();
+	  wins.at(_CPUGRAPHWIN)->setWindow(nullptr);
 	}
     }
 
