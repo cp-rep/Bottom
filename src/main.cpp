@@ -389,28 +389,17 @@ int main()
 
 #if _CURSES
     flushinp();
-    
+
     // ensure to not clear the windows if entering certain states    
     if(userInput != _STATEKILL)
       {
 	clearAllWins(allWins);
       }
-    
+
     // check if the window size has changed
     updateWindowDimensions(allWins,
 			   shiftX,
 			   shiftY);
-    
-    // dynamically update the top window details and print them
-    defineTopWins(allWins,
-		  timeString,
-		  uptime.getHours()/24,
-		  uptime.getHours() % 24,
-		  uptime.getMinutes(),
-		  loadAvgStrings,
-		  numUsers);
-    
-    // draw graphs
     if(cpuGraph == true)
       {
 	drawGraph(allWins,
@@ -454,6 +443,13 @@ int main()
 	      _MAINWIN,
 	      colorLine);
 
+    defineTopWins(allWins,
+		  timeString,
+		  uptime.getHours()/24,
+		  uptime.getHours() % 24,
+		  uptime.getMinutes(),
+		  loadAvgStrings,
+		  numUsers);	
     // ## update states and print ##
     if(entered == false)
       {
@@ -490,7 +486,7 @@ int main()
 			 shiftY,
 			 shiftX);
 	colorOffBottomWins(allWins,
-			   _BLACK_TEXT);	
+			   _BLACK_TEXT);
       }
     else if(stateChanged == false)
       {
@@ -514,6 +510,7 @@ int main()
 			   stateChanged,
 			   cpuGraphCount,
 			   memGraphCount);
+	
 	printProcs(allWins,
 		   procInfoEnd,
 		   outPids,
@@ -521,6 +518,7 @@ int main()
 		   shiftX,
 		   sortState,
 		   highlight);
+
 	colorOnBottomWins(allWins,
 			  _BLACK_TEXT);
 	printWindowNames(allWins,
@@ -528,14 +526,13 @@ int main()
 			 shiftX);
 
 	colorOffBottomWins(allWins,
-			   _BLACK_TEXT);	
+			   _BLACK_TEXT);
       }
-
+    
     refreshAllWins(allWins);
     doupdate();
     usleep(15000);
 
-    // delete all the top wins in case the data has changed requiring dynamic output
     for(int i = _TOPWIN; i <= _TOPLOADAVGDATAWIN; i++)
       {
 	if(allWins.at(i)->getWindow() != nullptr)
@@ -543,6 +540,7 @@ int main()
 	    allWins.at(i)->deleteWindow();
 	  }
       }
+
 #endif
 
     if(quit)
