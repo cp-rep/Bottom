@@ -237,6 +237,7 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       */
       break;
     case _STATEMEMGRAPH:
+      /*
       numLines = _GRAPHWINLINES;
       numCols = (((wins.at(_MAINWIN)->getNumCols() -
 		       wins.at(_COMMANDWIN)->getNumCols() -
@@ -335,7 +336,8 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	    {
 	      sortState--;
 	    }
-	}      
+	}
+      */
       break;      
     case _STATESORTRIGHT: // shift sort right 
       if(sortState < _COMMANDWIN)
