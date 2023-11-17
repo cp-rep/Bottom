@@ -31,12 +31,9 @@ I wanted to write a small Linux process management utility that may be easier ex
 The main branch will maintain the stable version of Bottom.  It currently supports Arch Linux and Ubuntu which are the operating systems it has been tested on.  However, most Linux distributions should work just fine.
 
 ## Current Challenges/Known Issues
-There are some issues with the windows when Bottom is opened in a small window, or when resizing is done.  This will be fixed.
-
 The current number of users are not gathered the same as Top.  Top supposedly gathers its data from '/var/run/utmp'.  Unfortunately, this file varies between platforms.  I have considered writing platform specific code to read from it, however, I have recently discovered in testing that Top reports the number of current users differently between Linux distributions. Unless motivated otherwise, Bottom reports the number of users based upon the different users strings reported in the "USER" column.
 
 ## Future Changes/Additions I Would Like to Implement
-- Resizing issues.
 - Network Graph
 - Web-based features.
 - Multithreading
