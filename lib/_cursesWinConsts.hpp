@@ -16,20 +16,6 @@ enum _WINS {
   // stdscr
   _MAINWIN,
 
-  // process windows
-  _PIDWIN,
-  _USERWIN,
-  _PRWIN,
-  _NIWIN,
-  _VIRTWIN,
-  _RESWIN,
-  _SHRWIN,
-  _SWIN,
-  _PROCCPUWIN,
-  _PROCMEMWIN,
-  _PROCTIMEWIN,
-  _COMMANDWIN,
-
   // top win
   _TOPWIN,
   _TOPCURRTIMEWIN,
@@ -43,7 +29,6 @@ enum _WINS {
   
   // tasks windows
   _TASKSWIN,
-  _TASKSROWNAMEWIN,
   _TASKSTOTALWIN,
   _TASKSRUNWIN,
   _TASKSSLEEPWIN,
@@ -103,6 +88,20 @@ enum _WINS {
   _SWAPFREEDATAWIN,
   _SWAPUSEDDATAWIN,
   _MEMAVAILDATAWIN,
+
+  // process windows
+  _PIDWIN,
+  _USERWIN,
+  _PRWIN,
+  _NIWIN,
+  _VIRTWIN,
+  _RESWIN,
+  _SHRWIN,
+  _SWIN,
+  _PROCCPUWIN,
+  _PROCMEMWIN,
+  _PROCTIMEWIN,
+  _COMMANDWIN,
 
   // graphs
   _CPUGRAPHWIN,
