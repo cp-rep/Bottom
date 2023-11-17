@@ -119,7 +119,17 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       stateChanged = true;      
       break;
     case _STATECPUGRAPH: // cpu graph state
-      numLines = 14;
+
+      if(cpuGraph == false)
+	{
+	  cpuGraph = true;
+	}
+      else
+	{
+	  cpuGraph = false;
+	}
+      /*
+      numLines = _GRAPHWINLINES;
       numCols = (((wins.at(_MAINWIN)->getNumCols() -
 		   wins.at(_COMMANDWIN)->getNumCols() -
 		   wins.at(_COMMANDWIN)->getStartX())/2) - 2);
@@ -129,12 +139,18 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	}
       startY = _YOFFSET + 1;
       startX = wins.at(_MAINWIN)->getNumCols() - numCols;
+      //	startX = wins.at(_COMMANDWIN)->getStartX() +
+	  //wins.at(_COMMANDWIN)->getNumCols() + 1;
       
-      if(cpuGraph == false)
+      if(cpuGraph == false &&
+	 (wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
+	 (startX > wins.at(_COMMANDWIN)->getStartX() + wins.at(_COMMANDWIN)->getNumCols()) &&
+	 (startX + numCols  <= wins.at(_MAINWIN)->getNumCols()) &&
+	 (startY + numLines < wins.at(_MAINWIN)->getNumLines()))
       	{
 	  // create window
-	  CursesWindow* graphWindow = new CursesWindow();
-	  wins.insert(std::make_pair(_CPUGRAPHWIN, graphWindow));
+	  //	  CursesWindow* graphWindow = new CursesWindow();
+	  //	  wins.insert(std::make_pair(_CPUGRAPHWIN, graphWindow));
 	  wins.at(_CPUGRAPHWIN)->defineWindow(newwin(numLines,
 						     numCols,
 						     startY,
@@ -144,6 +160,7 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 					      numCols,
 					      startY,
 					      startX);
+
 	  // update mem graph
 	  if(memGraph == true)
 	    {
@@ -152,9 +169,23 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			wins.at(_MEMGRAPHWIN)->getStartX());		
 		  
 	    }
+
 	  cpuGraph = true;
 	  cpuGraphCount = 1;
 	}
+      else
+	{
+	  if(wins.at(_CPUGRAPHWIN)->getWindow() != nullptr)
+	    {
+	      wins.at(_CPUGRAPHWIN)->deleteWindow();
+	      delete(wins.at(_CPUGRAPHWIN));
+	      wins.erase(_CPUGRAPHWIN);
+	      cpuGraphCount = 0;
+	    }
+	  cpuGraph = false;
+
+	}
+
       else
 	{
 	  // resize logic
@@ -203,9 +234,10 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	      cpuGraph = false;
 	    }
 	}
+      */
       break;
     case _STATEMEMGRAPH:
-      numLines = 14;
+      numLines = _GRAPHWINLINES;
       numCols = (((wins.at(_MAINWIN)->getNumCols() -
 		       wins.at(_COMMANDWIN)->getNumCols() -
 		       wins.at(_COMMANDWIN)->getStartX())/2) - 2);
