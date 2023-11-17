@@ -141,7 +141,8 @@ int main()
 #endif
   initializeStartingWindows(allWins);
   defineProcWinsStartVals(allWins);
-  defineTopWinsStartVals(allWins);
+  defineTopWinsStartVals(allWins);  
+  defineTopWinsDataStartVals(allWins);
   defineGraphWinStartVals(allWins);
   initializeProgramStates(progStates);
 
@@ -354,20 +355,6 @@ int main()
 				     timeinfo->tm_min,
 				     timeinfo->tm_sec);
 
-    // create the top lines for ouput
-    /*
-    allTopLines.push_back(createTopLine(timeString,
-					uptime.getHours()/24,
-					uptime.getHours() % 24,
-					uptime.getMinutes(),
-					loadAvgStrings,
-					numUsers));
-    defineTasksLine(allTopLines);
-    defineCpusLine(allTopLines);
-    defineMemMiBLine(allTopLines);
-    defineMemSwapLine(allTopLines);
-    */
-
     // ## get user input ##
     int userInput = 0;
 
@@ -400,15 +387,29 @@ int main()
 	  }
       }
 
-#if _CURSES    
+#if _CURSES
     flushinp();
-
+    
     // ensure to not clear the windows if entering certain states    
     if(userInput != _STATEKILL)
       {
 	clearAllWins(allWins);
       }
-
+    
+    // check if the window size has changed
+    updateWindowDimensions(allWins,
+			   shiftX,
+			   shiftY);
+    
+    // dynamically update the top window details and print them
+    defineTopWins(allWins,
+		  timeString,
+		  uptime.getHours()/24,
+		  uptime.getHours() % 24,
+		  uptime.getMinutes(),
+		  loadAvgStrings,
+		  numUsers);
+    
     // draw graphs
     if(cpuGraph == true)
       {
@@ -426,23 +427,25 @@ int main()
 		  "MAIN MEMORY USAGE %");
       }
 
-    /*
-    printTopWins(allWins,
-		 allTopLines);
-    */
+    // print all other top wins
+    printTasksWins(allWins);
+    printCpuWins(allWins);
+    printMemWins(allWins);
+    printSwapWins(allWins);
+
+    // print top wins data
     boldOnAllTopWins(allWins,
 		     A_BOLD);
-    printTasksData(allWins,
-		   taskInfo);
-    printCpusData(allWins,
-		  cpuUsage);
-    printMemMiBData(allWins,
-		    memInfo);
+    printTasksDataWins(allWins,
+		       taskInfo);
+    printCpuDataWins(allWins,
+		     cpuUsage);
+    printMemDataWins(allWins,
+		     memInfo);
     boldOffAllTopWins(allWins,
 		      A_BOLD);
-    updateWindowDimensions(allWins,
-			   shiftX,
-			   shiftY);
+
+    // print the color line to the main win
     colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
     printLine(allWins,
 	      _YOFFSET,
@@ -527,10 +530,19 @@ int main()
 	colorOffBottomWins(allWins,
 			   _BLACK_TEXT);	
       }
-    
+
     refreshAllWins(allWins);
     doupdate();
     usleep(15000);
+
+    // delete all the top wins in case the data has changed requiring dynamic output
+    for(int i = _TOPWIN; i <= _TOPLOADAVGDATAWIN; i++)
+      {
+	if(allWins.at(i)->getWindow() != nullptr)
+	  {
+	    allWins.at(i)->deleteWindow();
+	  }
+      }
 #endif
 
     if(quit)
