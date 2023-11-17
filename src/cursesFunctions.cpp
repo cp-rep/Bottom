@@ -329,6 +329,10 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
   std::string hours = std::to_string(numHours);
   std::string minutes = std::to_string(numMinutes);
   std::string users = std::to_string(numUsers);
+  std::string outString;
+  std::string timeType;
+  std::string userString;
+  std::string uptime;
   int uptimeDataCols = 0;
   int loadAvgWinCols = 0;
   int userCols = 0;
@@ -341,41 +345,58 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
     {
       if(numHours < 1)
 	{
+	  uptime.append(minutes);
 	  uptimeDataCols = minutes.length();
 	  uptimePostCols = 4;  // 'min,'
+	  timeType = "min,";
 	  postWin = true;
 	}
       else
 	{
 	  if(numHours < 10)
 	    {
+	      uptime.append(" ");
 	      uptimeDataCols += 1;
 	    }
-	  
+	  uptime.append(hours);
+	  uptime.append(":");
+	  if(numMinutes < 10)
+	    {
+	      uptime.append("0");
+	    }
+
+	  uptime.append(minutes);
+	  uptime.append(",");
 	  uptimeDataCols += hours.length();
 	  uptimeDataCols += 4;
 	}
     }
   else if(numDays == 1)
     {
+      uptime.append(days);
       uptimeDataCols = days.length();
       uptimePostCols = 4; // 'day,'
+      timeType = "day,";
       postWin = true;
     }
   else
     {
+      uptime.append(days);
       uptimeDataCols = days.length();
       uptimePostCols = 5; // 'days,'
+      timeType = "days,";
       postWin = true;
     }
 
   if(numUsers == 1)
     {
       userCols = 5;
+      userString = "user,";
     }
   else
     {
       userCols = 6;
+      userString = "users,";
     }
   
   for(int i = 0; i < 3; i++)
@@ -384,7 +405,7 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
     }
   
   loadAvgWinCols += 4;
-
+  
   wins.at(_TOPWIN)->defineWindow(newwin(1,
 					_TOPWINCOLS,
 					_TOPWINSTARTY,
@@ -394,6 +415,12 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
 				 _TOPWINCOLS,
 				 _TOPWINSTARTY,
 				 nextWinStartX);
+
+  outString = "top -";
+  mvwaddstr(wins.at(_TOPWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
 
 
   nextWinStartX = wins.at(_TOPWIN)->getNumCols() +
@@ -408,6 +435,11 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
 					 _TOPWINSTARTY,
 					 nextWinStartX);
 
+  outString = HHMMSS;
+  mvwaddstr(wins.at(_TOPCURRTIMEWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());  
 
   nextWinStartX = wins.at(_TOPCURRTIMEWIN)->getNumCols() +
     wins.at(_TOPCURRTIMEWIN)->getStartX() + 1;
@@ -421,17 +453,31 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
 				   _TOPWINSTARTY,
 				   nextWinStartX);
 
+  outString = "up";
+  mvwaddstr(wins.at(_TOPUPWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());  
+
   nextWinStartX = wins.at(_TOPUPWIN)->getNumCols() +
     wins.at(_TOPUPWIN)->getStartX() + 1;  
   wins.at(_TOPUPDATAWIN)->defineWindow(newwin(1,
-					      uptimeDataCols,
+					      uptime.length(),
+					      //uptimeDataCols,
 					      _TOPWINSTARTY,
 					      nextWinStartX),
 				       "",
 				       1,
-				       uptimeDataCols,
+				       uptime.length(),
 				       _TOPWINSTARTY,
 				       nextWinStartX);
+
+  outString = uptime;
+  mvwaddstr(wins.at(_TOPUPDATAWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+
 
   if(postWin == true)
     {
@@ -446,6 +492,13 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
 					   uptimePostCols,
 					   _TOPWINSTARTY,
 					   nextWinStartX);
+
+      outString = timeType;
+      mvwaddstr(wins.at(_TOPUPPOSTWIN)->getWindow(),
+		0,
+		0,
+		outString.c_str());  
+      
 
       nextWinStartX = wins.at(_TOPUPPOSTWIN)->getNumCols() +
 	wins.at(_TOPUPPOSTWIN)->getStartX() + 1;
@@ -469,18 +522,30 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
 					 userDataCols,
 					 _TOPWINSTARTY,
 					 nextWinStartX);
+  outString = users;
+  mvwaddstr(wins.at(_TOPUSERDATAWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());  
 
   nextWinStartX = wins.at(_TOPUSERDATAWIN)->getNumCols() +
     wins.at(_TOPUSERDATAWIN)->getStartX() + 1;        
   wins.at(_TOPUSERWIN)->defineWindow(newwin(1,
-					    _TOPUSERWINCOLS,
+					    userCols,
 					    _TOPWINSTARTY,
 					    nextWinStartX),
 				     "",
 				     1,
-				     _TOPUSERWINCOLS,
+				     userCols,
 				     _TOPWINSTARTY,
 				     nextWinStartX);
+
+  outString = userString;
+  mvwaddstr(wins.at(_TOPUSERWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());  
+  
 
   nextWinStartX = wins.at(_TOPUSERWIN)->getNumCols() +
     wins.at(_TOPUSERWIN)->getStartX() + 2;
@@ -494,6 +559,12 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
 					_TOPWINSTARTY,
 					nextWinStartX);
 
+  outString = "load average:";
+  mvwaddstr(wins.at(_TOPLOADAVGWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());  
+
   nextWinStartX = wins.at(_TOPLOADAVGWIN)->getNumCols() +
     wins.at(_TOPLOADAVGWIN)->getStartX() + 1;
   wins.at(_TOPLOADAVGDATAWIN)->defineWindow(newwin(1,
@@ -505,6 +576,15 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
 					    loadAvgWinCols,
 					    _TOPWINSTARTY,
 					    nextWinStartX);
+  outString = parsedLoadAvg.at(0);
+  outString.append(", ");
+  outString.append(parsedLoadAvg.at(1));
+  outString.append(", ");
+  outString.append(parsedLoadAvg.at(2));  
+  mvwaddstr(wins.at(_TOPLOADAVGDATAWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());  
 } // end of "defineTopWins"
 
 
