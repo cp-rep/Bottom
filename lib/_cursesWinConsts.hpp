@@ -234,4 +234,7 @@ enum _WINS {
 #define _SWAPUSEDDATAWINSTARTX 40
 #define _MEMAVAILDATAWINSTARTX 55
 
+// graph window consts
+#define _GRAPHWINLINES 14
+
 #endif
