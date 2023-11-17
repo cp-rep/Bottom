@@ -396,19 +396,21 @@ int main()
 	clearAllWins(allWins);
       }
 
-    // check if the window size has changed
     updateWindowDimensions(allWins,
 			   shiftX,
-			   shiftY);
-    if(cpuGraph == true)
+			   shiftY,
+			   cpuGraph,
+			   memGraph);
+
+    if(cpuGraph == true && allWins.at(_CPUGRAPHWIN)->getWindow() != nullptr)
       {
-	drawGraph(allWins,
-		  _CPUGRAPHWIN,
-		  cpuUsageVals,
-		  "CPU UTILIZATION %");
+	    drawGraph(allWins,
+		      _CPUGRAPHWIN,
+		      cpuUsageVals,
+		      "CPU UTILIZATION %");
       }
 
-    if(memGraph == true)
+    if(memGraph == true && allWins.at(_MEMGRAPHWIN)->getWindow() != nullptr)
       {
 	drawGraph(allWins,
 		  _MEMGRAPHWIN,
@@ -510,7 +512,6 @@ int main()
 			   stateChanged,
 			   cpuGraphCount,
 			   memGraphCount);
-	
 	printProcs(allWins,
 		   procInfoEnd,
 		   outPids,
