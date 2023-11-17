@@ -410,6 +410,7 @@ int main()
 		      "CPU UTILIZATION %");
       }
 
+    /*
     if(memGraph == true && allWins.at(_MEMGRAPHWIN)->getWindow() != nullptr)
       {
 	drawGraph(allWins,
@@ -417,6 +418,7 @@ int main()
 		  memUsageVals,
 		  "MAIN MEMORY USAGE %");
       }
+    */
 
     // print all other top wins
     printTasksWins(allWins);
