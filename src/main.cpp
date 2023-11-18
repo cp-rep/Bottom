@@ -394,27 +394,53 @@ int main()
 	clearAllWins(allWins);
       }
 
+    // check for terminal resize and adjust windows accordingly
     updateWindowDimensions(allWins,
 			   shiftX,
 			   shiftY,
 			   cpuGraphCount,
 			   memGraphCount);
-			   
 
+    // check for cpu graph state
     if( (cpuGraphCount > 0) && (allWins.at(_CPUGRAPHWIN)->getWindow() != nullptr) )
       {
+	if(cpuGraphCount == 3)
+	  {
 	    drawGraph(allWins,
 		      _CPUGRAPHWIN,
 		      cpuUsageVals,
-		      "CPU UTILIZATION %");
+		      "CPU UTILIZATION",
+		      _GRAPHSCALETWO);
+	  }
+	else
+	  {
+	    drawGraph(allWins,
+		      _CPUGRAPHWIN,
+		      cpuUsageVals,
+		      "CPU UTILIZATION",
+		      _GRAPHSCALEONE);
+	  }
       }
 
+    // check for mem graph state
     if( (memGraphCount > 0) && (allWins.at(_MEMGRAPHWIN)->getWindow() != nullptr) )
       {
-	drawGraph(allWins,
-		  _MEMGRAPHWIN,
-		  memUsageVals,
-		  "MAIN MEMORY USAGE %");
+	if(memGraphCount == 3)
+	  {
+	    drawGraph(allWins,
+		      _MEMGRAPHWIN,
+		      memUsageVals,
+		      "MAIN MEMORY USAGE",
+		      _GRAPHSCALETWO);
+	  }
+	else
+	  {
+	    drawGraph(allWins,
+		      _MEMGRAPHWIN,
+		      memUsageVals,
+		      "MAIN MEMORY USAGE",
+		      _GRAPHSCALEONE);
+	  }
       }
 
     // print all other top wins
