@@ -82,8 +82,6 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			int& shiftY,
 			int& shiftX,
 			const int shiftDownMax,
-			bool& cpuGraph,
-			bool& memGraph,
 			bool& stateChanged,
 			int& cpuGraphCount,
 			int& memGraphCount)
@@ -120,14 +118,25 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       break;
     case _STATECPUGRAPH: // cpu graph state
 
-      if(cpuGraph == false)
+      //      if(cpuGraph == false)
+      if(cpuGraphCount == 0)
 	{
-	  cpuGraph = true;
+	  cpuGraphCount = 1;
+	}
+
+      else if(cpuGraphCount == 1)
+	{
+	  cpuGraphCount = 2;
+	}
+      else if(cpuGraphCount == 2)
+	{
+	  cpuGraphCount = 3;
 	}
       else
 	{
-	  cpuGraph = false;
+	  cpuGraphCount = 0;
 	}
+
       /*
       numLines = _GRAPHWINLINES;
       numCols = (((wins.at(_MAINWIN)->getNumCols() -
