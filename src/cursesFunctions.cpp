@@ -1176,10 +1176,8 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	}
     }
 
-  if( (cpuGraphCount == 1) ||
-      (cpuGraphCount == 2))
+  if((cpuGraphCount == 1) || (cpuGraphCount == 2))
     {
-
       if(cpuGraphCount == 1)
 	{
 	  // mode one
@@ -1206,12 +1204,13 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	  startX = wins.at(_MAINWIN)->getNumCols() - numCols; 
 	}
       
-      if((wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
-	 (startX > wins.at(_COMMANDWIN)->getStartX() + wins.at(_COMMANDWIN)->getNumCols()) &&
-	 (startX + numCols  <= wins.at(_MAINWIN)->getNumCols()) &&
-	 (startY + numLines < wins.at(_MAINWIN)->getNumLines()) &&
-	 (wins.at(_CPUGRAPHWIN)->getWindow() == nullptr) &&
-	 numCols > 22)
+      if( (wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
+	  (startX > wins.at(_COMMANDWIN)->getStartX() +
+	   wins.at(_COMMANDWIN)->getNumCols()) &&
+	  (startX + numCols  <= wins.at(_MAINWIN)->getNumCols()) &&
+	  (startY + numLines < wins.at(_MAINWIN)->getNumLines()) &&
+	  (wins.at(_CPUGRAPHWIN)->getWindow() == nullptr) &&
+	  (numCols > 22) )
 	{
 	  wins.at(_CPUGRAPHWIN)->defineWindow(newwin(numLines,
 						     numCols,
@@ -1224,11 +1223,69 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 					      startX);
 	}
       else if( (wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
-	       (startX > wins.at(_COMMANDWIN)->getStartX() + wins.at(_COMMANDWIN)->getNumCols()) &&
+	       (startX > wins.at(_COMMANDWIN)->getStartX() +
+		wins.at(_COMMANDWIN)->getNumCols()) &&
 	       (startX + numCols  <= wins.at(_MAINWIN)->getNumCols()) &&
 	       (startY + numLines < wins.at(_MAINWIN)->getNumLines()) &&
 	       (wins.at(_CPUGRAPHWIN)->getWindow() != nullptr) &&
 	       (numCols > 22) )
+	{
+	  wins.at(_CPUGRAPHWIN)->deleteWindow();
+	  wins.at(_CPUGRAPHWIN)->defineWindow(newwin(numLines,
+						     numCols,
+						     startY,
+						     startX),
+					      "_CPUGRAPHWIN",
+					      numLines,
+					      numCols,
+					      startY,
+					      startX);
+	}
+      else
+	{
+	  wins.at(_CPUGRAPHWIN)->deleteWindow();
+	  wins.at(_CPUGRAPHWIN)->setWindow(nullptr);
+	}
+    }
+  else if(cpuGraphCount == 3)
+    {
+      numLines = (wins.at(_MAINWIN)->getNumLines() - _YOFFSET) / 2;
+      if(numLines < 14)
+	{
+	  numLines = 14;
+	}
+      numCols = (wins.at(_MAINWIN)->getNumCols() -
+		 wins.at(_COMMANDWIN)->getNumCols() -
+		 wins.at(_COMMANDWIN)->getStartX() - 1);
+      startY = _YOFFSET + 1;
+      startX = wins.at(_MAINWIN)->getNumCols() - numCols;
+
+      if( (wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
+	  (startX > wins.at(_COMMANDWIN)->getStartX() +
+	   wins.at(_COMMANDWIN)->getNumCols()) &&
+	  (startX + numCols  <= wins.at(_MAINWIN)->getNumCols()) &&
+	  (startY + numLines < wins.at(_MAINWIN)->getNumLines()) &&
+	  (wins.at(_CPUGRAPHWIN)->getWindow() == nullptr) &&
+	  (numCols > 28) )
+	{
+	  wins.at(_CPUGRAPHWIN)->defineWindow(newwin(numLines,
+						     numCols,
+						     startY,
+						     startX),
+					      "_CPUGRAPHWIN",
+					      numLines,
+					      numCols,
+					      startY,
+					      startX);
+	}
+      else if( (wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
+	       (startX > wins.at(_COMMANDWIN)->getStartX() +
+		wins.at(_COMMANDWIN)->getNumCols()) &&
+	       (startX + numCols  <= wins.at(_MAINWIN)->getNumCols()) &&
+	       (startY + numLines < wins.at(_MAINWIN)->getNumLines()) &&
+	       (wins.at(_CPUGRAPHWIN)->getWindow() != nullptr) &&
+	       (numCols > 28) )
+
 	{
 	  wins.at(_CPUGRAPHWIN)->deleteWindow();
 	  wins.at(_CPUGRAPHWIN)->defineWindow(newwin(numLines,
