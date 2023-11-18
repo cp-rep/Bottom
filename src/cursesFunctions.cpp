@@ -1176,32 +1176,36 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	}
     }
 
-  if(cpuGraphCount == 1)
+  if( (cpuGraphCount == 1) ||
+      (cpuGraphCount == 2))
     {
-      numLines = _GRAPHWINLINES;
 
-      // mode one
-      numCols = 32;
-      /*
-      numCols = (((wins.at(_MAINWIN)->getNumCols() -
-		   wins.at(_COMMANDWIN)->getNumCols() -
-		   wins.at(_COMMANDWIN)->getStartX())/2) - 2);
-      */
-      startY = _YOFFSET + 1;
-      startX = wins.at(_MAINWIN)->getNumCols() - numCols;
-
+      if(cpuGraphCount == 1)
+	{
+	  // mode one
+	  numLines = _GRAPHWINLINES;
+	  numCols = 32;
+	  numLines = _GRAPHWINLINES;
+	  startY = _YOFFSET + 1;
+	  startX = wins.at(_MAINWIN)->getNumCols() - numCols;
+	  // alternate mode one col length
+	  /*
+	    numCols = (((wins.at(_MAINWIN)->getNumCols() -
+	    wins.at(_COMMANDWIN)->getNumCols() -
+	    wins.at(_COMMANDWIN)->getStartX())/2) - 2);
+	  */
+	}
+      else
+	{
+	  // mode two
+	  numLines = _GRAPHWINLINES;
+	  numCols = (wins.at(_MAINWIN)->getNumCols() -
+		     wins.at(_COMMANDWIN)->getNumCols() -
+		     wins.at(_COMMANDWIN)->getStartX() - 1);
+	  startY = _YOFFSET + 1;
+	  startX = wins.at(_MAINWIN)->getNumCols() - numCols; 
+	}
       
-      /*
-      // mode 2
-      numCols = (wins.at(_MAINWIN)->getNumCols() -
-		 wins.at(_COMMANDWIN)->getNumCols() -
-		 wins.at(_COMMANDWIN)->getStartX() - 1);
-
-      startY = _YOFFSET + 1;
-      startX = wins.at(_MAINWIN)->getNumCols() - numCols;
-      */
-      
-
       if((wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
 	 (startX > wins.at(_COMMANDWIN)->getStartX() + wins.at(_COMMANDWIN)->getNumCols()) &&
 	 (startX + numCols  <= wins.at(_MAINWIN)->getNumCols()) &&
