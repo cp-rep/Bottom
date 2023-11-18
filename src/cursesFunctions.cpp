@@ -1184,7 +1184,6 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	  // mode one
 	  numLines = _GRAPHWINLINES;
 	  numCols = 32;
-	  numLines = _GRAPHWINLINES;
 	  startY = _YOFFSET + 1;
 	  startX = wins.at(_MAINWIN)->getNumCols() - numCols;
 	}
@@ -1244,7 +1243,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
     }
   else if(cpuGraphCount == 3)
     {
-      numLines = ((wins.at(_MAINWIN)->getNumLines() - _YOFFSET) / 2) - 1;
+      numLines = _GRAPHWINLINES + 10;
       if(numLines < 14)
 	{
 	  numLines = 14;
@@ -1392,8 +1391,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
     }
   else if(memGraphCount == 3)
     {
-      numLines = ((wins.at(_MAINWIN)->getNumLines() - _YOFFSET) / 2) - 1;
-      
+      numLines = _GRAPHWINLINES + 10;      
       if(numLines < 14)
 	{
 	  numLines = 14;
@@ -3182,9 +3180,10 @@ void printBadInputString(const std::unordered_map<int, CursesWindow*>& wins,
   
 */
 void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
-		  const int& winName,
-		  std::queue<double> vals,
-		  std::string graphName)
+	       const int& winName,
+	       std::queue<double> vals,
+	       std::string graphName,
+	       const int& graphScale)
 {
   std::vector<double> valsCopy;  
   int numLines = wins.at(winName)->getNumLines();
@@ -3223,6 +3222,7 @@ void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
     }
 
   wattron(wins.at(winName)->getWindow(), A_BOLD);
+  
   for(int i = outString.size(); i < numCols - 2; i++)
     {
       outString.append(" ");
@@ -3243,19 +3243,29 @@ void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
 	{
 	  // calc bar height
 	  double val = std::floor(valsCopy.at(i) / 10);
+	  int middleVal = valsCopy.at(i);
 	  val = val/10;
 	  int y = val * (numLines - 4);
 
+	  if(graphScale == _GRAPHSCALETWO)
+	    {
+	      if((middleVal % 10) >= 5)
+		{
+		  y++;
+		}
+	    }
+
 	  // get current utilization
 	  int currVal = valsCopy.back();
-	  outString = std::to_string(currVal);
-
+	  
+	  outString = "%";
+	  outString.append(std::to_string(currVal));
 	  wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_WHITE_TEXT));
 	  
 	  // print current value
 	  if(currVal < 10)
 	    {
-	      int outX = numCols - 2;
+	      int outX = numCols - 3;
 	      mvwaddstr(wins.at(winName)->getWindow(),
 			1,
 			outX,
@@ -3263,7 +3273,7 @@ void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
 	    }
 	  else if(currVal > 9 && currVal < 100)
 	    {
-	      int outX = numCols - 3;
+	      int outX = numCols - 4;
 
 	      mvwaddstr(wins.at(winName)->getWindow(),
 			1,
@@ -3272,7 +3282,7 @@ void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
 	    }
 	  else
 	    {
-	      int outX = numCols - 4;
+	      int outX = numCols - 5;
 	      mvwaddstr(wins.at(winName)->getWindow(),
 			1,
 			outX,
