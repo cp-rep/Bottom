@@ -1176,6 +1176,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	}
     }
 
+  // cpu utilization graph resize logic
   if((cpuGraphCount == 1) || (cpuGraphCount == 2))
     {
       if(cpuGraphCount == 1)
@@ -1186,12 +1187,6 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	  numLines = _GRAPHWINLINES;
 	  startY = _YOFFSET + 1;
 	  startX = wins.at(_MAINWIN)->getNumCols() - numCols;
-	  // alternate mode one col length
-	  /*
-	    numCols = (((wins.at(_MAINWIN)->getNumCols() -
-	    wins.at(_COMMANDWIN)->getNumCols() -
-	    wins.at(_COMMANDWIN)->getStartX())/2) - 2);
-	  */
 	}
       else
 	{
@@ -1210,7 +1205,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	  (startX + numCols  <= wins.at(_MAINWIN)->getNumCols()) &&
 	  (startY + numLines < wins.at(_MAINWIN)->getNumLines()) &&
 	  (wins.at(_CPUGRAPHWIN)->getWindow() == nullptr) &&
-	  (numCols > 22) )
+	  (numCols > 31) )
 	{
 	  wins.at(_CPUGRAPHWIN)->defineWindow(newwin(numLines,
 						     numCols,
@@ -1228,7 +1223,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	       (startX + numCols  <= wins.at(_MAINWIN)->getNumCols()) &&
 	       (startY + numLines < wins.at(_MAINWIN)->getNumLines()) &&
 	       (wins.at(_CPUGRAPHWIN)->getWindow() != nullptr) &&
-	       (numCols > 22) )
+	       (numCols > 31) )
 	{
 	  wins.at(_CPUGRAPHWIN)->deleteWindow();
 	  wins.at(_CPUGRAPHWIN)->defineWindow(newwin(numLines,
@@ -1249,7 +1244,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
     }
   else if(cpuGraphCount == 3)
     {
-      numLines = (wins.at(_MAINWIN)->getNumLines() - _YOFFSET) / 2;
+      numLines = ((wins.at(_MAINWIN)->getNumLines() - _YOFFSET) / 2) - 1;
       if(numLines < 14)
 	{
 	  numLines = 14;
@@ -1266,7 +1261,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	  (startX + numCols  <= wins.at(_MAINWIN)->getNumCols()) &&
 	  (startY + numLines < wins.at(_MAINWIN)->getNumLines()) &&
 	  (wins.at(_CPUGRAPHWIN)->getWindow() == nullptr) &&
-	  (numCols > 28) )
+	  (numCols > 31) )
 	{
 	  wins.at(_CPUGRAPHWIN)->defineWindow(newwin(numLines,
 						     numCols,
@@ -1284,7 +1279,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	       (startX + numCols  <= wins.at(_MAINWIN)->getNumCols()) &&
 	       (startY + numLines < wins.at(_MAINWIN)->getNumLines()) &&
 	       (wins.at(_CPUGRAPHWIN)->getWindow() != nullptr) &&
-	       (numCols > 28) )
+	       (numCols > 31) )
 
 	{
 	  wins.at(_CPUGRAPHWIN)->deleteWindow();
@@ -1312,6 +1307,164 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	  wins.at(_CPUGRAPHWIN)->setWindow(nullptr);
 	}
     }
+
+  // main memory usage graph resize logic
+  if((memGraphCount == 1) || (memGraphCount == 2))
+    {
+      if(memGraphCount == 1)
+	{
+	  // mode one
+	  numLines = _GRAPHWINLINES;
+	  numCols = 32;
+	  startX = wins.at(_MAINWIN)->getNumCols() - numCols;
+	  if(wins.at(_CPUGRAPHWIN)->getWindow() != nullptr)
+	    {
+	      startY = wins.at(_CPUGRAPHWIN)->getNumLines() +
+		wins.at(_CPUGRAPHWIN)->getStartY();
+	    }
+	  else
+	    {
+	      startY = _YOFFSET + 1;
+	    }
+	}
+      else
+	{
+	  // mode two
+	  numLines = _GRAPHWINLINES;
+	  numCols = (wins.at(_MAINWIN)->getNumCols() -
+		     wins.at(_COMMANDWIN)->getNumCols() -
+		     wins.at(_COMMANDWIN)->getStartX() - 1);
+	  if(wins.at(_CPUGRAPHWIN)->getWindow() != nullptr)
+	    {
+	      startY = wins.at(_CPUGRAPHWIN)->getNumLines() +
+		wins.at(_CPUGRAPHWIN)->getStartY();
+	    }
+	  else
+	    {
+	      startY = _YOFFSET + 1;
+	    }
+
+	  startX = wins.at(_MAINWIN)->getNumCols() - numCols; 
+	}
+      
+      if( (wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
+	  (startX > wins.at(_COMMANDWIN)->getStartX() +
+	   wins.at(_COMMANDWIN)->getNumCols()) &&
+	  (startX + numCols  <= wins.at(_MAINWIN)->getNumCols()) &&
+	  (startY + numLines < wins.at(_MAINWIN)->getNumLines()) &&
+	  (wins.at(_MEMGRAPHWIN)->getWindow() == nullptr) &&
+	  (numCols > 31) )
+	{
+	  wins.at(_MEMGRAPHWIN)->defineWindow(newwin(numLines,
+						     numCols,
+						     startY,
+						     startX),
+					      "_MEMGRAPHWIN",
+					      numLines,
+					      numCols,
+					      startY,
+					      startX);
+	}
+      else if( (wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
+	       (startX > wins.at(_COMMANDWIN)->getStartX() +
+		wins.at(_COMMANDWIN)->getNumCols()) &&
+	       (startX + numCols  <= wins.at(_MAINWIN)->getNumCols()) &&
+	       (startY + numLines < wins.at(_MAINWIN)->getNumLines()) &&
+	       (wins.at(_MEMGRAPHWIN)->getWindow() != nullptr) &&
+	       (numCols > 31) )
+	{
+	  wins.at(_MEMGRAPHWIN)->deleteWindow();
+	  wins.at(_MEMGRAPHWIN)->defineWindow(newwin(numLines,
+						     numCols,
+						     startY,
+						     startX),
+					      "_MEMGRAPHWIN",
+					      numLines,
+					      numCols,
+					      startY,
+					      startX);
+	}
+      else
+	{
+	  wins.at(_MEMGRAPHWIN)->deleteWindow();
+	  wins.at(_MEMGRAPHWIN)->setWindow(nullptr);
+	}
+    }
+  else if(memGraphCount == 3)
+    {
+      numLines = ((wins.at(_MAINWIN)->getNumLines() - _YOFFSET) / 2) - 1;
+      
+      if(numLines < 14)
+	{
+	  numLines = 14;
+	}
+      
+      numCols = (wins.at(_MAINWIN)->getNumCols() -
+		 wins.at(_COMMANDWIN)->getNumCols() -
+		 wins.at(_COMMANDWIN)->getStartX() - 1);
+      if(wins.at(_CPUGRAPHWIN)->getWindow() != nullptr)
+	{
+	  startY = wins.at(_CPUGRAPHWIN)->getNumLines() +
+	    wins.at(_CPUGRAPHWIN)->getStartY();
+	}
+      else
+	{
+	  startY = _YOFFSET + 1;
+	}      
+      startX = wins.at(_MAINWIN)->getNumCols() - numCols;
+
+      if( (wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
+	  (startX > wins.at(_COMMANDWIN)->getStartX() +
+	   wins.at(_COMMANDWIN)->getNumCols()) &&
+	  (startX + numCols  <= wins.at(_MAINWIN)->getNumCols()) &&
+	  (startY + numLines < wins.at(_MAINWIN)->getNumLines()) &&
+	  (wins.at(_MEMGRAPHWIN)->getWindow() == nullptr) &&
+	  (numCols > 31) )
+	{
+	  wins.at(_MEMGRAPHWIN)->defineWindow(newwin(numLines,
+						     numCols,
+						     startY,
+						     startX),
+					      "_MEMGRAPHWIN",
+					      numLines,
+					      numCols,
+					      startY,
+					      startX);
+	}
+      else if( (wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
+	       (startX > wins.at(_COMMANDWIN)->getStartX() +
+		wins.at(_COMMANDWIN)->getNumCols()) &&
+	       (startX + numCols  <= wins.at(_MAINWIN)->getNumCols()) &&
+	       (startY + numLines < wins.at(_MAINWIN)->getNumLines()) &&
+	       (wins.at(_MEMGRAPHWIN)->getWindow() != nullptr) &&
+	       (numCols > 31) )
+	{
+	  wins.at(_MEMGRAPHWIN)->deleteWindow();
+	  wins.at(_MEMGRAPHWIN)->defineWindow(newwin(numLines,
+						     numCols,
+						     startY,
+						     startX),
+					      "_MEMGRAPHWIN",
+					      numLines,
+					      numCols,
+					      startY,
+					      startX);
+	}
+      else
+	{
+	  wins.at(_MEMGRAPHWIN)->deleteWindow();
+	  wins.at(_MEMGRAPHWIN)->setWindow(nullptr);
+	}
+    }
+  else
+    {
+      if(wins.at(_MEMGRAPHWIN)->getWindow() != nullptr)
+	{
+	  wins.at(_MEMGRAPHWIN)->deleteWindow();
+	  wins.at(_MEMGRAPHWIN)->setWindow(nullptr);
+	}
+    }
+  
 
   // print the color line to the main win
   std::string colorLine = createColorLine(wins.at(_MAINWIN)->getNumCols());
