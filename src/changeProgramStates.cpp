@@ -117,8 +117,6 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       stateChanged = true;      
       break;
     case _STATECPUGRAPH: // cpu graph state
-
-      //      if(cpuGraph == false)
       if(cpuGraphCount == 0)
 	{
 	  cpuGraphCount = 1;
@@ -136,193 +134,24 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	{
 	  cpuGraphCount = 0;
 	}
-
-      /*
-      numLines = _GRAPHWINLINES;
-      numCols = (((wins.at(_MAINWIN)->getNumCols() -
-		   wins.at(_COMMANDWIN)->getNumCols() -
-		   wins.at(_COMMANDWIN)->getStartX())/2) - 2);
-      if(numCols %2 != 0)
-	{
-	  numCols--;
-	}
-      startY = _YOFFSET + 1;
-      startX = wins.at(_MAINWIN)->getNumCols() - numCols;
-      //	startX = wins.at(_COMMANDWIN)->getStartX() +
-	  //wins.at(_COMMANDWIN)->getNumCols() + 1;
-      
-      if(cpuGraph == false &&
-	 (wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
-	 (startX > wins.at(_COMMANDWIN)->getStartX() + wins.at(_COMMANDWIN)->getNumCols()) &&
-	 (startX + numCols  <= wins.at(_MAINWIN)->getNumCols()) &&
-	 (startY + numLines < wins.at(_MAINWIN)->getNumLines()))
-      	{
-	  // create window
-	  //	  CursesWindow* graphWindow = new CursesWindow();
-	  //	  wins.insert(std::make_pair(_CPUGRAPHWIN, graphWindow));
-	  wins.at(_CPUGRAPHWIN)->defineWindow(newwin(numLines,
-						     numCols,
-						     startY,
-						     startX),
-					      "_CPUGRAPHWIN",
-					      numLines,
-					      numCols,
-					      startY,
-					      startX);
-
-	  // update mem graph
-	  if(memGraph == true)
-	    {
-	      mvwin(wins.at(_MEMGRAPHWIN)->getWindow(),
-			startY + numLines,
-			wins.at(_MEMGRAPHWIN)->getStartX());		
-		  
-	    }
-
-	  cpuGraph = true;
-	  cpuGraphCount = 1;
-	}
-      else
-	{
-	  if(wins.at(_CPUGRAPHWIN)->getWindow() != nullptr)
-	    {
-	      wins.at(_CPUGRAPHWIN)->deleteWindow();
-	      delete(wins.at(_CPUGRAPHWIN));
-	      wins.erase(_CPUGRAPHWIN);
-	      cpuGraphCount = 0;
-	    }
-	  cpuGraph = false;
-
-	}
-
-      else
-	{
-	  // resize logic
-	  if(cpuGraphCount == 1)
-	    {
-	      numLines = ((numLines - 4) * 2) + 4;
-	      numCols = ((numCols + 2) * 2) - 2;
-	      startX = wins.at(_MAINWIN)->getNumCols() - numCols;
-	      wins.at(_CPUGRAPHWIN)->setNumLines(numLines);
-	      wins.at(_CPUGRAPHWIN)->setNumCols(numCols);
-	      wins.at(_CPUGRAPHWIN)->setStartX(startX);
-	      wins.at(_CPUGRAPHWIN)->setStartY(startY +
-					       wins.at
-					       (_CPUGRAPHWIN)->getNumLines());
-	      // update mem graph
-	      if(memGraph == true)
-		{
-		  mvwin(wins.at(_MEMGRAPHWIN)->getWindow(),
-			wins.at(_CPUGRAPHWIN)->getNumLines() + _YOFFSET + 1,
-			wins.at(_MEMGRAPHWIN)->getStartX());
-		}
-
-	      wresize(wins.at(_CPUGRAPHWIN)->getWindow(),
-		      numLines,
-		      numCols);
-	      mvwin(wins.at(_CPUGRAPHWIN)->getWindow(),
-		    startY,
-		    startX);
-	      cpuGraphCount = 2;
-	    }
-	  else if(cpuGraphCount == 2)
-	    {
-	      if(memGraph == true)
-		{
-		  mvwin(wins.at(_MEMGRAPHWIN)->getWindow(),
-			_YOFFSET + 1,
-			wins.at(_MEMGRAPHWIN)->getStartX());		
-		  
-		}
-	      
-	      // delete window
-	      wins.at(_CPUGRAPHWIN)->deleteWindow();
-	      delete(wins.at(_CPUGRAPHWIN));
-	      wins.erase(_CPUGRAPHWIN);
-	      cpuGraphCount = 0;
-	      cpuGraph = false;
-	    }
-	}
-      */
       break;
-    case _STATEMEMGRAPH:
-      /*
-      numLines = _GRAPHWINLINES;
-      numCols = (((wins.at(_MAINWIN)->getNumCols() -
-		       wins.at(_COMMANDWIN)->getNumCols() -
-		       wins.at(_COMMANDWIN)->getStartX())/2) - 2);
-      if(numCols %2 != 0)
+    case _STATEMEMGRAPH: // mem graph state
+      if(memGraphCount == 0)
 	{
-	  numCols--;
-	}      
-      startY = _YOFFSET + 1;
-      startX = wins.at(_MAINWIN)->getNumCols() - numCols;
-
-      if(memGraph == false)
-	{
-	  if(cpuGraph == true)
-	    {
-	      startY = wins.at(_CPUGRAPHWIN)->getNumLines() + _YOFFSET + 1;
-	    }
-	  else
-	    {
-	      startY = _YOFFSET + 1;
-	    }
-	  
-	  startX = wins.at(_MAINWIN)->getNumCols() - numCols;
-	  
-	  CursesWindow* graphWindow = new CursesWindow();
-	  wins.insert(std::make_pair(_MEMGRAPHWIN, graphWindow));
-	  wins.at(_MEMGRAPHWIN)->defineWindow(newwin(numLines,
-						     numCols,
-						     startY,
-						     startX),
-					      "_MEMGRAPHWIN",
-					      numLines,
-					      numCols,
-					      startY,
-					      startX);
-	  memGraph = true;
 	  memGraphCount = 1;
 	}
+
+      else if(memGraphCount == 1)
+	{
+	  memGraphCount = 2;
+	}
+      else if(memGraphCount == 2)
+	{
+	  memGraphCount = 3;
+	}
       else
 	{
-	  if(memGraphCount == 1)
-	    {
-	      numLines = ((numLines - 4) * 2) + 4;
-	      numCols = ((numCols + 2) * 2) - 2;
-	      startX = wins.at(_MAINWIN)->getNumCols() - numCols;
-	      if(cpuGraph == true)
-		{
-		  startY = wins.at(_CPUGRAPHWIN)->getNumLines() + _YOFFSET + 1;
-		}
-	      else
-		{
-		  startY = _YOFFSET + 1;
-		}
-
-	      wins.at(_MEMGRAPHWIN)->setNumLines(numLines);
-	      wins.at(_MEMGRAPHWIN)->setNumCols(numCols);
-	      wins.at(_MEMGRAPHWIN)->setStartY(startY);	      
-	      wins.at(_MEMGRAPHWIN)->setStartX(startX);
-	      
- 	      wresize(wins.at(_MEMGRAPHWIN)->getWindow(),
-		      numLines,
-		      numCols);
-	      mvwin(wins.at(_MEMGRAPHWIN)->getWindow(),
-		    startY,
-		    startX);	      
-
-	      memGraphCount = 2;
-	    }
-	  else if (memGraphCount == 2)
-	    {
-	      wins.at(_MEMGRAPHWIN)->deleteWindow();
-	      delete(wins.at(_MEMGRAPHWIN));
-	      wins.erase(_MEMGRAPHWIN);
-	      memGraphCount = 0;
-	      memGraph = false;
-	    }
+	  memGraphCount = 0;
 	}
       break;
     case _STATECSV: // output csv file
@@ -346,7 +175,6 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	      sortState--;
 	    }
 	}
-      */
       break;      
     case _STATESORTRIGHT: // shift sort right 
       if(sortState < _COMMANDWIN)
