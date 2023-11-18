@@ -148,7 +148,7 @@ int main()
   std::queue<double> cpuUsageVals;
   std::queue<double> memUsageVals;
   const int graphMaxCols = allWins.at(_MAINWIN)->getNumCols() -
-    allWins.at(_COMMANDWIN)->getNumCols() - 2;
+    allWins.at(_COMMANDWIN)->getNumCols();
   int cpuGraphCount = 0;
   int memGraphCount = 0;
   
@@ -401,8 +401,7 @@ int main()
 			   memGraphCount);
 			   
 
-    if( (cpuGraphCount > 0) &&
-	(allWins.at(_CPUGRAPHWIN)->getWindow() != nullptr) )
+    if( (cpuGraphCount > 0) && (allWins.at(_CPUGRAPHWIN)->getWindow() != nullptr) )
       {
 	    drawGraph(allWins,
 		      _CPUGRAPHWIN,
@@ -410,15 +409,13 @@ int main()
 		      "CPU UTILIZATION %");
       }
 
-    /*
-    if(memGraph == true && allWins.at(_MEMGRAPHWIN)->getWindow() != nullptr)
+    if( (memGraphCount > 0) && (allWins.at(_MEMGRAPHWIN)->getWindow() != nullptr) )
       {
 	drawGraph(allWins,
 		  _MEMGRAPHWIN,
 		  memUsageVals,
 		  "MAIN MEMORY USAGE %");
       }
-    */
 
     // print all other top wins
     printTasksWins(allWins);
