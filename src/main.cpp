@@ -131,8 +131,6 @@ int main()
   bool quit = false;
   int shiftY = 1;
   int shiftX = _PIDWIN;
-  bool cpuGraph = false;
-  bool memGraph = false;
   std::unordered_map<char, int> progStates;
 
 #if _CURSES    
@@ -148,7 +146,7 @@ int main()
 
   // graph related vars
   std::queue<double> cpuUsageVals;
-  std::queue<double> memUsageVals;  
+  std::queue<double> memUsageVals;
   const int graphMaxCols = allWins.at(_MAINWIN)->getNumCols() -
     allWins.at(_COMMANDWIN)->getNumCols() - 2;
   int cpuGraphCount = 0;
@@ -399,10 +397,12 @@ int main()
     updateWindowDimensions(allWins,
 			   shiftX,
 			   shiftY,
-			   cpuGraph,
-			   memGraph);
+			   cpuGraphCount,
+			   memGraphCount);
+			   
 
-    if(cpuGraph == true && allWins.at(_CPUGRAPHWIN)->getWindow() != nullptr)
+    if( (cpuGraphCount > 0) &&
+	(allWins.at(_CPUGRAPHWIN)->getWindow() != nullptr) )
       {
 	    drawGraph(allWins,
 		      _CPUGRAPHWIN,
@@ -472,8 +472,6 @@ int main()
 			   shiftY,
 			   shiftX,
 			   pidsStart.size() - 2,
-			   cpuGraph,
-			   memGraph,
 			   stateChanged,
 			   cpuGraphCount,
 			   memGraphCount);
@@ -509,8 +507,6 @@ int main()
 			   shiftY,
 			   shiftX,
 			   outPids.size() - 2,
-			   cpuGraph,
-			   memGraph,
 			   stateChanged,
 			   cpuGraphCount,
 			   memGraphCount);
