@@ -116,5 +116,6 @@ void printBadInputString(const std::unordered_map<int, CursesWindow*>& wins,
 void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
 	       const int& winName,
 	       std::queue<double> vals,
-	       std::string graphName);
+	       std::string graphName,
+	       const int& graphScale);	       
 #endif
