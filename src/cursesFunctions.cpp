@@ -1106,8 +1106,8 @@ void defineGraphWinStartVals(std::unordered_map<int, CursesWindow*>& wins)
 void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 			    const int& shiftX,
 			    const int& shiftY,
-			    bool& cpuGraph,
-			    bool& memGraph)
+			    const int& cpuGraphCount,
+			    const int& memGraphCount)
 {
   int numLines;
   int numCols;
@@ -1176,18 +1176,31 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	}
     }
 
-  if(cpuGraph == true)
+  if(cpuGraphCount == 1)
     {
       numLines = _GRAPHWINLINES;
+
+      // mode one
+      numCols = 32;
+      /*
       numCols = (((wins.at(_MAINWIN)->getNumCols() -
 		   wins.at(_COMMANDWIN)->getNumCols() -
 		   wins.at(_COMMANDWIN)->getStartX())/2) - 2);
-      if(numCols %2 != 0)
-	{
-	  numCols--;
-	}
+      */
       startY = _YOFFSET + 1;
       startX = wins.at(_MAINWIN)->getNumCols() - numCols;
+
+      
+      /*
+      // mode 2
+      numCols = (wins.at(_MAINWIN)->getNumCols() -
+		 wins.at(_COMMANDWIN)->getNumCols() -
+		 wins.at(_COMMANDWIN)->getStartX() - 1);
+
+      startY = _YOFFSET + 1;
+      startX = wins.at(_MAINWIN)->getNumCols() - numCols;
+      */
+      
 
       if((wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
 	 (startX > wins.at(_COMMANDWIN)->getStartX() + wins.at(_COMMANDWIN)->getNumCols()) &&
@@ -3061,10 +3074,14 @@ void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
 		       numLines - k - 1,
 		       j - 3,
 		       ' ');
-	      mvwaddch(wins.at(winName)->getWindow(),
-		       numLines - k - 1,
-		       j - 4,
-		       ' ');
+
+	      if((j-4) != 0)
+		{
+		  mvwaddch(wins.at(winName)->getWindow(),
+			   numLines - k - 1,
+			   j - 4,
+			   ' ');
+		}
 	    }
 	  j -= 2;
 	}
