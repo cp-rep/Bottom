@@ -592,6 +592,7 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	  refreshAllWins(wins);
 	  doupdate();
 	}
+      usleep(15000);
     }
   // unnacceptable input prompt
   else
@@ -698,7 +699,6 @@ void helpState(std::unordered_map<int, CursesWindow*>& wins)
 		_WHITE_TEXT,
 		_HELPWIN,
 		outString);  
-  
       // arrow keys
       yOffset += 2;
       xOffset = 0;
@@ -738,7 +738,6 @@ void helpState(std::unordered_map<int, CursesWindow*>& wins)
 		_WHITE_TEXT,
 		_HELPWIN,
 		outString);
-
       // 'x' highlight key
       yOffset += 2;
       xOffset = 0;
@@ -769,7 +768,6 @@ void helpState(std::unordered_map<int, CursesWindow*>& wins)
 		_WHITE_TEXT,
 		_HELPWIN,
 		outString);
-
       // '<' '>' sort state keys
       yOffset += 2;
       xOffset = 0;
@@ -861,7 +859,6 @@ void helpState(std::unordered_map<int, CursesWindow*>& wins)
 		_WHITE_TEXT,
 		_HELPWIN,
 		outString);
-
       // 'c' cpu window
       yOffset += 2;
       xOffset = 0;
@@ -892,7 +889,6 @@ void helpState(std::unordered_map<int, CursesWindow*>& wins)
 		_WHITE_TEXT,
 		_HELPWIN,
 		outString);
-
       // 'm' mem window
       yOffset += 2;
       xOffset = 0;
@@ -928,10 +924,12 @@ void helpState(std::unordered_map<int, CursesWindow*>& wins)
       // get user input
       input = getch();
 
-      if(input == 'q')
+      if(input == 'q' || input == 'h')
 	{
 	  break;
-	}      
+	}
+
+      usleep(15000);
     }
 
   // clean up
