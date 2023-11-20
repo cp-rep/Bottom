@@ -484,7 +484,7 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	}
   
       // we have received user input, enter if it meets criteria to kill a process
-      if(isNumericString(inputString) || inputString.empty())
+      if(isNumericStr(inputString) || inputString.empty())
 	{
 	  int killPid;
 
@@ -496,7 +496,7 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	  // set kill entered PID      
 	  else
 	    {
-	      killPid = stringToInt(inputString);
+	      killPid = strToInt(inputString);
 
 	    }
 
@@ -570,9 +570,9 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		      inputString.pop_back();
 
 		      // check if remaining string is numeric input for kill signal
-		      if(isNumericString(inputString))
+		      if(isNumericStr(inputString))
 			{
-			  unsigned int signal = stringToInt(inputString);
+			  unsigned int signal = strToInt(inputString);
 
 			  // valid signal
 			  if(isValidKillSignal(signal) == true)
