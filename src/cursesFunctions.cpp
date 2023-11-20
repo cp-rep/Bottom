@@ -1463,7 +1463,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	}
     }
   
-
+  
   // print the color line to the main win
   std::string colorLine = createColorLine(wins.at(_MAINWIN)->getNumCols());
   printLine(wins,
@@ -1474,6 +1474,54 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	    colorLine);
   refreshAllWins(wins);  
 } // end of "updateWindowDimensions"
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void updateHelpWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
+{
+  int numLines;
+  int numCols;
+  int startY;
+  int startX;
+  
+  getmaxyx(stdscr, numLines, numCols);
+  wins.at(_MAINWIN)->setNumLines(numLines);
+  wins.at(_MAINWIN)->setNumCols(numCols);
+
+  // handle help window check for terminal resizing
+  if( ((_HELPWINMAXCOLS > numCols) ||
+       (_HELPWINMAXLINES > numLines)) &&
+      (wins.at(_HELPWIN)->getWindow() != nullptr) )
+    {
+      wins.at(_HELPWIN)->deleteWindow();
+      wins.at(_HELPWIN)->setWindow(nullptr);
+    }
+  else if(wins.at(_HELPWIN)->getWindow() == nullptr)
+    {
+      wins.at(_HELPWIN)->defineWindow(newwin(wins.at(_HELPWIN)->getNumLines(),
+					     wins.at(_HELPWIN)->getNumCols(),
+					     0,
+					     0),
+				      "help",
+				      wins.at(_HELPWIN)->getNumLines(),
+				      wins.at(_HELPWIN)->getNumCols(),
+				      0,
+				      0);
+    }
+
+  wnoutrefresh(wins.at(_MAINWIN)->getWindow());
+  wnoutrefresh(wins.at(_HELPWIN)->getWindow());    
+  doupdate();
+} // end of "updateHelpWindowDimensions"
 
 
 

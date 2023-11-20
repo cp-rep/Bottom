@@ -38,6 +38,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 			    const int& shiftY,
 			    const int& cpuGraphCount,
 			    const int& memGraphCount);
+void updateHelpWindowDimensions(std::unordered_map<int, CursesWindow*>& wins);
 void initializeProgramStates(std::unordered_map<char, int>& progStates);
 void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins);
