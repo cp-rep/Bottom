@@ -184,14 +184,12 @@ bool doesDirectoryExist(const std::string& dirPath)
 {
   struct stat file;
 
-  if( (stat(dirPath.c_str(), &file) == 0) && ((file.st_mode & S_IFDIR) == 0) )
-    {
-      return true;
-    }
-  else
+  if( stat(dirPath.c_str(), &file) != 0)
     {
       return false;
     }
+
+  return ((file.st_mode & S_IFDIR) != 0);
 } // end of "doesDirectoryExist"
 
 
