@@ -22,7 +22,7 @@ $(SRCDIR)/$(ODIR)/%.o: $(SRCDIR)/%.cpp $(DEPS)
 	$(CC) -c -o $@ $< -I$(LDIR)
 
 $(BINDIR)/$(BINNAME): $(OBJ)
-	$(CC) -o $@ $^ -l panel -l ncurses -I$(LDIR) $(LIBS)
+	$(CC) -std=c++98 -Wall -Wextra -o $@ $^ -l panel -l ncurses -I$(LDIR) $(LIBS)
 
 .PHONY: clean dirs
 
