@@ -182,19 +182,16 @@ bool makeDirectory(const std::string& dirPath)
 */
 bool doesDirectoryExist(const std::string& dirPath)
 {
-  std::filesystem::path directoryPath(dirPath);
-  bool isDir = false;
-  
-  if(std::filesystem::exists(dirPath) && std::filesystem::is_directory(dirPath))
+  struct stat file;
+
+  if( (stat(dirPath.c_str(), &file) == 0) && ((file.st_mode & S_IFDIR) == 0) )
     {
-      isDir = true;
+      return true;
     }
   else
     {
-      isDir = false;
+      return false;
     }
-
-  return isDir;
 } // end of "doesDirectoryExist"
 
 
@@ -1335,8 +1332,6 @@ const std::string returnFileLineByPhrase(const std::string& filePath,
     {
       return "-1";
     }
-
-     
 } // end of "returnFileLineByPhrase"
 
 
