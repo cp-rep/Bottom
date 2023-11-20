@@ -21,8 +21,8 @@ Bottom uses GTest for its unit testing.  GTest requires the GTest package and us
 - The '<' and '>' keys determine which column to sort by.
 - The 'x' key allows highlighting a particular column.
 - The 'k' key allows the user to "kill" desired processes.
-- The 'c' key resizes and/or removes the cpu utilization window.
-- The 'm' key resizes and/or removes the main memory window.
+- The 'c' key opens, resizes, or closes the cpu utilization window.
+- The 'm' key opens, resizes, or closes the main memory usage window.
 
 ## Why C++?
 I wanted to write a small Linux process management utility that may be easier expanded upon with experimental features. I don't have much interest in actually trying to submit this into any official Linux circles or ecosystems.
