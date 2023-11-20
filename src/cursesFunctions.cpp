@@ -116,6 +116,7 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 
   // define PID window
   numCols = _PIDWINCOLS;
+  numLines = numLines - _YOFFSET;
   startY = _YOFFSET;
   startX = 0;
   wins.at(_PIDWIN)->defineWindow(newwin(numLines,
@@ -1146,14 +1147,13 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
     {
       // if window resize is too few columns or lines for the current windows
       if( (wins.at(i)->getNumCols() + wins.at(i)->getStartX() > numCols) ||
-	  (numLines != wins.at(_COMMANDWIN)->getNumLines() + _YOFFSET) )
+	  (numLines != wins.at(i)->getNumLines() + _YOFFSET) )
 	{
 	  // delete them
 	  wins.at(i)->deleteWindow();
 	  wins.at(i)->setWindow(nullptr);
 	}
     }
-
   for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
     {
       // check if a window should be allocated
@@ -1175,6 +1175,7 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	    }
 	}
     }
+
 
   // cpu utilization graph resize logic
   if((cpuGraphCount == 1) || (cpuGraphCount == 2))
