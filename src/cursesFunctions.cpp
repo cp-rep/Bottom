@@ -394,12 +394,12 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
 					_TOPWINCOLS,
 					_TOPWINSTARTY,
 					nextWinStartX),
-				 "top -",
+				 "bottom",
 				 1,
 				 _TOPWINCOLS,
 				 _TOPWINSTARTY,
 				 nextWinStartX);
-  outString = "top -";
+  outString = "bottom -";
   mvwaddstr(wins.at(_TOPWIN)->getWindow(),
 	    0,
 	    0,
@@ -3257,7 +3257,6 @@ void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
 
 	  // get current utilization
 	  int currVal = valsCopy.back();
-	  
 	  outString = "%";
 	  outString.append(std::to_string(currVal));
 	  wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_WHITE_TEXT));
