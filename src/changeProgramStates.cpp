@@ -210,16 +210,16 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
     case _STATEKEYLEFT:
       if(shiftX > _PIDWIN)
 	{
-	  shiftBottomWinsRight(wins,
-			       shiftX);
+	  shiftProcWinsRight(wins,
+			     shiftX);
 	  shiftX--;
 	}
       break;
     case _STATEKEYRIGHT:
       if(shiftX < _COMMANDWIN)
 	{
-	  shiftBottomWinsLeft(wins,
-			      shiftX);
+	  shiftProcWinsLeft(wins,
+			    shiftX);
 	  shiftX++;
 
 	}
@@ -389,7 +389,7 @@ void updateSortState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
            kill state will not enter.
 
    Case 10: As with "top", any window resizing while the kill state is
-            running will return to the previous state.
+            running will return the program to the previous state.
 */
 void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	       std::unordered_map<int, CursesWindow*>& wins,
@@ -439,13 +439,13 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		_YOFFSET - 1,
 		0,
 		outString.c_str());
-      colorOnBottomWins(wins,
-			_BLACK_TEXT);
+      colorOnProcWins(wins,
+		      _BLACK_TEXT);
       printWindowNames(wins,
 		       shiftY,
 		       shiftX);
-      colorOffBottomWins(wins,
-			 _BLACK_TEXT);
+      colorOffProcWins(wins,
+		       _BLACK_TEXT);
 
       //  loop getting user input
       while(true)
