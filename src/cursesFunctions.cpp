@@ -1081,27 +1081,17 @@ void defineGraphWinStartVals(std::unordered_map<int, CursesWindow*>& wins)
 
 
 
+
 /*
   Function:
-   updateWindowDimensions
 
   Description:
-   Updates the currently allocated process window sizes in the case of
-   a terminal resize that would impact their output or functionality.
 
   Input:
-   wins                 - A reference to an unordered map that will be used to store
-                          each CursesWindow object defined in this function.  The
-                          key is from _cursesWinConsts.hpp and will match the 
-                          corresponding CursesWindow object as value.
+
   Output:
-   NONE
 */
-void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
-			    const int& shiftX,
-			    const int& shiftY,
-			    const int& cpuGraphCount,
-			    const int& memGraphCount)
+void updateTopWinDimensions(std::unordered_map<int, CursesWindow*>& wins)
 {
   int numLines;
   int numCols;
@@ -1133,8 +1123,32 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 				   wins.at(i)->getStartY(),
 				   wins.at(i)->getStartX());
 	}
-    }
+    }  
+} // end of "updateTopWinDimensions"
 
+
+
+/*
+ Function:
+  updateProcWinDimensions
+
+ Description:
+
+ Input:
+
+ Output:
+ 
+*/
+void updateProcWinDimensions(std::unordered_map<int, CursesWindow*>& wins,
+			     const int& shiftX,
+			     const int& shiftY)
+{
+  int numLines;
+  int numCols;
+  
+  getmaxyx(stdscr, numLines, numCols);
+  wins.at(_MAINWIN)->setNumLines(numLines);
+  wins.at(_MAINWIN)->setNumCols(numCols);  
   // handle process windows terminal resizing
   for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
     {
@@ -1171,7 +1185,33 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	    }
 	}
     }
+} // end of "updateProcWinDimensions"
 
+
+
+/*
+  Function:
+   updateGraphWinDimensions
+
+  Description:
+
+  Input:
+
+  Output:
+   NONE
+*/
+void updateGraphWinDimensions(std::unordered_map<int, CursesWindow*>& wins,
+			      const int& cpuGraphCount,
+			      const int& memGraphCount)
+{
+  int numLines;
+  int numCols;
+  int startY;
+  int startX;
+  getmaxyx(stdscr, numLines, numCols);
+  wins.at(_MAINWIN)->setNumLines(numLines);
+  wins.at(_MAINWIN)->setNumCols(numCols);
+  
   // cpu utilization graph resize logic
   if((cpuGraphCount == 1) || (cpuGraphCount == 2))
     {
@@ -1458,7 +1498,48 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	  wins.at(_MEMGRAPHWIN)->setWindow(nullptr);
 	}
     }
+} // end of "updateGraphWinDimensions"
+
+
+
+/*
+  Function:
+   updateWinDimensions
+
+  Description:
+   Updates the currently allocated process window sizes in the case of
+   a terminal resize that would impact their output or functionality.
+
+  Input:
+   wins                 - A reference to an unordered map that will be used to store
+                          each CursesWindow object defined in this function.  The
+                          key is from _cursesWinConsts.hpp and will match the 
+                          corresponding CursesWindow object as value.
+  Output:
+   NONE
+*/
+void updateWinDimensions(std::unordered_map<int, CursesWindow*>& wins,
+			 const int& shiftX,
+			 const int& shiftY,
+			 const int& cpuGraphCount,
+			 const int& memGraphCount)
+{
+  int numLines;
+  int numCols;
+  int startY;
+  int startX;
   
+  getmaxyx(stdscr, numLines, numCols);
+  wins.at(_MAINWIN)->setNumLines(numLines);
+  wins.at(_MAINWIN)->setNumCols(numCols);
+  updateTopWinDimensions(wins);
+  updateProcWinDimensions(wins,
+			  shiftX,
+			  shiftY);
+  updateGraphWinDimensions(wins,
+			   cpuGraphCount,
+			   memGraphCount);
+
   // print the color line to the main win
   std::string colorLine = createColorLine(wins.at(_MAINWIN)->getNumCols());
   printLine(wins,
@@ -1467,8 +1548,8 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	    _BLACK_TEXT,
 	    _MAINWIN,
 	    colorLine);
-  refreshAllWins(wins);  
-} // end of "updateWindowDimensions"
+  refreshAllWins(wins);
+} // end of "updateWinDimensions"
 
 
 

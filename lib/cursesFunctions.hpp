@@ -33,11 +33,18 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins);
 void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins);
 void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins);
 void defineGraphWinStartVals(std::unordered_map<int, CursesWindow*>& wins);
-void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
-			    const int& shiftX,
-			    const int& shiftY,
-			    const int& cpuGraphCount,
-			    const int& memGraphCount);
+void updateTopWinDimensions(std::unordered_map<int, CursesWindow*>& wins);
+void updateProcWinDimensions(std::unordered_map<int, CursesWindow*>& wins,
+			     const int& shiftX,
+			     const int& shiftY);
+void updateGraphWinDimensions(std::unordered_map<int, CursesWindow*>& wins,
+			      const int& cpuGraphCount,
+			      const int& memGraphCount);
+void updateWinDimensions(std::unordered_map<int, CursesWindow*>& wins,
+			 const int& shiftX,
+			 const int& shiftY,
+			 const int& cpuGraphCount,
+			 const int& memGraphCount);
 void updateHelpWindowDimensions(std::unordered_map<int, CursesWindow*>& wins);
 void initializeProgramStates(std::unordered_map<char, int>& progStates);
 void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins);
