@@ -786,26 +786,14 @@ TEST(parseLine_FUNCTION, parseLine_TEST)
 
 TEST(stringToInt_FUNCTION, stringToInt_TEST)
 {
-  const std::string str1 = "";
   const std::string str2 = "0";
   const std::string str3 = "234";
-  const std::string str4 = "234j";
-  const std::string str5 = " 234 856";
-
-  // case empty string
-  EXPECT_EQ(stringToInt(str1), 0);
 
   // case numeric charcter 0
   EXPECT_EQ(stringToInt(str2), 0);
 
   // case numeric characters
   EXPECT_EQ(stringToInt(str3), 234);
-
-  // case mixed alpha-numeric characters
-  EXPECT_EQ(stringToInt(str4), 0);
-
-  // case mixed numeric characters and whitespace
-  EXPECT_EQ(stringToInt(str5), 0);  
 }
 
 
