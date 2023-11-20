@@ -159,7 +159,7 @@ int main()
   std::string filePath;
   std::string timeString;
   std::vector<int> outPids;
-  int interval = 3000000;
+  int interval = 1000000;
   bool newInterval = true;
   bool entered = false;
   bool stateChanged = false;
@@ -460,16 +460,16 @@ int main()
     printMemWins(wins);
     printSwapWins(wins);
     // print top wins data
-    boldOnAllTopWins(wins,
-		     A_BOLD);
+    boldOnAllTopDataWins(wins,
+			 A_BOLD);
     printTasksDataWins(wins,
 		       taskInfo);
     printCpuDataWins(wins,
 		     cpuUsage);
     printMemDataWins(wins,
 		     memInfo);
-    boldOffAllTopWins(wins,
-		      A_BOLD);
+    boldOffAllTopDataWins(wins,
+			  A_BOLD);
     // print the color line to the main win
     colorLine = createColorLine(wins.at(_MAINWIN)->getNumCols());
     printLine(wins,
@@ -514,13 +514,13 @@ int main()
 		   shiftX,
 		   sortState,
 		   highlight);
-	colorOnBottomWins(wins,
-			  _BLACK_TEXT);
+	colorOnProcWins(wins,
+			_BLACK_TEXT);
 	printWindowNames(wins,
 			 shiftY,
 			 shiftX);
-	colorOffBottomWins(wins,
-			   _BLACK_TEXT);
+	colorOffProcWins(wins,
+			 _BLACK_TEXT);
       }
     else if(stateChanged == false)
       {
@@ -549,13 +549,13 @@ int main()
 		   shiftX,
 		   sortState,
 		   highlight);
-	colorOnBottomWins(wins,
-			  _BLACK_TEXT);
+	colorOnProcWins(wins,
+			_BLACK_TEXT);
 	printWindowNames(wins,
 			 shiftY,
 			 shiftX);
-	colorOffBottomWins(wins,
-			   _BLACK_TEXT);
+	colorOffProcWins(wins,
+			 _BLACK_TEXT);
       }
     
     refreshAllWins(wins);
