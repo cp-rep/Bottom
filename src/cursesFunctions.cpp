@@ -322,10 +322,10 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
 		   const std::vector<std::string> parsedLoadAvg,
 		   const int& numUsers)
 {
-  std::string days = std::to_string(numDays);
-  std::string hours = std::to_string(numHours);
-  std::string minutes = std::to_string(numMinutes);
-  std::string users = std::to_string(numUsers);
+  std::string days = intToStr(numDays);
+  std::string hours = intToStr(numHours);
+  std::string minutes = intToStr(numMinutes);
+  std::string users = intToStr(numUsers);  
   std::string outString;
   std::string timeType;
   std::string userString;
@@ -2156,36 +2156,33 @@ void printTasksDataWins(const std::unordered_map<int, CursesWindow*>& wins,
 {
   std::string outString;
 
-  outString = std::to_string(taskInfo.getTotal());
+  outString = uIntToStr(taskInfo.getTotal());  
   mvwaddstr(wins.at(_TASKSTOTALDATAWIN)->getWindow(),
 	    0,
 	    wins.at(_TASKSTOTALDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-
-  outString = std::to_string(taskInfo.getRunning());
+  outString = uIntToStr(taskInfo.getRunning());  
   mvwaddstr(wins.at(_TASKSRUNDATAWIN)->getWindow(),
 	    0,
 	    wins.at(_TASKSRUNDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-
-  outString = std::to_string(taskInfo.getSleeping());
+  outString = uIntToStr(taskInfo.getSleeping());  
   mvwaddstr(wins.at(_TASKSSLEEPDATAWIN)->getWindow(),
 	    0,
 	    wins.at(_TASKSSLEEPDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-
-  outString = std::to_string(taskInfo.getStopped());
+  outString = uIntToStr(taskInfo.getStopped());  
   mvwaddstr(wins.at(_TASKSSTOPDATAWIN)->getWindow(),
 	    0,
 	    wins.at(_TASKSSTOPDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-
-  outString = std::to_string(taskInfo.getZombie());
+  outString = uIntToStr(taskInfo.getZombie());  
   mvwaddstr(wins.at(_TASKSZOMBDATAWIN)->getWindow(),
 	    0,
 	    wins.at(_TASKSZOMBDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
 } // end of "printTasksDataWins"
+
 
 
 
@@ -2289,50 +2286,41 @@ void printCpuDataWins(const std::unordered_map<int, CursesWindow*>& wins,
 {
   std::string outString;
 
-  
-  outString = doubleToStr(cpuUsage.us, 1);
+  outString = doubleToStr(cpuUsage.us, 1);  
   mvwaddstr(wins.at(_CPUUSDATAWIN)->getWindow(),
 	    0,
 	    wins.at(_CPUUSDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-  
   outString = doubleToStr(cpuUsage.sy, 1);  
   mvwaddstr(wins.at(_CPUSYDATAWIN)->getWindow(),
 	    0,
 	    wins.at(_CPUSYDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-
   outString = doubleToStr(cpuUsage.ni, 1);
   mvwaddstr(wins.at(_CPUNIDATAWIN)->getWindow(),
 	    0,
 	    wins.at(_CPUNIDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-
   outString = doubleToStr(cpuUsage.id, 1);
   mvwaddstr(wins.at(_CPUIDDATAWIN)->getWindow(),
 	    0,
 	    wins.at(_CPUIDDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-
   outString = doubleToStr(cpuUsage.wa, 1);
   mvwaddstr(wins.at(_CPUWADATAWIN)->getWindow(),
 	    0,
 	    wins.at(_CPUWADATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-
   outString = doubleToStr(cpuUsage.irq, 1);
   mvwaddstr(wins.at(_CPUHIDATAWIN)->getWindow(),
 	    0,
 	    wins.at(_CPUHIDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-
-
   outString = doubleToStr(cpuUsage.sirq, 1);
   mvwaddstr(wins.at(_CPUSIDATAWIN)->getWindow(),
 	    0,
 	    wins.at(_CPUSIDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
-
   outString = doubleToStr(cpuUsage.st, 1);
   mvwaddstr(wins.at(_CPUSTDATAWIN)->getWindow(),
 	    0,
@@ -2751,7 +2739,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 		      A_BOLD); 
 	    }
 	      
-	  outString = std::to_string(procData.at(pidList.at(i))->getPID());
+	  outString = intToStr(procData.at(pidList.at(i))->getPID());
 	  mvwaddstr(wins.at(_PIDWIN)->getWindow(),
 		    posY,
 		    wins.at(_PIDWIN)->getNumCols() - outString.length(),
@@ -2782,7 +2770,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	    }
 	  else
 	    {
-	      outString = std::to_string(tempPRVal);
+	      outString = intToStr(tempPRVal);
 	    }
 
 	  mvwaddstr(wins.at(_PRWIN)->getWindow(),
@@ -2797,7 +2785,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 			A_BOLD); 
 	      }
 	      
-	  outString = std::to_string(procData.at(pidList.at(i))->getNI());
+	  outString = intToStr(procData.at(pidList.at(i))->getNI());
 	  mvwaddstr(wins.at(_NIWIN)->getWindow(),
 		    posY,
 		    wins.at(_NIWIN)->getNumCols() - outString.length(),
@@ -2809,7 +2797,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 		      A_BOLD); 
 	    }
 	      
-	  outString = std::to_string(procData.at(pidList.at(i))->getVIRT());
+	  outString = uIntToStr(procData.at(pidList.at(i))->getVIRT());
 	  mvwaddstr(wins.at(_VIRTWIN)->getWindow(),
 		    posY,
 		    wins.at(_VIRTWIN)->getNumCols() - outString.length(),
@@ -2820,7 +2808,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	      wattron(wins.at(sortState)->getWindow(),
 		      A_BOLD); 
 	    }
-	  outString = std::to_string(procData.at(pidList.at(i))->getRES());
+	  outString = uIntToStr(procData.at(pidList.at(i))->getRES());
 	  mvwaddstr(wins.at(_RESWIN)->getWindow(),
 		    posY,
 		    wins.at(_RESWIN)->getNumCols() - outString.length(),
@@ -2832,7 +2820,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 		      A_BOLD); 
 	    }
 	      
-	  outString = std::to_string(procData.at(pidList.at(i))->getSHR());
+	  outString = uIntToStr(procData.at(pidList.at(i))->getSHR());
 	  mvwaddstr(wins.at(_SHRWIN)->getWindow(),
 		    posY,
 		    wins.at(_SHRWIN)->getNumCols() - outString.length(),
@@ -2908,6 +2896,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 		    outString.c_str());
 
 	  attrOffProcWins(wins, A_BOLD);
+
 	}
     }
 } // end of "printProcs"
@@ -3384,7 +3373,7 @@ void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
 	  // get current utilization
 	  int currVal = valsCopy.back();
 	  outString = "%";
-	  outString.append(std::to_string(currVal));
+	  outString.append(intToStr(currVal));	  
 	  wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_WHITE_TEXT));
 	  
 	  // print current value
