@@ -113,7 +113,9 @@ void updateProgramState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
     case _STATEKILL: // kill state
       killState(allProcessInfo,
 		wins,
-		defaultKillPid);
+		defaultKillPid,
+		shiftY,
+		shiftX);
       stateChanged = true;      
       break;
     case _STATECPUGRAPH: // cpu graph state
@@ -391,7 +393,9 @@ void updateSortState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 */
 void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	       std::unordered_map<int, CursesWindow*>& wins,
-	       const int& defaultKillPid)
+	       const int& defaultKillPid,
+	       const int& shiftY,
+	       const int& shiftX)
 {
   std::string outString = "PID to signal/kill [default pid = ";
   outString.append(std::to_string(defaultKillPid));
@@ -435,8 +439,13 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		_YOFFSET - 1,
 		0,
 		outString.c_str());
-      wrefresh(wins.at(_MAINWIN)->getWindow());
-      doupdate();
+      colorOnBottomWins(wins,
+			_BLACK_TEXT);
+      printWindowNames(wins,
+		       shiftY,
+		       shiftX);
+      colorOffBottomWins(wins,
+			 _BLACK_TEXT);
 
       //  loop getting user input
       while(true)
@@ -447,7 +456,7 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	      (currMainCols != prevMainCols) )
 	    {
 	      break;
-	    }	  
+	    }
 	  
 	  input = getch();
 	  flushinp();
@@ -468,9 +477,10 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		  break;
 		}
 	    }
-
-	  wrefresh(wins.at(_USERINPUTWIN)->getWindow());
+	  //	  wrefresh(wins.at(_MAINWIN)->getWindow());
+	  refreshAllWins(wins);
 	  doupdate();
+	  usleep(15000);
 	}
   
       // we have received user input, enter if it meets criteria to kill a process
@@ -511,6 +521,14 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	  // loop for confirmation input
 	  while(true)
 	    {
+	      getmaxyx(stdscr, currMainLines, currMainCols);
+	      if( (currMainLines != prevMainLines) ||
+		  (currMainCols != prevMainCols) )
+		{
+		  break;
+		}
+
+	      
 	      input = getch();
 	      flushinp();
 	      printUserInput(wins,
@@ -519,14 +537,6 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			     inputString,
 			     yOffset,
 			     xOffset);
-
-	      getmaxyx(stdscr, currMainLines, currMainCols);
-	      if( (currMainLines != prevMainLines) ||
-		  (currMainCols != prevMainCols) )
-		{
-		  break;
-		}
-
 
 	      // check if user entered input for type of kill signal
 	      if(!inputString.empty())
@@ -615,8 +625,6 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			}
 		    }
 		}
-
-	      break;
 	      refreshAllWins(wins);
 	      doupdate();
 	    }

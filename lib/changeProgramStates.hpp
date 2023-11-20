@@ -39,7 +39,9 @@ void updateSortState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		     const int& sortState);
 void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	       std::unordered_map<int, CursesWindow*>& wins,
-	       const int& defaultKillPid);
+	       const int& defaultKillPid,
+	       const int& shiftY,
+	       const int& shiftX);
 void helpState(std::unordered_map<int, CursesWindow*>& wins);
 bool isValidKillSignal(const int& signal);
 #endif
