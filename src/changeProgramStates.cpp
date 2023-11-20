@@ -813,14 +813,13 @@ void helpState(std::unordered_map<int, CursesWindow*>& wins)
   wattroff(wins.at(_HELPWIN)->getWindow(),
 	   A_BOLD);
   xOffset += outString.length();
-  outString = "' keys chnage which process output column to sort by.";
+  outString = "' keys change which process output column to sort by.";
   printLine(wins,
 	    yOffset,
 	    xOffset,
 	    _WHITE_TEXT,
 	    _HELPWIN,
 	    outString);    
-
   // 'k' kill state
   yOffset += 2;
   xOffset = 0;
@@ -884,7 +883,7 @@ void helpState(std::unordered_map<int, CursesWindow*>& wins)
   wattroff(wins.at(_HELPWIN)->getWindow(),
 	   A_BOLD);
   xOffset += outString.length();
-  outString = "' key resizes and/or removes the cpu utilization window.";
+  outString = "' key opens, resizes, or closes the cpu utilization window.";
     printLine(wins,
 	      yOffset,
 	      xOffset,
@@ -915,7 +914,7 @@ void helpState(std::unordered_map<int, CursesWindow*>& wins)
   wattroff(wins.at(_HELPWIN)->getWindow(),
 	   A_BOLD);
   xOffset += outString.length();
-  outString = "' key resizes and/or removes the main memory usage window.";
+  outString = "' key opens, resizes, or closes the main memory usage window.";
     printLine(wins,
 	      yOffset,
 	      xOffset,
