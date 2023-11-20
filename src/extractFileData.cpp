@@ -819,13 +819,11 @@ const bool findDeadProcesses(const std::vector<int>& pids,
 void removeDeadProcesses(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			 const std::vector<int>& pidsDead)
 {
-  //  for(int i = 0; i < pidsDead.size(); i++)
   for(std::vector<int>::const_iterator it = pidsDead.begin();
       it != pidsDead.end(); it++)
     {
       if(allProcessInfo.count(*it) > 0)
 	{
-	  //	  delete(allProcessInfo[*it]);
 	  delete(allProcessInfo.at(*it));	  
 	  allProcessInfo.at(*it) = nullptr;
 	  allProcessInfo.erase(*it);
