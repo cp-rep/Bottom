@@ -381,7 +381,13 @@ void updateSortState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
    Result: Invalid Signal
 
    Case 8: Valid PID + Characters
-   Result: Invalid Signal 
+   Result: Invalid Signal
+
+   Case 9: Must have at least 8 characters of typing space or the
+           kill state will not enter.
+
+   Case 10: As with "top", any window resizing while the kill state is
+            running will return to the previous state.
 */
 void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	       std::unordered_map<int, CursesWindow*>& wins,
@@ -398,100 +404,51 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   int yOffset = 0;
   int numLines = 1;
   int numCols = wins.at(_MAINWIN)->getNumCols() - outString.length();
-  unsigned int signal = 0;
+  int prevMainLines;
+  int prevMainCols;
+  int currMainLines;
+  int currMainCols;
+  getmaxyx(stdscr, prevMainLines, prevMainCols);
 
-  // create the user input window
-  CursesWindow* userInputWindow = new CursesWindow();
-  wins.insert(std::make_pair(_USERINPUTWIN, userInputWindow));  
-  wins.at(_USERINPUTWIN)->defineWindow(newwin(numLines,
-					      numCols,
-					      _YOFFSET - 1,
-					      outString.length()),
-				       "UserInputWindow",
-				       numLines,
-				       numCols,
-				       _YOFFSET - 1,
-				       outString.length());
-  
-  // enable kill state curses settings
-  curs_set(1);
-  
-  // output the kill prompt
-  wattron(wins.at(_MAINWIN)->getWindow(),
-	  A_BOLD);
-  mvwaddstr(wins.at(_MAINWIN)->getWindow(),
-	    _YOFFSET - 1,
-	    0,
-	    outString.c_str());
-  wrefresh(wins.at(_MAINWIN)->getWindow());
-  doupdate();  
-
-  //  loop getting user input
-  while(true)
+  if(numCols >= 8)
     {
-      input = getch();
-      flushinp();
-      printUserInput(wins,
-		     _USERINPUTWIN,
-		     input,
-		     inputString,
-		     yOffset,
-		     xOffset);
+      unsigned int signal = 0;
+      // create the user input window
+      CursesWindow* userInputWindow = new CursesWindow();
+      wins.insert(std::make_pair(_USERINPUTWIN, userInputWindow));
+      wins.at(_USERINPUTWIN)->defineWindow(newwin(numLines,
+						  numCols,
+						  _YOFFSET - 1,
+						  outString.length()),
+					   "UserInputWindow",
+					   numLines,
+					   numCols,
+					   _YOFFSET - 1,
+					   outString.length());
 
-      if(!inputString.empty())
-	{
-	  if(inputString.at(inputString.size() - 1) == 10)
-	    {
-	      inputString.pop_back();
-	      break;
-	    }
-	}
-
-      wrefresh(wins.at(_USERINPUTWIN)->getWindow());
-      doupdate();
-    }
-  
-  // we have received user input, enter if it meets criteria to kill a process
-  if(isNumericString(inputString) || inputString.empty())
-    { 
-      int killPid;
-
-      // set kill default
-      if(inputString.empty())
-	{
-	  killPid = defaultKillPid;
-	}
-      // set kill entered PID      
-      else
-	{
-	  killPid = stringToInt(inputString);
-
-	}
-
-      // create confirmation kill string
-      inputString.clear();
-      outString = "Send pid ";
-      outString.append(std::to_string(killPid));
-      outString.append(" signal [15/sigterm] ");
-
-      // output string and update windows 11
+      // enable kill state curses settings
+      curs_set(1);
+      // output the kill prompt
+      wattron(wins.at(_MAINWIN)->getWindow(),
+	      A_BOLD);
       mvwaddstr(wins.at(_MAINWIN)->getWindow(),
 		_YOFFSET - 1,
 		0,
 		outString.c_str());
-      werase(wins.at(_USERINPUTWIN)->getWindow());
+      wrefresh(wins.at(_MAINWIN)->getWindow());
+      doupdate();
 
-      // move user input window to new output location
-      mvwin(wins.at(_USERINPUTWIN)->getWindow(),
-	    _YOFFSET - 1,
-	    outString.length());
-      
-      // reset input column offset since were getting a new input
-      xOffset = 0;
-
-      // loop for confirmation input
+      //  loop getting user input
       while(true)
 	{
+	  getmaxyx(stdscr, currMainLines, currMainCols);
+
+	  if( (currMainLines != prevMainLines) ||
+	      (currMainCols != prevMainCols) )
+	    {
+	      break;
+	    }	  
+	  
 	  input = getch();
 	  flushinp();
 	  printUserInput(wins,
@@ -501,54 +458,137 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			 yOffset,
 			 xOffset);
 
-	  // check if user entered input for type of kill signal
+	  
+
 	  if(!inputString.empty())
 	    {
-	      // test if input was newline key for default kill signal
-	      if(inputString.size() == 1 && inputString.at(0) == 10)
+	      if(inputString.at(inputString.size() - 1) == 10)
 		{
-		  if(kill(killPid, SIGTERM) != 0)
-		    {
-		      outString = " Failed signal pid '";
-		      outString.append(std::to_string(killPid));
-		      outString.append("' with '");
-		      outString.append(std::to_string(SIGTERM));
-		      outString.append(": No such process");
-		      printBadInputString(wins,
-					  _MAINWIN,
-					  _YOFFSET -1,
-					  0,
-					  outString);
-		      inputString.clear();
-		      sleep(1.75);
-		    }
-		  
+		  inputString.pop_back();
 		  break;
 		}
-	      
-	      // user entered characters plus the new line for kill signal
-	      else if(inputString.at(inputString.size() - 1) == 10)
+	    }
+
+	  wrefresh(wins.at(_USERINPUTWIN)->getWindow());
+	  doupdate();
+	}
+  
+      // we have received user input, enter if it meets criteria to kill a process
+      if(isNumericString(inputString) || inputString.empty())
+	{
+	  int killPid;
+
+	  // set kill default
+	  if(inputString.empty())
+	    {
+	      killPid = defaultKillPid;
+	    }
+	  // set kill entered PID      
+	  else
+	    {
+	      killPid = stringToInt(inputString);
+
+	    }
+
+	  // create confirmation kill string
+	  inputString.clear();
+	  outString = "Send pid ";
+	  outString.append(std::to_string(killPid));
+	  outString.append(" signal [15/sigterm] ");
+	  // output string and update windows 11
+	  mvwaddstr(wins.at(_MAINWIN)->getWindow(),
+		    _YOFFSET - 1,
+		    0,
+		    outString.c_str());
+	  werase(wins.at(_USERINPUTWIN)->getWindow());
+	  // move user input window to new output location
+	  mvwin(wins.at(_USERINPUTWIN)->getWindow(),
+		_YOFFSET - 1,
+		outString.length());
+	  // reset input column offset since were getting a new input
+	  xOffset = 0;
+
+	  // loop for confirmation input
+	  while(true)
+	    {
+	      input = getch();
+	      flushinp();
+	      printUserInput(wins,
+			     _USERINPUTWIN,
+			     input,
+			     inputString,
+			     yOffset,
+			     xOffset);
+
+	      getmaxyx(stdscr, currMainLines, currMainCols);
+	      if( (currMainLines != prevMainLines) ||
+		  (currMainCols != prevMainCols) )
 		{
-		  // pop the new line character
-		  inputString.pop_back();
+		  break;
+		}
 
-		  // check if remaining string is numeric input for kill signal
-		  if(isNumericString(inputString))
+
+	      // check if user entered input for type of kill signal
+	      if(!inputString.empty())
+		{
+		  // test if input was newline key for default kill signal
+		  if(inputString.size() == 1 && inputString.at(0) == 10)
 		    {
-		      unsigned int signal = stringToInt(inputString);
-
-		      // valid signal
-		      if(isValidKillSignal(signal) == true)
+		      if(kill(killPid, SIGTERM) != 0)
 			{
-			  int result = kill(killPid, signal);
-			  
-			  if(result != 0)
+			  outString = " Failed signal pid '";
+			  outString.append(std::to_string(killPid));
+			  outString.append("' with '");
+			  outString.append(std::to_string(SIGTERM));
+			  outString.append(": No such process");
+			  printBadInputString(wins,
+					      _MAINWIN,
+					      _YOFFSET -1,
+					      0,
+					      outString);
+			  inputString.clear();
+			  sleep(1.75);
+			}
+		  
+		      break;
+		    }
+	      
+		  // user entered characters plus the new line for kill signal
+		  else if(inputString.at(inputString.size() - 1) == 10)
+		    {
+		      // pop the new line character
+		      inputString.pop_back();
+
+		      // check if remaining string is numeric input for kill signal
+		      if(isNumericString(inputString))
+			{
+			  unsigned int signal = stringToInt(inputString);
+
+			  // valid signal
+			  if(isValidKillSignal(signal) == true)
 			    {
-			      outString = " Failed signal pid '";
-			      outString.append(std::to_string(killPid));
-			      outString.append("' with '");
-			      outString.append(std::to_string(signal));
-			      outString.append(": No such process");
+			      int result = kill(killPid, signal);
+			  
+			      if(result != 0)
+				{
+				  outString = " Failed signal pid '";
+				  outString.append(std::to_string(killPid));
+				  outString.append("' with '");
+				  outString.append(std::to_string(signal));
+				  outString.append(": No such process");
+				  printBadInputString(wins,
+						      _MAINWIN,
+						      _YOFFSET -1,
+						      0,
+						      outString);
+				  inputString.clear();
+				  sleep(1.75);
+				}
+			    }
+			  // invalid signal
+			  else
+			    {
+			      outString = " Invalid Signal ";
 			      printBadInputString(wins,
 						  _MAINWIN,
 						  _YOFFSET -1,
@@ -557,6 +597,8 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			      inputString.clear();
 			      sleep(1.75);
 			    }
+			  
+			  break;
 			}
 		      // invalid signal
 		      else
@@ -569,53 +611,40 @@ void killState(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 					      outString);
 			  inputString.clear();
 			  sleep(1.75);
+			  break;
 			}
-			  
-		      break;
-		    }
-		  // invalid signal
-		  else
-		    {
-		      outString = " Invalid Signal ";
-		      printBadInputString(wins,
-					  _MAINWIN,
-					  _YOFFSET -1,
-					  0,
-					  outString);
-		      inputString.clear();
-		      sleep(1.75);
-		      break;
 		    }
 		}
+
+	      break;
+	      refreshAllWins(wins);
+	      doupdate();
 	    }
-
-	  refreshAllWins(wins);
-	  doupdate();
+	  usleep(15000);
 	}
-      usleep(15000);
-    }
-  // unnacceptable input prompt
-  else
-    {
-      outString = " Unacceptable Integer ";
-      printBadInputString(wins,
-			  _MAINWIN,
-			  _YOFFSET -1,
-			  0,
-			  outString);
-      inputString.clear();
-      sleep(1.75);
-    }
+      // unnacceptable input prompt
+      else
+	{
+	  outString = " Unacceptable Integer ";
+	  printBadInputString(wins,
+			      _MAINWIN,
+			      _YOFFSET -1,
+			      0,
+			      outString);
+	  inputString.clear();
+	  sleep(1.75);
+	}
 
-  // delete user input window
-  wins.at(_USERINPUTWIN)->deleteWindow();
-  delete(wins.at(_USERINPUTWIN));
-  wins.erase(_USERINPUTWIN);
+      // delete user input window
+      wins.at(_USERINPUTWIN)->deleteWindow();
+      delete(wins.at(_USERINPUTWIN));
+      wins.erase(_USERINPUTWIN);
 
-  // restore window settings
-  wattroff(wins.at(_MAINWIN)->getWindow(),
-	   A_BOLD);
-  curs_set(0);
+      // restore window settings
+      wattroff(wins.at(_MAINWIN)->getWindow(),
+	       A_BOLD);
+      curs_set(0);
+    }
 } // end of "killState"
 
 
