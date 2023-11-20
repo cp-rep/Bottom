@@ -41,8 +41,8 @@ public:
   // getters
   const unsigned int& getPID() const { return m_pid; }
   const std::string& getUSER() const { return m_user; }
-  const unsigned int& getPR() const { return m_pr; }
-  const unsigned int& getNI() const { return m_ni; }
+  const int& getPR() const { return m_pr; }
+  const int& getNI() const { return m_ni; }
   const unsigned int& getVIRT() const { return m_virt; }
   const unsigned int& getRES() const { return m_res; }
   const unsigned int& getSHR() const { return m_shr; }
@@ -63,8 +63,8 @@ public:
   // setters
   void setPID(const unsigned int& pid) { m_pid = pid; }
   void setUSER(const std::string& user) { m_user = user; }
-  void setPR(const unsigned int& pr) { m_pr = pr; }
-  void setNI(const unsigned int& ni) { m_ni = ni; }
+  void setPR(const int& pr) { m_pr = pr; }
+  void setNI(const int& ni) { m_ni = ni; }
   void setVIRT(const unsigned int& virt) { m_virt = virt; }
   void setRES(const unsigned int& res) { m_res = res; }
   void setSHR(const unsigned int& shr) { m_shr = shr; }
@@ -90,8 +90,8 @@ public:
 private:
   unsigned int m_pid;
   std::string m_user;
-  unsigned int m_pr;
-  unsigned int m_ni;
+  int m_pr;
+  int m_ni;
   unsigned int m_virt;
   unsigned int m_res;
   unsigned int m_shr;
