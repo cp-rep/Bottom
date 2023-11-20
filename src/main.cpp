@@ -149,8 +149,8 @@ int main()
   std::queue<double> memUsageVals;
   const int graphMaxCols = wins.at(_MAINWIN)->getNumCols() -
     wins.at(_COMMANDWIN)->getNumCols();
-  int cpuGraphCount = 0;
-  int memGraphCount = 0;
+  int cpuGraphCount = 1;
+  int memGraphCount = 1;
   
   // loop variables
   SecondsToTime uptime;
@@ -226,7 +226,6 @@ int main()
 	// "MiB Mem: xxxx.xx total, xxxx.xx Free..."
 	extractProcMeminfo(memInfo,
 			   _PROC_MEMINFO);
-	
 	// get starting pids
 	pidsStartOld.clear();
 	pidsStartOld = pidsStart;
@@ -406,11 +405,11 @@ int main()
       }
 
     // check for terminal resize and adjust windows accordingly
-    updateWindowDimensions(wins,
-			   shiftX,
-			   shiftY,
-			   cpuGraphCount,
-			   memGraphCount);
+    updateWinDimensions(wins,
+			shiftX,
+			shiftY,
+			cpuGraphCount,
+			memGraphCount);
 
     // check for cpu graph state
     if( (cpuGraphCount > 0) && (wins.at(_CPUGRAPHWIN)->getWindow() != nullptr) )
