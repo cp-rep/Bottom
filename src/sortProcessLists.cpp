@@ -53,6 +53,11 @@ template std::vector<int> sortValuesByPID(
 template std::vector<int> sortValuesByPID(
     const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
     const std::vector<int>& pidNums,
+    const int& (ProcessInfo::*extractor)() const);
+
+template std::vector<int> sortValuesByPID(
+    const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+    const std::vector<int>& pidNums,
     const std::string& (ProcessInfo::*extractor)() const);
 
 template std::vector<int> sortValuesByPID(
