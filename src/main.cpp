@@ -120,7 +120,7 @@ int main()
   std::unordered_map<int, ProcessInfo*> procInfoEnd;
   
   // window related vars
-  std::unordered_map<int, CursesWindow*> allWins;
+  std::unordered_map<int, CursesWindow*> wins;
   std::string colorLine;
   
   // state related vars
@@ -137,18 +137,18 @@ int main()
   // ## initialize and setup curses ##
   initializeCurses();
 #endif
-  initializeStartingWindows(allWins);
-  defineProcWinsStartVals(allWins);
-  defineTopWinsStartVals(allWins);  
-  defineTopWinsDataStartVals(allWins);
-  defineGraphWinStartVals(allWins);
+  initializeStartingWindows(wins);
+  defineProcWinsStartVals(wins);
+  defineTopWinsStartVals(wins);  
+  defineTopWinsDataStartVals(wins);
+  defineGraphWinStartVals(wins);
   initializeProgramStates(progStates);
 
   // graph related vars
   std::queue<double> cpuUsageVals;
   std::queue<double> memUsageVals;
-  const int graphMaxCols = allWins.at(_MAINWIN)->getNumCols() -
-    allWins.at(_COMMANDWIN)->getNumCols();
+  const int graphMaxCols = wins.at(_MAINWIN)->getNumCols() -
+    wins.at(_COMMANDWIN)->getNumCols();
   int cpuGraphCount = 0;
   int memGraphCount = 0;
   
@@ -165,14 +165,8 @@ int main()
   bool entered = false;
   bool stateChanged = false;
   auto startTime = std::chrono::high_resolution_clock::now();
-
+  
   do{
-    users.clear();
-    time(&rawtime);
-    timeinfo = localtime(&rawtime);
-    loadAvgStrings.clear();
-    uptimeStrings.clear();
-    allTopLines.clear();
     outPids.clear();
 
     auto currentTime = std::chrono::high_resolution_clock::now();
@@ -194,6 +188,7 @@ int main()
 	    delete(it->second);
 	    it->second = nullptr;
 	  }
+	
 	for(std::unordered_map<int, ProcessInfo*>::iterator it
 	      = procInfoEnd.begin();
 	    it != procInfoEnd.end(); it++)
@@ -204,7 +199,6 @@ int main()
 
 	procInfoEnd.clear();
 	procInfoStart.clear();
-	
 	stateChanged = false;
 	entered = false;
 	newInterval = true;
@@ -212,17 +206,38 @@ int main()
     
     if(newInterval == true)
       {
+	users.clear();
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	loadAvgStrings.clear();
+	uptimeStrings.clear();
 	// extract start data for CPU line
 	// "%Cpu(s): x.x us, x.x sy..."
 	extractProcStat(cpuInfoStart,
 			_PROC_STAT);
+	// extract data from /proc/uptime for very top window
+	// "current time, # users, load avg"    
+	extractProcUptime(uptime,
+			  uptimeStrings,
+			  _PROC_UPTIME);
+	// extract data from /proc/loadavg for very top window
+	extractProcLoadavg(loadAvgStrings,
+			   _PROC_LOADAVG);
+	// extract data for MiB Mem and MiB swap
+	// "MiB Mem: xxxx.xx total, xxxx.xx Free..."
+	extractProcMeminfo(memInfo,
+			   _PROC_MEMINFO);
       }
     else if(elapsedTime >= interval)
       {
+	users.clear();
+	loadAvgStrings.clear();
+	uptimeStrings.clear();
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
 	// extract end data for CPU line
 	extractProcStat(cpuInfoEnd,
 			_PROC_STAT);
-
 	// calculate cpu averages
 	cpuUsage = calcCPUUsage(cpuInfoStart,
 				cpuInfoEnd);
@@ -253,22 +268,20 @@ int main()
 	    memUsageVals.pop();
 	    memUsageVals.push(usage);
 	  }
+	
+	// extract data from /proc/uptime for very top window
+	// "current time, # users, load avg"    
+	extractProcUptime(uptime,
+			  uptimeStrings,
+			  _PROC_UPTIME);
+	// extract data from /proc/loadavg for very top window
+	extractProcLoadavg(loadAvgStrings,
+			   _PROC_LOADAVG);
+	// extract data for MiB Mem and MiB swap
+	// "MiB Mem: xxxx.xx total, xxxx.xx Free..."
+	extractProcMeminfo(memInfo,
+			   _PROC_MEMINFO);    
       }
-    
-    // extract data from /proc/uptime for very top window
-    // "current time, # users, load avg"    
-    extractProcUptime(uptime,
-		      uptimeStrings,
-		      _PROC_UPTIME);
-
-    // extract data from /proc/loadavg for very top window
-    extractProcLoadavg(loadAvgStrings,
-		       _PROC_LOADAVG);
-
-    // extract data for MiB Mem and MiB swap
-    // "MiB Mem: xxxx.xx total, xxxx.xx Free..."
-    extractProcMeminfo(memInfo,
-		       _PROC_MEMINFO);    
 
     if(newInterval == true)
       {
@@ -347,7 +360,6 @@ int main()
     // "Tasks: XXX total, X running..."
     countProcessStates(procInfoEnd,
 		       taskInfo);
-
     // set the time string with current military time
     timeString = uptime.returnHHMMSS(timeinfo->tm_hour,
 				     timeinfo->tm_min,
@@ -373,12 +385,12 @@ int main()
 	    std::string outString = " Unknown command - try 'h' for help ";
 	    
 #if _CURSES
-	    printBadInputString(allWins,
+	    printBadInputString(wins,
 				_MAINWIN,
 				_YOFFSET - 1,
 				0,
 				outString);
-	    refreshAllWins(allWins);
+	    refreshAllWins(wins);
 	    doupdate();
 	    sleep(1.75);
 #endif	    
@@ -391,22 +403,22 @@ int main()
     // ensure to not clear the windows if entering certain states    
     if(userInput != _STATEKILL)
       {
-	clearAllWins(allWins);
+	clearAllWins(wins);
       }
 
     // check for terminal resize and adjust windows accordingly
-    updateWindowDimensions(allWins,
+    updateWindowDimensions(wins,
 			   shiftX,
 			   shiftY,
 			   cpuGraphCount,
 			   memGraphCount);
 
     // check for cpu graph state
-    if( (cpuGraphCount > 0) && (allWins.at(_CPUGRAPHWIN)->getWindow() != nullptr) )
+    if( (cpuGraphCount > 0) && (wins.at(_CPUGRAPHWIN)->getWindow() != nullptr) )
       {
 	if(cpuGraphCount == 3)
 	  {
-	    drawGraph(allWins,
+	    drawGraph(wins,
 		      _CPUGRAPHWIN,
 		      cpuUsageVals,
 		      "CPU UTILIZATION",
@@ -414,7 +426,7 @@ int main()
 	  }
 	else
 	  {
-	    drawGraph(allWins,
+	    drawGraph(wins,
 		      _CPUGRAPHWIN,
 		      cpuUsageVals,
 		      "CPU UTILIZATION",
@@ -423,11 +435,11 @@ int main()
       }
 
     // check for mem graph state
-    if( (memGraphCount > 0) && (allWins.at(_MEMGRAPHWIN)->getWindow() != nullptr) )
+    if( (memGraphCount > 0) && (wins.at(_MEMGRAPHWIN)->getWindow() != nullptr) )
       {
 	if(memGraphCount == 3)
 	  {
-	    drawGraph(allWins,
+	    drawGraph(wins,
 		      _MEMGRAPHWIN,
 		      memUsageVals,
 		      "MAIN MEMORY USAGE",
@@ -435,7 +447,7 @@ int main()
 	  }
 	else
 	  {
-	    drawGraph(allWins,
+	    drawGraph(wins,
 		      _MEMGRAPHWIN,
 		      memUsageVals,
 		      "MAIN MEMORY USAGE",
@@ -444,39 +456,37 @@ int main()
       }
 
     // print all other top wins
-    printTasksWins(allWins);
-    printCpuWins(allWins);
-    printMemWins(allWins);
-    printSwapWins(allWins);
-
+    printTasksWins(wins);
+    printCpuWins(wins);
+    printMemWins(wins);
+    printSwapWins(wins);
     // print top wins data
-    boldOnAllTopWins(allWins,
+    boldOnAllTopWins(wins,
 		     A_BOLD);
-    printTasksDataWins(allWins,
+    printTasksDataWins(wins,
 		       taskInfo);
-    printCpuDataWins(allWins,
+    printCpuDataWins(wins,
 		     cpuUsage);
-    printMemDataWins(allWins,
+    printMemDataWins(wins,
 		     memInfo);
-    boldOffAllTopWins(allWins,
+    boldOffAllTopWins(wins,
 		      A_BOLD);
-
     // print the color line to the main win
-    colorLine = createColorLine(allWins.at(_MAINWIN)->getNumCols());
-    printLine(allWins,
+    colorLine = createColorLine(wins.at(_MAINWIN)->getNumCols());
+    printLine(wins,
 	      _YOFFSET,
 	      0,
 	      _BLACK_TEXT,
 	      _MAINWIN,
 	      colorLine);
-
-    defineTopWins(allWins,
+    defineTopWins(wins,
 		  timeString,
 		  uptime.getHours()/24,
 		  uptime.getHours() % 24,
 		  uptime.getMinutes(),
 		  loadAvgStrings,
-		  numUsers);	
+		  numUsers);
+    
     // ## update states and print ##
     if(entered == false)
       {
@@ -485,7 +495,7 @@ int main()
 			pidsStart,
 			sortState);
 	updateProgramState(procInfoStart,
-			   allWins,
+			   wins,
 			   progState,
 			   prevState,
 			   sortState,
@@ -498,19 +508,19 @@ int main()
 			   stateChanged,
 			   cpuGraphCount,
 			   memGraphCount);
-	printProcs(allWins,
+	printProcs(wins,
 		   procInfoStart,
 		   pidsStart,
 		   shiftY,
 		   shiftX,
 		   sortState,
 		   highlight);
-	colorOnBottomWins(allWins,
+	colorOnBottomWins(wins,
 			  _BLACK_TEXT);
-	printWindowNames(allWins,
+	printWindowNames(wins,
 			 shiftY,
 			 shiftX);
-	colorOffBottomWins(allWins,
+	colorOffBottomWins(wins,
 			   _BLACK_TEXT);
       }
     else if(stateChanged == false)
@@ -520,7 +530,7 @@ int main()
 			outPids,
 			sortState);
 	updateProgramState(procInfoEnd,
-			   allWins,
+			   wins,
 			   progState,
 			   prevState,
 			   sortState,
@@ -533,33 +543,31 @@ int main()
 			   stateChanged,
 			   cpuGraphCount,
 			   memGraphCount);
-	printProcs(allWins,
+	printProcs(wins,
 		   procInfoEnd,
 		   outPids,
 		   shiftY,
 		   shiftX,
 		   sortState,
 		   highlight);
-
-	colorOnBottomWins(allWins,
+	colorOnBottomWins(wins,
 			  _BLACK_TEXT);
-	printWindowNames(allWins,
+	printWindowNames(wins,
 			 shiftY,
 			 shiftX);
-
-	colorOffBottomWins(allWins,
+	colorOffBottomWins(wins,
 			   _BLACK_TEXT);
       }
     
-    refreshAllWins(allWins);
+    refreshAllWins(wins);
     doupdate();
     usleep(15000);
 
     for(int i = _TOPWIN; i <= _TOPLOADAVGDATAWIN; i++)
       {
-	if(allWins.at(i)->getWindow() != nullptr)
+	if(wins.at(i)->getWindow() != nullptr)
 	  {
-	    allWins.at(i)->deleteWindow();
+	    wins.at(i)->deleteWindow();
 	  }
       }
 
@@ -580,6 +588,7 @@ int main()
       delete(it->second);
       it->second = nullptr;
     }
+  
   for(std::unordered_map<int, ProcessInfo*>::iterator it
 	= procInfoEnd.begin();
       it != procInfoEnd.end(); it++)
@@ -589,15 +598,15 @@ int main()
     }
 
   for(std::unordered_map<int, CursesWindow*>::iterator it
-	= allWins.begin();
-      it != allWins.end(); it++)
+	= wins.begin();
+      it != wins.end(); it++)
     {
       it->second->deleteWindow();
     }
 
   procInfoEnd.clear();
   procInfoStart.clear();
-  allWins.clear();
+  wins.clear();
         
 #if _LOG
   if(log.is_open())
