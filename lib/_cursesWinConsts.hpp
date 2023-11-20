@@ -131,7 +131,7 @@ enum _WINS {
 
 // top window consts
 #define _TOPWINSTARTY 0
-#define _TOPWINCOLS 5
+#define _TOPWINCOLS 8
 #define _TOPCURRTIMEWINCOLS 8
 #define _TOPUPWINCOLS 2
 #define _TOPLOADAVGWINCOLS 13
