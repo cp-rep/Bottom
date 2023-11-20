@@ -47,8 +47,14 @@ void initializeCurses()
 
 
 /*
+  Function
 
- */
+  Description:
+
+  Input:
+
+  Output:
+*/
 void resetToWinStartState(std::unordered_map<int, CursesWindow*>& wins)
 {
   clearAllWins(wins);
@@ -106,14 +112,12 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
   int startX = 0;
   
   getmaxyx(stdscr, numLines, numCols);
-
   wins.at(_MAINWIN)->defineWindow(stdscr,
 				  "Main",
 				  numLines,
 				  numCols,
 				  startY,
 				  startX);
-
   // define PID window
   numCols = _PIDWINCOLS;
   numLines = numLines - _YOFFSET;
@@ -128,7 +132,6 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				 numCols,
 				 startY,
 				 startX);
-  
   // define USER window
   numCols = _USERWINCOLS;
   startY = _YOFFSET;
@@ -142,7 +145,6 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				  numCols,
 				  startY,
 				  startX);
-  
   // define PR window
   numCols = _PRWINCOLS;
   startY = _YOFFSET;
@@ -156,7 +158,6 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				numCols,
 				startY,
 				startX);
-  
   // define NI window
   numCols = _NIWINCOLS;
   startY = _YOFFSET;
@@ -170,7 +171,6 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				numCols,
 				startY,
 				startX);
-  
   // define VIRT window
   numCols = _VIRTWINCOLS;
   startY = _YOFFSET;
@@ -184,7 +184,6 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				  numCols,
 				  startY,
 				  startX);
-  
   // define RES window
   numCols = _RESWINCOLS;
   startY = _YOFFSET;
@@ -198,7 +197,6 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				 numCols,
 				 startY,
 				 startX);
-  
   // define SHR window
   numCols = _SHRWINCOLS;
   startY = _YOFFSET;
@@ -212,7 +210,6 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				 numCols,
 				 startY,
 				 startX);
-  
   // define S window
   numCols = _SWINCOLS;
   startY = _YOFFSET;
@@ -226,7 +223,6 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 			       numCols,
 			       startY,
 			       startX);
-  
   // define %CPU window
   numCols = _PROCCPUWINCOLS;
   startY = _YOFFSET;
@@ -240,7 +236,6 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				     numCols,
 				     startY,
 				     startX);
-  
   // define %MEM window
   numCols = _PROCMEMWINCOLS;
   startY = _YOFFSET;
@@ -254,7 +249,6 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				     numCols,
 				     startY,
 				     startX);
-  
   // define TIME+ window
   numCols = _PROCTIMEWINCOLS;
   startY = _YOFFSET;
@@ -268,7 +262,6 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				      numCols,
 				      startY,
 				      startX);
-  
   // define COMMAND window
   numCols = _COMMANDWINCOLS;
   startY = _YOFFSET;
@@ -296,7 +289,7 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
   Function:
    defineTopWins
 
-  Description
+  Description:
 
   Input:
 
@@ -1154,13 +1147,16 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	  wins.at(i)->setWindow(nullptr);
 	}
     }
+  
   for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
     {
       // check if a window should be allocated
       if( (wins.at(i)->getWindow() == nullptr) && (shiftX <= i) &&
 	  (numLines > _YOFFSET) )
 	{
+
 	  int len = wins.at(i)->getNumCols() + wins.at(i)->getStartX();
+	  
 	  if(len <= numCols)
 	    {
 	      wins.at(i)->defineWindow(newwin(numLines - _YOFFSET,
@@ -1175,7 +1171,6 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	    }
 	}
     }
-
 
   // cpu utilization graph resize logic
   if((cpuGraphCount == 1) || (cpuGraphCount == 2))
@@ -1464,7 +1459,6 @@ void updateWindowDimensions(std::unordered_map<int, CursesWindow*>& wins,
 	}
     }
   
-  
   // print the color line to the main win
   std::string colorLine = createColorLine(wins.at(_MAINWIN)->getNumCols());
   printLine(wins,
@@ -1620,13 +1614,11 @@ void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins)
 */
 void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
-  /*
-  for(int i = _TOPWIN; i <= _MEMWIN; i++)
+  for(int i = _TOPWIN; i <= _MEMAVAILDATAWIN; i++)
     {
       werase(wins.at(i)->getWindow());
 
     }
-  */
 } // end of "clearBottomWins"
 
 
@@ -1649,9 +1641,9 @@ void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins)
   Output:
    NONE
 */
-void clearBottomWins(const std::unordered_map<int, CursesWindow*>& wins)
+void clearProcWins(const std::unordered_map<int, CursesWindow*>& wins)
 {
-  for(int i = _PIDWIN; i <= _MEMAVAILDATAWIN; i++)
+  for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
     {
       werase(wins.at(i)->getWindow());
     }
@@ -1661,7 +1653,7 @@ void clearBottomWins(const std::unordered_map<int, CursesWindow*>& wins)
 
 /*
   Function:
-   boldOnAllTopWins
+   boldOnAllTopDataWins
 
   Description:
    Sets the bold attribute ON for currently active and defined CursesWindow object screens 
@@ -1676,20 +1668,20 @@ void clearBottomWins(const std::unordered_map<int, CursesWindow*>& wins)
   Output:
    NONE
 */
-void boldOnAllTopWins(std::unordered_map<int, CursesWindow*>& wins,
+void boldOnAllTopDataWins(std::unordered_map<int, CursesWindow*>& wins,
 		      int attrs)
 {
   for(int i = _TASKSTOTALDATAWIN; i <= _MEMAVAILDATAWIN; i++)
     {
       wattron(wins.at(i)->getWindow(), A_BOLD);
     }
-} // end of "boldOnAllTopWins"
+} // end of "boldOnAllTopDataWins"
 
 
 
 /*
   Function:
-   boldOffAllTopWins
+   boldOffAllTopDataWins
 
   Description:
    Sets the bold attribute OFF for currently active and defined CursesWindow object screens 
@@ -1704,20 +1696,20 @@ void boldOnAllTopWins(std::unordered_map<int, CursesWindow*>& wins,
   Output:
    NONE
 */
-void boldOffAllTopWins(std::unordered_map<int, CursesWindow*>& wins,
+void boldOffAllTopDataWins(std::unordered_map<int, CursesWindow*>& wins,
 		       int attrs)
 {
   for(int i = _TASKSTOTALDATAWIN; i <= _MEMAVAILDATAWIN; i++)
     {
       wattron(wins.at(i)->getWindow(), A_BOLD);
     }
-} // end of "boldOffAllTopWins"
+} // end of "boldOffAllTopDataWins"
 
 
 
 /*
   Function:
-   boldOnTasksWins
+   boldOnTasksDataWins
 
   Description:
    Sets the bold attribute ON for the "Tasks window" values.
@@ -1731,20 +1723,20 @@ void boldOffAllTopWins(std::unordered_map<int, CursesWindow*>& wins,
   Output:
    NONE
 */
-void boldOnTasksWins(std::unordered_map<int, CursesWindow*>& wins,
+void boldOnTasksDataWins(std::unordered_map<int, CursesWindow*>& wins,
 		     int attrs)
 {
   for(int i = _TASKSTOTALDATAWIN; i <= _TASKSZOMBDATAWIN; i++)
     {
       wattron(wins.at(i)->getWindow(), A_BOLD);
     }
-} // end of "boldOnTasksWins"
+} // end of "boldOnTasksDataWins"
 
 
 
 /*
   Function:
-  boldOffTasksWins
+  boldOffTasksDataWins
 
   Description:
    Sets the bold attribute OFF for the "Tasks window" values.
@@ -1758,20 +1750,20 @@ void boldOnTasksWins(std::unordered_map<int, CursesWindow*>& wins,
   Output:
    NONE
 */
-void boldOffTasksWins(const std::unordered_map<int, CursesWindow*>& wins,
+void boldOffTasksDataWins(const std::unordered_map<int, CursesWindow*>& wins,
 		      int attrs)
 {
   for(int i = _TASKSTOTALDATAWIN; i <= _TASKSZOMBDATAWIN; i++)
     {
       wattroff(wins.at(i)->getWindow(), A_BOLD);
     }
-} // end of "boldOffTasksWins"
+} // end of "boldOffTasksDataWins"
 
 
 
 /*
   Function:
-   boldOnCpusWins
+   boldOnCpusDataWins
 
   Description:
    Sets the bold attribute ON for the "CPU window" values.
@@ -1786,21 +1778,21 @@ void boldOffTasksWins(const std::unordered_map<int, CursesWindow*>& wins,
   Output:
    NONE
 */
-void boldOnCpusWins(std::unordered_map<int, CursesWindow*>& wins,
+void boldOnCpusDataWins(std::unordered_map<int, CursesWindow*>& wins,
 		     int attrs)
 {
   for(int i = _CPUUSDATAWIN; i <= _CPUSTDATAWIN; i++)
     {
       wattron(wins.at(i)->getWindow(), A_BOLD);
     }
-} // end of "boldOnCpusWins"
+} // end of "boldOnCpusDataWins"
 
 
 
 /*
 
   Function:
-   boldOffCpusWins
+   boldOffCpusDataWins
 
   Description:
    Sets the bold attribute OFF for the "CPU window" values.
@@ -1814,20 +1806,20 @@ void boldOnCpusWins(std::unordered_map<int, CursesWindow*>& wins,
   Output:
    NONE
 */
-void boldOffCpusWins(std::unordered_map<int, CursesWindow*>& wins,
+void boldOffCpusDataWins(std::unordered_map<int, CursesWindow*>& wins,
 		     int attrs)
 {
   for(int i = _CPUUSDATAWIN; i <= _CPUSTDATAWIN; i++)
     {
       wattroff(wins.at(i)->getWindow(), A_BOLD);
     }
-} // end of "boldOffCpusWins
+} // end of "boldOffCpusDataWins
 
 
 
 /*
   Function:
-   boldOnMemWins
+   boldOnMemDataWins
 
   Description:
    Sets the bold attribute ON for the "MEM window" values.
@@ -1841,21 +1833,21 @@ void boldOffCpusWins(std::unordered_map<int, CursesWindow*>& wins,
   Output:
    NONE
 */
-void boldOnMemWins(std::unordered_map<int, CursesWindow*>& wins,
+void boldOnMemDataWins(std::unordered_map<int, CursesWindow*>& wins,
 		     int attrs)
 {
   for(int i = _MEMTOTALDATAWIN; i <= _MEMAVAILDATAWIN; i++)
     {
       wattron(wins.at(i)->getWindow(), A_BOLD);
     }
-} // end of "boldOnMemWins"
+} // end of "boldOnMemDataWins"
 
 
 
 
 /*
   Function:
-   boldOffMemWins
+   boldOffMemDataWins
 
   Description:
    Sets the bold attribute OFF for the "MEM window" values.
@@ -1869,20 +1861,20 @@ void boldOnMemWins(std::unordered_map<int, CursesWindow*>& wins,
   Output:
    NONE
 */
-void boldOffMemWins(std::unordered_map<int, CursesWindow*>& wins,
+void boldOffMemDataWins(std::unordered_map<int, CursesWindow*>& wins,
 		     int attrs)
 {
   for(int i = _MEMTOTALDATAWIN; i <= _MEMAVAILDATAWIN; i++)
     {
       wattroff(wins.at(i)->getWindow(), A_BOLD);
     }
-} // end of "boldOffMemWins"
+} // end of "boldOffMemDataWins"
 
 
 
 /*
   Function:
-   colorOnBottomWins
+   colorOnProcWins
 
   Description:
    Sets the a color pair attribute ON for the bottom windows.
@@ -1901,20 +1893,20 @@ void boldOffMemWins(std::unordered_map<int, CursesWindow*>& wins,
   Output:
    NONE
 */
-void colorOnBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
+void colorOnProcWins(const std::unordered_map<int, CursesWindow*>& wins,
 		       int colorPair)
 {
   for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
     {
       wattron(wins.at(i)->getWindow(), COLOR_PAIR(colorPair));
     }
-} // end of "colorOnBottomWins"
+} // end of "colorOnProcWins"
 
 
 
 /*
   Function:
-   colorOffBottomWins
+   colorOffProcWins
 
   Description:
    Sets the a color pair attribute OFF for the bottom windows.
@@ -1933,37 +1925,54 @@ void colorOnBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
   Output:
    NONE
 */
-void colorOffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
+void colorOffProcWins(const std::unordered_map<int, CursesWindow*>& wins,
 			int colorPair)
 {
   for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
     {
       wattroff(wins.at(i)->getWindow(), COLOR_PAIR(colorPair));
     }  
-} // end of "colorOffBottomWins"
+} // end of "colorOffProcWins"
 
 
 
-void attrOnBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void attrOnProcWins(const std::unordered_map<int, CursesWindow*>& wins,
 		      int attr)
 {
   for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
     {
       wattron(wins.at(i)->getWindow(), attr);
     }  
-} // end of "colorOffBottomWins"
+} // end of "colorOffProcWins"
 
 
 
+/*
+  Function:
 
-void attrOffBottomWins(const std::unordered_map<int, CursesWindow*>& wins,
+  Description:
+
+  Input:
+
+  Output:
+*/
+void attrOffProcWins(const std::unordered_map<int, CursesWindow*>& wins,
 		       int attr)
 {
   for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
     {
       wattroff(wins.at(i)->getWindow(), attr);
     }  
-} // end of "colorOffBottomWins"
+} // end of "colorOffProcWins"
 
 
 
@@ -2234,7 +2243,6 @@ void printCpuDataWins(const std::unordered_map<int, CursesWindow*>& wins,
 
 
 
-
 /*
   Function:
    printMemWins
@@ -2280,7 +2288,6 @@ void printMemWins(const std::unordered_map<int, CursesWindow*>& wins)
 	    0,
 	    outString.c_str());
 } // end of "printMemWins"
-
 
 
 
@@ -2429,28 +2436,6 @@ void printMemDataWins(const std::unordered_map<int, CursesWindow*>& wins,
 void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
 		  const std::vector<std::string>& allTopLines)
 {
-  /*
-  mvwaddstr(wins.at(_TOPWIN)->getWindow(),
-	    0,
-	    0,
-	    allTopLines.at(0).c_str());
-  mvwaddstr(wins.at(_TASKSWIN)->getWindow(),
-	    0,
-	    0,
-	    allTopLines.at(1).c_str());
-  mvwaddstr(wins.at(_CPUWIN)->getWindow(),
-	    0,
-	    0,
-	    allTopLines.at(2).c_str());
-  mvwaddstr(wins.at(_MEMWIN)->getWindow(),
-	    0,
-	    0,
-	    allTopLines.at(3).c_str());
-  mvwaddstr(wins.at(_MEMWIN)->getWindow(),
-	    1,
-	    0,
-	    allTopLines.at(4).c_str());
-  */
 } // end of "printTopWins"
 
 
@@ -2657,7 +2642,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	  if(procData.at(pidList.at(i))->getS() == 'R'||
 	     procData.at(pidList.at(i))->getS() == 'Z')
 	    {
-	      attrOnBottomWins(wins, A_BOLD);
+	      attrOnProcWins(wins, A_BOLD);
 	    }
 	  
 	  // PID
@@ -2811,8 +2796,8 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	    }
 	      
 	  outString = procData.at(pidList.at(i))->getCOMMAND();
-
-	  size_t maxLen = wins.at(_COMMANDWIN)->getNumCols();
+	  int maxLen = wins.at(_COMMANDWIN)->getNumCols();
+	  
 	  if(maxLen > outString.length())
 	    {
 	      outString = outString.substr(0, maxLen);
@@ -2823,7 +2808,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 		    0,
 		    outString.c_str());
 
-	  attrOffBottomWins(wins, A_BOLD);
+	  attrOffProcWins(wins, A_BOLD);
 	}
     }
 } // end of "printProcs"
@@ -2847,7 +2832,6 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
    const std::string    - The resulting string of whitespace characters.
 */
 const std::string createColorLine(const int& len)
-
 {
   std::string temp;
   for(int i = 0; i < len; i++)
@@ -2911,7 +2895,7 @@ void printLine(const std::unordered_map<int, CursesWindow*>& wins,
 
 /*
   Function:
-   shiftBottomWinsLeft
+   shiftProcWinsLeft
 
   Description:
    Shifts all the bottom windows left one shift aligning the new first
@@ -2929,8 +2913,8 @@ void printLine(const std::unordered_map<int, CursesWindow*>& wins,
   Output:
    NONE  
 */
-void shiftBottomWinsLeft(std::unordered_map<int, CursesWindow*>& wins,
-			 const int& shiftX)
+void shiftProcWinsLeft(std::unordered_map<int, CursesWindow*>& wins,
+		       const int& shiftX)
 {
   int totalShifts = 0;
   int currWin = shiftX;
@@ -2938,11 +2922,9 @@ void shiftBottomWinsLeft(std::unordered_map<int, CursesWindow*>& wins,
 
   // delete the current window at x-position "0" freeing it from memory
   wins.at(currWin)->deleteWindow();
-
   // move the window index forward to the first window that that needs moving
   // starting at the X-Position of the previously deleted window
   currWin++;
-
   // get the total number of needed right shifts
   totalShifts = _COMMANDWIN - shiftX; // = getTotalShifts(wins, shiftX + 1);
 
@@ -2971,13 +2953,13 @@ void shiftBottomWinsLeft(std::unordered_map<int, CursesWindow*>& wins,
       // update the numlines of the window
       wins.at(currWin)->setNumLines(wins.at(_MAINWIN)->getNumLines() - _YOFFSET);
     }
-} // end of "shiftBottomWinsLeft"
+} // end of "shiftProcWinsLeft"
 
 
 
 /*
   Function:
-   shiftBottomWinsRight
+   shiftProcWinsRight
 
   Description:
    Shifts all the bottom windows right one shift aligning the new first
@@ -2995,17 +2977,16 @@ void shiftBottomWinsLeft(std::unordered_map<int, CursesWindow*>& wins,
   Output:
    NONE
 */
-void shiftBottomWinsRight(std::unordered_map<int, CursesWindow*>& wins,
-			  const int& shiftX)
+void shiftProcWinsRight(std::unordered_map<int, CursesWindow*>& wins,
+			const int& shiftX)
 {
   int currWin = shiftX;
   int totalShifts = 0;
 
   wins.at(shiftX - 1)->setStartX(0);
-
   // get the total number of needed shifts
   totalShifts = _COMMANDWIN - shiftX + 1;
-
+  
   // shift the windows
   for(int i = 0; i < totalShifts; i++, currWin++)
     {
@@ -3013,7 +2994,6 @@ void shiftBottomWinsRight(std::unordered_map<int, CursesWindow*>& wins,
       wins.at(currWin)->setStartX(wins.at(currWin - 1)->getStartX() +
 				  wins.at(currWin - 1)->getNumCols() +
 				  1);
-      
       // move the window to the new starting position
       mvwin(wins.at(currWin)->getWindow(),
 	    wins.at(currWin)->getStartY(),
@@ -3027,7 +3007,7 @@ void shiftBottomWinsRight(std::unordered_map<int, CursesWindow*>& wins,
 				    wins.at(shiftX - 1)->getStartY(),
 				    wins.at(shiftX - 1)->getStartX());
 
-} // end of "shiftBottomWinsRight"
+} // end of "shiftProcWinsRight"
 
 
 
@@ -3051,15 +3031,17 @@ void shiftBottomWinsRight(std::unordered_map<int, CursesWindow*>& wins,
 void drawBoxes(const std::unordered_map<int, CursesWindow*>& wins)
 {
   char val = 'A';
-
   std::unordered_map<int, CursesWindow*>::const_iterator it;
+  
   for(it = wins.begin(); it != wins.end(); it++)
     {
       if(val == '[')
 	{
 	  val = 'A';
 	}
+      
       val++;
+      
       if(it->second->getWindow() != nullptr)
 	{
 	  box(it->second->getWindow(), val, val);
@@ -3191,10 +3173,10 @@ void printBadInputString(const std::unordered_map<int, CursesWindow*>& wins,
 			 const std::string& outString)
 {
   std::string colorLine;
+  
   curs_set(0);
   wattroff(wins.at(window)->getWindow(),
 	   A_BOLD);
-		      
   // clear the line where the prompt will be printed
   colorLine = createColorLine(wins.at(window)->getNumCols());
   printLine(wins,
@@ -3203,7 +3185,6 @@ void printBadInputString(const std::unordered_map<int, CursesWindow*>& wins,
 	    _WHITE_TEXT,
 	    window,
 	    colorLine);
-				     
   // define and print the prompt
   printLine(wins,
 	    yOffset,
@@ -3211,7 +3192,6 @@ void printBadInputString(const std::unordered_map<int, CursesWindow*>& wins,
 	    _BLACK_TEXT,
 	    window,
 	    outString);
-  
   wrefresh(wins.at(window)->getWindow());
   doupdate();  
 } // end of "printBadInputString"
@@ -3281,8 +3261,6 @@ void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
 	    1,
 	    1,
 	    outString.c_str());
-  
-
   wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_BLACK_TEXT));
 
   // print graph
