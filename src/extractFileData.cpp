@@ -119,7 +119,7 @@ void createFileCSV(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   csvOut.open(tempPath);
 
   for(std::unordered_map<int, ProcessInfo*>::const_iterator it = allProcessInfo.begin();
-	it != allProcessInfo.end(); it++)
+      it != allProcessInfo.end(); it++)
     {
       tempCommand = it->second->getCOMMAND();
       csvOut << tempCommand;
@@ -765,13 +765,16 @@ const bool findDeadProcesses(const std::vector<int>& pids,
 			     std::vector<int>& pidsDead)
 {
   bool foundDead = false;
-  for(int i = 0; i < pidsOld.size(); i++)
+
+  for(std::vector<int>::const_iterator outer = pidsOld.begin();
+      outer != pidsOld.end(); outer++)
     {
       bool exists = false;
 
-      for(int j = 0; j < pids.size(); j++)
+      for(std::vector<int>::const_iterator inner = pids.begin();
+	  inner != pids.end(); inner++)
 	{
-	  if(pidsOld.at(i) == pids.at(j))
+	  if(*outer == *inner)
 	    {
 	      exists = true;
 	      break;
@@ -781,7 +784,7 @@ const bool findDeadProcesses(const std::vector<int>& pids,
       if(exists == false)
 	{
 	  foundDead = true;
-	  pidsDead.push_back(pidsOld.at(i));
+	  pidsDead.push_back(*outer);
 	}
     }
 
@@ -816,13 +819,16 @@ const bool findDeadProcesses(const std::vector<int>& pids,
 void removeDeadProcesses(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			 const std::vector<int>& pidsDead)
 {
-  for(int i = 0; i < pidsDead.size(); i++)
+  //  for(int i = 0; i < pidsDead.size(); i++)
+  for(std::vector<int>::const_iterator it = pidsDead.begin();
+      it != pidsDead.end(); it++)
     {
-      if(allProcessInfo.count(pidsDead.at(i)) > 0)
+      if(allProcessInfo.count(*it) > 0)
 	{
-	  delete(allProcessInfo[pidsDead.at(i)]);
-	  allProcessInfo[pidsDead.at(i)] = nullptr;
-	  allProcessInfo.erase(pidsDead.at(i));
+	  //	  delete(allProcessInfo[*it]);
+	  delete(allProcessInfo.at(*it));	  
+	  allProcessInfo.at(*it) = nullptr;
+	  allProcessInfo.erase(*it);
 	}
     }  
 } // end of "removeDeadProcesses"
