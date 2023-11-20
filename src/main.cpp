@@ -154,13 +154,13 @@ int main()
   
   // loop variables
   SecondsToTime uptime;
-  std::vector<std::string> allTopLines;
+  //  std::vector<std::string> allTopLines;
   std::vector<std::string> loadAvgStrings;
   std::vector<std::string> uptimeStrings;
   std::string filePath;
   std::string timeString;
   std::vector<int> outPids;
-  int interval = 1000000;
+  int interval = 3000000;
   bool newInterval = true;
   bool entered = false;
   bool stateChanged = false;
@@ -203,7 +203,7 @@ int main()
 	entered = false;
 	newInterval = true;
       }
-    
+
     if(newInterval == true)
       {
 	users.clear();
@@ -227,7 +227,39 @@ int main()
 	// "MiB Mem: xxxx.xx total, xxxx.xx Free..."
 	extractProcMeminfo(memInfo,
 			   _PROC_MEMINFO);
-      }
+	
+	// get starting pids
+	pidsStartOld.clear();
+	pidsStartOld = pidsStart;
+	pidsStart.clear();
+	pidsStartDead.clear();
+	pidsStart = findNumericDirs(_PROC);
+
+	// find if any start interval pids died since last interval
+	if(findDeadProcesses(pidsStart, pidsStartOld, pidsStartDead))
+	  {
+	    removeDeadProcesses(procInfoStart, pidsStartDead);
+	  }
+
+	// extract per process data
+	extractProcessData(procInfoStart,
+			   pidsStart,
+			   memInfo,
+			   uptime,
+			   uptimeStrings,
+			   users);
+	numUsers = users.size();
+	// count the extracted process states for task window
+	// "Tasks: XXX total, X running..."
+	countProcessStates(procInfoStart,
+			   taskInfo);
+	// set the time string with current military time
+	timeString = uptime.returnHHMMSS(timeinfo->tm_hour,
+					 timeinfo->tm_min,
+					 timeinfo->tm_sec);	
+	// set interval flag
+	newInterval = false;
+      }    
     else if(elapsedTime >= interval)
       {
 	users.clear();
@@ -270,7 +302,7 @@ int main()
 	  }
 	
 	// extract data from /proc/uptime for very top window
-	// "current time, # users, load avg"    
+	// "current time, # users, load avg"
 	extractProcUptime(uptime,
 			  uptimeStrings,
 			  _PROC_UPTIME);
@@ -281,37 +313,6 @@ int main()
 	// "MiB Mem: xxxx.xx total, xxxx.xx Free..."
 	extractProcMeminfo(memInfo,
 			   _PROC_MEMINFO);    
-      }
-
-    if(newInterval == true)
-      {
-	// get starting pids
-	pidsStartOld.clear();
-	pidsStartOld = pidsStart;
-	pidsStart.clear();
-	pidsStartDead.clear();
-	pidsStart = findNumericDirs(_PROC);
-
-	// find if any start interval pids died since last interval
-	if(findDeadProcesses(pidsStart, pidsStartOld, pidsStartDead))
-	  {
-	    removeDeadProcesses(procInfoStart, pidsStartDead);
-	  }
-
-	// extract per process data
-	extractProcessData(procInfoStart,
-			   pidsStart,
-			   memInfo,
-			   uptime,
-			   uptimeStrings,
-			   users);
-	numUsers = users.size();
-
-	// set interval flag
-	newInterval = false;
-      }    
-    else if(elapsedTime >= interval)
-      {
 	// get end interval pids
 	pidsEndOld.clear();
 	pidsEndOld = pidsEnd;
@@ -350,20 +351,19 @@ int main()
 	      }
 	  }
 
+	// count the extracted process states for task window
+	// "Tasks: XXX total, X running..."
+	countProcessStates(procInfoEnd,
+			   taskInfo);
+	// set the time string with current military time
+	timeString = uptime.returnHHMMSS(timeinfo->tm_hour,
+					 timeinfo->tm_min,
+					 timeinfo->tm_sec);	
 	// set flags and update the new start time for interval
 	entered = true;	
 	newInterval = true;
-	startTime = currentTime;
+	startTime = currentTime;	
       }
-    
-    // count the extracted process states for task window
-    // "Tasks: XXX total, X running..."
-    countProcessStates(procInfoEnd,
-		       taskInfo);
-    // set the time string with current military time
-    timeString = uptime.returnHHMMSS(timeinfo->tm_hour,
-				     timeinfo->tm_min,
-				     timeinfo->tm_sec);
 
     // ## get user input ##
     int userInput = 0;
