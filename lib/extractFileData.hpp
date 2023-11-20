@@ -37,7 +37,7 @@ void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 void createFileCSV(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		   const std::string& filePath);
 bool makeDirectory(const std::string& dirPath);
-bool isNumericString(const std::string& inString);
+bool isNumericStr(const std::string& inString);
 bool doesDirectoryExist(const std::string& dirPath);
 const std::string returnPhraseLine(const std::string& fileName,
 				   const std::string& phrase);
@@ -49,9 +49,8 @@ const std::string returnFileLineByPhrase(const std::string& filePath,
 					 const std::string& phrase);
 std::vector<std::string> parseLine(const std::string& str);
 bool phraseExists(const std::string& line, const std::string& phrase);
-const int stringToInt(const std::string str);
-const double stringToDouble(const std::string str);
-const std::string doubleToStr(const double& val, const int& precision);
+const int strToInt(const std::string& str);
+const double strToDouble(const std::string str);
 const std::vector<int> findNumericDirs(const std::string& dirPath);
 int direntNoRecurse(const struct dirent *name);
 const std::string fixStatLine(const std::string& line);
@@ -84,4 +83,11 @@ void extractProcStat(CPUInfo& cpuInfo,
 void extractProcPidComm(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			const int pid,
 			const std::string& filePath);
+
+
+std::string doubleToStr(double value, int precision);
+std::string intToStr(int value);
+std::string chToStr(unsigned int value);
+std::string uIntToStr(unsigned int value);
+
 #endif

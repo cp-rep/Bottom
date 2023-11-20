@@ -55,7 +55,8 @@ void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	// extract per process data (USER, PR, VIRT...)
 	// /proc/[pid]/status
 	filePath.clear();
-	filePath = _PROC + std::to_string(*it);
+	//	filePath = _PROC + myToString(*it);
+	filePath = _PROC + intToStr(*it);	
 	filePath.append(_STATUS);
 	extractProcPidStatus(allProcessInfo,
 			     *it,
@@ -64,7 +65,9 @@ void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	
 	// /proc/uptime & /proc/[pid]/stat
 	filePath.clear();
-	filePath = _PROC + std::to_string(*it);
+	//	filePath = _PROC + std::to_string(*it);
+	filePath = _PROC + intToStr(*it);	
+	//	filePath = _PROC + myToString(*it);	
 	filePath.append(_STAT);
 	extractProcPidStat(allProcessInfo,
 			   memInfo,
@@ -76,7 +79,9 @@ void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	// extract COMMAND
 	// /proc/[pid]/comm
 	filePath.clear();
-	filePath = _PROC + std::to_string(*it);
+	//	filePath = _PROC + std::to_string(*it);
+	filePath = _PROC + intToStr(*it);	
+	//	filePath = _PROC + myToString(*it);	
 	filePath.append(_COMM);
 	extractProcPidComm(allProcessInfo,
 			   *it,
@@ -335,16 +340,16 @@ void extractProcStat(CPUInfo& cpuInfo,
   
   lineString = returnFileLineByNumber(filePath, 1);
   parsedLine = parseLine(lineString);
-  cpuInfo.setUs(stringToInt(parsedLine.at(1)));
-  cpuInfo.setNi(stringToInt(parsedLine.at(2)));
-  cpuInfo.setSy(stringToInt(parsedLine.at(3)));
-  cpuInfo.setId(stringToInt(parsedLine.at(4)));
-  cpuInfo.setWa(stringToInt(parsedLine.at(5)));
-  cpuInfo.setIrq(stringToInt(parsedLine.at(6)));
-  cpuInfo.setSirq(stringToInt(parsedLine.at(7)));
-  cpuInfo.setSt(stringToInt(parsedLine.at(8)));
-  cpuInfo.setGu(stringToInt(parsedLine.at(9)));
-  cpuInfo.setGun(stringToInt(parsedLine.at(10)));
+  cpuInfo.setUs(strToInt(parsedLine.at(1)));
+  cpuInfo.setNi(strToInt(parsedLine.at(2)));
+  cpuInfo.setSy(strToInt(parsedLine.at(3)));
+  cpuInfo.setId(strToInt(parsedLine.at(4)));
+  cpuInfo.setWa(strToInt(parsedLine.at(5)));
+  cpuInfo.setIrq(strToInt(parsedLine.at(6)));
+  cpuInfo.setSirq(strToInt(parsedLine.at(7)));
+  cpuInfo.setSt(strToInt(parsedLine.at(8)));
+  cpuInfo.setGu(strToInt(parsedLine.at(9)));
+  cpuInfo.setGun(strToInt(parsedLine.at(10)));
 } // end of "extractProcStat"
 
 
@@ -397,7 +402,7 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       char buff[1024];
 
       parsedLine = parseLine(lineString);
-      uidt = stringToInt(parsedLine.at(1));
+      uidt = strToInt(parsedLine.at(1));
 	      
       if(!(getpwuid_r(uidt, &userData, buff, sizeof(buff), &userDataPtr)))
 	{
@@ -425,7 +430,7 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   if(lineString != "-1")
     {
       parsedLine = parseLine(lineString);
-      tempInt = stringToInt(parsedLine.at(1));
+      tempInt = strToInt(parsedLine.at(1));
       allProcessInfo.at(currentPid)->setVIRT(tempInt);
     }
 
@@ -435,7 +440,7 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   if(lineString != "-1")
     {
       parsedLine = parseLine(lineString);
-      tempInt = stringToInt(parsedLine.at(1));
+      tempInt = strToInt(parsedLine.at(1));
       allProcessInfo.at(currentPid)->setRES(tempInt);
     }
 
@@ -445,7 +450,7 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   if(lineString != "-1")
     {
       parsedLine = parseLine(lineString);
-      tempInt = stringToInt(parsedLine.at(1));
+      tempInt = strToInt(parsedLine.at(1));
       allProcessInfo.at(currentPid)->setSHR(tempInt);
     }
 } // end of "extractProcPidStatus"
@@ -511,29 +516,29 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       int startUsage;
 
       // use uptime values for helping calculate CPU usage
-      percent = stringToDouble(uptimeStrings.at(0));      
+      percent = strToDouble(uptimeStrings.at(0));      
       uptime.setTotalSeconds(percent);
       allProcessInfo.at(currentPid)->setCPUUsage(percent);
 
       // get PR
       lineString = fixStatLine(lineString);
       parsedLine = parseLine(lineString);
-      tempInt = stringToInt(parsedLine.at(15));
+      tempInt = strToInt(parsedLine.at(15));
       allProcessInfo.at(currentPid)->setPR(tempInt);
 
       // get NI
-      tempInt = stringToInt(parsedLine.at(16));
+      tempInt = strToInt(parsedLine.at(16));
       allProcessInfo.at(currentPid)->setNI(tempInt);
 
       // get S
       allProcessInfo.at(currentPid)->setS(lineString.at(0));
 
       // get %CPU for current process
-      utime = stringToInt(parsedLine.at(11));
-      stime = stringToInt(parsedLine.at(12));
-      cutime = stringToInt(parsedLine.at(13));
-      cstime = stringToInt(parsedLine.at(14));
-      pstart = stringToInt(parsedLine.at(19));
+      utime = strToInt(parsedLine.at(11));
+      stime = strToInt(parsedLine.at(12));
+      cutime = strToInt(parsedLine.at(13));
+      cstime = strToInt(parsedLine.at(14));
+      pstart = strToInt(parsedLine.at(19));
       allProcessInfo.at(currentPid)->setUTime(utime);
       allProcessInfo.at(currentPid)->setSTime(stime);
       allProcessInfo.at(currentPid)->setCUTime(cutime);
@@ -615,7 +620,7 @@ void extractProcUptime(SecondsToTime& uptime,
   if(fileLine != "-1")
     {
       uptimeStrings = parseLine(fileLine);
-      tempInt = stoi(uptimeStrings.at(0));
+      tempInt = strToInt(uptimeStrings.at(0));      
       uptime.setHours(uptime.convertToHours(tempInt));
       uptime.setMinutes(uptime.convertToMinutes(tempInt));
       uptime.setSeconds(uptime.findRemainingSeconds(tempInt));
@@ -684,42 +689,42 @@ void extractProcMeminfo(MemInfo& memInfo,
   // extract MemTotal
   fileLine = returnFileLineByNumber(filePath, 1);
   parsedLine = parseLine(fileLine);
-  memInfo.setMemTotal(stringToInt(parsedLine.at(1)));
-
+  memInfo.setMemTotal(strToInt(parsedLine.at(1)));
+  
   // extract MemFree
   fileLine = returnFileLineByNumber(filePath, 2);
   parsedLine = parseLine(fileLine);
-  memInfo.setMemFree(stringToInt(parsedLine.at(1)));
+  memInfo.setMemFree(strToInt(parsedLine.at(1)));  
 
   // extract MemAvailable
   fileLine = returnFileLineByNumber(filePath, 3);
   parsedLine = parseLine(fileLine);
-  memInfo.setMemAvailable(stringToInt(parsedLine.at(1)));
+  memInfo.setMemAvailable(strToInt(parsedLine.at(1)));
 
   // extract Buffer
   fileLine = returnFileLineByNumber(filePath, 4);
   parsedLine = parseLine(fileLine);
-  memInfo.setBuffers(stringToInt(parsedLine.at(1)));
+  memInfo.setBuffers(strToInt(parsedLine.at(1)));
 
   // extract Cached
   fileLine = returnFileLineByNumber(filePath, 5);
   parsedLine = parseLine(fileLine);
-  memInfo.setCached(stringToInt(parsedLine.at(1)));
+  memInfo.setCached(strToInt(parsedLine.at(1)));  
 
   // extract SwapTotal
   fileLine = returnFileLineByNumber(filePath, 15);
   parsedLine = parseLine(fileLine);
-  memInfo.setSwapTotal(stringToInt(parsedLine.at(1)));
+  memInfo.setSwapTotal(strToInt(parsedLine.at(1)));  
 
   // extract SwapFree
   fileLine = returnFileLineByNumber(filePath, 16);
   parsedLine = parseLine(fileLine);
-  memInfo.setSwapFree(stringToInt(parsedLine.at(1)));
+  memInfo.setSwapFree(strToInt(parsedLine.at(1)));
 
   // extract SReclaimable and calculate related values
   fileLine = returnFileLineByNumber(filePath, 26);
   parsedLine = parseLine(fileLine);
-  memInfo.setSReclaimable(stringToInt(parsedLine.at(1)));
+  memInfo.setSReclaimable(strToInt(parsedLine.at(1)));  
   memInfo.setMemUsed(memInfo.calculateMemUsed());
   memInfo.setSwapUsed(memInfo.calculateSwapUsed());
   memInfo.setBuffCache(memInfo.calculateBuffCache());  
@@ -963,7 +968,7 @@ const int returnFirstIntFromLine(const std::string& line)
     }
   else
     {
-      return stoi(temp);
+      return strToInt(temp);      
     }
 } // end of "returnFirstIntFromLine"
 
@@ -1185,47 +1190,7 @@ const std::vector<int> findNumericDirs(const std::string& dirPath)
 
 /*
   Function:
-   stringToInt
-
-  Description:
-   Converts an incoming string to an int type iff the string contains
-   only numeric characters.
-
-  Input:
-   str                  - A constant string object type that should
-                          contain the numeric characters we wish to
-			  convert to an integer type and return it.
-
-  Output:
-   int                  - A constant integer type that should contain
-                          the result of the conversion.
-*/
-const int stringToInt(const std::string str)
-{
-  int val = 0;
-  
-  if(!str.empty())
-    {
-      for(int i = 0; i < str.length(); i++)
-	{
-	  if(str.at(i) < '0' || str.at(i) > '9')
-	    {
-	      return 0;
-	    }
-	}
-      
-      std::stringstream container(str);
-      container >> val;
-    }
-  
-  return val;
-} // end of "stringToInt"
-
-
-
-/*
-  Function:
-   stringToDouble
+   strToDouble
 
   Description:
    Converts an incoming string to a double type iff the string contains
@@ -1240,7 +1205,7 @@ const int stringToInt(const std::string str)
    double               - A constant double type that is the result of
                           the conversion.
  */
-const double stringToDouble(const std::string str)
+const double strToDouble(const std::string str)
 {
   double val = 0;
   double dotCount = 0;
@@ -1270,7 +1235,7 @@ const double stringToDouble(const std::string str)
     }
   
   return val;  
-} // end of "stringToDouble"
+} // end of "strToDouble"
 
 
 
@@ -1454,58 +1419,7 @@ const std::string fixStatLine(const std::string& line)
 
 /*
   Function:
-   doubleToStr
-
-  Description:
-   Converts an incoming double type to a string.  The second parameter
-   determines the amount of "precision" there are in decimal places
-   to append.
-
-  Input:
-   val                  - A reference to a constant double type that
-                          will be converted to a string.
-
-   precision            - A reference to a constant integer type that
-                          determines the number of decimal places the
-			  caller chose to store in the string.
-  Output:
-   string               - A const string object type that is the result
-                          of the double to string conversion.
-*/
-const std::string doubleToStr(const double& val, const int& precision)
-{
-  std::string valString = std::to_string(val);
-  std::string temp;
-
-  int i;
-  for(i = 0; i < valString.length() && valString.at(i) != '.'; i++)
-    {
-      temp.push_back(valString.at(i));
-    }
-
-  if(precision > 0)
-      {
-      if(i != valString.length() && valString.at(i) == '.')
-	{
-	  temp.push_back(valString.at(i));
-	  i++;
-      
-	  for(int j = 0; j < precision && i < valString.length(); j++, i++)
-	    {
-	      temp.push_back(valString.at(i));
-	    }
-	}
-    }
-  
-  return temp;
-} // end of "doubleToStr"
-
-
-
-
-/*
-  Function:
-   isNumericString
+   isNumericStr
 
   Description:
    Traverses a string and checks that all characters are numeric characters.
@@ -1520,7 +1434,7 @@ const std::string doubleToStr(const double& val, const int& precision)
    bool                 - A bool object that is true if all characters
                           in the inString were numeric, false otherwise.
 */
-bool isNumericString(const std::string& inString)
+bool isNumericStr(const std::string& inString)
 {
 
   if(inString.empty())
@@ -1538,4 +1452,102 @@ bool isNumericString(const std::string& inString)
     }
 
   return true;
-} // end of "isNumericString"
+} // end of "isNumericStr"
+
+
+
+/*
+  Function:
+   strToInt
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+const int strToInt(const std::string& str)
+{
+  const char* cstr = str.c_str();
+  char* endptr;
+  int base = 10;
+
+  int value = static_cast<int>(std::strtol(cstr, &endptr, base));
+
+  return value;
+} // end of "strToInt"
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+  
+*/
+std::string doubleToStr(double value, int precision)
+{
+  char buffer[64];
+  std::sprintf(buffer, "%.*f", precision, value);
+  return std::string(buffer);
+}
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+  
+*/
+std::string intToStr(int value)
+{
+  char buffer[64];
+  std::sprintf(buffer, "%d", value);
+  return std::string(buffer);
+}
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+  
+*/
+std::string uIntToStr(unsigned int value)
+{
+  char buffer[64];
+  std::sprintf(buffer, "%u", value);
+  return std::string(buffer);
+}
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+  
+*/
+std::string chToStr(char value)
+{
+  char buffer[2] = {value, 0};
+  return std::string(buffer);
+}
