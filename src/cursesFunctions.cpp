@@ -290,11 +290,29 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
    defineTopWins
 
   Description:
+   Uses incoming parameters to intialize and define window objects and
+   data output for the very top line windows of the Bottom program.
 
   Input:
+   HHMMSS               - A const string object type that holds the current
+                          military time.
+			  
+   numDays              - A const int type that holds the number of days the
+                          system has been up.
+
+   numHours             - A const int type that holds the number of hours the
+                          system has been up.
+
+   numMinutes           - A const int type that holds the number of minutes
+                          the system has been up.
+
+   parsedLoadAvg        - A const vector<string> object type that holds the
+                          data for the /proc/loadavg file, parsed into a
+			  individual strings for each value.
 
   Output:
-   NONE
+   string               - A const string object type that should contain
+                          the result of the created top line.
 */
 void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
 		   const std::string HHMMSS,
