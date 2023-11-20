@@ -1,7 +1,10 @@
 /*
-  File: extractFileData.cpp
+  File:
+   extractFileData.cpp
+   
   Description:
- */
+   The function implementations for the extractFileData.hpp file.
+*/
 #include "extractFileData.hpp"
 #include <cstdlib>
 #include <dirent.h>
@@ -36,47 +39,47 @@ void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   std::string filePath;
   ProcessInfo* process;  
 
-    // update/add process data for still running and new found processes
-    for(int i = 0; i < pids.size(); i++)
+  // update/add process data for still running and new found processes
+  for(std::vector<int>::const_iterator it = pids.begin(); it != pids.end(); it++)
       {
 	// if new process was found, allocate it
-	if(allProcessInfo.count(pids.at(i)) == 0)
+	if(allProcessInfo.count(*it) == 0)
 	  {
 	    process = new ProcessInfo();
-	    allProcessInfo.insert(std::make_pair(pids.at(i), process));
+	    allProcessInfo.insert(std::make_pair(*it, process));
 	  }
 	
 	// set pid of current process
-	allProcessInfo.at(pids.at(i))->setPID(pids.at(i));
+	allProcessInfo.at(*it)->setPID(*it);
 
 	// extract per process data (USER, PR, VIRT...)
 	// /proc/[pid]/status
 	filePath.clear();
-	filePath = _PROC + std::to_string(pids.at(i));
+	filePath = _PROC + std::to_string(*it);
 	filePath.append(_STATUS);
 	extractProcPidStatus(allProcessInfo,
-			     pids.at(i),
+			     *it,
 			     filePath,
 			     users);
 	
 	// /proc/uptime & /proc/[pid]/stat
 	filePath.clear();
-	filePath = _PROC + std::to_string(pids.at(i));
+	filePath = _PROC + std::to_string(*it);
 	filePath.append(_STAT);
 	extractProcPidStat(allProcessInfo,
 			   memInfo,
 			   uptime,
-			   pids.at(i),
+			   *it,
 			   uptimeStrings,
 			   filePath);
 
 	// extract COMMAND
 	// /proc/[pid]/comm
 	filePath.clear();
-	filePath = _PROC + std::to_string(pids.at(i));
+	filePath = _PROC + std::to_string(*it);
 	filePath.append(_COMM);
 	extractProcPidComm(allProcessInfo,
-			   pids.at(i),
+			   *it,
 			   filePath);
       }  
 } // end of "extractProcessData"
@@ -656,105 +659,6 @@ void extractProcLoadavg(std::vector<std::string>& loadAvgStrings,
   fileLine = returnFileLineByNumber(filePath, 1);
   loadAvgStrings = parseLine(fileLine);
 } // end of "extractProcLoadavg"
-
-
-
-/*
-  Function:
-   createTopLine
-
-  Description:
-   Uses incoming parameters to create the output string for the very top
-   default line of the Top utility program.  The created line is returned.
-
-  Input:
-   HHMMSS               - A const string object type that holds the current
-                          military time.
-			  
-   numDays              - A const int type that holds the number of days the
-                          system has been up.
-
-   numHours             - A const int type that holds the number of hours the
-                          system has been up.
-
-   numMinutes           - A const int type that holds the number of minutes
-                          the system has been up.
-
-   parsedLoadAvg        - A const vector<string> object type that holds the
-                          data for the /proc/loadavg file, parsed into a
-			  individual strings for each value.
-
-  Output:
-   string               - A const string object type that should contain
-                          the result of the created top line.
-*/
-const std::string createTopLine(const std::string HHMMSS,
-				const int numDays,
-				const int numHours,
-				const int numMinutes,
-				const std::vector<std::string> parsedLoadAvg,
-				const int& numUsers)
-{
-  std::string tempTopString;
-  tempTopString.append("top - ");
-  tempTopString.append(HHMMSS);
-  tempTopString.append(" up ");
-
-  if(numDays < 1)
-    {
-      if(numHours < 1)
-	{
-	  tempTopString.append(std::to_string(numMinutes));
-	  tempTopString.append(" min, ");
-	}
-      else
-	{
-	  if(numHours < 10)
-	    {
-	      tempTopString.append(" ");
-	    }
-	  tempTopString.append(std::to_string(numHours));
-	  tempTopString.append(":"); 
-	  if(numMinutes < 10)
-	    {
-	      tempTopString.append("0");
-	    }
-	  tempTopString.append(std::to_string(numMinutes));
-	  tempTopString.append(", ");
-	}
-    }
-
-  else if(numDays == 1)
-    {
-      tempTopString.append(std::to_string(numDays));
-      tempTopString.append(" day, ");
-    }
-
-  else
-    {
-      tempTopString.append(std::to_string(numDays));      
-      tempTopString.append(" days, ");
-    }
-  
-  tempTopString.append(std::to_string(numUsers));
-
-  if(numUsers == 1)
-    {
-      tempTopString.append(" user,  load average: ");
-    }
-  else
-    {
-      tempTopString.append(" users,  load average: ");
-    }
-  
-  tempTopString.append(parsedLoadAvg.at(0));
-  tempTopString.append(", ");
-  tempTopString.append(parsedLoadAvg.at(1));
-  tempTopString.append(", ");
-  tempTopString.append(parsedLoadAvg.at(2));
-
-    return tempTopString;
-} // end of "createTopLine"
 
 
 

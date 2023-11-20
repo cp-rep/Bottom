@@ -3,6 +3,11 @@
    extractFileData.hpp
 
   Description:
+   This header file contains functions that interface with files on the
+   Linux system for reading and extracting OS data such as process, cpu, or
+   memory inforomation. Other functions assist with this process such as
+   checking for directories or updating variables/objects that contain
+   previously extracted data based on dynamic changes in the OS files.
 */
 #ifndef EXTRACTFILEDATA_HPP
 #define EXTRACTFILEDATA_HPP
@@ -23,7 +28,6 @@
 #include "taskInfo.hpp"
 #include "secondsToTime.hpp"
 
-
 void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			const std::vector<int>& pids,
 			MemInfo& memInfo,
@@ -33,6 +37,7 @@ void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 void createFileCSV(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		   const std::string& filePath);
 bool makeDirectory(const std::string& dirPath);
+bool isNumericString(const std::string& inString);
 bool doesDirectoryExist(const std::string& dirPath);
 const std::string returnPhraseLine(const std::string& fileName,
 				   const std::string& phrase);
@@ -53,6 +58,8 @@ const std::string fixStatLine(const std::string& line);
 const bool findDeadProcesses(const std::vector<int>& pids,
 			     const std::vector<int>& pidsOld,
 			     std::vector<int>& pidsDead);
+void countProcessStates(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+			TaskInfo& taskInfo);
 void removeDeadProcesses(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			 const std::vector<int>& pidsDead);
 void extractProcUptime(SecondsToTime& uptime,
@@ -62,12 +69,6 @@ void extractProcLoadavg(std::vector<std::string>& loadAvgStrings,
 			const std::string& filePath);
 void extractProcMeminfo(MemInfo& memInfo,
 			const std::string& filePath);			
-const std::string createTopLine(const std::string HHMMSS,
-				const int numDays,
-				const int numHours,
-				const int numMinutes,
-				const std::vector<std::string> parsedLoadAvg,
-				const int& numUsers);				
 void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			  const int currentPid,
 			  std::string& filePath,
@@ -80,14 +81,7 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			const std::string& filePath);
 void extractProcStat(CPUInfo& cpuInfo,
 		     const std::string& filePath);
-void defineCpusLine(std::vector<std::string>& allTopLines);
-void defineMemSwapLine(std::vector<std::string>& allTopLines);
-void defineMemMiBLine(std::vector<std::string>& allTopLines);
-void countProcessStates(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-			TaskInfo& taskInfo);
-void defineTasksLine(std::vector<std::string>& allTopLines);
 void extractProcPidComm(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			const int pid,
 			const std::string& filePath);
-bool isNumericString(const std::string& inString);
 #endif
