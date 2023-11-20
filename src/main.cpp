@@ -334,17 +334,22 @@ int main()
 	numUsers = users.size();
 
 	// find if any process data changed and calc per process cpu usage
-	for(int i = 0; i < pidsEnd.size(); i++)
+	//	for(int i = 0; i < pidsEnd.size(); i++)
+	for(std::vector<int>::iterator outer = pidsEnd.begin();
+	    outer != pidsEnd.end(); outer++)	
 	  {
-	    for(int j = 0; j < pidsStart.size(); j++)
+	    //	    for(int j = 0; j < pidsStart.size(); j++)
+	    for(std::vector<int>::iterator inner = pidsStart.begin();
+		inner != pidsStart.end(); inner++)
 	      {
-		if(pidsEnd.at(i) == pidsStart.at(j))
+		//		if(pidsEnd.at(i) == pidsStart.at(j))
+		if(*inner == *outer)		
 		  {
-		    procInfoEnd.at(pidsEnd.at(i))->
-		      calcProcCPUUsage(*procInfoStart.at(pidsStart.at(j)),
-				       *procInfoEnd.at(pidsEnd.at(i)));
-		    procInfoStart.at(pidsStart.at(j))->
-		      setCPUUsage(procInfoEnd.at(pidsEnd.at(i))->getCPUUsage());
+		    procInfoEnd.at(*inner)->
+		      calcProcCPUUsage(*procInfoStart.at(*outer),
+				       *procInfoEnd.at(*inner));
+		    procInfoStart.at(*outer)->
+		      setCPUUsage(procInfoEnd.at(*inner)->getCPUUsage());
 		  }
 	      }
 	  }
