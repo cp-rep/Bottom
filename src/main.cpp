@@ -154,7 +154,6 @@ int main()
   
   // loop variables
   SecondsToTime uptime;
-  //  std::vector<std::string> allTopLines;
   std::vector<std::string> loadAvgStrings;
   std::vector<std::string> uptimeStrings;
   std::string filePath;
