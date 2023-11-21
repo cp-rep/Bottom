@@ -14,8 +14,6 @@
 #include <unordered_map>
 #include <sys/param.h>
 #include <sys/stat.h>
-#include <iostream>
-#include <ncurses.h>
 
 
 
@@ -121,7 +119,6 @@ const int strToInt(const std::string& str)
 
 
 
-
 /*
   Function:
    strToDouble
@@ -170,7 +167,6 @@ const double strToDouble(const std::string str)
   
   return val;  
 } // end of "strToDouble"
-
 
 
 
@@ -297,7 +293,6 @@ std::vector<std::string> parseLine(const std::string& str)
 
 
 
-
 /*
   Function:
    returnFileLineByPhrase
@@ -409,6 +404,7 @@ bool phraseExists(const std::string& line, const std::string& phrase)
 
   return phraseExists;
 } // end of "phraseExists"
+
 
 
 /*
@@ -695,6 +691,7 @@ void extractProcMeminfo(MemInfo& memInfo,
 } // end of "extractProcMemInfo"
 
 
+
 /*
   Function:
    extractProcUptime
@@ -969,8 +966,6 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       startUsage = (utime + cutime)/(uptime.getTotalSeconds() - (pstart/100));
       allProcessInfo.at(currentPid)->setCPUUsage(startUsage);
       
-      
-
       /*
       percent = std::ceil(percent * 100);
       percent = percent /100;
@@ -1426,7 +1421,7 @@ int direntNoRecurse(const struct dirent *name)
 {
   return 1;
 } // end of "direntNoRecurse"
-  
+
 
 
 /*
@@ -1554,6 +1549,3 @@ bool isNumericStr(const std::string& inString)
 
   return true;
 } // end of "isNumericStr"
-
-
-
