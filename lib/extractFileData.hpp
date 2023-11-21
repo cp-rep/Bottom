@@ -27,14 +27,12 @@
 #include "taskInfo.hpp"
 #include "secondsToTime.hpp"
 
-
 std::string chToStr(unsigned int value);
 std::string intToStr(int value);
 std::string uIntToStr(unsigned int value);
 std::string doubleToStr(double value, int precision);
 const int strToInt(const std::string& str);
 const double strToDouble(const std::string str);
-
 const std::string fixStatLine(const std::string& line);
 std::vector<std::string> parseLine(const std::string& str);
 bool phraseExists(const std::string& line, const std::string& phrase);
@@ -81,7 +79,6 @@ bool isNumericStr(const std::string& inString);
 bool testNumericDir(const std::string& dirPath);
 const std::vector<int> findNumericDirs(const std::string& dirPath);
 int direntNoRecurse(const struct dirent *name);
-
 const bool findDeadProcesses(const std::vector<int>& pids,
 			     const std::vector<int>& pidsOld,
 			     std::vector<int>& pidsDead);
