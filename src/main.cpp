@@ -122,6 +122,8 @@ int main()
   // window related vars
   std::unordered_map<int, CursesWindow*> wins;
   std::string colorLine;
+  int numLines;
+  int numCols;
   
   // state related vars
   int progState = 0;
@@ -147,8 +149,6 @@ int main()
   // graph related vars
   std::queue<double> cpuUsageVals;
   std::queue<double> memUsageVals;
-  const int graphMaxCols = wins.at(_MAINWIN)->getNumCols() -
-    wins.at(_COMMANDWIN)->getNumCols();
   int cpuGraphCount = 1;
   int memGraphCount = 1;
   
@@ -166,6 +166,8 @@ int main()
   auto startTime = std::chrono::high_resolution_clock::now();
   
   do{
+    getmaxyx(stdscr, numLines, numCols);
+    const int graphMaxCols = numCols - wins.at(_COMMANDWIN)->getNumCols();
     outPids.clear();
 
     auto currentTime = std::chrono::high_resolution_clock::now();
@@ -273,13 +275,19 @@ int main()
 				cpuInfoEnd);
 
 	// store cpu utilization in queue for graph output
-	if(cpuUsageVals.empty() || cpuUsageVals.size() < (graphMaxCols/2) + 1)
+	if( cpuUsageVals.empty() ||
+	    (cpuUsageVals.size() < (graphMaxCols/_GRAPHBARWIDTH) + 1) )
 	  {
 	    cpuUsageVals.push(cpuUsage.utilization);
 	  }
 	else
 	  {
-	    cpuUsageVals.pop();
+	    // deallocate any graph vals larger than our chosen size
+	    for(int i = cpuUsageVals.size(); i > ((graphMaxCols/_GRAPHBARWIDTH) + 1); i--)
+	      {
+		cpuUsageVals.pop();
+	      }
+	    
 	    cpuUsageVals.push(cpuUsage.utilization);
 	  }
 
@@ -289,13 +297,19 @@ int main()
 	double usage = 100 - ((avail/total) * 100);
 	
 	// store current memory utilization
-	if(memUsageVals.empty() || memUsageVals.size() < (graphMaxCols/2) + 1)
+	if( memUsageVals.empty() ||
+	    (memUsageVals.size() < (graphMaxCols/_GRAPHBARWIDTH) + 1) )
 	  {
 	    memUsageVals.push(usage);
 	  }
 	else
 	  {
-	    memUsageVals.pop();
+	    // deallocate any graph vals larger than our chosen size
+	    for(int i = memUsageVals.size(); i > ((graphMaxCols/_GRAPHBARWIDTH) + 1); i--)
+	      {
+		memUsageVals.pop();
+	      }
+	    
 	    memUsageVals.push(usage);
 	  }
 	
