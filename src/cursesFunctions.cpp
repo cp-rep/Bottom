@@ -47,28 +47,6 @@ void initializeCurses()
 
 
 /*
-  Function
-
-  Description:
-
-  Input:
-
-  Output:
-*/
-void resetToWinStartState(std::unordered_map<int, CursesWindow*>& wins)
-{
-  clearAllWins(wins);
-  wins.clear();
-  initializeStartingWindows(wins);
-  defineProcWinsStartVals(wins);
-  defineTopWinsStartVals(wins);    
-  defineTopWinsDataStartVals(wins);
-  defineGraphWinStartVals(wins);
-} // end of "resetToWinStartState"
-
-
-
-/*
   Function:
    initializeStartingWindows
    
@@ -90,6 +68,137 @@ void initializeStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
       wins.insert(std::make_pair(i, newWindow));
     }
 } // end of "initializeStartingWindows"
+
+
+
+/*
+  Function:
+   refreshAllWins
+
+  Description:
+   Refreshes all currently active and defined CursesWindow objects.
+
+  Input:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by values in the file
+                          _cursesWinConsts.hpp.                
+  Output:
+   NONE
+*/
+void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins)
+{
+  std::unordered_map<int, CursesWindow*>::const_iterator it = wins.begin();
+  std::vector<int> tempWins;
+
+  // store all currently initialized window indexes
+  for(it = wins.begin(); it != wins.end(); it++)
+    {
+      if(it->second->getWindow() != nullptr)
+	{
+	  tempWins.push_back(it->first);
+	}
+    }
+
+  // sort them in ascending order
+  std::sort(tempWins.begin(), tempWins.end());
+
+  // refresh the initialized windows
+  for(std::vector<int>::iterator vecIt = tempWins.begin();
+      vecIt != tempWins.end();
+      vecIt++)
+    {
+      wnoutrefresh(wins.at(*vecIt)->getWindow());
+    }
+  
+} // end of "refreshAllWins"
+
+
+
+/*
+  Function:
+   clearTopWins
+
+  Description:
+   Clears currently active and defined CursesWindow object screens for the top
+   five "windows". All "erased" data is  stored in the screen buffer waiting for a 
+   call to refresh() to erase it.
+
+  Input:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by values in the file
+                          _cursesWinConsts.hpp.            
+  Output:
+   NONE
+*/
+void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins)
+{
+  for(int i = _TOPWIN; i <= _MEMAVAILDATAWIN; i++)
+    {
+      werase(wins.at(i)->getWindow());
+
+    }
+} // end of "clearTopWins"
+
+
+
+/*
+  Function:
+   clearProcWins
+
+  Description:
+   Clears currently active and defined CursesWindow object screens for the bottom
+   windows "PID, USER, PR, NI.."  All "erased" data is  stored in the screen buffer 
+   waiting for a call to refresh() to erase it.
+
+  Input:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by values in the file
+                          _cursesWinConsts.hpp.          
+  Output:
+   NONE
+*/
+void clearProcWins(const std::unordered_map<int, CursesWindow*>& wins)
+{
+  for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
+    {
+      werase(wins.at(i)->getWindow());
+    }
+} // end of "clearProcWins"
+
+
+
+/*
+  Function:
+   clearAllWins
+
+  Description:
+   Clears all currently active and defined CursesWindow object screens. All
+   "erased" data is stored in the screen buffer waiting for a call to refresh()
+   to erase it.
+
+  Input:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by values in the file
+                          _cursesWinConsts.hpp.              
+  Output:
+   NONE
+*/
+void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins)
+{
+  std::unordered_map<int, CursesWindow*>::const_iterator it;
+  for(it = wins.begin(); it != wins.end(); it++)
+    {
+      werase(it->second->getWindow());
+    }
+} // end of "clearAllWins"
 
 
 
@@ -267,6 +376,7 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
   startY = _YOFFSET;
   startX += _PROCTIMEWINCOLS  + 1;
   std::string commandLine = "COMMAND";
+  
   for(int i = commandLine.length(); i < numCols; i++)
     {
       commandLine.push_back(' ');
@@ -282,291 +392,6 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				     startY,
 				     startX);
 } // end of "defineProcWinsStartVals"
-
-
-
-/*
-  Function:
-   defineTopWins
-
-  Description:
-   Uses incoming parameters to intialize and define window objects and
-   data output for the very top line windows of the Bottom program.
-
-  Input:
-   HHMMSS               - A const string object type that holds the current
-                          military time.
-			  
-   numDays              - A const int type that holds the number of days the
-                          system has been up.
-
-   numHours             - A const int type that holds the number of hours the
-                          system has been up.
-
-   numMinutes           - A const int type that holds the number of minutes
-                          the system has been up.
-
-   parsedLoadAvg        - A const vector<string> object type that holds the
-                          data for the /proc/loadavg file, parsed into a
-			  individual strings for each value.
-
-  Output:
-   string               - A const string object type that should contain
-                          the result of the created top line.
-*/
-void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
-		   const std::string HHMMSS,
-		   const int numDays,
-		   const int numHours,
-		   const int numMinutes,
-		   const std::vector<std::string> parsedLoadAvg,
-		   const int& numUsers)
-{
-  std::string days = intToStr(numDays);
-  std::string hours = intToStr(numHours);
-  std::string minutes = intToStr(numMinutes);
-  std::string users = intToStr(numUsers);  
-  std::string outString;
-  std::string timeType;
-  std::string userString;
-  std::string uptime;
-  int uptimeDataCols = 0;
-  int loadAvgWinCols = 0;
-  int userCols = 0;
-  int userDataCols = users.length();
-  int uptimePostCols = 0;
-  bool postWin = false;
-  int nextWinStartX = 0;
-
-  if(numDays < 1)
-    {
-      if(numHours < 1)
-	{
-	  uptime.append(minutes);
-	  uptimeDataCols = minutes.length();
-	  uptimePostCols = 4;  // 'min,'
-	  timeType = "min,";
-	  postWin = true;
-	}
-      else
-	{
-	  if(numHours < 10)
-	    {
-	      uptime.append(" ");
-	      uptimeDataCols += 1;
-	    }
-	  uptime.append(hours);
-	  uptime.append(":");
-	  if(numMinutes < 10)
-	    {
-	      uptime.append("0");
-	    }
-
-	  uptime.append(minutes);
-	  uptime.append(",");
-	  uptimeDataCols += hours.length();
-	  uptimeDataCols += 4;
-	}
-    }
-  else if(numDays == 1)
-    {
-      uptime.append(days);
-      uptimeDataCols = days.length();
-      uptimePostCols = 4; // 'day,'
-      timeType = "day,";
-      postWin = true;
-    }
-  else
-    {
-      uptime.append(days);
-      uptimeDataCols = days.length();
-      uptimePostCols = 5; // 'days,'
-      timeType = "days,";
-      postWin = true;
-    }
-
-  if(numUsers == 1)
-    {
-      userCols = 5;
-      userString = "user,";
-    }
-  else
-    {
-      userCols = 6;
-      userString = "users,";
-    }
-  
-  for(int i = 0; i < 3; i++)
-    {
-      loadAvgWinCols += parsedLoadAvg.at(i).length();
-    }
-  
-  loadAvgWinCols += 4;
-  wins.at(_TOPWIN)->defineWindow(newwin(1,
-					_TOPWINCOLS,
-					_TOPWINSTARTY,
-					nextWinStartX),
-				 "bottom",
-				 1,
-				 _TOPWINCOLS,
-				 _TOPWINSTARTY,
-				 nextWinStartX);
-  outString = "bottom -";
-  mvwaddstr(wins.at(_TOPWIN)->getWindow(),
-	    0,
-	    0,
-	    outString.c_str());
-  nextWinStartX = wins.at(_TOPWIN)->getNumCols() +
-    wins.at(_TOPWIN)->getStartX() + 1;
-  wins.at(_TOPCURRTIMEWIN)->defineWindow(newwin(1,
-						_TOPCURRTIMEWINCOLS,
-						_TOPWINSTARTY,
-						nextWinStartX),
-					 "XX:XX:XX",
-					 1,
-					 _TOPCURRTIMEWINCOLS,
-					 _TOPWINSTARTY,
-					 nextWinStartX);
-  outString = HHMMSS;
-  mvwaddstr(wins.at(_TOPCURRTIMEWIN)->getWindow(),
-	    0,
-	    0,
-	    outString.c_str());  
-
-  nextWinStartX = wins.at(_TOPCURRTIMEWIN)->getNumCols() +
-    wins.at(_TOPCURRTIMEWIN)->getStartX() + 1;
-  wins.at(_TOPUPWIN)->defineWindow(newwin(1,
-					  _TOPUPWINCOLS,
-					  _TOPWINSTARTY,
-					  nextWinStartX),
-				   "up",
-				   1,
-				   _TOPUPWINCOLS,
-				   _TOPWINSTARTY,
-				   nextWinStartX);
-  outString = "up";
-  mvwaddstr(wins.at(_TOPUPWIN)->getWindow(),
-	    0,
-	    0,
-	    outString.c_str());  
-  nextWinStartX = wins.at(_TOPUPWIN)->getNumCols() +
-    wins.at(_TOPUPWIN)->getStartX() + 1;  
-  wins.at(_TOPUPDATAWIN)->defineWindow(newwin(1,
-					      uptime.length(),
-					      _TOPWINSTARTY,
-					      nextWinStartX),
-				       "",
-				       1,
-				       uptime.length(),
-				       _TOPWINSTARTY,
-				       nextWinStartX);
-  outString = uptime;
-  mvwaddstr(wins.at(_TOPUPDATAWIN)->getWindow(),
-	    0,
-	    0,
-	    outString.c_str());
-
-  if(postWin == true)
-    {
-      nextWinStartX = wins.at(_TOPUPDATAWIN)->getNumCols() +
-	wins.at(_TOPUPDATAWIN)->getStartX() + 1;        
-      wins.at(_TOPUPPOSTWIN)->defineWindow(newwin(1,
-						  uptimePostCols,
-						  _TOPWINSTARTY,
-						  nextWinStartX),
-					   "",
-					   1,
-					   uptimePostCols,
-					   _TOPWINSTARTY,
-					   nextWinStartX);
-      outString = timeType;
-      mvwaddstr(wins.at(_TOPUPPOSTWIN)->getWindow(),
-		0,
-		0,
-		outString.c_str());  
-      nextWinStartX = wins.at(_TOPUPPOSTWIN)->getNumCols() +
-	wins.at(_TOPUPPOSTWIN)->getStartX() + 1;
-    }
-  else
-    {
-      nextWinStartX = wins.at(_TOPUPDATAWIN)->getNumCols() +
-	wins.at(_TOPUPDATAWIN)->getStartX() + 1;
-    }
-
-  if(userDataCols < 10)
-    {
-      userDataCols = 2;
-    }
-  
-  wins.at(_TOPUSERDATAWIN)->defineWindow(newwin(1,
-						userDataCols,
-						_TOPWINSTARTY,
-						nextWinStartX),
-					 "",
-					 1,
-					 userDataCols,
-					 _TOPWINSTARTY,
-					 nextWinStartX);
-  outString = users;
-  mvwaddstr(wins.at(_TOPUSERDATAWIN)->getWindow(),
-	    0,
-	    0,
-	    outString.c_str());  
-  nextWinStartX = wins.at(_TOPUSERDATAWIN)->getNumCols() +
-    wins.at(_TOPUSERDATAWIN)->getStartX() + 1;        
-  wins.at(_TOPUSERWIN)->defineWindow(newwin(1,
-					    userCols,
-					    _TOPWINSTARTY,
-					    nextWinStartX),
-				     "",
-				     1,
-				     userCols,
-				     _TOPWINSTARTY,
-				     nextWinStartX);
-
-  outString = userString;
-  mvwaddstr(wins.at(_TOPUSERWIN)->getWindow(),
-	    0,
-	    0,
-	    outString.c_str());  
-  nextWinStartX = wins.at(_TOPUSERWIN)->getNumCols() +
-    wins.at(_TOPUSERWIN)->getStartX() + 2;
-  wins.at(_TOPLOADAVGWIN)->defineWindow(newwin(1,
-					       _TOPLOADAVGWINCOLS,
-					       _TOPWINSTARTY,
-					       nextWinStartX),
-					"",
-					1,
-					_TOPLOADAVGWINCOLS,
-					_TOPWINSTARTY,
-					nextWinStartX);
-  outString = "load average:";
-  mvwaddstr(wins.at(_TOPLOADAVGWIN)->getWindow(),
-	    0,
-	    0,
-	    outString.c_str());  
-
-  nextWinStartX = wins.at(_TOPLOADAVGWIN)->getNumCols() +
-    wins.at(_TOPLOADAVGWIN)->getStartX() + 1;
-  wins.at(_TOPLOADAVGDATAWIN)->defineWindow(newwin(1,
-						   loadAvgWinCols,
-						   _TOPWINSTARTY,
-						   nextWinStartX),
-					    "",
-					    1,
-					    loadAvgWinCols,
-					    _TOPWINSTARTY,
-					    nextWinStartX);
-  outString = parsedLoadAvg.at(0);
-  outString.append(", ");
-  outString.append(parsedLoadAvg.at(1));
-  outString.append(", ");
-  outString.append(parsedLoadAvg.at(2));  
-  mvwaddstr(wins.at(_TOPLOADAVGDATAWIN)->getWindow(),
-	    0,
-	    0,
-	    outString.c_str());  
-} // end of "defineTopWins"
 
 
 
@@ -1099,6 +924,360 @@ void defineGraphWinStartVals(std::unordered_map<int, CursesWindow*>& wins)
 
 
 
+/*
+  Function
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void resetToWinStartState(std::unordered_map<int, CursesWindow*>& wins)
+{
+  clearAllWins(wins);
+  wins.clear();
+  initializeStartingWindows(wins);
+  defineProcWinsStartVals(wins);
+  defineTopWinsStartVals(wins);    
+  defineTopWinsDataStartVals(wins);
+  defineGraphWinStartVals(wins);
+} // end of "resetToWinStartState"
+
+
+
+/*
+  Function:
+   defineTopWins
+
+  Description:
+   Uses incoming parameters to intialize and define window objects and
+   data output for the very top line windows of the Bottom program.
+
+  Input:
+   HHMMSS               - A const string object type that holds the current
+                          military time.
+			  
+   numDays              - A const int type that holds the number of days the
+                          system has been up.
+
+   numHours             - A const int type that holds the number of hours the
+                          system has been up.
+
+   numMinutes           - A const int type that holds the number of minutes
+                          the system has been up.
+
+   parsedLoadAvg        - A const vector<string> object type that holds the
+                          data for the /proc/loadavg file, parsed into a
+			  individual strings for each value.
+
+  Output:
+   string               - A const string object type that should contain
+                          the result of the created top line.
+*/
+void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
+		   const std::string HHMMSS,
+		   const int numDays,
+		   const int numHours,
+		   const int numMinutes,
+		   const std::vector<std::string> parsedLoadAvg,
+		   const int& numUsers)
+{
+  std::string days = intToStr(numDays);
+  std::string hours = intToStr(numHours);
+  std::string minutes = intToStr(numMinutes);
+  std::string users = intToStr(numUsers);  
+  std::string outString;
+  std::string timeType;
+  std::string userString;
+  std::string uptime;
+  int uptimeDataCols = 0;
+  int loadAvgWinCols = 0;
+  int userCols = 0;
+  int userDataCols = users.length();
+  int uptimePostCols = 0;
+  bool postWin = false;
+  int nextWinStartX = 0;
+
+  if(numDays < 1)
+    {
+      if(numHours < 1)
+	{
+	  uptime.append(minutes);
+	  uptimeDataCols = minutes.length();
+	  uptimePostCols = 4;  // 'min,'
+	  timeType = "min,";
+	  postWin = true;
+	}
+      else
+	{
+	  if(numHours < 10)
+	    {
+	      uptime.append(" ");
+	      uptimeDataCols += 1;
+	    }
+	  uptime.append(hours);
+	  uptime.append(":");
+	  if(numMinutes < 10)
+	    {
+	      uptime.append("0");
+	    }
+
+	  uptime.append(minutes);
+	  uptime.append(",");
+	  uptimeDataCols += hours.length();
+	  uptimeDataCols += 4;
+	}
+    }
+  else if(numDays == 1)
+    {
+      uptime.append(days);
+      uptimeDataCols = days.length();
+      uptimePostCols = 4; // 'day,'
+      timeType = "day,";
+      postWin = true;
+    }
+  else
+    {
+      uptime.append(days);
+      uptimeDataCols = days.length();
+      uptimePostCols = 5; // 'days,'
+      timeType = "days,";
+      postWin = true;
+    }
+
+  if(numUsers == 1)
+    {
+      userCols = 5;
+      userString = "user,";
+    }
+  else
+    {
+      userCols = 6;
+      userString = "users,";
+    }
+  
+  for(int i = 0; i < 3; i++)
+    {
+      loadAvgWinCols += parsedLoadAvg.at(i).length();
+    }
+  
+  loadAvgWinCols += 4;
+  wins.at(_TOPWIN)->defineWindow(newwin(1,
+					_TOPWINCOLS,
+					_TOPWINSTARTY,
+					nextWinStartX),
+				 "bottom",
+				 1,
+				 _TOPWINCOLS,
+				 _TOPWINSTARTY,
+				 nextWinStartX);
+  outString = "bottom -";
+  mvwaddstr(wins.at(_TOPWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+  nextWinStartX = wins.at(_TOPWIN)->getNumCols() +
+    wins.at(_TOPWIN)->getStartX() + 1;
+  wins.at(_TOPCURRTIMEWIN)->defineWindow(newwin(1,
+						_TOPCURRTIMEWINCOLS,
+						_TOPWINSTARTY,
+						nextWinStartX),
+					 "XX:XX:XX",
+					 1,
+					 _TOPCURRTIMEWINCOLS,
+					 _TOPWINSTARTY,
+					 nextWinStartX);
+  outString = HHMMSS;
+  mvwaddstr(wins.at(_TOPCURRTIMEWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());  
+
+  nextWinStartX = wins.at(_TOPCURRTIMEWIN)->getNumCols() +
+    wins.at(_TOPCURRTIMEWIN)->getStartX() + 1;
+  wins.at(_TOPUPWIN)->defineWindow(newwin(1,
+					  _TOPUPWINCOLS,
+					  _TOPWINSTARTY,
+					  nextWinStartX),
+				   "up",
+				   1,
+				   _TOPUPWINCOLS,
+				   _TOPWINSTARTY,
+				   nextWinStartX);
+  outString = "up";
+  mvwaddstr(wins.at(_TOPUPWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());  
+  nextWinStartX = wins.at(_TOPUPWIN)->getNumCols() +
+    wins.at(_TOPUPWIN)->getStartX() + 1;  
+  wins.at(_TOPUPDATAWIN)->defineWindow(newwin(1,
+					      uptime.length(),
+					      _TOPWINSTARTY,
+					      nextWinStartX),
+				       "",
+				       1,
+				       uptime.length(),
+				       _TOPWINSTARTY,
+				       nextWinStartX);
+  outString = uptime;
+  mvwaddstr(wins.at(_TOPUPDATAWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());
+
+  if(postWin == true)
+    {
+      nextWinStartX = wins.at(_TOPUPDATAWIN)->getNumCols() +
+	wins.at(_TOPUPDATAWIN)->getStartX() + 1;        
+      wins.at(_TOPUPPOSTWIN)->defineWindow(newwin(1,
+						  uptimePostCols,
+						  _TOPWINSTARTY,
+						  nextWinStartX),
+					   "",
+					   1,
+					   uptimePostCols,
+					   _TOPWINSTARTY,
+					   nextWinStartX);
+      outString = timeType;
+      mvwaddstr(wins.at(_TOPUPPOSTWIN)->getWindow(),
+		0,
+		0,
+		outString.c_str());  
+      nextWinStartX = wins.at(_TOPUPPOSTWIN)->getNumCols() +
+	wins.at(_TOPUPPOSTWIN)->getStartX() + 1;
+    }
+  else
+    {
+      nextWinStartX = wins.at(_TOPUPDATAWIN)->getNumCols() +
+	wins.at(_TOPUPDATAWIN)->getStartX() + 1;
+    }
+
+  if(userDataCols < 10)
+    {
+      userDataCols = 2;
+    }
+  
+  wins.at(_TOPUSERDATAWIN)->defineWindow(newwin(1,
+						userDataCols,
+						_TOPWINSTARTY,
+						nextWinStartX),
+					 "",
+					 1,
+					 userDataCols,
+					 _TOPWINSTARTY,
+					 nextWinStartX);
+  outString = users;
+  mvwaddstr(wins.at(_TOPUSERDATAWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());  
+  nextWinStartX = wins.at(_TOPUSERDATAWIN)->getNumCols() +
+    wins.at(_TOPUSERDATAWIN)->getStartX() + 1;        
+  wins.at(_TOPUSERWIN)->defineWindow(newwin(1,
+					    userCols,
+					    _TOPWINSTARTY,
+					    nextWinStartX),
+				     "",
+				     1,
+				     userCols,
+				     _TOPWINSTARTY,
+				     nextWinStartX);
+
+  outString = userString;
+  mvwaddstr(wins.at(_TOPUSERWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());  
+  nextWinStartX = wins.at(_TOPUSERWIN)->getNumCols() +
+    wins.at(_TOPUSERWIN)->getStartX() + 2;
+  wins.at(_TOPLOADAVGWIN)->defineWindow(newwin(1,
+					       _TOPLOADAVGWINCOLS,
+					       _TOPWINSTARTY,
+					       nextWinStartX),
+					"",
+					1,
+					_TOPLOADAVGWINCOLS,
+					_TOPWINSTARTY,
+					nextWinStartX);
+  outString = "load average:";
+  mvwaddstr(wins.at(_TOPLOADAVGWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());  
+
+  nextWinStartX = wins.at(_TOPLOADAVGWIN)->getNumCols() +
+    wins.at(_TOPLOADAVGWIN)->getStartX() + 1;
+  wins.at(_TOPLOADAVGDATAWIN)->defineWindow(newwin(1,
+						   loadAvgWinCols,
+						   _TOPWINSTARTY,
+						   nextWinStartX),
+					    "",
+					    1,
+					    loadAvgWinCols,
+					    _TOPWINSTARTY,
+					    nextWinStartX);
+  outString = parsedLoadAvg.at(0);
+  outString.append(", ");
+  outString.append(parsedLoadAvg.at(1));
+  outString.append(", ");
+  outString.append(parsedLoadAvg.at(2));  
+  mvwaddstr(wins.at(_TOPLOADAVGDATAWIN)->getWindow(),
+	    0,
+	    0,
+	    outString.c_str());  
+} // end of "defineTopWins"
+
+
+
+/*
+  Function:
+
+  Description:
+
+  Input:
+
+  Output:
+*/
+void updateHelpWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
+{
+  int numLines;
+  int numCols;
+  int startY;
+  int startX;
+  
+  getmaxyx(stdscr, numLines, numCols);
+  wins.at(_MAINWIN)->setNumLines(numLines);
+  wins.at(_MAINWIN)->setNumCols(numCols);
+
+  // handle help window check for terminal resizing
+  if( ((_HELPWINMAXCOLS > numCols) ||
+       (_HELPWINMAXLINES > numLines)) &&
+      (wins.at(_HELPWIN)->getWindow() != nullptr) )
+    {
+      wins.at(_HELPWIN)->deleteWindow();
+      wins.at(_HELPWIN)->setWindow(nullptr);
+    }
+  else if(wins.at(_HELPWIN)->getWindow() == nullptr)
+    {
+      wins.at(_HELPWIN)->defineWindow(newwin(wins.at(_HELPWIN)->getNumLines(),
+					     wins.at(_HELPWIN)->getNumCols(),
+					     0,
+					     0),
+				      "help",
+				      wins.at(_HELPWIN)->getNumLines(),
+				      wins.at(_HELPWIN)->getNumCols(),
+				      0,
+				      0);
+    }
+
+  wnoutrefresh(wins.at(_MAINWIN)->getWindow());
+  wnoutrefresh(wins.at(_HELPWIN)->getWindow());    
+  doupdate();
+} // end of "updateHelpWindowDimensions"
+
+
 
 /*
   Function:
@@ -1522,6 +1701,35 @@ void updateGraphWinDimensions(std::unordered_map<int, CursesWindow*>& wins,
 
 /*
   Function:
+   createColorLine
+
+  Description:
+   Creates a string of white space chacaters with length of the incoming
+   parameter and returns it to the caller.
+   
+  Input:
+   len                  - A reference to a constant integer type which holds
+                          the total length of whitespace characters to
+			  define in the string.
+
+  Output:
+   const std::string    - The resulting string of whitespace characters.
+*/
+const std::string createColorLine(const int& len)
+{
+  std::string temp;
+  for(int i = 0; i < len; i++)
+    {
+      temp.push_back(' ');
+    }
+
+  return temp;
+} // end of "createColorLine"
+
+
+
+/*
+  Function:
    updateWinDimensions
 
   Description:
@@ -1573,181 +1781,45 @@ void updateWinDimensions(std::unordered_map<int, CursesWindow*>& wins,
 
 /*
   Function:
+   attrOnProcWins
 
   Description:
 
   Input:
 
-  Output:
-*/
-void updateHelpWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
-{
-  int numLines;
-  int numCols;
-  int startY;
-  int startX;
-  
-  getmaxyx(stdscr, numLines, numCols);
-  wins.at(_MAINWIN)->setNumLines(numLines);
-  wins.at(_MAINWIN)->setNumCols(numCols);
-
-  // handle help window check for terminal resizing
-  if( ((_HELPWINMAXCOLS > numCols) ||
-       (_HELPWINMAXLINES > numLines)) &&
-      (wins.at(_HELPWIN)->getWindow() != nullptr) )
-    {
-      wins.at(_HELPWIN)->deleteWindow();
-      wins.at(_HELPWIN)->setWindow(nullptr);
-    }
-  else if(wins.at(_HELPWIN)->getWindow() == nullptr)
-    {
-      wins.at(_HELPWIN)->defineWindow(newwin(wins.at(_HELPWIN)->getNumLines(),
-					     wins.at(_HELPWIN)->getNumCols(),
-					     0,
-					     0),
-				      "help",
-				      wins.at(_HELPWIN)->getNumLines(),
-				      wins.at(_HELPWIN)->getNumCols(),
-				      0,
-				      0);
-    }
-
-  wnoutrefresh(wins.at(_MAINWIN)->getWindow());
-  wnoutrefresh(wins.at(_HELPWIN)->getWindow());    
-  doupdate();
-} // end of "updateHelpWindowDimensions"
-
-
-
-/*
-  Function:
-   refreshAllWins
-
-  Description:
-   Refreshes all currently active and defined CursesWindow objects.
-
-  Input:
-   wins                 - A reference to a const unordered map
-                          <int, CursesWindow*> type. wins contains pointers
-                          to all currently allocated CursesWindow objects
-                          that can be indexed by values in the file
-                          _cursesWinConsts.hpp.                
   Output:
    NONE
 */
-void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins)
-{
-  std::unordered_map<int, CursesWindow*>::const_iterator it = wins.begin();
-  std::vector<int> tempWins;
-
-  // store all currently initialized window indexes
-  for(it = wins.begin(); it != wins.end(); it++)
-    {
-      if(it->second->getWindow() != nullptr)
-	{
-	  tempWins.push_back(it->first);
-	}
-    }
-
-  // sort them in ascending order
-  std::sort(tempWins.begin(), tempWins.end());
-
-  // refresh the initialized windows
-  for(std::vector<int>::iterator vecIt = tempWins.begin();
-      vecIt != tempWins.end();
-      vecIt++)
-    {
-      wnoutrefresh(wins.at(*vecIt)->getWindow());
-    }
-  
-} // end of "refreshAllWins"
-
-
-
-/*
-  Function:
-   clearAllWins
-
-  Description:
-   Clears all currently active and defined CursesWindow object screens. All
-   "erased" data is stored in the screen buffer waiting for a call to refresh()
-   to erase it.
-
-  Input:
-   wins                 - A reference to a const unordered map
-                          <int, CursesWindow*> type. wins contains pointers
-                          to all currently allocated CursesWindow objects
-                          that can be indexed by values in the file
-                          _cursesWinConsts.hpp.              
-  Output:
-   NONE
-*/
-void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins)
-{
-  std::unordered_map<int, CursesWindow*>::const_iterator it;
-  for(it = wins.begin(); it != wins.end(); it++)
-    {
-      werase(it->second->getWindow());
-    }
-} // end of "clearAllWins"
-
-
-
-/*
-  Function:
-   clearTopWins
-
-  Description:
-   Clears currently active and defined CursesWindow object screens for the top
-   five "windows". All "erased" data is  stored in the screen buffer waiting for a 
-   call to refresh() to erase it.
-
-  Input:
-   wins                 - A reference to a const unordered map
-                          <int, CursesWindow*> type. wins contains pointers
-                          to all currently allocated CursesWindow objects
-                          that can be indexed by values in the file
-                          _cursesWinConsts.hpp.            
-  Output:
-   NONE
-*/
-void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins)
-{
-  for(int i = _TOPWIN; i <= _MEMAVAILDATAWIN; i++)
-    {
-      werase(wins.at(i)->getWindow());
-
-    }
-} // end of "clearBottomWins"
-
-
-
-/*
-  Function:
-  clearBottomWins
-
-  Description:
-   Clears currently active and defined CursesWindow object screens for the bottom
-   windows "PID, USER, PR, NI.."  All "erased" data is  stored in the screen buffer 
-   waiting for a call to refresh() to erase it.
-
-  Input:
-   wins                 - A reference to a const unordered map
-                          <int, CursesWindow*> type. wins contains pointers
-                          to all currently allocated CursesWindow objects
-                          that can be indexed by values in the file
-                          _cursesWinConsts.hpp.          
-  Output:
-   NONE
-*/
-void clearProcWins(const std::unordered_map<int, CursesWindow*>& wins)
+void attrOnProcWins(const std::unordered_map<int, CursesWindow*>& wins,
+		      int attr)
 {
   for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
     {
-      werase(wins.at(i)->getWindow());
-    }
-} // end of "clearBottomWins"
+      wattron(wins.at(i)->getWindow(), attr);
+    }  
+} // end of "atrOffProcWins"
 
+
+
+/*
+  Function:
+   attrOffProcWins
+
+  Description:
+
+  Input:
+
+  Output:
+   NONE
+*/
+void attrOffProcWins(const std::unordered_map<int, CursesWindow*>& wins,
+		       int attr)
+{
+  for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
+    {
+      wattroff(wins.at(i)->getWindow(), attr);
+    }  
+} // end of "attrOffProcWins"
 
 
 /*
@@ -1768,7 +1840,7 @@ void clearProcWins(const std::unordered_map<int, CursesWindow*>& wins)
    NONE
 */
 void boldOnAllTopDataWins(std::unordered_map<int, CursesWindow*>& wins,
-		      int attrs)
+			  int attrs)
 {
   for(int i = _TASKSTOTALDATAWIN; i <= _MEMAVAILDATAWIN; i++)
     {
@@ -2037,46 +2109,6 @@ void colorOffProcWins(const std::unordered_map<int, CursesWindow*>& wins,
 
 /*
   Function:
-
-  Description:
-
-  Input:
-
-  Output:
-*/
-void attrOnProcWins(const std::unordered_map<int, CursesWindow*>& wins,
-		      int attr)
-{
-  for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
-    {
-      wattron(wins.at(i)->getWindow(), attr);
-    }  
-} // end of "colorOffProcWins"
-
-
-
-/*
-  Function:
-
-  Description:
-
-  Input:
-
-  Output:
-*/
-void attrOffProcWins(const std::unordered_map<int, CursesWindow*>& wins,
-		       int attr)
-{
-  for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
-    {
-      wattroff(wins.at(i)->getWindow(), attr);
-    }  
-} // end of "colorOffProcWins"
-
-
-
-/*
-  Function:
    printTasksWins
 
   Description:
@@ -2182,7 +2214,6 @@ void printTasksDataWins(const std::unordered_map<int, CursesWindow*>& wins,
 	    wins.at(_TASKSZOMBDATAWIN)->getNumCols() - outString.length(),
 	    outString.c_str());
 } // end of "printTasksDataWins"
-
 
 
 
@@ -2332,6 +2363,76 @@ void printCpuDataWins(const std::unordered_map<int, CursesWindow*>& wins,
 
 /*
   Function:
+   printMemDataWins
+
+  Description:
+   Prints the data values stored in the memInfo parameter to the corresponding
+   memMiB data windows (_MIBTOTALWIN,FREEWIN,USEDWIN...) from the _cursesWinConsts.hpp 
+   header file.  All "printed" data is stored in the screen buffer waiting for a call
+   to refresh() to print it.
+
+  Input:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+			  to all currently allocated CursesWindow objects
+			  that can be indexed by values in the file
+			  _cursesWinConsts.hpp.          
+			  
+  memInfo               - A constant reference to a MemInfo object that contains
+                          data to be printed to the MiB Mem/Swap windows.
+  Output:
+   NONE
+*/
+void printMemDataWins(const std::unordered_map<int, CursesWindow*>& wins,
+		      const MemInfo& memInfo)
+{
+  std::string outString;
+  outString = doubleToStr(KiBToMiB(memInfo.getMemTotal()), 1);
+  mvwaddstr(wins.at(_MEMTOTALDATAWIN)->getWindow(),
+	    0,
+	    wins.at(_MEMTOTALDATAWIN)->getNumCols() - outString.length(),
+	    outString.c_str());
+  outString = doubleToStr(KiBToMiB(memInfo.getMemFree()), 1);
+  mvwaddstr(wins.at(_MEMFREEDATAWIN)->getWindow(),
+	    0,
+	    wins.at(_MEMFREEDATAWIN)->getNumCols() - outString.length(),
+	    outString.c_str());
+  outString = doubleToStr(KiBToMiB(memInfo.getMemUsed()), 1);
+  mvwaddstr(wins.at(_MEMUSEDDATAWIN)->getWindow(),
+	    0,
+	    wins.at(_MEMUSEDDATAWIN)->getNumCols() - outString.length(),
+	    outString.c_str());
+  outString = doubleToStr(KiBToMiB(memInfo.getBuffCache()), 1);
+  mvwaddstr(wins.at(_MEMBUFFCACHEDATAWIN)->getWindow(),
+	    0,
+	    wins.at(_MEMBUFFCACHEDATAWIN)->getNumCols() - outString.length(),
+	    outString.c_str());
+  outString = doubleToStr(KiBToMiB(memInfo.getSwapTotal()), 1);
+  mvwaddstr(wins.at(_SWAPTOTALDATAWIN)->getWindow(),
+	    0,
+	    wins.at(_SWAPTOTALDATAWIN)->getNumCols() - outString.length(),
+	    outString.c_str());
+  outString = doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1);
+  mvwaddstr(wins.at(_SWAPFREEDATAWIN)->getWindow(),
+	    0,
+	    wins.at(_SWAPFREEDATAWIN)->getNumCols() - outString.length(),
+	    outString.c_str());
+  outString = doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1);
+  mvwaddstr(wins.at(_SWAPUSEDDATAWIN)->getWindow(),
+	    0,
+	    wins.at(_SWAPUSEDDATAWIN)->getNumCols() - outString.length(),
+	    outString.c_str());
+  outString = doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1);
+  mvwaddstr(wins.at(_MEMAVAILDATAWIN)->getWindow(),
+	    0,
+	    wins.at(_MEMAVAILDATAWIN)->getNumCols() - outString.length(),
+	    outString.c_str());
+} // end of "printMemDataWins"
+
+
+
+/*
+  Function:
    printMemWins
 
   Description:
@@ -2424,76 +2525,6 @@ void printSwapWins(const std::unordered_map<int, CursesWindow*>& wins)
 	    0,
 	    outString.c_str());
 } // end of "printSwapWins"
-
-
-
-/*
-  Function:
-   printMemDataWins
-
-  Description:
-   Prints the data values stored in the memInfo parameter to the corresponding
-   memMiB data windows (_MIBTOTALWIN,FREEWIN,USEDWIN...) from the _cursesWinConsts.hpp 
-   header file.  All "printed" data is stored in the screen buffer waiting for a call
-   to refresh() to print it.
-
-  Input:
-   wins                 - A reference to a const unordered map
-                          <int, CursesWindow*> type. wins contains pointers
-			  to all currently allocated CursesWindow objects
-			  that can be indexed by values in the file
-			  _cursesWinConsts.hpp.          
-			  
-  memInfo               - A constant reference to a MemInfo object that contains
-                          data to be printed to the MiB Mem/Swap windows.
-  Output:
-   NONE
-*/
-void printMemDataWins(const std::unordered_map<int, CursesWindow*>& wins,
-		      const MemInfo& memInfo)
-{
-  std::string outString;
-  outString = doubleToStr(KiBToMiB(memInfo.getMemTotal()), 1);
-  mvwaddstr(wins.at(_MEMTOTALDATAWIN)->getWindow(),
-	    0,
-	    wins.at(_MEMTOTALDATAWIN)->getNumCols() - outString.length(),
-	    outString.c_str());
-  outString = doubleToStr(KiBToMiB(memInfo.getMemFree()), 1);
-  mvwaddstr(wins.at(_MEMFREEDATAWIN)->getWindow(),
-	    0,
-	    wins.at(_MEMFREEDATAWIN)->getNumCols() - outString.length(),
-	    outString.c_str());
-  outString = doubleToStr(KiBToMiB(memInfo.getMemUsed()), 1);
-  mvwaddstr(wins.at(_MEMUSEDDATAWIN)->getWindow(),
-	    0,
-	    wins.at(_MEMUSEDDATAWIN)->getNumCols() - outString.length(),
-	    outString.c_str());
-  outString = doubleToStr(KiBToMiB(memInfo.getBuffCache()), 1);
-  mvwaddstr(wins.at(_MEMBUFFCACHEDATAWIN)->getWindow(),
-	    0,
-	    wins.at(_MEMBUFFCACHEDATAWIN)->getNumCols() - outString.length(),
-	    outString.c_str());
-  outString = doubleToStr(KiBToMiB(memInfo.getSwapTotal()), 1);
-  mvwaddstr(wins.at(_SWAPTOTALDATAWIN)->getWindow(),
-	    0,
-	    wins.at(_SWAPTOTALDATAWIN)->getNumCols() - outString.length(),
-	    outString.c_str());
-  outString = doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1);
-  mvwaddstr(wins.at(_SWAPFREEDATAWIN)->getWindow(),
-	    0,
-	    wins.at(_SWAPFREEDATAWIN)->getNumCols() - outString.length(),
-	    outString.c_str());
-  outString = doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1);
-  mvwaddstr(wins.at(_SWAPUSEDDATAWIN)->getWindow(),
-	    0,
-	    wins.at(_SWAPUSEDDATAWIN)->getNumCols() - outString.length(),
-	    outString.c_str());
-  outString = doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1);
-  mvwaddstr(wins.at(_MEMAVAILDATAWIN)->getWindow(),
-	    0,
-	    wins.at(_MEMAVAILDATAWIN)->getNumCols() - outString.length(),
-	    outString.c_str());
-} // end of "printMemDataWins"
 
 
 
@@ -2905,35 +2936,6 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 
 /*
   Function:
-   createColorLine
-
-  Description:
-   Creates a string of white space chacaters with length of the incoming
-   parameter and returns it to the caller.
-   
-  Input:
-   len                  - A reference to a constant integer type which holds
-                          the total length of whitespace characters to
-			  define in the string.
-
-  Output:
-   const std::string    - The resulting string of whitespace characters.
-*/
-const std::string createColorLine(const int& len)
-{
-  std::string temp;
-  for(int i = 0; i < len; i++)
-    {
-      temp.push_back(' ');
-    }
-
-  return temp;
-} // end of "createColorLine"
-
-
-
-/*
-  Function:
    printLine
 
   Description:
@@ -2978,164 +2980,6 @@ void printLine(const std::unordered_map<int, CursesWindow*>& wins,
 	    outString.c_str());
   wattroff(wins.at(window)->getWindow(), COLOR_PAIR(attrs));
 } // end of "printLine"
-
-
-
-/*
-  Function:
-   shiftProcWinsLeft
-
-  Description:
-   Shifts all the bottom windows left one shift aligning the new first
-   window at the leftmost column of the MainWindow screen.
-
-  Input:
-   wins                 - A reference to a const unordered map
-                          <int, CursesWindow*> type. wins contains pointers
-			  to all currently allocated CursesWindow objects
-			  that can be indexed by values in the file
-			  _cursesWinConsts.hpp.
-			  
-   shiftX               - The current shift state of the bottom windows.
-			  
-  Output:
-   NONE  
-*/
-void shiftProcWinsLeft(std::unordered_map<int, CursesWindow*>& wins,
-		       const int& shiftX)
-{
-  int totalShifts = 0;
-  int currWin = shiftX;
-  int startX = 0;
-
-  // delete the current window at x-position "0" freeing it from memory
-  wins.at(currWin)->deleteWindow();
-  // move the window index forward to the first window that that needs moving
-  // starting at the X-Position of the previously deleted window
-  currWin++;
-  // get the total number of needed right shifts
-  totalShifts = _COMMANDWIN - shiftX; // = getTotalShifts(wins, shiftX + 1);
-
-  for(int i = 0; i < totalShifts; i++, currWin++)
-    {
-      // set the starting window to the 0 x-position
-      if(i == 0)
-	{
-	  startX = 0;
-	}
-      // set the proceeding windows to their new starting x-positions
-      // which is the starting position of the last window + that windows
-      // total number of columns + space (1)
-      else
-	{
-	  startX = wins.at(currWin - 1)->getStartX() +
-	    wins.at(currWin - 1)->getNumCols() +
-	    1;
-	}
-      // move the windows until the total shifts have been reached
-      wins.at(currWin)->setStartX(startX);
-      mvwin(wins.at(currWin)->getWindow(),
-	    wins.at(currWin)->getStartY(),
-	    wins.at(currWin)->getStartX());
-
-      // update the numlines of the window
-      wins.at(currWin)->setNumLines(wins.at(_MAINWIN)->getNumLines() - _YOFFSET);
-    }
-} // end of "shiftProcWinsLeft"
-
-
-
-/*
-  Function:
-   shiftProcWinsRight
-
-  Description:
-   Shifts all the bottom windows right one shift aligning the new first
-   window at the leftmost column of the MainWindow screen.
-
-  Input:
-   wins                 - A reference to a const unordered map
-                          <int, CursesWindow*> type. wins contains pointers
-			  to all currently allocated CursesWindow objects
-			  that can be indexed by values in the file
-			  _cursesWinConsts.hpp.
-			  
-   shiftX               - The current shift state of the bottom windows.
-			  
-  Output:
-   NONE
-*/
-void shiftProcWinsRight(std::unordered_map<int, CursesWindow*>& wins,
-			const int& shiftX)
-{
-  int currWin = shiftX;
-  int totalShifts = 0;
-
-  wins.at(shiftX - 1)->setStartX(0);
-  // get the total number of needed shifts
-  totalShifts = _COMMANDWIN - shiftX + 1;
-  
-  // shift the windows
-  for(int i = 0; i < totalShifts; i++, currWin++)
-    {
-      // get the new starting position of the current window
-      wins.at(currWin)->setStartX(wins.at(currWin - 1)->getStartX() +
-				  wins.at(currWin - 1)->getNumCols() +
-				  1);
-      // move the window to the new starting position
-      mvwin(wins.at(currWin)->getWindow(),
-	    wins.at(currWin)->getStartY(),
-	    wins.at(currWin)->getStartX());
-    }
-
-  // create the starting window now that the windows have been shifted and
-  // update the numlines of the window
-  wins.at(shiftX - 1)->createWindow(wins.at(_MAINWIN)->getNumLines() - _YOFFSET,
-				    wins.at(shiftX - 1)->getNumCols(),
-				    wins.at(shiftX - 1)->getStartY(),
-				    wins.at(shiftX - 1)->getStartX());
-
-} // end of "shiftProcWinsRight"
-
-
-
-/*
-  Function:
-   drawBoxes
-
-  Description:
-   Draws a box for every "WINDOW" that is currently initialized and stored
-   in the "wins" object.
-
-  Input:
-   wins                 - A reference to a const unordered map
-                          <int, CursesWindow*> type. wins contains pointers
-			  to all currently allocated CursesWindow objects
-			  that can be indexed by values in the file
-			  _cursesWinConsts.hpp.       
-  Output:
-   NONE
-*/
-void drawBoxes(const std::unordered_map<int, CursesWindow*>& wins)
-{
-  char val = 'A';
-  std::unordered_map<int, CursesWindow*>::const_iterator it;
-  
-  for(it = wins.begin(); it != wins.end(); it++)
-    {
-      if(val == '[')
-	{
-	  val = 'A';
-	}
-      
-      val++;
-      
-      if(it->second->getWindow() != nullptr)
-	{
-	  box(it->second->getWindow(), val, val);
-	}
-    }
-} // end of "drawBoxes"
 
 
 
@@ -3288,6 +3132,124 @@ void printBadInputString(const std::unordered_map<int, CursesWindow*>& wins,
 
 /*
   Function:
+   shiftProcWinsLeft
+
+  Description:
+   Shifts all the bottom windows left one shift aligning the new first
+   window at the leftmost column of the MainWindow screen.
+
+  Input:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+			  to all currently allocated CursesWindow objects
+			  that can be indexed by values in the file
+			  _cursesWinConsts.hpp.
+			  
+   shiftX               - The current shift state of the bottom windows.
+			  
+  Output:
+   NONE  
+*/
+void shiftProcWinsLeft(std::unordered_map<int, CursesWindow*>& wins,
+		       const int& shiftX)
+{
+  int totalShifts = 0;
+  int currWin = shiftX;
+  int startX = 0;
+
+  // delete the current window at x-position "0" freeing it from memory
+  wins.at(currWin)->deleteWindow();
+  // move the window index forward to the first window that that needs moving
+  // starting at the X-Position of the previously deleted window
+  currWin++;
+  // get the total number of needed right shifts
+  totalShifts = _COMMANDWIN - shiftX; // = getTotalShifts(wins, shiftX + 1);
+
+  for(int i = 0; i < totalShifts; i++, currWin++)
+    {
+      // set the starting window to the 0 x-position
+      if(i == 0)
+	{
+	  startX = 0;
+	}
+      // set the proceeding windows to their new starting x-positions
+      // which is the starting position of the last window + that windows
+      // total number of columns + space (1)
+      else
+	{
+	  startX = wins.at(currWin - 1)->getStartX() +
+	    wins.at(currWin - 1)->getNumCols() +
+	    1;
+	}
+      // move the windows until the total shifts have been reached
+      wins.at(currWin)->setStartX(startX);
+      mvwin(wins.at(currWin)->getWindow(),
+	    wins.at(currWin)->getStartY(),
+	    wins.at(currWin)->getStartX());
+
+      // update the numlines of the window
+      wins.at(currWin)->setNumLines(wins.at(_MAINWIN)->getNumLines() - _YOFFSET);
+    }
+} // end of "shiftProcWinsLeft"
+
+
+
+/*
+  Function:
+   shiftProcWinsRight
+
+  Description:
+   Shifts all the bottom windows right one shift aligning the new first
+   window at the leftmost column of the MainWindow screen.
+
+  Input:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+			  to all currently allocated CursesWindow objects
+			  that can be indexed by values in the file
+			  _cursesWinConsts.hpp.
+			  
+   shiftX               - The current shift state of the bottom windows.
+			  
+  Output:
+   NONE
+*/
+void shiftProcWinsRight(std::unordered_map<int, CursesWindow*>& wins,
+			const int& shiftX)
+{
+  int currWin = shiftX;
+  int totalShifts = 0;
+
+  wins.at(shiftX - 1)->setStartX(0);
+  // get the total number of needed shifts
+  totalShifts = _COMMANDWIN - shiftX + 1;
+  
+  // shift the windows
+  for(int i = 0; i < totalShifts; i++, currWin++)
+    {
+      // get the new starting position of the current window
+      wins.at(currWin)->setStartX(wins.at(currWin - 1)->getStartX() +
+				  wins.at(currWin - 1)->getNumCols() +
+				  1);
+      // move the window to the new starting position
+      mvwin(wins.at(currWin)->getWindow(),
+	    wins.at(currWin)->getStartY(),
+	    wins.at(currWin)->getStartX());
+    }
+
+  // create the starting window now that the windows have been shifted and
+  // update the numlines of the window
+  wins.at(shiftX - 1)->createWindow(wins.at(_MAINWIN)->getNumLines() - _YOFFSET,
+				    wins.at(shiftX - 1)->getNumCols(),
+				    wins.at(shiftX - 1)->getStartY(),
+				    wins.at(shiftX - 1)->getStartX());
+
+} // end of "shiftProcWinsRight"
+
+
+
+/*
+  Function:
   
   Description:
 
@@ -3429,3 +3391,43 @@ void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
   wattroff(wins.at(winName)->getWindow(), A_BOLD);  
   wattron(wins.at(winName)->getWindow(), COLOR_PAIR(_WHITE_TEXT));
 } // end of "drawGraph"
+
+
+
+/*
+  Function:
+   drawBoxes
+
+  Description:
+   Draws a box for every "WINDOW" that is currently initialized and stored
+   in the "wins" object.
+
+  Input:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+			  to all currently allocated CursesWindow objects
+			  that can be indexed by values in the file
+			  _cursesWinConsts.hpp.       
+  Output:
+   NONE
+*/
+void drawBoxes(const std::unordered_map<int, CursesWindow*>& wins)
+{
+  char val = 'A';
+  std::unordered_map<int, CursesWindow*>::const_iterator it;
+  
+  for(it = wins.begin(); it != wins.end(); it++)
+    {
+      if(val == '[')
+	{
+	  val = 'A';
+	}
+      
+      val++;
+      
+      if(it->second->getWindow() != nullptr)
+	{
+	  box(it->second->getWindow(), val, val);
+	}
+    }
+} // end of "drawBoxes"
