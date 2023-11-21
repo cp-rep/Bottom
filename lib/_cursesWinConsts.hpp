@@ -236,6 +236,7 @@ enum _WINS {
 
 // graph window consts
 #define _GRAPHWINLINES 14
+#define _GRAPHBARWIDTH 2
 
 // help win consts
 #define _HELPWINMAXLINES 16
