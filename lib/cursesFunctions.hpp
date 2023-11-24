@@ -25,28 +25,27 @@ void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearProcWins(const std::unordered_map<int, CursesWindow*>& wins);
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins);
-void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins);
-void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins);
-void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins);
-void defineGraphWinStartVals(std::unordered_map<int, CursesWindow*>& wins);
-void resetToWinStartState(std::unordered_map<int, CursesWindow*>& wins);
-void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
+void defineProcWinsStartVals(const std::unordered_map<int, CursesWindow*>& wins);
+void defineTopWinsDataStartVals(const std::unordered_map<int, CursesWindow*>& wins);
+void defineTopWinsStartVals(const std::unordered_map<int, CursesWindow*>& wins);
+void defineGraphWinStartVals(const std::unordered_map<int, CursesWindow*>& wins);
+void defineTopWins(const std::unordered_map<int, CursesWindow*>& wins,
 		   const std::string HHMMSS,
 		   const int numDays,
 		   const int numHours,
 		   const int numMinutes,
 		   const std::vector<std::string> parsedLoadAvg,
 		   const int& numUsers);
-void updateHelpWindowDimensions(std::unordered_map<int, CursesWindow*>& wins);
-void updateTopWinDimensions(std::unordered_map<int, CursesWindow*>& wins);
-void updateProcWinDimensions(std::unordered_map<int, CursesWindow*>& wins,
+void updateHelpWindowDimensions(const std::unordered_map<int, CursesWindow*>& wins);
+void updateTopWinDimensions(const std::unordered_map<int, CursesWindow*>& wins);
+void updateProcWinDimensions(const std::unordered_map<int, CursesWindow*>& wins,
 			     const int& shiftX,
 			     const int& shiftY);
-void updateGraphWinDimensions(std::unordered_map<int, CursesWindow*>& wins,
+void updateGraphWinDimensions(const std::unordered_map<int, CursesWindow*>& wins,
 			      const int& cpuGraphCount,
 			      const int& memGraphCount);
 const std::string createColorLine(const int& len);
-void updateWinDimensions(std::unordered_map<int, CursesWindow*>& wins,
+void updateWinDimensions(const std::unordered_map<int, CursesWindow*>& wins,
 			 const int& shiftX,
 			 const int& shiftY,
 			 const int& cpuGraphCount,

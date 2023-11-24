@@ -19,6 +19,9 @@
    should be called at the beginning of the Bottom program to set Bottom to
    its functional interface.
 
+  Input/Output:
+   NONE
+   
   Input:
    NONE
 
@@ -51,13 +54,24 @@ void initializeCurses()
    initializeStartingWindows
    
   Description:
-  
+   This function creates and initializes all the necessary startup windows
+   for the Bottom program that are written to the screen on startup.  They
+   are stored in an unordered map for later use.
+   
+  Input/Output:
+   NONE
+
   Input:
-   wins                 - A reference to an unordered map that will be used to store
-                          each CursesWindow object defined in this function.  The
-                          key is from _cursesWinConsts.hpp and will match the 
-                          corresponding CursesWindow object as value.
+   NONE
+   
   Output:
+   wins                 - A reference to an unordered map <int, CursesWindow*>
+                          object type that will be used to store each
+			  CursesWindow object initialized in this function.  The
+                          keys are from _cursesWinConsts.hpp and match the 
+                          corresponding CursesWindow objects they are pointing
+			  to.
+  Returns:
    NONE
 */
 void initializeStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
@@ -76,15 +90,23 @@ void initializeStartingWindows(std::unordered_map<int, CursesWindow*>& wins)
    refreshAllWins
 
   Description:
-   Refreshes all currently active and defined CursesWindow objects.
+   Refreshes all CursesWindow objects member variables that point to a
+   currently allocated WINDOW type (values that are not nullptr). They are
+   sorted before refreshing to ensure the proper write order.
 
-  Input:
+  Input/Output:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type. wins contains pointers
                           to all currently allocated CursesWindow objects
-                          that can be indexed by values in the file
-                          _cursesWinConsts.hpp.                
+                          that can be indexed by key values in the file
+                          _cursesWinConsts.hpp.
+  Input:
+   NONE
+   
   Output:
+   NONE
+
+  Returns:
    NONE
 */
 void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins)
@@ -121,17 +143,24 @@ void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins)
    clearTopWins
 
   Description:
-   Clears currently active and defined CursesWindow object screens for the top
-   five "windows". All "erased" data is  stored in the screen buffer waiting for a 
-   call to refresh() to erase it.
+   Clears currently active and defined CursesWindow object windows for the top
+   five lines of Bottom.  This is approximately 55 windows. All "erased" windows
+   are stored in the screen buffers waiting for a call to refresh() to write the
+   changes.
 
+  Input/Output:
+   NONE
+   
   Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type. wins contains pointers
                           to all currently allocated CursesWindow objects
                           that can be indexed by values in the file
-                          _cursesWinConsts.hpp.            
+                          _cursesWinConsts.hpp.
   Output:
+   NONE
+   
+  Returns:
    NONE
 */
 void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins)
@@ -150,17 +179,24 @@ void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins)
    clearProcWins
 
   Description:
-   Clears currently active and defined CursesWindow object screens for the bottom
-   windows "PID, USER, PR, NI.."  All "erased" data is  stored in the screen buffer 
-   waiting for a call to refresh() to erase it.
+   Clears currently active and defined CursesWindow object windows for the bottom
+   windows that containt process data "PID, USER, PR, NI.."  All "erased" windows
+   are stored in the screen buffer waiting for a call to refresh() to write the
+   change.
 
+  Input/Output:
+   NONE
+   
   Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type. wins contains pointers
                           to all currently allocated CursesWindow objects
-                          that can be indexed by values in the file
-                          _cursesWinConsts.hpp.          
+                          that can be indexed by key values in the file
+                          _cursesWinConsts.hpp.
   Output:
+   NONE
+
+  Returns:
    NONE
 */
 void clearProcWins(const std::unordered_map<int, CursesWindow*>& wins)
@@ -179,16 +215,22 @@ void clearProcWins(const std::unordered_map<int, CursesWindow*>& wins)
 
   Description:
    Clears all currently active and defined CursesWindow object screens. All
-   "erased" data is stored in the screen buffer waiting for a call to refresh()
-   to erase it.
+   "erased" screens are stored in the screen buffer waiting for a call to
+   refresh() to write the changes.
 
+  Input/Output:
+   NONE
+   
   Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type. wins contains pointers
                           to all currently allocated CursesWindow objects
-                          that can be indexed by values in the file
-                          _cursesWinConsts.hpp.              
+                          that can be indexed by key values in the file
+                          _cursesWinConsts.hpp.
   Output:
+   NONE
+
+  Returns:
    NONE
 */
 void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins)
@@ -207,13 +249,25 @@ void clearAllWins(const std::unordered_map<int, CursesWindow*>& wins)
    defineProcWinsStartVals
    
   Description:
-
+   Defines the allocated CursesWindows objects accessible with key/value pairs that
+   contain WINDOW related variables for outputing read process data.
+  
+  Input/Output:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by key values in the file
+                          _cursesWinConsts.hpp.  
   Input:
+   NONE
 
   Output:
    NONE
+
+  Returns:
+   NONE
 */
-void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
+void defineProcWinsStartVals(const std::unordered_map<int, CursesWindow*>& wins)
 {
   int numLines;
   int numCols;
@@ -400,15 +454,26 @@ void defineProcWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
    defineTopWinsDataStartVals
 
   Description:
+   Defines the allocated CursesWindows objects accessible with key/value pairs that
+   contain WINDOW related variables for outputing dynamically read OS data.
 
   Input:
+   NONE
 
+  Input/Output:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by key values in the file
+                          _cursesWinConsts.hpp.
   Output:
    NONE
+
+  Returns:
+   NONE
 */
-void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
+void defineTopWinsDataStartVals(const std::unordered_map<int, CursesWindow*>& wins)
 {
-  
   wins.at(_TASKSTOTALDATAWIN)->defineWindow(newwin(1,
 						   _TASKSDATAWINCOLS,
 						   _TASKSDATAWINSTARTY,
@@ -607,13 +672,25 @@ void defineTopWinsDataStartVals(std::unordered_map<int, CursesWindow*>& wins)
    defineTopWinsStartVals
 
   Description:
+   Defines the allocated CursesWindows objects accessible with key/value pairs that
+   contain WINDOW related variables for outputing dynamically read OS data.  
 
+  Input/Output:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by key values in the file
+                          _cursesWinConsts.hpp.
   Input:
-
+   NONE
+   
   Output:
    NONE
+   
+  Returns:
+   NONE
 */
-void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
+void defineTopWinsStartVals(const std::unordered_map<int, CursesWindow*>& wins)
 {
   wins.at(_TASKSWIN)->defineWindow(newwin(1,
 					  _TASKSWINCOLS,
@@ -624,7 +701,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				   _TASKSWINCOLS,
 				   _TASKSWINSTARTY,
 				   _TASKSWINSTARTX);
-  
   wins.at(_TASKSTOTALWIN)->defineWindow(newwin(1,
 					       _TASKSTOTALWINCOLS,
 					       _TASKSWINSTARTY,
@@ -634,7 +710,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					_TASKSTOTALWINCOLS,
 					_TASKSWINSTARTY,
 					_TASKSTOTALWINSTARTX);
-
   wins.at(_TASKSRUNWIN)->defineWindow(newwin(1,
 					     _TASKSRUNWINCOLS,
 					     _TASKSWINSTARTY,
@@ -644,7 +719,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				      _TASKSRUNWINCOLS,
 				      _TASKSWINSTARTY,
 				      _TASKSRUNWINSTARTX);
-  
   wins.at(_TASKSSLEEPWIN)->defineWindow(newwin(1,
 					       _TASKSSLEEPWINCOLS,
 					       _TASKSWINSTARTY,
@@ -654,7 +728,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					_TASKSSLEEPWINCOLS,
 					_TASKSWINSTARTY,
 					_TASKSSLEEPWINSTARTX);
-  
   wins.at(_TASKSSTOPWIN)->defineWindow(newwin(1,
 					      _TASKSSTOPWINCOLS,
 					      _TASKSWINSTARTY,
@@ -664,7 +737,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				       _TASKSSTOPWINCOLS,
 				       _TASKSWINSTARTY,
 				       _TASKSSTOPWINSTARTX);
-  
   wins.at(_TASKSZOMBWIN)->defineWindow(newwin(1,
 					      _TASKSZOMBWINCOLS,
 					      _TASKSWINSTARTY,
@@ -674,7 +746,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				       _TASKSZOMBWINCOLS,
 				       _TASKSWINSTARTY,
 				       _TASKSZOMBWINSTARTX);
-
   wins.at(_CPUWIN)->defineWindow(newwin(1,
 					_CPUWINCOLS,
 					_CPUWINSTARTY,
@@ -684,7 +755,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				 _CPUWINCOLS,
 				 _CPUWINSTARTY,
 				 _CPUWINSTARTX);
-  
   wins.at(_CPUUSWIN)->defineWindow(newwin(1,
 					  _CPUUSWINCOLS,
 					  _CPUWINSTARTY,
@@ -694,7 +764,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				   _CPUUSWINCOLS,
 				   _CPUWINSTARTY,
 				   _CPUUSWINSTARTX);
-  
   wins.at(_CPUSYWIN)->defineWindow(newwin(1,
 					  _CPUSYWINCOLS,
 					  _CPUWINSTARTY,
@@ -704,7 +773,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				   _CPUSYWINCOLS,
 				   _CPUWINSTARTY,
 				   _CPUSYWINSTARTX); 
-  
   wins.at(_CPUNIWIN)->defineWindow(newwin(1,
 					  _CPUNIWINCOLS,
 					  _CPUWINSTARTY,
@@ -714,7 +782,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				   _CPUNIWINCOLS,
 				   _CPUWINSTARTY,
 				   _CPUNIWINSTARTX);
-  
   wins.at(_CPUIDWIN)->defineWindow(newwin(1,
 					  _CPUIDWINCOLS,
 					  _CPUWINSTARTY,
@@ -724,7 +791,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				   _CPUIDWINCOLS,
 				   _CPUWINSTARTY,
 				   _CPUIDWINSTARTX);
-  
   wins.at(_CPUWAWIN)->defineWindow(newwin(1,
 					  _CPUWAWINCOLS,
 					  _CPUWINSTARTY,
@@ -734,7 +800,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				   _CPUWAWINCOLS,
 				   _CPUWINSTARTY,
 				   _CPUWAWINSTARTX);
-  
   wins.at(_CPUHIWIN)->defineWindow(newwin(1,
 					  _CPUHIWINCOLS,
 					  _CPUWINSTARTY,
@@ -744,7 +809,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				   _CPUHIWINCOLS,
 				   _CPUWINSTARTY,
 				   _CPUHIWINSTARTX);
-  
   wins.at(_CPUSIWIN)->defineWindow(newwin(1,
 					  _CPUSIWINCOLS,
 					  _CPUWINSTARTY,
@@ -754,7 +818,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				   _CPUSIWINCOLS,
 				   _CPUWINSTARTY,
 				   _CPUSIWINSTARTX);
-  
   wins.at(_CPUSTWIN)->defineWindow(newwin(1,
 					  _CPUSTWINCOLS,
 					  _CPUWINSTARTY,
@@ -764,7 +827,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				   _CPUSTWINCOLS,
 				   _CPUWINSTARTY,
 				   _CPUSTWINSTARTX);
-
   wins.at(_MEMWIN)->defineWindow(newwin(1,
 					_MEMWINCOLS,
 					_MEMWINSTARTY,
@@ -774,7 +836,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				 _MEMWINCOLS,
 				 _MEMWINSTARTY,
 				 _MEMWINSTARTX);
-
   wins.at(_MEMTOTALWIN)->defineWindow(newwin(1,
 					     _MEMTOTALWINCOLS,
 					     _MEMWINSTARTY,
@@ -784,8 +845,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				      _MEMTOTALWINCOLS,
 				      _MEMWINSTARTY,
 				      _MEMTOTALWINSTARTX);
-
-
   wins.at(_MEMFREEWIN)->defineWindow(newwin(1,
 					    _MEMFREEWINCOLS,
 					    _MEMWINSTARTY,
@@ -795,7 +854,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				     _MEMFREEWINCOLS,
 				     _MEMWINSTARTY,
 				     _MEMFREEWINSTARTX);
-
   wins.at(_MEMUSEDWIN)->defineWindow(newwin(1,
 					    _MEMUSEDWINCOLS,
 					    _MEMWINSTARTY,
@@ -805,7 +863,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				     _MEMUSEDWINCOLS,
 				     _MEMWINSTARTY,
 				     _MEMUSEDWINSTARTX);
-
   wins.at(_MEMBUFFCACHEWIN)->defineWindow(newwin(1,
 						 _MEMBUFFCACHEWINCOLS,
 						 _MEMWINSTARTY,
@@ -826,8 +883,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				  _SWAPWINCOLS,
 				  _SWAPWINSTARTY,
 				  _SWAPWINSTARTX);
-  
-
   wins.at(_SWAPTOTALWIN)->defineWindow(newwin(1,
 						 _SWAPTOTALWINCOLS,
 						 _SWAPWINSTARTY,
@@ -837,7 +892,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					  _SWAPTOTALWINCOLS,
 					  _SWAPWINSTARTY,
 					  _SWAPTOTALWINSTARTX);
-
   wins.at(_SWAPFREEWIN)->defineWindow(newwin(1,
 					     _SWAPFREEWINCOLS,
 					     _SWAPWINSTARTY,
@@ -847,7 +901,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				      _SWAPFREEWINCOLS,
 				      _SWAPWINSTARTY,
 				      _SWAPFREEWINSTARTX);
-
   wins.at(_SWAPUSEDWIN)->defineWindow(newwin(1,
 						_SWAPUSEDWINCOLS,
 						_SWAPWINSTARTY,
@@ -857,7 +910,6 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
 					 _SWAPUSEDWINCOLS,
 					 _SWAPWINSTARTY,
 					 _SWAPUSEDWINSTARTX);
-
   wins.at(_MEMAVAILWIN)->defineWindow(newwin(1,
 					     _MEMAVAILWINCOLS,
 					     _SWAPWINSTARTY,
@@ -876,13 +928,25 @@ void defineTopWinsStartVals(std::unordered_map<int, CursesWindow*>& wins)
    defineGraphWinStartVals
 
   Description:
+   Defines the starting window values for the for the CPU Utilization and Main Memory
+   Usage windows that the incoming wins parameter points to with Key/Value pairs.
 
+  Input/Output:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by key values in the file
+                          _cursesWinConsts.hpp.
   Input:
-
+   NONE
+   
   Output:
    NONE
+   
+  Returns:
+   NONE
 */
-void defineGraphWinStartVals(std::unordered_map<int, CursesWindow*>& wins)
+void defineGraphWinStartVals(const std::unordered_map<int, CursesWindow*>& wins)
 {
   int numLines;
   int numCols;
@@ -893,10 +957,12 @@ void defineGraphWinStartVals(std::unordered_map<int, CursesWindow*>& wins)
   numCols = (((wins.at(_MAINWIN)->getNumCols() -
 	       wins.at(_COMMANDWIN)->getNumCols() -
 	       wins.at(_COMMANDWIN)->getStartX())/2) - 2);
+  
   if(numCols %2 != 0)
     {
       numCols++;
     }
+  
   startY = _YOFFSET + 1;
   startX = wins.at(_MAINWIN)->getNumCols() - numCols;
   wins.at(_CPUGRAPHWIN)->defineWindow(newwin(numLines,
@@ -908,7 +974,6 @@ void defineGraphWinStartVals(std::unordered_map<int, CursesWindow*>& wins)
 				      numCols,
 				      startY,
 				      startX);
-  
   // define mem graph
   startY = startY + numLines;
   wins.at(_MEMGRAPHWIN)->defineWindow(newwin(numLines,
@@ -925,36 +990,20 @@ void defineGraphWinStartVals(std::unordered_map<int, CursesWindow*>& wins)
 
 
 /*
-  Function
-
-  Description:
-
-  Input:
-
-  Output:
-*/
-void resetToWinStartState(std::unordered_map<int, CursesWindow*>& wins)
-{
-  clearAllWins(wins);
-  wins.clear();
-  initializeStartingWindows(wins);
-  defineProcWinsStartVals(wins);
-  defineTopWinsStartVals(wins);    
-  defineTopWinsDataStartVals(wins);
-  defineGraphWinStartVals(wins);
-} // end of "resetToWinStartState"
-
-
-
-/*
   Function:
    defineTopWins
 
   Description:
-   Uses incoming parameters to intialize and define window objects and
-   data output for the very top line windows of the Bottom program.
+   Uses incoming parameters to intialize and define window objects for
+   data output to the very top line windows of the Bottom program.
 
-  Input:
+  Input/Ouput:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by key values in the file
+                          _cursesWinConsts.hpp.
+  Input:  
    HHMMSS               - A const string object type that holds the current
                           military time.
 			  
@@ -970,12 +1019,13 @@ void resetToWinStartState(std::unordered_map<int, CursesWindow*>& wins)
    parsedLoadAvg        - A const vector<string> object type that holds the
                           data for the /proc/loadavg file, parsed into a
 			  individual strings for each value.
-
   Output:
-   string               - A const string object type that should contain
-                          the result of the created top line.
+   NONE
+   
+  Returns:
+   NONE
 */
-void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
+void defineTopWins(const std::unordered_map<int, CursesWindow*>& wins,
 		   const std::string HHMMSS,
 		   const int numDays,
 		   const int numHours,
@@ -1233,14 +1283,30 @@ void defineTopWins(std::unordered_map<int, CursesWindow*>& wins,
 
 /*
   Function:
+   updateHelpWindowDimensions
 
   Description:
+   Determines the current screen size of the standard screen and deletes or
+   creates the hel pwindow dependent on those values.  For example, if the
+   current screen size is too small to fit the contents of the help window,
+   the help window will delete until otherwise.
 
+  Input/Output:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by key values in the file
+                          _cursesWinConsts.hpp.
   Input:
+   NONE
 
   Output:
+   NONE
+
+  Returns:
+   NONE
 */
-void updateHelpWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
+void updateHelpWindowDimensions(const std::unordered_map<int, CursesWindow*>& wins)
 {
   int numLines;
   int numCols;
@@ -1281,14 +1347,30 @@ void updateHelpWindowDimensions(std::unordered_map<int, CursesWindow*>& wins)
 
 /*
   Function:
+   updateTopWinDimensions
 
   Description:
+   Determines the current screen size of the standard screen and deletes or
+   creates top windows dependent on those values.  For example, if the
+   current screen size is too small to fit the contents any window being
+   checked, that specific window will delete itself until otherwise.
 
+  Input/Output:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by key values in the file
+                          _cursesWinConsts.hpp.
   Input:
+   NONE
 
   Output:
+   NONE
+
+  Returns:
+   NONE
 */
-void updateTopWinDimensions(std::unordered_map<int, CursesWindow*>& wins)
+void updateTopWinDimensions(const std::unordered_map<int, CursesWindow*>& wins)
 {
   int numLines;
   int numCols;
@@ -1326,17 +1408,34 @@ void updateTopWinDimensions(std::unordered_map<int, CursesWindow*>& wins)
 
 
 /*
- Function:
-  updateProcWinDimensions
+  Function:
+   updateProcWinDimensions
 
- Description:
+  Description:
+   Determines the current screen size of the standard screen and deletes or
+   creates process windows dependent on those values.  For example, if the
+   current screen size is too small to fit the contents any window being
+   checked, that specific window will delete itself until otherwise.
 
- Input:
+  Input/Output:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by key values in the file
+                          _cursesWinConsts.hpp.
+  Input:
+   shiftX               - The current "horizontal" shift state of the process
+                          windows.
+			  
+   shiftY               - The current "vertical" shift state of the process
+                          windows.
+  Output:
+   NONE
 
- Output:
- 
+  Returns:
+   NONE
 */
-void updateProcWinDimensions(std::unordered_map<int, CursesWindow*>& wins,
+void updateProcWinDimensions(const std::unordered_map<int, CursesWindow*>& wins,
 			     const int& shiftX,
 			     const int& shiftY)
 {
@@ -1391,13 +1490,30 @@ void updateProcWinDimensions(std::unordered_map<int, CursesWindow*>& wins,
    updateGraphWinDimensions
 
   Description:
+   Determines the current screen size of the standard screen and deletes or
+   creates graph windows dependent on those values.  For example, if the
+   current screen size is too small to fit the contents any window being
+   checked, that specific window will delete itself until otherwise.
 
+  Input/Output:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by key values in the file
+                          _cursesWinConsts.hpp.  
   Input:
+   cpuGraphCount        - A reference to a const integer type that represents
+                          the current state of the cpu graph.
 
+   memGraphCount        - A reference to a const integer type that represents
+                          the current state of the mem graph.
   Output:
    NONE
+
+  Returns:
+   NONE
 */
-void updateGraphWinDimensions(std::unordered_map<int, CursesWindow*>& wins,
+void updateGraphWinDimensions(const std::unordered_map<int, CursesWindow*>& wins,
 			      const int& cpuGraphCount,
 			      const int& memGraphCount)
 {
@@ -1706,13 +1822,18 @@ void updateGraphWinDimensions(std::unordered_map<int, CursesWindow*>& wins,
   Description:
    Creates a string of white space chacaters with length of the incoming
    parameter and returns it to the caller.
+
+  Input/Output:
+   NONE
    
   Input:
    len                  - A reference to a constant integer type which holds
                           the total length of whitespace characters to
 			  define in the string.
-
   Output:
+   NONE
+
+  Returns:
    const std::string    - The resulting string of whitespace characters.
 */
 const std::string createColorLine(const int& len)
@@ -1733,18 +1854,36 @@ const std::string createColorLine(const int& len)
    updateWinDimensions
 
   Description:
-   Updates the currently allocated process window sizes in the case of
-   a terminal resize that would impact their output or functionality.
+   A major function that gets the current dimensions of the standard screen
+   and determines if any allocated window fits within those dimensions. Minor
+   functions are called to assist with this determination.
 
+  Input/Output:
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type. wins contains pointers
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by key values in the file
+                          _cursesWinConsts.hpp.
   Input:
-   wins                 - A reference to an unordered map that will be used to store
-                          each CursesWindow object defined in this function.  The
-                          key is from _cursesWinConsts.hpp and will match the 
-                          corresponding CursesWindow object as value.
+   cpuGraphCount        - A reference to a const integer type that represents
+                          the current state of the cpu graph.
+
+   memGraphCount        - A reference to a const integer type that represents
+                          the current state of the mem graph.
+
+   shiftX               - The current "horizontal" shift state of the process
+                          windows.
+			  
+   shiftY               - The current "vertical" shift state of the process
+                          windows.			  
+			  
   Output:
    NONE
+
+  Returns:
+   NONE
 */
-void updateWinDimensions(std::unordered_map<int, CursesWindow*>& wins,
+void updateWinDimensions(const std::unordered_map<int, CursesWindow*>& wins,
 			 const int& shiftX,
 			 const int& shiftY,
 			 const int& cpuGraphCount,
