@@ -422,8 +422,8 @@ int main()
 
     // check for terminal resize and adjust windows accordingly
     updateWinDimensions(wins,
-			shiftX,
 			shiftY,
+			shiftX,
 			cpuGraphCount,
 			memGraphCount);
 
@@ -475,16 +475,16 @@ int main()
     printMemWins(wins);
     printSwapWins(wins);
     // print top wins data
-    boldOnAllTopDataWins(wins,
-			 A_BOLD);
+    attronTopDataWins(wins,
+		      A_BOLD);
     printTasksDataWins(wins,
 		       taskInfo);
     printCpuDataWins(wins,
 		     cpuUsage);
     printMemDataWins(wins,
 		     memInfo);
-    boldOffAllTopDataWins(wins,
-			  A_BOLD);
+    attroffTopDataWins(wins,
+		      A_BOLD);
     // print the color line to the main win
     colorLine = createColorLine(wins.at(_MAINWIN)->getNumCols());
     printLine(wins,
