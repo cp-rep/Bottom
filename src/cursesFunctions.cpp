@@ -1898,8 +1898,8 @@ void updateWinDimensions(const std::unordered_map<int, CursesWindow*>& wins,
   wins.at(_MAINWIN)->setNumCols(numCols);
   updateTopWinDimensions(wins);
   updateProcWinDimensions(wins,
-			  shiftX,
-			  shiftY);
+			  shiftY,
+			  shiftX);
   updateGraphWinDimensions(wins,
 			   cpuGraphCount,
 			   memGraphCount);
