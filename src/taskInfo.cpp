@@ -17,6 +17,9 @@
    The class constructor for creating TaskInfo objects and 
    initializing related class data.
 
+  Input/Output:
+   NONE
+   
   Input:
    running              - A reference to a const unsigned int
                           value that represents the state "R"
@@ -55,6 +58,9 @@
 			  
   Output:
    NONE
+
+  Returns:
+   NONE
 */
 TaskInfo::TaskInfo(const unsigned int& running,
 		   const unsigned int& unSleep,
@@ -79,12 +85,25 @@ TaskInfo::TaskInfo(const unsigned int& running,
 
 /*
   Function:
-
+   calcSleeping
+   
   Description:
+   Calculates the total number of processes considered "sleeping" and returns
+   the calculation to the caller.
+
+  Input/Output:
+   NONE
 
   Input:
-
+   NONE
+   
   Output:
+   NONE
+
+  Returns:
+   const unsigned int   - A constant unsigned integer type that should be the
+                          resulting calculation of all currently sleeping
+			  processes.
 */
 const unsigned int TaskInfo::calcSleeping() const
 {
@@ -95,12 +114,25 @@ const unsigned int TaskInfo::calcSleeping() const
 
 /*
   Function:
+   calcTotal
 
   Description:
+   Calculates the total amount of processes currently allocated by the OS
+   and returns the count to the caller.
+   
+  Input/Output:
+   NONE
 
   Input:
+   NONE
 
   Output:
+   NONE
+
+  Returns:
+   const unsigned int   - A constant unsigned integer type that should be the
+                          resulting calculation of all currently allocated
+			  processes.
 */
 const unsigned int TaskInfo::calcTotal() const
 {
