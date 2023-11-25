@@ -27,6 +27,9 @@
 
   Output:
    NONE
+
+  Returns:
+  
 */
 void initializeCurses()
 {
@@ -133,7 +136,6 @@ void refreshAllWins(const std::unordered_map<int, CursesWindow*>& wins)
     {
       wnoutrefresh(wins.at(*vecIt)->getWindow());
     }
-  
 } // end of "refreshAllWins"
 
 
@@ -168,7 +170,6 @@ void clearTopWins(const std::unordered_map<int, CursesWindow*>& wins)
   for(int i = _TOPWIN; i <= _MEMAVAILDATAWIN; i++)
     {
       werase(wins.at(i)->getWindow());
-
     }
 } // end of "clearTopWins"
 
@@ -457,18 +458,18 @@ void defineProcWinsStartVals(const std::unordered_map<int, CursesWindow*>& wins)
    Defines the allocated CursesWindows objects accessible with key/value pairs that
    contain WINDOW related variables for outputing dynamically read OS data.
 
-  Input:
+  Input/Output:
    NONE
 
-  Input/Output:
+  Input:
+   NONE
+   
+  Output:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
                           to all currently allocated CursesWindow objects
                           that can be indexed by key values in the file
-                          _cursesWinConsts.hpp.
-  Output:
-   NONE
-
+                          _cursesWinConsts.hpp.   
   Returns:
    NONE
 */
@@ -676,17 +677,17 @@ void defineTopWinsDataStartVals(const std::unordered_map<int, CursesWindow*>& wi
    contain WINDOW related variables for outputing dynamically read OS data.  
 
   Input/Output:
-   wins                 - A reference to a const unordered map
-                          <int, CursesWindow*> type that contains pointers
-                          to all currently allocated CursesWindow objects
-                          that can be indexed by key values in the file
-                          _cursesWinConsts.hpp.
+   NONE
+   
   Input:
    NONE
    
   Output:
-   NONE
-   
+   wins                 - A reference to a const unordered map
+                          <int, CursesWindow*> type that contains pointers
+                          to all currently allocated CursesWindow objects
+                          that can be indexed by key values in the file
+                          _cursesWinConsts.hpp.  
   Returns:
    NONE
 */
@@ -872,26 +873,24 @@ void defineTopWinsStartVals(const std::unordered_map<int, CursesWindow*>& wins)
 					  _MEMBUFFCACHEWINCOLS,
 					  _MEMWINSTARTY,
 					  _MEMBUFFCACHEWINSTARTX);
-
-
   wins.at(_SWAPWIN)->defineWindow(newwin(1,
 					 _SWAPWINCOLS,
 					 _SWAPWINSTARTY,
-					 _SWAPWINSTARTX),  
+					 _SWAPWINSTARTX),
 				  "total,",
 				  1,
 				  _SWAPWINCOLS,
 				  _SWAPWINSTARTY,
 				  _SWAPWINSTARTX);
   wins.at(_SWAPTOTALWIN)->defineWindow(newwin(1,
-						 _SWAPTOTALWINCOLS,
-						 _SWAPWINSTARTY,
-						 _SWAPTOTALWINSTARTX),  
-					  "total,",
-					  1,
-					  _SWAPTOTALWINCOLS,
-					  _SWAPWINSTARTY,
-					  _SWAPTOTALWINSTARTX);
+					      _SWAPTOTALWINCOLS,
+					      _SWAPWINSTARTY,
+					      _SWAPTOTALWINSTARTX),  
+				       "total,",
+				       1,
+				       _SWAPTOTALWINCOLS,
+				       _SWAPWINSTARTY,
+				       _SWAPTOTALWINSTARTX);
   wins.at(_SWAPFREEWIN)->defineWindow(newwin(1,
 					     _SWAPFREEWINCOLS,
 					     _SWAPWINSTARTY,
@@ -1444,7 +1443,8 @@ void updateProcWinDimensions(const std::unordered_map<int, CursesWindow*>& wins,
   
   getmaxyx(stdscr, numLines, numCols);
   wins.at(_MAINWIN)->setNumLines(numLines);
-  wins.at(_MAINWIN)->setNumCols(numCols);  
+  wins.at(_MAINWIN)->setNumCols(numCols);
+  
   // handle process windows terminal resizing
   for(int i = _PIDWIN; i <= _COMMANDWIN; i++)
     {
@@ -1682,6 +1682,7 @@ void updateGraphWinDimensions(const std::unordered_map<int, CursesWindow*>& wins
 	  numCols = (wins.at(_MAINWIN)->getNumCols() -
 		     wins.at(_COMMANDWIN)->getNumCols() -
 		     wins.at(_COMMANDWIN)->getStartX() - 1);
+
 	  if(wins.at(_CPUGRAPHWIN)->getWindow() != nullptr)
 	    {
 	      startY = wins.at(_CPUGRAPHWIN)->getNumLines() +
@@ -1694,7 +1695,8 @@ void updateGraphWinDimensions(const std::unordered_map<int, CursesWindow*>& wins
 
 	  startX = wins.at(_MAINWIN)->getNumCols() - numCols; 
 	}
-      
+
+      // resize creation check
       if( (wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
 	  (startX > wins.at(_COMMANDWIN)->getStartX() +
 	   wins.at(_COMMANDWIN)->getNumCols()) &&
@@ -1713,6 +1715,7 @@ void updateGraphWinDimensions(const std::unordered_map<int, CursesWindow*>& wins
 					      startY,
 					      startX);
 	}
+      // resize deletion check
       else if( (wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
 	       (startX > wins.at(_COMMANDWIN)->getStartX() +
 		wins.at(_COMMANDWIN)->getNumCols()) &&
@@ -1732,6 +1735,7 @@ void updateGraphWinDimensions(const std::unordered_map<int, CursesWindow*>& wins
 					      startY,
 					      startX);
 	}
+      // something unpredictable happened delete window
       else
 	{
 	  wins.at(_MEMGRAPHWIN)->deleteWindow();
@@ -1740,7 +1744,9 @@ void updateGraphWinDimensions(const std::unordered_map<int, CursesWindow*>& wins
     }
   else if(memGraphCount == 3)
     {
-      numLines = _GRAPHWINLINES + 10;      
+      // mode 3
+      numLines = _GRAPHWINLINES + 10;
+      // have minimum of 10 verticle parts of measurement
       if(numLines < 14)
 	{
 	  numLines = 14;
@@ -1749,6 +1755,7 @@ void updateGraphWinDimensions(const std::unordered_map<int, CursesWindow*>& wins
       numCols = (wins.at(_MAINWIN)->getNumCols() -
 		 wins.at(_COMMANDWIN)->getNumCols() -
 		 wins.at(_COMMANDWIN)->getStartX() - 1);
+      
       if(wins.at(_CPUGRAPHWIN)->getWindow() != nullptr)
 	{
 	  startY = wins.at(_CPUGRAPHWIN)->getNumLines() +
@@ -1757,9 +1764,10 @@ void updateGraphWinDimensions(const std::unordered_map<int, CursesWindow*>& wins
       else
 	{
 	  startY = _YOFFSET + 1;
-	}      
+	}
+      
       startX = wins.at(_MAINWIN)->getNumCols() - numCols;
-
+      // resize creation check
       if( (wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
 	  (startX > wins.at(_COMMANDWIN)->getStartX() +
 	   wins.at(_COMMANDWIN)->getNumCols()) &&
@@ -1778,6 +1786,7 @@ void updateGraphWinDimensions(const std::unordered_map<int, CursesWindow*>& wins
 					      startY,
 					      startX);
 	}
+      // deletion check
       else if( (wins.at(_COMMANDWIN)->getWindow() != nullptr) &&
 	       (startX > wins.at(_COMMANDWIN)->getStartX() +
 		wins.at(_COMMANDWIN)->getNumCols()) &&
@@ -1797,6 +1806,7 @@ void updateGraphWinDimensions(const std::unordered_map<int, CursesWindow*>& wins
 					      startY,
 					      startX);
 	}
+      // something unpredictable happened delete window
       else
 	{
 	  wins.at(_MEMGRAPHWIN)->deleteWindow();
@@ -1834,7 +1844,8 @@ void updateGraphWinDimensions(const std::unordered_map<int, CursesWindow*>& wins
    NONE
 
   Returns:
-   const std::string    - The resulting string of whitespace characters.
+   const std::string    - A const string object containing the resulting
+                          string of whitespace characters.
 */
 const std::string createColorLine(const int& len)
 {
@@ -1926,15 +1937,12 @@ void updateWinDimensions(const std::unordered_map<int, CursesWindow*>& wins,
    attribute parameter for each currently allocated window in the loop range.
 
   Input/Output:
-   NONE
-
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
                           to all currently allocated CursesWindow objects
                           that can be indexed by key values in the file
                           _cursesWinConsts.hpp.
-
+  Input:
    attr 	        - A const integer type that should contain the
                           desired attribute to "turn on" for the process
 			  windows.
@@ -1964,15 +1972,12 @@ void attronProcWins(const std::unordered_map<int, CursesWindow*>& wins,
    attribute parameter for each currently allocated window in the loop range.
 
   Input/Output:
-   NONE
-
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
                           to all currently allocated CursesWindow objects
                           that can be indexed by key values in the file
                           _cursesWinConsts.hpp.
-
+  Input:
    attr 	        - A const integer type that should contain the
                           desired attribute to "turn on" for the process
 			  windows.
@@ -2002,15 +2007,12 @@ void attroffProcWins(const std::unordered_map<int, CursesWindow*>& wins,
    attribute parameter for each currently allocated window in the loop range.
 
   Input/Output:
-   NONE
-
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
                           to all currently allocated CursesWindow objects
                           that can be indexed by key values in the file
                           _cursesWinConsts.hpp.
-
+  Input:
    attr 	        - A const integer type that should contain the
                           desired attribute to "turn on" for the process
 			  windows.
@@ -2040,15 +2042,12 @@ void attronTopDataWins(std::unordered_map<int, CursesWindow*>& wins,
    attribute parameter for each currently allocated window in the loop range.
 
   Input/Output:
-   NONE
-
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
                           to all currently allocated CursesWindow objects
                           that can be indexed by key values in the file
                           _cursesWinConsts.hpp.
-
+  Input:
    attr 	        - A const integer type that should contain the
                           desired attribute to "turn on" for the process
 			  windows.
@@ -2078,15 +2077,12 @@ void attroffTopDataWins(std::unordered_map<int, CursesWindow*>& wins,
    attribute parameter for each currently allocated window in the loop range.
 
   Input/Output:
-   NONE
-
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
                           to all currently allocated CursesWindow objects
                           that can be indexed by key values in the file
                           _cursesWinConsts.hpp.
-
+  Input:
    attr 	        - A const integer type that should contain the
                           desired attribute to "turn on" for the process
 			  windows.  
@@ -2116,15 +2112,12 @@ void attronTasksDataWins(std::unordered_map<int, CursesWindow*>& wins,
    attribute parameter for each currently allocated window in the loop range.
 
   Input/Output:
-   NONE
-
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
                           to all currently allocated CursesWindow objects
                           that can be indexed by key values in the file
                           _cursesWinConsts.hpp.
-
+  Input:
    attr 	        - A const integer type that should contain the
                           desired attribute to "turn on" for the process
 			  windows.  
@@ -2154,15 +2147,12 @@ void attroffTasksDataWins(const std::unordered_map<int, CursesWindow*>& wins,
    attribute parameter for each currently allocated window in the loop range.
 
   Input/Output:
-   NONE
-
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
                           to all currently allocated CursesWindow objects
                           that can be indexed by key values in the file
                           _cursesWinConsts.hpp.
-
+  Input:
    attr 	        - A const integer type that should contain the
                           desired attribute to "turn on" for the process
 			  windows.
@@ -2193,15 +2183,12 @@ void attronCpusDataWins(std::unordered_map<int, CursesWindow*>& wins,
    attribute parameter for each currently allocated window in the loop range.
 
   Input/Output:
-   NONE
-
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
                           to all currently allocated CursesWindow objects
                           that can be indexed by key values in the file
                           _cursesWinConsts.hpp.
-
+  Input:			  
    attr 	        - A const integer type that should contain the
                           desired attribute to "turn on" for the process
 			  windows.
@@ -2231,15 +2218,12 @@ void attroffCpusDataWins(std::unordered_map<int, CursesWindow*>& wins,
    attribute parameter for each currently allocated window in the loop range.
 
   Input/Output:
-   NONE
-
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
                           to all currently allocated CursesWindow objects
                           that can be indexed by key values in the file
                           _cursesWinConsts.hpp.
-
+  Input:
    attr 	        - A const integer type that should contain the
                           desired attribute to "turn on" for the process
 			  windows.
@@ -2260,7 +2244,6 @@ void attronMemDataWins(std::unordered_map<int, CursesWindow*>& wins,
 
 
 
-
 /*
   Function:
    attroffMemDataWins
@@ -2270,15 +2253,12 @@ void attronMemDataWins(std::unordered_map<int, CursesWindow*>& wins,
    attribute parameter for each currently allocated window in the loop range.
 
   Input/Output:
-   NONE
-
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
                           to all currently allocated CursesWindow objects
                           that can be indexed by key values in the file
                           _cursesWinConsts.hpp.
-
+  Input:
    attr 	        - A const integer type that should contain the
                           desired attribute to "turn on" for the process
 			  windows.
@@ -2307,16 +2287,13 @@ void attroffMemDataWins(std::unordered_map<int, CursesWindow*>& wins,
    Sets the a color pair attribute ON for the process windows.
 
   Input/Output:
-   NONE
-
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
 			  to all currently allocated CursesWindow objects
 			  that can be indexed by values in the file
 			  _cursesWinConsts.hpp.                  
-
-  colorPair             - An integer that represents a color pair initialized in
+  Input:
+   colorPair            - An integer that represents a color pair initialized in
                           the initializeCurses() function in this file.  The
 			  pre-defined parameter value is defined in
 			  _cursesWinConsts.hpp.
@@ -2345,16 +2322,13 @@ void colorOnProcWins(const std::unordered_map<int, CursesWindow*>& wins,
    Sets the a color pair attribute OFF for the process windows.
 
   Input/Output:
-   NONE
-
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
 			  to all currently allocated CursesWindow objects
 			  that can be indexed by values in the file
 			  _cursesWinConsts.hpp.                
-
-  colorPair             - An integer that represents a color pair initialized in
+  Input:
+   colorPair            - An integer that represents a color pair initialized in
                           the initializeCurses() function in this file.  The
 			  pre-defined parameter value is defined in
 			  _cursesWinConsts.hpp.
@@ -2383,14 +2357,14 @@ void colorOffProcWins(const std::unordered_map<int, CursesWindow*>& wins,
    Prints the non-data windows for the "Tasks:" line.
 
   Input/Output:
-   NONE
-
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
 			  to all currently allocated CursesWindow objects
 			  that can be indexed by values in the file
-			  _cursesWinConsts.hpp.                  
+			  _cursesWinConsts.hpp.
+  Input:
+   NONE
+   
   Output:
    NONE
 
@@ -2450,16 +2424,13 @@ void printTasksWins(const std::unordered_map<int, CursesWindow*>& wins)
    _cursesWinConsts.hpp header file.
 
   Input/Output:
-   NONE
-
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
 			  to all currently allocated CursesWindow objects
 			  that can be indexed by values in the file
-			  _cursesWinConsts.hpp.              
-			  
-  taskInfo              - A constant reference to a TaskInfo object that contains
+			  _cursesWinConsts.hpp.
+  Input:
+   taskInfo             - A constant reference to a TaskInfo object that contains
                           data to be printed to the tasks windows.
   Output:
    NONE
@@ -2509,14 +2480,14 @@ void printTasksDataWins(const std::unordered_map<int, CursesWindow*>& wins,
    Prints the non-data windows for the "CPU(s):" line.
 
   Input/Output:
-   NONE
-
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
 			  to all currently allocated CursesWindow objects
 			  that can be indexed by values in the file
-			  _cursesWinConsts.hpp.                
+			  _cursesWinConsts.hpp.
+  Input:
+   NONE
+   
   Output:
    NONE
 
@@ -2595,18 +2566,14 @@ void printCpuWins(const std::unordered_map<int, CursesWindow*>& wins)
    file. 
 
   Input/Output:
-   NONE
-
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
 			  to all currently allocated CursesWindow objects
 			  that can be indexed by values in the file
 			  _cursesWinConsts.hpp.            
-			  
-  cpuUsage               - A constant reference to a CPUUsage object that
-                           should be defined with read CPU values.
-
+  Input:			  
+   cpuUsage             - A constant reference to a CPUUsage object that
+                          should be defined with read CPU values.
   Output:
    NONE
 
@@ -2668,21 +2635,18 @@ void printCpuDataWins(const std::unordered_map<int, CursesWindow*>& wins,
 
   Description:
    Prints the data values stored in the memInfo parameter to the corresponding
-   memMiB data windows (_MIBTOTALWIN,FREEWIN,USEDWIN...) from the _cursesWinConsts.hpp 
-   header file.
+   memMiB data windows (_MIBTOTALWIN,FREEWIN,USEDWIN...) from the
+   _cursesWinConsts.hpp header file.
 
   Input/Ouput:
-   NONE
-   
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
 			  to all currently allocated CursesWindow objects
 			  that can be indexed by values in the file
 			  _cursesWinConsts.hpp.          
-
-  cpuUsage               - A constant reference to a CPUUsage object that
-                           should be defined with read CPU values.			  
+  Input:
+   cpuUsage             - A constant reference to a CPUUsage object that
+                          should be defined with read CPU values.	  
   Output:
    NONE
 
@@ -2745,14 +2709,14 @@ void printMemDataWins(const std::unordered_map<int, CursesWindow*>& wins,
    Prints the non-data windows for the "MiB Mem:" line.
 
   Input/Output:
-   NONE
-
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
 			  to all currently allocated CursesWindow objects
 			  that can be indexed by values in the file
-			  _cursesWinConsts.hpp.                
+			  _cursesWinConsts.hpp.
+  Input:
+   NONE
+   
   Output:
    NONE
 
@@ -2804,14 +2768,14 @@ void printMemWins(const std::unordered_map<int, CursesWindow*>& wins)
    Prints the non-data windows for the "MiB Swap:" line.
   
   Input/Output:
-   NONE
-
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
 			  to all currently allocated CursesWindow objects
 			  that can be indexed by values in the file
-			  _cursesWinConsts.hpp.                
+			  _cursesWinConsts.hpp.
+  Input:
+   NONE
+   
   Output:
    NONE
 
@@ -2864,13 +2828,13 @@ void printSwapWins(const std::unordered_map<int, CursesWindow*>& wins)
    Prints the window names for the columns "PID, USER, PR, NI...". All "printed" data 
    is stored in the screen buffer waiting for a call to refresh() to print it.
 
-  Input:
+  Input/Output:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
 			  to all currently allocated CursesWindow objects
 			  that can be indexed by values in the file
 			  _cursesWinConsts.hpp.
-
+  Input:
    shiftY               - The current "vertical" shift state of the process
                           windows. 			  
 
@@ -2878,15 +2842,18 @@ void printSwapWins(const std::unordered_map<int, CursesWindow*>& wins)
                           windows.
   Output:
    NONE
+
+  Returns:
+   NONE
 */
 void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins,
 		      const int& shiftY,
 		      const int& shiftX)
 {
   std::string outString;
+  //PID
   if(shiftX <= _PIDWIN && wins.at(_PIDWIN)->getWindow() != nullptr)
     {
-      // PID
       outString = wins.at(_PIDWIN)->getWindowName();
       mvwaddstr(wins.at(_PIDWIN)->getWindow(),
 		0,
@@ -3008,15 +2975,15 @@ void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins,
    "row/column" screen position as well as memory.
 
    A simple loop is used to iterate over all the current process list objects
-   to print those processes data.
-   
-  Input:
+   to print those process's data.
+
+  Input/Output:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
 			  to all currently allocated CursesWindow objects
 			  that can be indexed by values in the file
-			  _cursesWinConsts.hpp.    
-
+			  _cursesWinConsts.hpp.
+  Input:
    procData             - A reference to a constant unordered map
                           <int, ProcessInfo*> type. procData contains
 			  pointers to objects that contain the data for
@@ -3047,6 +3014,9 @@ void printWindowNames(const std::unordered_map<int, CursesWindow*>& wins,
    
   Output:
    NONE
+
+  Returns:
+   NONE
 */
 void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 		const std::unordered_map<int, ProcessInfo*>& procData,
@@ -3069,7 +3039,6 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	    {
 	      attronProcWins(wins, A_BOLD);
 	    }
-	  
 	  // PID
 	  if(highlight == true && sortState == _PIDWIN)
 	    {
@@ -3102,6 +3071,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 	    }
 	      
 	  const int tempPRVal = procData.at(pidList.at(i))->getPR();
+	  
 	  if(tempPRVal == -100)
 	    {
 	      outString = "rt";
@@ -3116,12 +3086,11 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 		    wins.at(_PRWIN)->getNumCols() - outString.length(),
 		    outString.c_str());
 	  // NI
-	  if(shiftX <= _NIWIN && wins.at(_NIWIN)->getWindow() != nullptr)
-	    if(highlight == true && sortState == _NIWIN)
-	      {
-		wattron(wins.at(sortState)->getWindow(),
-			A_BOLD); 
-	      }
+	  if(highlight == true && sortState == _NIWIN)
+	    {
+	      wattron(wins.at(sortState)->getWindow(),
+		      A_BOLD); 
+	    }
 	      
 	  outString = intToStr(procData.at(pidList.at(i))->getNI());
 	  mvwaddstr(wins.at(_NIWIN)->getWindow(),
@@ -3198,9 +3167,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 		    posY,
 		    wins.at(_PROCMEMWIN)->getNumCols() - outString.length(),
 		    outString.c_str());
-
 	  // TIME+
-
 	  if(highlight == true && sortState == _PROCTIMEWIN)
 	    {
 	      wattron(wins.at(sortState)->getWindow(),
@@ -3212,7 +3179,6 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 		    posY,
 		    wins.at(_PROCTIMEWIN)->getNumCols() - outString.length(),
 		    outString.c_str());
-
 	  // COMMAND
 	  if(highlight == true && sortState == _COMMANDWIN)
 	    {
@@ -3232,9 +3198,7 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
 		    posY,
 		    0,
 		    outString.c_str());
-
 	  attroffProcWins(wins, A_BOLD);
-
 	}
     }
 } // end of "printProcs"
@@ -3250,15 +3214,12 @@ void printProcs(const std::unordered_map<int, CursesWindow*>& wins,
    values contained in the row, col, and attr parameters.
 
   Input/Output:
-   NONE
-   
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
 			  to all currently allocated CursesWindow objects
 			  that can be indexed by values in the file
 			  _cursesWinConsts.hpp.  
-
+  Input:
    row                  - A reference to a constant integer that holds
                           the Y-Position to print the string to.
 
@@ -3394,13 +3355,13 @@ void printUserInput(const std::unordered_map<int, CursesWindow*>& wins,
    of the any preivous outputby printing a color line at the location
    first before printing the bad input string.
 
-  Input:
+  Input/Output:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
 			  to all currently allocated CursesWindow objects
 			  that can be indexed by values in the file
 			  _cursesWinConsts.hpp.
-
+  Input:			  
    window               - A reference to a constant integer that holds the
                           index value of the CursesWindow object that will
 			  be printed to.			  
@@ -3587,14 +3548,13 @@ void shiftProcWinsRight(const std::unordered_map<int, CursesWindow*>& wins,
    Draws a graph based on the incoming parameters to the desired parameter
    window.
 
-  Input:
-
+  Input/Ouput:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
 			  to all currently allocated CursesWindow objects
 			  that can be indexed by values in the file
 			  _cursesWinConsts.hpp.
-
+  Input:
    winName              - A reference to a constant integer type that should
                           contain the name of the window in which to build
 			  the graph in.
@@ -3763,14 +3723,14 @@ void drawGraph(const std::unordered_map<int, CursesWindow*>& wins,
    in the "wins" object.
 
   Input/Output:
-   NONE
-   
-  Input:
    wins                 - A reference to a const unordered map
                           <int, CursesWindow*> type that contains pointers
 			  to all currently allocated CursesWindow objects
 			  that can be indexed by values in the file
 			  _cursesWinConsts.hpp.
+  Input:
+   NONE
+   
   Output:
    NONE
 
