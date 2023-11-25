@@ -1,8 +1,9 @@
 /*
-  File: sortProcessLists.cpp
+  File:
+   sortProcessLists.cpp
   
   Description:
-   Function implementation for the sortProcessLists.hpp.
+   Function implementations for the sortProcessLists.hpp header file
 */
 #include "sortProcessLists.hpp"
 
@@ -10,7 +11,7 @@
 
 /*
   Function:
-   sortValuesByPID  
+   sortValuesByPID
 
   Description:
    A template function that allows sorting the process data by any of the columns:
@@ -28,9 +29,12 @@
   Runtime Complexity:
    O(N * Log(N))
 
+  Input/Output:
+   NONE
+   
   Input:
    allProcessInfo       - All stored process data that will be traversed in
-                          ordere to retrieve desired sort state values
+                          order to retrieve desired sort state values
 
    pidNums              - A const reference to a PID list representing all running
                           processes
@@ -44,6 +48,8 @@
   Output:
    const std::vector<int>
                         - the sorted list of PIDs
+  Returns:
+   NONE
 */
 template std::vector<int> sortValuesByPID(
     const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
@@ -71,15 +77,16 @@ template std::vector<int> sortValuesByPID(
     const char& (ProcessInfo::*extractor)() const);
 
 template <typename T>
-std::vector<int> sortValuesByPID(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+std::vector<int> sortValuesByPID(const std::unordered_map<int, ProcessInfo*>&
+				 allProcessInfo,
 				 const std::vector<int>& pidNums,
 				 const T& (ProcessInfo::*extractor)() const)
 {
-  std::vector<int> tempPIDs;  
+  std::vector<int> tempPIDs;
   std::vector<std::pair<T, int>> tPid;
   std::set<T> diffValuesSet;
   typename std::set<T>::iterator it;
-  std::vector<T> diffValuesVec;    
+  std::vector<T> diffValuesVec;
   T value;
 
   // loop through the ProcessInfo object and store all <key(PID), value(T)> pairs
@@ -125,7 +132,7 @@ std::vector<int> sortValuesByPID(const std::unordered_map<int, ProcessInfo*>& al
     }
 
   // store the list of sorted PIDs to vector<int> to return to caller
-  for(int i = sortedValuesByPID.size() - 1; i >= 0; i--)    
+  for(int i = sortedValuesByPID.size() - 1; i >= 0; i--)
     {
       for(int j = 0; j < sortedValuesByPID.at(i).size(); j++)
 	{
