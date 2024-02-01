@@ -11,6 +11,7 @@
 #ifndef SECONDSTOTIME_HPP
 #define SECONDSTOTIME_HPP
 #include <string>
+#include <mutex>
 
 #define MINUTE 60
 
@@ -34,10 +35,18 @@ public:
   const float& getTotalSeconds() const { return m_totalSeconds; }
   
   // setters
-  void setHours(const unsigned int& hours) { m_hours = hours; }
-  void setMinutes(const unsigned int& minutes) { m_minutes = minutes; }
-  void setSeconds(const unsigned int& seconds) { m_seconds = seconds; }
-  void setTotalSeconds(const float& totalSeconds) { m_totalSeconds = totalSeconds; }
+  void setHours(const unsigned int& hours) {
+    std::lock_guard<std::mutex> lock(m_hoursMut);
+    m_hours = hours; }
+  void setMinutes(const unsigned int& minutes) {
+    std::lock_guard<std::mutex> lock(m_minutesMut);
+    m_minutes = minutes; }
+  void setSeconds(const unsigned int& seconds) {
+    std::lock_guard<std::mutex> lock(m_secondsMut);
+    m_seconds = seconds; }
+  void setTotalSeconds(const float& totalSeconds) {
+    std::lock_guard<std::mutex> lock(m_totalSecondsMut);
+    m_totalSeconds = totalSeconds; }
   
 private:
   // member variables
@@ -45,6 +54,11 @@ private:
   unsigned int m_minutes;
   unsigned int m_seconds;
   float m_totalSeconds;
+
+  mutable std::mutex m_hoursMut;
+  mutable std::mutex m_minutesMut;
+  mutable std::mutex m_secondsMut;
+  mutable std::mutex m_totalSecondsMut;
 };
 
 #endif
