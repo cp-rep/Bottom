@@ -2,11 +2,92 @@
   File: 
    main.cpp
 
+  Version: 
+   V0.1
+
   Program Description: 
-    A rendition of the Top program using C++. It has been tested on Ubuntu and
-    Arch Linux. However, most if not all the current features should work on
-    other Linux distributions.
+    A rendition of the Top program using C++. It is currently
+    tested in Ubuntu and ArchLinux.  Each have a branch that corresponds to the
+    working implementation.  The main branch contains a stable version that works
+    on both operating systems.
+
+  Controls:
+  - the 'x' key allows highlighting a particular column.
+  - the arrow keys allow shifting the windows left and right.
+  - the '<' and '>' keys change how the columns are sorted.
+
+  Changes/Fixes Needed:
+  - get correct user count
+  - get/calculate TIME+ window
+  - determine how Top decides what processes/users have priority in the sort 
+    list to come first
+  - create a docker image that comes with all the modules necessary for building
+    Bottom and GTests for easier/"safer" testing for interested parties.
 */
+/*
+#include <algorithm>
+#include <atomic>
+#include <chrono>
+#include <climits>
+#include <cmath>
+#include <condition_variable>
+#include <cstdlib>
+#include <ctime>
+#include <dirent.h>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <limits>
+#include <mutex>
+#include <ncurses.h>
+#include <pwd.h>
+#include <set>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/param.h>
+#include <thread>
+#include <unistd.h>
+#include <unordered_map>
+#include "_cursesWinConsts.hpp"
+#include "_fileConsts.hpp"
+#include "_progStateConsts.hpp"
+#include "byteConverter.hpp"
+#include "COMMANDWindow.hpp"
+#include "cpuInfo.hpp"
+#include "cpuWindow.hpp"
+#include "cursesColors.hpp"
+#include "cursesFunctions.hpp"
+#include "cursesWindow.hpp"
+#include "extractFileData.hpp"
+#include "log.hpp"
+#include "mainWindow.hpp"
+#include "memInfo.hpp"
+#include "memWindow.hpp"
+#include "NIWindow.hpp"
+#include "percentCPUWindow.hpp"
+#include "percentMEMWindow.hpp"
+#include "PIDWindow.hpp"
+#include "processInfo.hpp"
+#include "PRWindow.hpp"
+#include "RESWindow.hpp"
+#include "secondsToTime.hpp"
+#include "sortProcessLists.hpp"
+#include "SHRWindow.hpp"
+#include "SWindow.hpp"
+#include "taskInfo.hpp"
+#include "tasksWindow.hpp"
+#include "TIMEWindow.hpp"
+#include "topWindow.hpp"
+#include "USERWindow.hpp"
+#include "VIRTWindow.hpp"
+*/
+// new
+#include <atomic>
+#include <mutex>
+#include <condition_variable>
+#include <thread>
+
+// old
 #include <algorithm>
 #include <chrono>
 #include <climits>
@@ -46,63 +127,147 @@
 #define _CURSES 1
 #define _LOG 1
 
+// commands and options/modes constants
+#define _UTMPDUMP "utmpdump"
+#define _READ "r"
+
+// function prototypes
+void printWindowToLog(std::ofstream& log,
+		      const CursesWindow& win);
+const std::vector<int> sortByUSER
+(const std::vector<int>& pidNums,
+ std::unordered_map<int, ProcessInfo*>& procData);
+std::condition_variable dataPrint;
+std::condition_variable dataRead;
+std::mutex printReadMutex;
+bool readFlag = true;
+bool printFlag = false;
+
 
 
 /*
   Function:
-   main
-
-  Description:
-   The main driver function for the Bottom program.
+   inputThread
 */
-int main()
+void inputThread(char& userInput,
+		 bool& newInput)
 {
-  //  ## create log system ##
-  time_t rawtime;
-  struct tm* timeinfo;
-#if _LOG    
-  Log logFile("./log/", "log", 1, ".log");
-  std::ofstream log;
+} // end of "inputThread"
 
-  //  get time info
-  time(&rawtime);
-  timeinfo = localtime(&rawtime);
 
-  // open log file
+
+/*
+  Function:
+   displayThread
+*/
+void displayThread(char& userInput,
+		   bool& newInput,
+		   std::unordered_map<int, CursesWindow*>& wins,
+		   const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+		   const std::vector<int>& pids,
+		   std::vector<std::string>& allTopLines)
+{
+  // new
+  initializeCurses();
+  initializeStartingWindows(wins);
+  defineProcWinsStartVals(wins);
+  defineTopWinsStartVals(wins);
+  defineTopWinsDataStartVals(wins);
+  defineGraphWinStartVals(wins);
+
+    while(true)
+    {
+      drawBoxes(wins);
+      // lock block for printing
+      refreshAllWins(wins);
+      doupdate();
+    }
+  /*
+  initializeProgramStates(progStates);
+  */
+
+  // old
+  /*
+  MainWindow mainWin;
+  TopWindow topWin;
+  TasksWindow tasksWin;
+  CpuWindow cpuWin;
+  MemWindow memWin;
+  PIDWindow PIDWin;
+  USERWindow USERWin;
+  PRWindow PRWin;
+  NIWindow NIWin;
+  VIRTWindow VIRTWin;
+  RESWindow RESWin;
+  SHRWindow SHRWin;
+  SWindow SWin;
+  PercentCPUWindow PercentCPUWin;
+  PercentMEMWindow PercentMEMWin;
+  TIMEWindow TIMEWin;
+  COMMANDWindow COMMANDWin;
+  
+  initializeWindows(wins,
+		    mainWin,
+		    topWin,
+		    tasksWin,
+		    cpuWin,
+		    memWin,
+		    PIDWin,
+		    USERWin,
+		    PRWin,
+		    NIWin,
+		    VIRTWin,
+		    RESWin,
+		    SHRWin,
+		    SWin,
+		    PercentCPUWin,
+		    PercentMEMWin,
+		    TIMEWin,
+		    COMMANDWin);
+
+
+  int sortState = _CPUWIN;
+  
   while(true)
     {
-      std::ifstream inFile(logFile.getFullPath(), std::ifstream::in);
+      // lock block for printing
+      {
+	std::unique_lock<std::mutex> lock(printReadMutex);
+	dataPrint.wait(lock, [] { return (printFlag == true); });
       
-      // check if log exists      
-      if(inFile.is_open())
-	{
-	  // increment the log number and close the open file
-	  logFile.incrementFileName();
-	  inFile.close();
-	}
-      // log doesn't exist, create the new log file
-      else
-	{
-	  log.open(logFile.getFullPath());
-	  break;
-	}
+	readFlag = false;
+	printFlag = false;
+	std::vector<int> outPids;
+	outPids = pids;
+	std::sort(outPids.begin(), outPids.end());
+	std::unordered_map<int, ProcessInfo*> test = allProcessInfo;
+	outPids = sortByCPUUsage(test,
+				 outPids);
+	printTopWins(wins, allTopLines);
+	printWindowNames(wins);
+	printProcs(wins, allProcessInfo, outPids, 0, 0);
+	readFlag = true;
+	dataRead.notify_all();
+      }
+      
+      refreshAllWins(wins);
+      doupdate();
     }
+  */
+} // end of "displayThread"
 
-  // check if the file remained open, exit with error otherwise
-  if(!log.is_open())
-    {
-      std::cerr << "Error creating log file." << std::endl;
-      exit(EXIT_FAILURE);
-    }
-  else
-    {
-      // output start of log session
-      log << "LOG Started" << std::endl;
-      log << "Time and Date: " << asctime(timeinfo) << std::endl;
-    }
-#endif
-  
-  // process related vars
+
+
+/*
+  Function:
+   readDataThread
+*/
+void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+		    std::vector<int>& pids,
+		    std::vector<std::string>& allTopLines)
+{
+  // new
+  /*
   MemInfo memInfo;
   CPUInfo cpuInfoStart;
   CPUInfo cpuInfoEnd;
@@ -118,520 +283,207 @@ int main()
   int numUsers;
   std::unordered_map<int, ProcessInfo*> procInfoStart;
   std::unordered_map<int, ProcessInfo*> procInfoEnd;
-  
-  // window related vars
-  std::unordered_map<int, CursesWindow*> wins;
-  std::string colorLine;
-  int numLines;
-  int numCols;
-  
-  // state related vars
-  int progState = 0;
-  int prevState = 0;
-  int sortState = _PROCCPUWIN;
-  bool highlight = false;
-  bool quit = false;
-  int shiftY = 1;
-  int shiftX = _PIDWIN;
-  std::unordered_map<char, int> progStates;
+  */
 
-#if _CURSES    
-  // ## initialize and setup curses ##
-  initializeCurses();
-#endif
-  initializeStartingWindows(wins);
-  defineProcWinsStartVals(wins);
-  defineTopWinsStartVals(wins);  
-  defineTopWinsDataStartVals(wins);
-  defineGraphWinStartVals(wins);
-  initializeProgramStates(progStates);
-
-  // graph related vars
-  std::queue<double> cpuUsageVals;
-  std::queue<double> memUsageVals;
-  int cpuGraphCount = 1;
-  int memGraphCount = 1;
-  
-  // loop variables
+  /*
+  // old
+  std::mutex readDataMutex;
+  std::vector<int> pidsOld;
+  std::vector<int> pidsDead;
   SecondsToTime uptime;
-  std::vector<std::string> loadAvgStrings;
-  std::vector<std::string> uptimeStrings;
+  ProcessInfo* process;
+  MemInfo memInfo;
+  CPUInfo cpuInfo;
+  TaskInfo taskInfo;
+  std::vector<std::string> parsedLine;
+  std::string tempLine;
+  std::string fileLine;
   std::string filePath;
-  std::string timeString;
-  std::vector<int> outPids;
-  int interval = 1000000;
-  bool newInterval = true;
-  bool entered = false;
-  bool stateChanged = false;
-  auto startTime = std::chrono::high_resolution_clock::now();
+  std::string lineString;
+  time_t rawtime;
+  struct tm* timeinfo;
   
-  do{
-    getmaxyx(stdscr, numLines, numCols);
-    const int graphMaxCols = numCols - wins.at(_COMMANDWIN)->getNumCols();
-    outPids.clear();
-
-    auto currentTime = std::chrono::high_resolution_clock::now();
-    auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>
-      (currentTime - startTime).count();
-
-    // erase extracted process data and reset interval if state was changed to
-    // prevent printing incorrect CPUUsage calculation
-    if(stateChanged == true)
+  while(true)
+    {
+      // lock block for reading
       {
-	currentTime = std::chrono::high_resolution_clock::now();
-	elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>
-	  (currentTime - startTime).count();
+	std::unique_lock<std::mutex> lock(printReadMutex);
+	dataRead.wait(lock, [] { return ( readFlag == true ); });
+	printFlag = false;
+	readFlag = false;
 
-	for(std::unordered_map<int, ProcessInfo*>::iterator
-	      it = procInfoStart.begin();
-	    it != procInfoStart.end(); it++)
+	// clear the output lines for the top windows
+	allTopLines.clear();
+
+	// store old pids
+	pidsOld = pids;
+	pids.clear();
+
+	// get new pids
+	pids = findNumericDirs(_PROC);
+
+	// find any processes that died during main extraction loop
+	if(findDeadProcesses(pids, pidsOld, pidsDead))
 	  {
-	    delete(it->second);
-	    it->second = nullptr;
-	  }
-	
-	for(std::unordered_map<int, ProcessInfo*>::iterator it
-	      = procInfoEnd.begin();
-	    it != procInfoEnd.end(); it++)
-	  {
-	    delete(it->second);
-	    it->second = nullptr;
-	  }
-
-	procInfoEnd.clear();
-	procInfoStart.clear();
-	stateChanged = false;
-	entered = false;
-	newInterval = true;
-      }
-
-    if(newInterval == true)
-      {
-	users.clear();
-	time(&rawtime);
-	timeinfo = localtime(&rawtime);
-	loadAvgStrings.clear();
-	uptimeStrings.clear();
-	// extract start data for CPU line
-	// "%Cpu(s): x.x us, x.x sy..."
-	extractProcStat(cpuInfoStart,
-			_PROC_STAT);
-	// extract data from /proc/uptime for very top window
-	// "current time, # users, load avg"    
-	extractProcUptime(uptime,
-			  uptimeStrings,
-			  _PROC_UPTIME);
-	// extract data from /proc/loadavg for very top window
-	extractProcLoadavg(loadAvgStrings,
-			   _PROC_LOADAVG);
-	// extract data for MiB Mem and MiB swap
-	// "MiB Mem: xxxx.xx total, xxxx.xx Free..."
-	extractProcMeminfo(memInfo,
-			   _PROC_MEMINFO);
-	// get starting pids
-	pidsStartOld.clear();
-	pidsStartOld = pidsStart;
-	pidsStart.clear();
-	pidsStartDead.clear();
-	pidsStart = findNumericDirs(_PROC);
-
-	// find if any start interval pids died since last interval
-	if(findDeadProcesses(pidsStart, pidsStartOld, pidsStartDead))
-	  {
-	    removeDeadProcesses(procInfoStart, pidsStartDead);
+	    // free from process list if found
+	    removeDeadProcesses(allProcessInfo, pidsDead);
 	  }
 
-	// extract per process data
-	extractProcessData(procInfoStart,
-			   pidsStart,
-			   memInfo,
-			   uptime,
-			   uptimeStrings,
-			   users);
-	numUsers = users.size();
-	// count the extracted process states for task window
-	// "Tasks: XXX total, X running..."
-	countProcessStates(procInfoStart,
-			   taskInfo);
-	// set the time string with current military time
-	timeString = uptime.returnHHMMSS(timeinfo->tm_hour,
-					 timeinfo->tm_min,
-					 timeinfo->tm_sec);	
-	// set interval flag
-	newInterval = false;
-      }    
-    else if(elapsedTime >= interval)
-      {
-	users.clear();
-	loadAvgStrings.clear();
-	uptimeStrings.clear();
-	time(&rawtime);
-	timeinfo = localtime(&rawtime);
-	// extract end data for CPU line
-	extractProcStat(cpuInfoEnd,
-			_PROC_STAT);
-	// calculate cpu averages
-	cpuUsage = calcCPUUsage(cpuInfoStart,
-				cpuInfoEnd);
-
-	// store cpu utilization in queue for graph output
-	if( cpuUsageVals.empty() ||
-	    (cpuUsageVals.size() < (graphMaxCols/_GRAPHBARWIDTH) + 1) )
-	  {
-	    cpuUsageVals.push(cpuUsage.utilization);
-	  }
-	else
-	  {
-	    // deallocate any graph vals larger than our chosen size
-	    for(int i = cpuUsageVals.size(); i > ((graphMaxCols/_GRAPHBARWIDTH) + 1); i--)
-	      {
-		cpuUsageVals.pop();
-	      }
-	    
-	    cpuUsageVals.push(cpuUsage.utilization);
-	  }
-
-	double used = memInfo.getMemUsed();
-	double avail = memInfo.getMemAvailable();
-	double total = memInfo.getMemTotal();
-	double usage = 100 - ((avail/total) * 100);
-	
-	// store current memory utilization
-	if( memUsageVals.empty() ||
-	    (memUsageVals.size() < (graphMaxCols/_GRAPHBARWIDTH) + 1) )
-	  {
-	    memUsageVals.push(usage);
-	  }
-	else
-	  {
-	    // deallocate any graph vals larger than our chosen size
-	    for(int i = memUsageVals.size(); i > ((graphMaxCols/_GRAPHBARWIDTH) + 1); i--)
-	      {
-		memUsageVals.pop();
-	      }
-	    
-	    memUsageVals.push(usage);
-	  }
-	
-	// extract data from /proc/uptime for very top window
+	// extract data from uptime for very top window
 	// "current time, # users, load avg"
-	extractProcUptime(uptime,
-			  uptimeStrings,
-			  _PROC_UPTIME);
-	// extract data from /proc/loadavg for very top window
-	extractProcLoadavg(loadAvgStrings,
-			   _PROC_LOADAVG);
-	// extract data for MiB Mem and MiB swap
-	// "MiB Mem: xxxx.xx total, xxxx.xx Free..."
-	extractProcMeminfo(memInfo,
-			   _PROC_MEMINFO);    
-	// get end interval pids
-	pidsEndOld.clear();
-	pidsEndOld = pidsEnd;
-	pidsEnd.clear();
-	pidsEndDead.clear();
-	pidsEnd = findNumericDirs(_PROC);
+	extractProcUptimeLoadavg(uptime,
+				 allTopLines);
 
-	// find if any end interval pids died since last interval
-	if(findDeadProcesses(pidsEnd, pidsEndOld, pidsEndDead))
+	// update/add process data for still running and new found processes
+	for(int i = 0; i < pids.size(); i++)
 	  {
-	    removeDeadProcesses(procInfoEnd, pidsEndDead);
+	    // if new process was found, allocate it
+	    if(allProcessInfo.count(pids.at(i)) == 0)
+	      {
+		process = new ProcessInfo();
+		allProcessInfo.insert(std::make_pair(pids.at(i), process));
+	      }
+
+	    // extract data for CPU Line "%Cpu(s): x.x. us, 0.5 sy..."
+	    extractProcStatData(cpuInfo);
+
+	    // store line for output
+	    defineCPULine(cpuInfo, allTopLines);
+
+	    // extract data for MiB Mem and MiB Swap
+	    // "MiB Mem: XXXX.XX total, XXXX.XX Free..."
+	    extractMemInfoData(memInfo);
+
+	    // store lines for output
+	    allTopLines.push_back(setStringMiB(doubleToStr(KiBToMiB(memInfo.getMemTotal()), 1),
+					       doubleToStr(KiBToMiB(memInfo.getMemFree()), 1),
+					       doubleToStr(KiBToMiB(memInfo.getMemUsed()), 1),
+					       doubleToStr(KiBToMiB(memInfo.getBuffCache()), 1)));
+	    allTopLines.push_back(setStringSwap(doubleToStr(KiBToMiB(memInfo.getSwapTotal()), 1),
+						doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1),
+						doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1),
+						doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1)));
+
+	    // get pid of current process
+	    allProcessInfo[pids.at(i)]->setPID(pids.at(i));
+
+	    // extract per process data (USER, PR, VIRT....)
+	    extractProcPidStatus(allProcessInfo,
+				 memInfo,
+				 uptime,
+				 pids.at(i));
+
+	    // extract COMMAND
+	    extractProcComm(allProcessInfo,
+			    pids.at(i));
+
+	    // extract and count process states for task window
+	    // "Tasks: XXX total, X running.."
+	    extractProcessStateCount(allProcessInfo,
+				     taskInfo);
+
+	    // store line for output
+	    defineTasksLine(taskInfo,
+			    allTopLines);
 	  }
 	
-	// extract per process data
-	extractProcessData(procInfoEnd,
-			   pidsEnd,
-			   memInfo,
-			   uptime,
-			   uptimeStrings,
-			   users);
-	numUsers = users.size();
-
-	// find if any process data changed and calc per process cpu usage
-	for(std::vector<int>::iterator outer = pidsEnd.begin();
-	    outer != pidsEnd.end(); outer++)	
-	  {
-	    for(std::vector<int>::iterator inner = pidsStart.begin();
-		inner != pidsStart.end(); inner++)
-	      {
-		if(*inner == *outer)		
-		  {
-		    procInfoEnd.at(*inner)->
-		      calcProcCPUUsage(*procInfoStart.at(*outer),
-				       *procInfoEnd.at(*inner));
-		    procInfoStart.at(*outer)->
-		      setCPUUsage(procInfoEnd.at(*inner)->getCPUUsage());
-		  }
-	      }
-	  }
-
-	// count the extracted process states for task window
-	// "Tasks: XXX total, X running..."
-	countProcessStates(procInfoEnd,
-			   taskInfo);
-	// set the time string with current military time
-	timeString = uptime.returnHHMMSS(timeinfo->tm_hour,
-					 timeinfo->tm_min,
-					 timeinfo->tm_sec);	
-	// set flags and update the new start time for interval
-	entered = true;	
-	newInterval = true;
-	startTime = currentTime;	
+	printFlag = true;
+	dataPrint.notify_all();
       }
 
-    // ## get user input ##
-    int userInput = 0;
+      std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
 
-    userInput = getch();
-
-    // check for user input
-    if(userInput != -1)
-      {
-	// update program state
-	if(progStates[userInput])
-	  {
-	    prevState = progState;
-	    progState = userInput;
-	  }
-	// undefined input
-	else 
-	  {
-	    std::string outString = " Unknown command - try 'h' for help ";
-	    
-#if _CURSES
-	    printBadInputString(wins,
-				_MAINWIN,
-				_YOFFSET - 1,
-				0,
-				outString);
-	    refreshAllWins(wins);
-	    doupdate();
-	    sleep(1.75);
-#endif	    
-	  }
-      }
-
-#if _CURSES
-    flushinp();
-
-    // ensure to not clear the windows if entering certain states    
-    if(userInput != _STATEKILL)
-      {
-	clearAllWins(wins);
-      }
-
-    // check for terminal resize and adjust windows accordingly
-    updateWinDimensions(wins,
-			shiftY,
-			shiftX,
-			cpuGraphCount,
-			memGraphCount);
-
-    // check for cpu graph state
-    if( (cpuGraphCount > 0) && (wins.at(_CPUGRAPHWIN)->getWindow() != nullptr) )
-      {
-	if(cpuGraphCount == 3)
-	  {
-	    drawGraph(wins,
-		      _CPUGRAPHWIN,
-		      cpuUsageVals,
-		      "CPU UTILIZATION",
-		      _GRAPHSCALETWO);
-	  }
-	else
-	  {
-	    drawGraph(wins,
-		      _CPUGRAPHWIN,
-		      cpuUsageVals,
-		      "CPU UTILIZATION",
-		      _GRAPHSCALEONE);
-	  }
-      }
-
-    // check for mem graph state
-    if( (memGraphCount > 0) && (wins.at(_MEMGRAPHWIN)->getWindow() != nullptr) )
-      {
-	if(memGraphCount == 3)
-	  {
-	    drawGraph(wins,
-		      _MEMGRAPHWIN,
-		      memUsageVals,
-		      "MAIN MEMORY USAGE",
-		      _GRAPHSCALETWO);
-	  }
-	else
-	  {
-	    drawGraph(wins,
-		      _MEMGRAPHWIN,
-		      memUsageVals,
-		      "MAIN MEMORY USAGE",
-		      _GRAPHSCALEONE);
-	  }
-      }
-
-    // print all other top wins
-    printTasksWins(wins);
-    printCpuWins(wins);
-    printMemWins(wins);
-    printSwapWins(wins);
-    // print top wins data
-    attronTopDataWins(wins,
-		      A_BOLD);
-    printTasksDataWins(wins,
-		       taskInfo);
-    printCpuDataWins(wins,
-		     cpuUsage);
-    printMemDataWins(wins,
-		     memInfo);
-    attroffTopDataWins(wins,
-		      A_BOLD);
-    // print the color line to the main win
-    colorLine = createColorLine(wins.at(_MAINWIN)->getNumCols());
-    printLine(wins,
-	      _YOFFSET,
-	      0,
-	      _BLACK_TEXT,
-	      _MAINWIN,
-	      colorLine);
-    defineTopWins(wins,
-		  timeString,
-		  uptime.getHours()/24,
-		  uptime.getHours() % 24,
-		  uptime.getMinutes(),
-		  loadAvgStrings,
-		  numUsers);
-    
-    // ## update states and print ##
-    if(entered == false)
-      {
-	updateSortState(procInfoStart,
-			pidsStart,
-			pidsStart,
-			sortState);
-	updateProgramState(procInfoStart,
-			   wins,
-			   progState,
-			   prevState,
-			   sortState,
-			   quit,
-			   highlight,
-			   pidsStart.at(0),
-			   shiftY,
-			   shiftX,
-			   pidsStart.size() - 2,
-			   stateChanged,
-			   cpuGraphCount,
-			   memGraphCount);
-	printProcs(wins,
-		   procInfoStart,
-		   pidsStart,
-		   shiftY,
-		   shiftX,
-		   sortState,
-		   highlight);
-	colorOnProcWins(wins,
-			_BLACK_TEXT);
-	printWindowNames(wins,
-			 shiftY,
-			 shiftX);
-	colorOffProcWins(wins,
-			 _BLACK_TEXT);
-      }
-    else if(stateChanged == false)
-      {
-	updateSortState(procInfoEnd,
-			pidsEnd,
-			outPids,
-			sortState);
-	updateProgramState(procInfoEnd,
-			   wins,
-			   progState,
-			   prevState,
-			   sortState,
-			   quit,
-			   highlight,
-			   outPids.at(0),
-			   shiftY,
-			   shiftX,
-			   outPids.size() - 2,
-			   stateChanged,
-			   cpuGraphCount,
-			   memGraphCount);
-	printProcs(wins,
-		   procInfoEnd,
-		   outPids,
-		   shiftY,
-		   shiftX,
-		   sortState,
-		   highlight);
-	colorOnProcWins(wins,
-			_BLACK_TEXT);
-	printWindowNames(wins,
-			 shiftY,
-			 shiftX);
-	colorOffProcWins(wins,
-			 _BLACK_TEXT);
-      }
-    
-    refreshAllWins(wins);
-    doupdate();
-    usleep(15000);
-
-    for(int i = _TOPWIN; i <= _TOPLOADAVGDATAWIN; i++)
-      {
-	if(wins.at(i)->getWindow() != nullptr)
-	  {
-	    wins.at(i)->deleteWindow();
-	  }
-      }
-
-#endif
-
-    if(quit)
-      {
-	break;
-      }
-    
-  } while(true);
-
-  // cleanup
-  for(std::unordered_map<int, ProcessInfo*>::iterator it
-	= procInfoStart.begin();
-      it != procInfoStart.end(); it++)
+  // cleanup allocated processes before joining
+  for(std::unordered_map<int, ProcessInfo*>::iterator it = allProcessInfo.begin();
+      it != allProcessInfo.end(); it++)
     {
       delete(it->second);
-      it->second = nullptr;
     }
   
-  for(std::unordered_map<int, ProcessInfo*>::iterator it
-	= procInfoEnd.begin();
-      it != procInfoEnd.end(); it++)
-    {
-      delete(it->second);
-      it->second = nullptr;
-    }
+  allProcessInfo.clear();
+  */
+} // end of "readDataThread"
 
-  for(std::unordered_map<int, CursesWindow*>::iterator it
-	= wins.begin();
-      it != wins.end(); it++)
-    {
-      it->second->deleteWindow();
-    }
 
-  procInfoEnd.clear();
-  procInfoStart.clear();
-  wins.clear();
-        
-#if _LOG
-  if(log.is_open())
-    {
-      log.close();
-    }
-#endif
+
+/*
+  Function:
+   main
+
+  Description:
+   The main driver function for the Bottom program.
+*/
+int main()
+{
+  std::unordered_map<int, CursesWindow*> wins;
+  std::unordered_map<int, ProcessInfo*> allProcessInfo;
+  std::vector<int> pids;
+  std::unordered_map<int, int> progStates;
+  std::vector<std::string> allTopLines;
+  bool newInput = false;
+  char userInput = '\0';
+
+  /*
+    std::condition_variable dataPrint;
+    std::condition_variable dataRead;
+    std::mutex printReadMutex;
+    bool readFlag = true;
+    bool printFlag = false;
+  */
   
-#if _CURSES  
-    endwin();
-#endif
+  initializeCurses();
+  // initializeProgramStates(progStates);
+  
+  std::thread input(inputThread,
+		    std::ref(userInput),
+		    std::ref(newInput));
+  std::thread readData(readDataThread,
+		       std::ref(allProcessInfo),
+		       std::ref(pids),
+		       std::ref(allTopLines));
+  std::thread display(displayThread,
+		      std::ref(userInput),
+		      std::ref(newInput),
+		      std::ref(wins),
+		      std::ref(allProcessInfo),
+		      std::ref(pids),
+		      std::ref(allTopLines));		      
+    
+  input.join();
+  display.join();
+  readData.join();
+  
+  endwin();
   
   return 0;
 } // end of "main"
+
+
+
+/*
+  Function:
+   printWindowToLog
+
+  Description:
+   A debugging function that prints a CursesWindow object's current data members
+   to the log file.
+
+  Input:
+  log             - a reference to an output file stream object, the
+                    log file in the /Bottom/log/ folder
+		    
+  win             - A const reference to a CursesWindow object that will
+                    be used to print it's member data to the log file.
+
+  Output:
+  None
+*/
+void printWindowToLog(std::ofstream& log, const CursesWindow& win)
+{
+  log << "m_windowName: " << win.getWindowName() << std::endl;
+  log << "m_numLines: " << win.getNumLines() << std::endl;
+  log << "m_numCols: " << win.getNumCols() << std::endl;
+  log << "m_startY: " << win.getStartY() << std::endl;
+  log << "m_startX: " << win.getStartX() << std::endl;
+} // end of "printWindowToLog"
