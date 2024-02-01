@@ -988,7 +988,7 @@ void defineGraphWinStartVals(const std::unordered_map<int, CursesWindow*>& wins)
 } // end of "defineGraphWinsStartVals"
 
 
-
+// THIS FUNCTION  will have to be changed for multithreaded approach
 /*
   Function:
    defineTopWins
