@@ -164,11 +164,10 @@ void displayThread(char& userInput,
 		   bool& newInput,
 		   std::unordered_map<int, CursesWindow*>& wins,
 		   const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-		   const CPUInfo& cpuInfo,
 		   const CPUUsage& cpuUsage,
+		   const MemInfo& memInfo,
 		   const TaskInfo& taskInfo,
-		   const std::vector<int>& pids,
-		   std::vector<std::string>& allTopLines)
+		   const std::vector<int>& pids)
 {
   std::string colorLine;
 
@@ -188,14 +187,6 @@ void displayThread(char& userInput,
       
 	readFlag = false;
 	printFlag = false;
-	//	std::vector<int> outPids;
-	//	outPids = pids;
-	//	std::sort(outPids.begin(), outPids.end());
-	//	std::unordered_map<int, ProcessInfo*> test = allProcessInfo;
-	//	outPids = sortByCPUUsage(test,
-	//				 outPids);
-	//	printWindowNames(wins);
-	//	printProcs(wins, allProcessInfo, outPids, 0, 0);
 	printTasksWins(wins);
 	printCpuWins(wins);
 	printMemWins(wins);
@@ -204,6 +195,8 @@ void displayThread(char& userInput,
 			   taskInfo);
 	printCpuDataWins(wins,
 			 cpuUsage);
+	printMemDataWins(wins,
+			 memInfo);
 	printProcs(wins,
 		   allProcessInfo,
 		   pids,
@@ -233,78 +226,6 @@ void displayThread(char& userInput,
       refreshAllWins(wins);
       doupdate();
     }
-  /*
-  initializeProgramStates(progStates);
-  */
-
-  // old
-  /*
-  MainWindow mainWin;
-  TopWindow topWin;
-  TasksWindow tasksWin;
-  CpuWindow cpuWin;
-  MemWindow memWin;
-  PIDWindow PIDWin;
-  USERWindow USERWin;
-  PRWindow PRWin;
-  NIWindow NIWin;
-  VIRTWindow VIRTWin;
-  RESWindow RESWin;
-  SHRWindow SHRWin;
-  SWindow SWin;
-  PercentCPUWindow PercentCPUWin;
-  PercentMEMWindow PercentMEMWin;
-  TIMEWindow TIMEWin;
-  COMMANDWindow COMMANDWin;
-  
-  initializeWindows(wins,
-		    mainWin,
-		    topWin,
-		    tasksWin,
-		    cpuWin,
-		    memWin,
-		    PIDWin,
-		    USERWin,
-		    PRWin,
-		    NIWin,
-		    VIRTWin,
-		    RESWin,
-		    SHRWin,
-		    SWin,
-		    PercentCPUWin,
-		    PercentMEMWin,
-		    TIMEWin,
-		    COMMANDWin);
-
-
-  int sortState = _CPUWIN;
-  
-  while(true)
-    {
-      // lock block for printing
-      {
-	std::unique_lock<std::mutex> lock(printReadMutex);
-	dataPrint.wait(lock, [] { return (printFlag == true); });
-      
-	readFlag = false;
-	printFlag = false;
-	std::vector<int> outPids;
-	outPids = pids;
-	std::sort(outPids.begin(), outPids.end());
-	std::unordered_map<int, ProcessInfo*> test = allProcessInfo;
-	outPids = sortByCPUUsage(test,
-				 outPids);
-	printTopWins(wins, allTopLines);
-	printWindowNames(wins);
-	printProcs(wins, allProcessInfo, outPids, 0, 0);
-	readFlag = true;
-	dataRead.notify_all();
-      }
-      
-      refreshAllWins(wins);
-      doupdate();
-    }
-  */
 } // end of "displayThread"
 
 
@@ -314,35 +235,19 @@ void displayThread(char& userInput,
    readDataThread
 */
 void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
-		    CPUInfo& cpuInfo,
 		    CPUUsage& cpuUsage,
+		    MemInfo& memInfo,
 		    TaskInfo& taskInfo,
-		    std::vector<int>& pids,
-		    std::vector<std::string>& allTopLines)
+		    std::vector<int>& pids)
 {
-  // new
-  MemInfo memInfo;
-  CPUInfo cpuInfoStart;
-  CPUInfo cpuInfoEnd;
-  //  TaskInfo taskInfo;
-  //  CPUUsage cpuUsage;
-  //  std::vector<int> pidsStartOld;
-  //  std::vector<int> pidsEndOld;
-  //  std::vector<int> pidsStart;
-  //  std::vector<int> pidsEnd;
-  //  std::vector<int> pidsStartDead;
-  //  std::vector<int> pidsEndDead;
-  //  std::set<std::string> users;
-  //  int numUsers;
-  //  std::unordered_map<int, ProcessInfo*> procInfoStart;
-  //  std::unordered_map<int, ProcessInfo*> procInfoEnd;
-
   // new variables
+  CPUInfo cpuInfo;
   std::mutex readDataMutex;
   std::vector<int> pidsOld;
   std::vector<int> pidsDead;
   ProcessInfo* process;
   std::vector<std::string> uptimeStrings;
+  std::vector<std::string> loadAvgStrings;
   SecondsToTime uptime;
   int numUsers;
   std::set<std::string> users;
@@ -356,13 +261,11 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	printFlag = false;
 	readFlag = false;
 
-	// clear the output lines for the top windows
-	//	allTopLines.clear();
-
 	// store old pids
 	pidsOld = pids;
 	pids.clear();
 	uptimeStrings.clear();
+	loadAvgStrings.clear();
 	users.clear();
 
 	// get new pids
@@ -386,6 +289,8 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	extractProcUptime(uptime,
 			  uptimeStrings,
 			  _PROC_UPTIME);
+	extractProcLoadavg(loadAvgStrings,
+			   _PROC_LOADAVG);
 	extractProcessData(allProcessInfo,
 			   pids,
 			   memInfo,
@@ -395,13 +300,6 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	numUsers = users.size();
 	countProcessStates(allProcessInfo,
 			   taskInfo);
-
-	/*
-	// extract data from uptime for very top window
-	// "current time, # users, load avg"
-	extractProcUptimeLoadavg(uptime,
-				 allTopLines);
-	*/
 
 	// update/add process data for still running and new found processes
 	for(int i = 0; i < pids.size(); i++)
@@ -416,61 +314,6 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 		  }
 		allProcessInfo.at(*it)->setPID(*it);
 	      }
-
-	    /*
-	    // set pid of current process
-	    allProcessInfo.at(*it)->setPID(*it);
-
-	    extractProcessData(procInfo,
-			       pids,
-			       memInfo,
-			       uptime,
-			       uptimeStrings,
-			       users);
-	    */
-	    /*
-	    // extract data for CPU Line "%Cpu(s): x.x. us, 0.5 sy..."
-	    extractProcStatData(cpuInfo);
-
-	    // store line for output
-	    defineCPULine(cpuInfo, allTopLines);
-
-	    // extract data for MiB Mem and MiB Swap
-	    // "MiB Mem: XXXX.XX total, XXXX.XX Free..."
-	    extractMemInfoData(memInfo);
-
-	    // store lines for output
-	    allTopLines.push_back(setStringMiB(doubleToStr(KiBToMiB(memInfo.getMemTotal()), 1),
-					       doubleToStr(KiBToMiB(memInfo.getMemFree()), 1),
-					       doubleToStr(KiBToMiB(memInfo.getMemUsed()), 1),
-					       doubleToStr(KiBToMiB(memInfo.getBuffCache()), 1)));
-	    allTopLines.push_back(setStringSwap(doubleToStr(KiBToMiB(memInfo.getSwapTotal()), 1),
-						doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1),
-						doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1),
-						doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1)));
-
-	    // get pid of current process
-	    allProcessInfo[pids.at(i)]->setPID(pids.at(i));
-
-	    // extract per process data (USER, PR, VIRT....)
-	    extractProcPidStatus(allProcessInfo,
-				 memInfo,
-				 uptime,
-				 pids.at(i));
-
-	    // extract COMMAND
-	    extractProcComm(allProcessInfo,
-			    pids.at(i));
-
-	    // extract and count process states for task window
-	    // "Tasks: XXX total, X running.."
-	    extractProcessStateCount(allProcessInfo,
-				     taskInfo);
-
-	    // store line for output
-	    defineTasksLine(taskInfo,
-			    allTopLines);
-	    */
 	  }
 	
 	printFlag = true;
@@ -478,127 +321,6 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       }
       std::this_thread::sleep_for(std::chrono::seconds(1));
     }
-
-
-
-  /*
-  // old
-  std::mutex readDataMutex;
-  std::vector<int> pidsOld;
-  std::vector<int> pidsDead;
-  SecondsToTime uptime;
-  ProcessInfo* process;
-  MemInfo memInfo;
-  CPUInfo cpuInfo;
-  TaskInfo taskInfo;
-  std::vector<std::string> parsedLine;
-  std::string tempLine;
-  std::string fileLine;
-  std::string filePath;
-  std::string lineString;
-  time_t rawtime;
-  struct tm* timeinfo;
-  
-  while(true)
-    {
-      // lock block for reading
-      {
-	std::unique_lock<std::mutex> lock(printReadMutex);
-	dataRead.wait(lock, [] { return ( readFlag == true ); });
-	printFlag = false;
-	readFlag = false;
-
-	// clear the output lines for the top windows
-	allTopLines.clear();
-
-	// store old pids
-	pidsOld = pids;
-	pids.clear();
-
-	// get new pids
-	pids = findNumericDirs(_PROC);
-
-	// find any processes that died during main extraction loop
-	if(findDeadProcesses(pids, pidsOld, pidsDead))
-	  {
-	    // free from process list if found
-	    removeDeadProcesses(allProcessInfo, pidsDead);
-	  }
-
-	// extract data from uptime for very top window
-	// "current time, # users, load avg"
-	extractProcUptimeLoadavg(uptime,
-				 allTopLines);
-
-	// update/add process data for still running and new found processes
-	for(int i = 0; i < pids.size(); i++)
-	  {
-	    // if new process was found, allocate it
-	    if(allProcessInfo.count(pids.at(i)) == 0)
-	      {
-		process = new ProcessInfo();
-		allProcessInfo.insert(std::make_pair(pids.at(i), process));
-	      }
-
-	    // extract data for CPU Line "%Cpu(s): x.x. us, 0.5 sy..."
-	    extractProcStatData(cpuInfo);
-
-	    // store line for output
-	    defineCPULine(cpuInfo, allTopLines);
-
-	    // extract data for MiB Mem and MiB Swap
-	    // "MiB Mem: XXXX.XX total, XXXX.XX Free..."
-	    extractMemInfoData(memInfo);
-
-	    // store lines for output
-	    allTopLines.push_back(setStringMiB(doubleToStr(KiBToMiB(memInfo.getMemTotal()), 1),
-					       doubleToStr(KiBToMiB(memInfo.getMemFree()), 1),
-					       doubleToStr(KiBToMiB(memInfo.getMemUsed()), 1),
-					       doubleToStr(KiBToMiB(memInfo.getBuffCache()), 1)));
-	    allTopLines.push_back(setStringSwap(doubleToStr(KiBToMiB(memInfo.getSwapTotal()), 1),
-						doubleToStr(KiBToMiB(memInfo.getSwapFree()), 1),
-						doubleToStr(KiBToMiB(memInfo.getSwapUsed()), 1),
-						doubleToStr(KiBToMiB(memInfo.getMemAvailable()), 1)));
-
-	    // get pid of current process
-	    allProcessInfo[pids.at(i)]->setPID(pids.at(i));
-
-	    // extract per process data (USER, PR, VIRT....)
-	    extractProcPidStatus(allProcessInfo,
-				 memInfo,
-				 uptime,
-				 pids.at(i));
-
-	    // extract COMMAND
-	    extractProcComm(allProcessInfo,
-			    pids.at(i));
-
-	    // extract and count process states for task window
-	    // "Tasks: XXX total, X running.."
-	    extractProcessStateCount(allProcessInfo,
-				     taskInfo);
-
-	    // store line for output
-	    defineTasksLine(taskInfo,
-			    allTopLines);
-	  }
-	
-	printFlag = true;
-	dataPrint.notify_all();
-      }
-
-      std::this_thread::sleep_for(std::chrono::seconds(1));
-    }
-
-  // cleanup allocated processes before joining
-  for(std::unordered_map<int, ProcessInfo*>::iterator it = allProcessInfo.begin();
-      it != allProcessInfo.end(); it++)
-    {
-      delete(it->second);
-    }
-  
-  allProcessInfo.clear();
-  */
 } // end of "readDataThread"
 
 
@@ -615,42 +337,32 @@ int main()
   std::unordered_map<int, CursesWindow*> wins;
   std::unordered_map<int, ProcessInfo*> allProcessInfo;
   TaskInfo taskInfo;
-  CPUInfo cpuInfo;
   CPUUsage cpuUsage;
+  MemInfo memInfo;
   std::vector<int> pids;
   std::unordered_map<int, int> progStates;
-  std::vector<std::string> allTopLines;
   bool newInput = false;
   char userInput = '\0';
-
-  /*
-    std::condition_variable dataPrint;
-    std::condition_variable dataRead;
-    std::mutex printReadMutex;
-    bool readFlag = true;
-    bool printFlag = false;
-  */
   
   std::thread input(inputThread,
 		    std::ref(userInput),
 		    std::ref(newInput));
   std::thread readData(readDataThread,
 		       std::ref(allProcessInfo),
-		       std::ref(cpuInfo),
 		       std::ref(cpuUsage),
+		       std::ref(memInfo),
 		       std::ref(taskInfo),
-		       std::ref(pids),
-		       std::ref(allTopLines));
+		       std::ref(pids));
   std::thread display(displayThread,
 		      std::ref(userInput),
 		      std::ref(newInput),
 		      std::ref(wins),
 		      std::ref(allProcessInfo),
-		      std::ref(cpuInfo),
 		      std::ref(cpuUsage),
+		      std::ref(memInfo),
 		      std::ref(taskInfo),
-		      std::ref(pids),
-		      std::ref(allTopLines));		      
+		      std::ref(pids));
+
     
   input.join();
   display.join();
