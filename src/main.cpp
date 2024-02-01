@@ -168,7 +168,8 @@ void displayThread(char& userInput,
 		   const std::vector<int>& pids,
 		   std::vector<std::string>& allTopLines)
 {
-  // new
+  std::string colorLine;
+
   initializeCurses();
   initializeStartingWindows(wins);
   defineProcWinsStartVals(wins);
@@ -203,12 +204,22 @@ void displayThread(char& userInput,
 		   0,
 		   0,
 		   0);
-
-	/*
+	colorLine = createColorLine(wins.at(_MAINWIN)->getNumCols());
+	printLine(wins,
+		  _YOFFSET,
+		  0,
+		  _BLACK_TEXT,
+		  _MAINWIN,
+		  colorLine);	
+	
+	colorOnProcWins(wins,
+			_BLACK_TEXT);
 	printWindowNames(wins,
 			 0,
 			 0);
-	*/
+	colorOffProcWins(wins,
+			 _BLACK_TEXT);
+	
 	readFlag = true;
 	dataRead.notify_all();
       }
@@ -607,9 +618,6 @@ int main()
     bool printFlag = false;
   */
   
-  initializeCurses();
-  // initializeProgramStates(progStates);
-  
   std::thread input(inputThread,
 		    std::ref(userInput),
 		    std::ref(newInput));
@@ -630,7 +638,6 @@ int main()
   input.join();
   display.join();
   readData.join();
-  
   endwin();
   
   return 0;
