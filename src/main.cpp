@@ -317,6 +317,10 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   std::vector<int> pidsOld;
   std::vector<int> pidsDead;
   ProcessInfo* process;
+  std::vector<std::string> uptimeStrings;
+  SecondsToTime uptime;
+  int numUsers;
+  std::set<std::string> users;
   
   
 
@@ -335,6 +339,8 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	// store old pids
 	pidsOld = pids;
 	pids.clear();
+	uptimeStrings.clear();
+	users.clear();
 
 	// get new pids
 	pids = findNumericDirs(_PROC);
@@ -346,6 +352,21 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	    removeDeadProcesses(allProcessInfo, pidsDead);
 	  }
 
+	extractProcMeminfo(memInfo,
+			   _PROC_MEMINFO);
+
+	extractProcUptime(uptime,
+			  uptimeStrings,
+			  _PROC_UPTIME);
+	
+	extractProcessData(allProcessInfo,
+			   pids,
+			   memInfo,
+			   uptime,
+			   uptimeStrings,
+			   users);
+	numUsers = users.size();
+
 	/*
 	// extract data from uptime for very top window
 	// "current time, # users, load avg"
@@ -356,15 +377,6 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	// update/add process data for still running and new found processes
 	for(int i = 0; i < pids.size(); i++)
 	  {
-	    /*
-	    // if new process was found, allocate it
-	    if(allProcessInfo.count(pids.at(i)) == 0)
-	      {
-		process = new ProcessInfo();
-		allProcessInfo.insert(std::make_pair(pids.at(i), process));
-	      }
-	    */
-
 	    for(std::vector<int>::const_iterator it = pids.begin(); it != pids.end(); it++)
 	      {
 		// if new process was found, allocate it
