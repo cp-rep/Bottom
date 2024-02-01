@@ -195,6 +195,9 @@ void displayThread(char& userInput,
 	//	printWindowNames(wins);
 	//	printProcs(wins, allProcessInfo, outPids, 0, 0);
 	printTasksWins(wins);
+	printCpuWins(wins);
+	printMemWins(wins);
+	printSwapWins(wins);
 	printTasksDataWins(wins,
 			   taskInfo);
 	printProcs(wins,
@@ -211,7 +214,6 @@ void displayThread(char& userInput,
 		  _BLACK_TEXT,
 		  _MAINWIN,
 		  colorLine);	
-	
 	colorOnProcWins(wins,
 			_BLACK_TEXT);
 	printWindowNames(wins,
