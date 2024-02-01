@@ -92,15 +92,47 @@ CPUUsage calcCPUUsage(const CPUInfo& cpuInfoStart,
 		      const CPUInfo& cpuInfoEnd)
 {
   CPUUsage usage;
-  unsigned long startIdle;
-  unsigned long endIdle;
-  unsigned long startNonIdle;
-  unsigned long endNonIdle;
-  unsigned long startTime;
-  unsigned long endTime;
-  unsigned long total;
-  unsigned long idle;
+  unsigned long startIdle = 0;
+  unsigned long endIdle = 0; 
+  unsigned long startNonIdle = 0;
+  unsigned long endNonIdle = 0;
+  unsigned long startTime = 0;
+  unsigned long endTime = 0;
+  unsigned long total = 0;
+  unsigned long idle = 0;
+
+  usage.us = 0;
+	
   
+  usage.ni = 0;
+	
+  
+  usage.sy = 0;
+	
+  
+  usage.id = 0;
+  
+  usage.wa = 0;
+	
+  
+  usage.irq = 0;
+	
+  
+  usage.sirq = 0;
+	
+  
+  usage.st = 0;
+	
+  
+  usage.gu = 0;
+	
+  
+  usage.gun = 0;
+
+  usage.utilization = 0;
+  
+
+  /*
   startIdle = cpuInfoStart.getId() + cpuInfoStart.getWa();
   endIdle = cpuInfoEnd.getId() + cpuInfoEnd.getWa();
 
@@ -146,6 +178,7 @@ CPUUsage calcCPUUsage(const CPUInfo& cpuInfoStart,
 			     (double)cpuInfoStart.getGun()) / total;
 
   usage.utilization = _MAXPERCENT - usage.id;
+  */
 
   return usage;
 } // end of "calcCPUUsage"
