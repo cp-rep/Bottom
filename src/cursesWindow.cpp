@@ -116,14 +116,13 @@ void CursesWindow::defineWindow(WINDOW* win,
 				const int& startY,
 				const int& startX)
 {
-  m_window = win;
-  m_windowName = windowName;
-  m_numLines = numLines;
-  m_numCols = numCols;
-  m_startY = startY;
-  m_startX = startX;
+  setWindow(win);
+  setWindowName(windowName);
+  setNumLines(numLines);
+  setNumCols(numCols);
+  setStartY(startY);
+  setStartX(startX);
 } // end of "defineWindow"
-
 
 
 
@@ -158,6 +157,7 @@ void CursesWindow::createWindow(const int& numLines,
 {
   if(m_window == nullptr)
     {
+      std::lock_guard<std::mutex> lock(m_windowMut);
       m_window = newwin(numLines,
 			numCols,
 			startY,
@@ -328,6 +328,7 @@ void CursesWindow::setWindow(WINDOW* window)
 */
 void CursesWindow::setWindowName(const std::string& winName)
 {
+  std::lock_guard<std::mutex> lock(m_windowNameMut);
   m_windowName = winName;
 } // end of "setWindowName"
 
@@ -350,6 +351,7 @@ void CursesWindow::setWindowName(const std::string& winName)
 */
 void CursesWindow::setNumLines(const int& numLines)
 {
+  std::lock_guard<std::mutex> lock(m_numLinesMut);
   m_numLines = numLines;
 } // end of "setNumLines"
 
@@ -370,6 +372,7 @@ void CursesWindow::setNumLines(const int& numLines)
 */
 void CursesWindow::setNumCols(const int& numCols)
 {
+  std::lock_guard<std::mutex> lock(m_numColsMut);
   m_numCols = numCols;
 } // end of "setNumCols"
 
@@ -391,6 +394,7 @@ void CursesWindow::setNumCols(const int& numCols)
 */
 void CursesWindow::setStartY(const int& startY)
 {
+  std::lock_guard<std::mutex> lock(m_startYMut);
   m_startY = startY;
 } // end of "setStartY"
 
@@ -412,6 +416,7 @@ void CursesWindow::setStartY(const int& startY)
 */
 void CursesWindow::setStartX(const int& startX)
 {
+  std::lock_guard<std::mutex> lock(m_startXMut);
   m_startX = startX;
 } // end of "setStartX"
 
@@ -432,6 +437,7 @@ void CursesWindow::setStartX(const int& startX)
 */
 void CursesWindow::deleteWindow()
 {
+  std::lock_guard<std::mutex> lock(m_windowMut);
   delwin(getWindow());
   setWindow(nullptr);
 } // end of "deleteWindow"

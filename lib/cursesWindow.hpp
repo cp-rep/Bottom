@@ -11,6 +11,7 @@
 #include <curses.h>
 #include <string>
 #include <vector>
+#include <mutex>
 
 class CursesWindow {
 public:
@@ -63,6 +64,13 @@ private:
   int m_numCols;
   int m_startY;
   int m_startX;
+
+  mutable std::mutex m_windowMut;
+  mutable std::mutex m_windowNameMut;
+  mutable std::mutex m_numLinesMut;
+  mutable std::mutex m_numColsMut;
+  mutable std::mutex m_startYMut;
+  mutable std::mutex m_startXMut;
 };
 
 #endif
