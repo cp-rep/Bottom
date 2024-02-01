@@ -10,6 +10,7 @@
 #ifndef TASKINFO_HPP
 #define TASKINFO_HPP
 #include <string>
+#include <mutex>
 
 class TaskInfo {
 public:
@@ -37,14 +38,30 @@ public:
   const unsigned int& getTotal() const { return m_total; }
   
   // setters
-  void setRunning(const unsigned int& running) { m_running = running; }
-  void setUnSleep(const unsigned int& unSleep) { m_unSleep = unSleep; }
-  void setInSleep(const unsigned int& inSleep) { m_inSleep = inSleep; }
-  void setSleeping(const unsigned int& sleeping) { m_sleeping = sleeping; }
-  void setStopped(const unsigned int& stopped) { m_stopped = stopped; }
-  void setZombie(const unsigned int& zombie) { m_zombie = zombie; }
-  void setIdle(const unsigned int& idle) { m_idle = idle; }
-  void setTotal(const unsigned int& total) { m_total = total; }
+  void setRunning(const unsigned int& running) {
+    std::lock_guard<std::mutex> lock(m_runningMut);
+    m_running = running; }
+  void setUnSleep(const unsigned int& unSleep) {
+        std::lock_guard<std::mutex> lock(m_unSleepMut);
+	m_unSleep = unSleep; }
+  void setInSleep(const unsigned int& inSleep) {
+    std::lock_guard<std::mutex> lock(m_inSleepMut);
+    m_inSleep = inSleep; }
+  void setSleeping(const unsigned int& sleeping) {
+    std::lock_guard<std::mutex> lock(m_inSleepMut);
+    m_sleeping = sleeping; }
+  void setStopped(const unsigned int& stopped) {
+    std::lock_guard<std::mutex> lock(m_stoppedMut);
+    m_stopped = stopped; }
+  void setZombie(const unsigned int& zombie) {
+    std::lock_guard<std::mutex> lock(m_zombieMut);
+    m_zombie = zombie; }
+  void setIdle(const unsigned int& idle) {
+    std::lock_guard<std::mutex> lock(m_idleMut);
+    m_idle = idle; }
+  void setTotal(const unsigned int& total) {
+    std::lock_guard<std::mutex> lock(m_totalMut);
+    m_total = total; }
   
 private:
   unsigned int m_running;
@@ -55,6 +72,15 @@ private:
   unsigned int m_zombie;
   unsigned int m_idle;
   unsigned int m_total;
+
+  mutable std::mutex m_runningMut;
+  mutable std::mutex m_unSleepMut;
+  mutable std::mutex m_inSleepMut;
+  mutable std::mutex m_sleepingMut;
+  mutable std::mutex m_stoppedMut;
+  mutable std::mutex m_zombieMut;
+  mutable std::mutex m_idleMut;
+  mutable std::mutex m_totalMut;
 };
 
 #endif
