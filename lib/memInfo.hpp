@@ -7,6 +7,7 @@
  */
 #ifndef MEMINFO_HPP
 #define MEMINFO_HPP
+#include <mutex>
 
 class MemInfo {
 public:
@@ -42,17 +43,39 @@ public:
   const int& getMemAvailable() const { return m_memAvailable; }
 
   // setters
-  void setMemTotal(const int& memTotal) { m_memTotal = memTotal; }
-  void setMemFree(const int& memFree) { m_memFree = memFree; }
-  void setMemUsed(const int& memUsed) { m_memUsed = memUsed; }
-  void setBuffers(const int& buffers) { m_buffers = buffers; }
-  void setCached(const int& cached) { m_cached = cached; }
-  void setBuffCache(const int& buffCache) { m_buffCache = buffCache; }
-  void setSReclaimable(const int& sreclaimable) { m_sreclaimable = sreclaimable; }
-  void setSwapTotal(const int& swapTotal) { m_swapTotal = swapTotal; }
-  void setSwapFree(const int& swapFree) { m_swapFree = swapFree; }
-  void setSwapUsed(const int& swapUsed) { m_swapUsed = swapUsed; }
-  void setMemAvailable(const int& memAvailable) { m_memAvailable = memAvailable; }
+  void setMemTotal(const int& memTotal) {
+    std::lock_guard<std::mutex> lock(m_memTotalMut);
+    m_memTotal = memTotal; }
+  void setMemFree(const int& memFree) {
+    std::lock_guard<std::mutex> lock(m_memFreeMut);
+    m_memFree = memFree; }
+  void setMemUsed(const int& memUsed) {
+    std::lock_guard<std::mutex> lock(m_memUsedMut);
+    m_memUsed = memUsed; }
+  void setBuffers(const int& buffers) {
+    std::lock_guard<std::mutex> lock(m_buffersMut);
+    m_buffers = buffers; }
+  void setCached(const int& cached) {
+    std::lock_guard<std::mutex> lock(m_cachedMut);
+    m_cached = cached; }
+  void setBuffCache(const int& buffCache) {
+    std::lock_guard<std::mutex> lock(m_buffCacheMut);
+    m_buffCache = buffCache; }
+  void setSReclaimable(const int& sreclaimable) {
+    std::lock_guard<std::mutex> lock(m_sreclaimableMut);
+    m_sreclaimable = sreclaimable; }
+  void setSwapTotal(const int& swapTotal) {
+    std::lock_guard<std::mutex> lock(m_swapTotalMut);
+    m_swapTotal = swapTotal; }
+  void setSwapFree(const int& swapFree) {
+    std::lock_guard<std::mutex> lock(m_swapFreeMut);
+    m_swapFree = swapFree; }
+  void setSwapUsed(const int& swapUsed) {
+    std::lock_guard<std::mutex> lock(m_swapUsedMut);
+    m_swapUsed = swapUsed; }
+  void setMemAvailable(const int& memAvailable) {
+    std::lock_guard<std::mutex> lock(m_memAvailableMut);
+    m_memAvailable = memAvailable; }
   
 private:
   // member variables
@@ -67,5 +90,17 @@ private:
   int m_swapFree;
   int m_swapUsed;
   int m_memAvailable;
+
+  mutable std::mutex m_memTotalMut;
+  mutable std::mutex m_memFreeMut;
+  mutable std::mutex m_memUsedMut;
+  mutable std::mutex m_buffersMut;
+  mutable std::mutex m_cachedMut;
+  mutable std::mutex m_buffCacheMut;
+  mutable std::mutex m_sreclaimableMut;
+  mutable std::mutex m_swapTotalMut;
+  mutable std::mutex m_swapFreeMut;
+  mutable std::mutex m_swapUsedMut;
+  mutable std::mutex m_memAvailableMut;
 };
 #endif
