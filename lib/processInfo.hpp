@@ -10,6 +10,7 @@
 #define PROCESSINFO_HPP
 #include <string>
 #include <iostream>
+#include <mutex>
 
 class ProcessInfo{
 public:
@@ -61,27 +62,62 @@ public:
   const double& getPStart() const { return m_pstart; }
   
   // setters
-  void setPID(const unsigned int& pid) { m_pid = pid; }
-  void setUSER(const std::string& user) { m_user = user; }
-  void setPR(const int& pr) { m_pr = pr; }
-  void setNI(const int& ni) { m_ni = ni; }
-  void setVIRT(const unsigned int& virt) { m_virt = virt; }
-  void setRES(const unsigned int& res) { m_res = res; }
-  void setSHR(const unsigned int& shr) { m_shr = shr; }
-  void setS(const char& s) { m_s = s; }
-  void setCPUUsage(const double& cpuUsage) { m_cpuUsage = cpuUsage; }
-  void setMEMUsage(const double& memUsage) { m_memUsage = memUsage; }
-  void setCpuRawTime(const double& cpuRawTime) { m_cpuRawTime = cpuRawTime; }
-  void setProcessCPUTime(const std::string& processCPUTime) { m_processCPUTime =
-      processCPUTime; }
+  void setPID(const unsigned int& pid) {
+    std::lock_guard<std::mutex> lock(m_pidMut);
+    m_pid = pid; }
+  void setUSER(const std::string& user) {
+    std::lock_guard<std::mutex> lock(m_userMut);
+    m_user = user; }
+  void setPR(const int& pr) {
+    std::lock_guard<std::mutex> lock(m_prMut);
+    m_pr = pr; }
+  void setNI(const int& ni) {
+    std::lock_guard<std::mutex> lock(m_niMut);
+    m_ni = ni; }
+  void setVIRT(const unsigned int& virt) {
+    std::lock_guard<std::mutex> lock(m_virtMut);
+    m_virt = virt; }
+  void setRES(const unsigned int& res) {
+    std::lock_guard<std::mutex> lock(m_resMut);
+    m_res = res; }
+  void setSHR(const unsigned int& shr) {
+    std::lock_guard<std::mutex> lock(m_shrMut);
+    m_shr = shr; }
+  void setS(const char& s) {
+    std::lock_guard<std::mutex> lock(m_sMut);
+    m_s = s; }
+  void setCPUUsage(const double& cpuUsage) {
+    std::lock_guard<std::mutex> lock(m_cpuUsageMut);
+    m_cpuUsage = cpuUsage; }
+  void setMEMUsage(const double& memUsage) {
+    std::lock_guard<std::mutex> lock(m_memUsageMut);
+    m_memUsage = memUsage; }
+  void setCpuRawTime(const double& cpuRawTime) {
+    std::lock_guard<std::mutex> lock(m_cpuRawTimeMut);
+    m_cpuRawTime = cpuRawTime; }
+  void setProcessCPUTime(const std::string& processCPUTime) {
+    std::lock_guard<std::mutex> lock(m_processCPUTimeMut);
+    m_processCPUTime = processCPUTime; }
   void setCOMMAND(const std::string& command);
   void setCOMMANDUpper(const std::string& command);
-  void setChanged(const bool& changed) { m_changed = changed; }
-  void setUTime(const double& utime) { m_utime = utime; }
-  void setSTime(const double& stime) { m_stime = stime; }
-  void setCUTime(const double& cutime) { m_cutime = cutime; }
-  void setCSTime(const double& cstime) { m_cstime = cstime; }
-  void setPStart(const double& pstart) { m_pstart = pstart; }
+  void setChanged(const bool& changed) {
+    std::lock_guard<std::mutex> lock(m_changedMut);
+    m_changed = changed; }
+  void setUTime(const double& utime) {
+    std::lock_guard<std::mutex> lock(m_utimeMut);
+    m_utime = utime; }
+  void setSTime(const double& stime) {
+    std::lock_guard<std::mutex> lock(m_stimeMut);
+    m_stime = stime; }
+  void setCUTime(const double& cutime) {
+    std::lock_guard<std::mutex> lock(m_cutimeMut);
+    m_cutime = cutime; }
+  void setCSTime(const double& cstime) {
+    std::lock_guard<std::mutex> lock(m_cstimeMut);
+    m_cstime = cstime; }
+  void setPStart(const double& pstart) {
+    std::lock_guard<std::mutex> lock(m_pstartMut);
+    m_pstart = pstart; }
 
   // member functions
   void calcProcCPUUsage(ProcessInfo& pInfoStart,
@@ -108,6 +144,27 @@ private:
   double m_cutime;
   double m_cstime;  
   double m_pstart;
+
+  mutable std::mutex m_pidMut;
+  mutable std::mutex m_userMut;
+  mutable std::mutex m_prMut;
+  mutable std::mutex m_niMut;
+  mutable std::mutex m_virtMut;
+  mutable std::mutex m_resMut;
+  mutable std::mutex m_shrMut;
+  mutable std::mutex m_sMut;
+  mutable std::mutex m_cpuUsageMut;
+  mutable std::mutex m_memUsageMut;
+  mutable std::mutex m_cpuRawTimeMut;
+  mutable std::mutex m_processCPUTimeMut;
+  mutable std::mutex m_commandMut;
+  mutable std::mutex m_commandUpperMut;
+  mutable std::mutex m_changedMut;
+  mutable std::mutex m_utimeMut;
+  mutable std::mutex m_stimeMut;
+  mutable std::mutex m_cutimeMut;
+  mutable std::mutex m_cstimeMut;
+  mutable std::mutex m_pstartMut;
 };
 
 std::ostream& operator<<(std::ostream& os, const ProcessInfo& processInfo);

@@ -2,7 +2,7 @@
   File: processInfo.cpp
   Description:
   The ProcessInfo class implementation function definitions.
- */
+*/
 #include "processInfo.hpp"
 
 ProcessInfo::ProcessInfo(const unsigned int& pid,
@@ -68,8 +68,6 @@ ProcessInfo::ProcessInfo(const ProcessInfo& other)
 
 
 
-
-
 /*
   Function:
    Overloaded ==
@@ -89,85 +87,83 @@ ProcessInfo::ProcessInfo(const ProcessInfo& other)
 */
 bool ProcessInfo::operator==(const ProcessInfo& other) const
 {
-  if(this->m_pid != other.getPID())
+  if(this->getPID() != other.getPID())
     {
       return false;
     }
-  else if(this->m_user != other.getUSER())
+  else if(this->getUSER() != other.getUSER())
     {
       return false;
     }
-  else if(this->m_pr != other.getPR())
+  else if(this->getPR() != other.getPR())
     {
       return false;
     }
-  else if(this->m_ni != other.getNI())
+  else if(this->getNI() != other.getNI())
     {
       return false;
     }
-  else if(this->m_virt != other.getVIRT())
+  else if(this->getVIRT() != other.getVIRT())
     {
       return false;
     }
-  else if(this->m_res != other.getRES())
+  else if(this->getRES() != other.getRES())
     {
       return false;
     }
-  else if(this->m_shr != other.getSHR())
+  else if(this->getSHR()!= other.getSHR())
     {
       return false;
     }
-  else if(this->m_s != other.getS())
+  else if(this->getS() != other.getS())
     {
       return false;
     }
-  else if(this->m_cpuUsage != other.getCPUUsage())
+  else if(this->getCPUUsage() != other.getCPUUsage())
     {
       return false;
     }
-  else if(this->m_memUsage != other.getMEMUsage())
+  else if(this->getMEMUsage() != other.getMEMUsage())
     {
       return false;
     }
-  else if(this->m_cpuRawTime != other.getCpuRawTime())
+  else if(this->getCpuRawTime() != other.getCpuRawTime())
     {
       return false;
     }
-
-  else if(this->m_processCPUTime != other.getProcessCPUTime())
+  else if(this->getProcessCPUTime() != other.getProcessCPUTime())
     {
       return false;
     }
-
-  else if(this->m_command != other.getCOMMAND())
+  else if(this->getCOMMAND() != other.getCOMMAND())
     {
       return false;
     }
-  else if(this->m_commandUpper != other.getCOMMANDUpper())
+  else if(this->getCOMMANDUpper() != other.getCOMMANDUpper())
     {
       return false;
     }
-  else if(this->m_changed != other.getChanged())
+  else if(this->getChanged() != other.getChanged())
     {
       return false;
     }
-  else if(this->m_utime != other.getUTime())
+  else if(this->getUTime() != other.getUTime())
     {
       return false;
     }
-  else if(this->m_stime != other.getSTime())
+  else if(this->getSTime() != other.getSTime())
     {
       return false;
     }
-  else if(this->m_cutime != other.getCUTime())
+  else if(this->getCUTime() != other.getCUTime())
     {
       return false;
     }
-  else if(this->m_cstime != other.getCSTime())
+  else if(this->getCSTime() != other.getCSTime())
     {
       return false;
     }
-  else if(this->m_pstart != other.getPStart())
+  else if(this->getPStart() != other.getPStart())
     {
       return false;
     }
@@ -195,26 +191,26 @@ ProcessInfo& ProcessInfo::operator=(const ProcessInfo& other)
 {
   if(this != &other)
     {
-      this->m_pid = other.getPID();
-      this->m_user = other.getUSER();
-      this->m_pr = other.getPR();
-      this->m_ni = other.getNI();
-      this->m_virt = other.getVIRT();
-      this->m_res = other.getRES();
-      this->m_shr = other.getSHR();
-      this->m_s = other.getS();
-      this->m_cpuUsage = other.getCPUUsage();
-      this->m_memUsage = other.getMEMUsage();
-      this->m_cpuRawTime = other.getCpuRawTime();
-      this->m_processCPUTime = other.getProcessCPUTime();
-      this->m_command = other.getCOMMAND();
-      this->m_commandUpper = other.getCOMMANDUpper();
-      this->m_changed = other.getChanged();
-      this->m_utime = other.getUTime();
-      this->m_stime = other.getSTime();
-      this->m_cutime = other.getCUTime();
-      this->m_cstime = other.getCSTime();
-      this->m_pstart = other.getPStart();
+      this->setPID(other.getPID());
+      this->setUSER(other.getUSER());
+      this->setPR(other.getPR());
+      this->setNI(other.getNI());
+      this->setVIRT(other.getVIRT());
+      this->setRES(other.getRES());
+      this->setSHR(other.getSHR());
+      this->setS(other.getS());
+      this->setCPUUsage(other.getCPUUsage());
+      this->setMEMUsage(other.getMEMUsage());
+      this->setCpuRawTime(other.getCpuRawTime());
+      this->setProcessCPUTime(other.getProcessCPUTime());
+      this->setCOMMAND(other.getCOMMAND());
+      this->setCOMMANDUpper(other.getCOMMANDUpper());
+      this->setChanged(other.getChanged());
+      this->setUTime(other.getUTime());
+      this->setSTime(other.getSTime());
+      this->setCUTime(other.getCUTime());
+      this->setCSTime(other.getCSTime());
+      this->setPStart(other.getPStart());
     }
 
   return *this;
@@ -280,9 +276,11 @@ std::ostream& operator<<(std::ostream& os, const ProcessInfo& processInfo)
 */
 void ProcessInfo::setCOMMAND(const std::string& command)
 {
+  std::lock_guard<std::mutex> lock(m_commandMut);
   m_command = command;
   setCOMMANDUpper(command);
 } // end of "setCOMMAND"
+
 
 
 /*
@@ -297,6 +295,7 @@ void ProcessInfo::setCOMMAND(const std::string& command)
 */
 void ProcessInfo::setCOMMANDUpper(const std::string& command)
 {
+  std::lock_guard<std::mutex> lock(m_commandUpperMut);  
   m_commandUpper.clear();
   for(int i = 0; i < command.length(); i++)
     {
@@ -325,6 +324,7 @@ void ProcessInfo::setCOMMANDUpper(const std::string& command)
 void ProcessInfo::calcProcCPUUsage(ProcessInfo& pInfoStart,
 				     ProcessInfo& pInfoEnd)
 {
+  std::lock_guard<std::mutex> lock(m_cpuUsageMut);
   m_cpuUsage = (pInfoEnd.getUTime() + pInfoEnd.getSTime()) -
     (pInfoStart.getUTime() + pInfoStart.getSTime());
 } // end of "calcProcCPUUsage"
