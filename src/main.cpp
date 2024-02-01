@@ -164,6 +164,8 @@ void displayThread(char& userInput,
 		   bool& newInput,
 		   std::unordered_map<int, CursesWindow*>& wins,
 		   const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+		   const CPUInfo& cpuInfo,
+		   const CPUUsage& cpuUsage,
 		   const TaskInfo& taskInfo,
 		   const std::vector<int>& pids,
 		   std::vector<std::string>& allTopLines)
@@ -200,6 +202,8 @@ void displayThread(char& userInput,
 	printSwapWins(wins);
 	printTasksDataWins(wins,
 			   taskInfo);
+	printCpuDataWins(wins,
+			 cpuUsage);
 	printProcs(wins,
 		   allProcessInfo,
 		   pids,
@@ -310,6 +314,8 @@ void displayThread(char& userInput,
    readDataThread
 */
 void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+		    CPUInfo& cpuInfo,
+		    CPUUsage& cpuUsage,
 		    TaskInfo& taskInfo,
 		    std::vector<int>& pids,
 		    std::vector<std::string>& allTopLines)
@@ -368,14 +374,18 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	    // free from process list if found
 	    removeDeadProcesses(allProcessInfo, pidsDead);
 	  }
+	
+	extractProcStat(cpuInfo,
+			_PROC_STAT);
 
+	// this needs to be fixed for interval
+	cpuUsage = calcCPUUsage(cpuInfo,
+				cpuInfo);
 	extractProcMeminfo(memInfo,
 			   _PROC_MEMINFO);
-
 	extractProcUptime(uptime,
 			  uptimeStrings,
 			  _PROC_UPTIME);
-	
 	extractProcessData(allProcessInfo,
 			   pids,
 			   memInfo,
@@ -383,7 +393,6 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			   uptimeStrings,
 			   users);
 	numUsers = users.size();
-
 	countProcessStates(allProcessInfo,
 			   taskInfo);
 
@@ -606,6 +615,8 @@ int main()
   std::unordered_map<int, CursesWindow*> wins;
   std::unordered_map<int, ProcessInfo*> allProcessInfo;
   TaskInfo taskInfo;
+  CPUInfo cpuInfo;
+  CPUUsage cpuUsage;
   std::vector<int> pids;
   std::unordered_map<int, int> progStates;
   std::vector<std::string> allTopLines;
@@ -625,6 +636,8 @@ int main()
 		    std::ref(newInput));
   std::thread readData(readDataThread,
 		       std::ref(allProcessInfo),
+		       std::ref(cpuInfo),
+		       std::ref(cpuUsage),
 		       std::ref(taskInfo),
 		       std::ref(pids),
 		       std::ref(allTopLines));
@@ -633,6 +646,8 @@ int main()
 		      std::ref(newInput),
 		      std::ref(wins),
 		      std::ref(allProcessInfo),
+		      std::ref(cpuInfo),
+		      std::ref(cpuUsage),
 		      std::ref(taskInfo),
 		      std::ref(pids),
 		      std::ref(allTopLines));		      
