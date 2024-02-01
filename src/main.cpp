@@ -164,6 +164,7 @@ void displayThread(char& userInput,
 		   bool& newInput,
 		   std::unordered_map<int, CursesWindow*>& wins,
 		   const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+		   const TaskInfo& taskInfo,
 		   const std::vector<int>& pids,
 		   std::vector<std::string>& allTopLines)
 {
@@ -192,6 +193,9 @@ void displayThread(char& userInput,
 	//				 outPids);
 	//	printWindowNames(wins);
 	//	printProcs(wins, allProcessInfo, outPids, 0, 0);
+	printTasksWins(wins);
+	printTasksDataWins(wins,
+			   taskInfo);
 	printProcs(wins,
 		   allProcessInfo,
 		   pids,
@@ -199,6 +203,7 @@ void displayThread(char& userInput,
 		   0,
 		   0,
 		   0);
+
 	/*
 	printWindowNames(wins,
 			 0,
@@ -292,6 +297,7 @@ void displayThread(char& userInput,
    readDataThread
 */
 void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+		    TaskInfo& taskInfo,
 		    std::vector<int>& pids,
 		    std::vector<std::string>& allTopLines)
 {
@@ -299,8 +305,8 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   MemInfo memInfo;
   CPUInfo cpuInfoStart;
   CPUInfo cpuInfoEnd;
-  //  CPUUsage cpuUsage;
   //  TaskInfo taskInfo;
+  //  CPUUsage cpuUsage;
   //  std::vector<int> pidsStartOld;
   //  std::vector<int> pidsEndOld;
   //  std::vector<int> pidsStart;
@@ -321,8 +327,6 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   SecondsToTime uptime;
   int numUsers;
   std::set<std::string> users;
-  
-  
 
   while(true)
     {
@@ -366,6 +370,9 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			   uptimeStrings,
 			   users);
 	numUsers = users.size();
+
+	countProcessStates(allProcessInfo,
+			   taskInfo);
 
 	/*
 	// extract data from uptime for very top window
@@ -585,6 +592,7 @@ int main()
 {
   std::unordered_map<int, CursesWindow*> wins;
   std::unordered_map<int, ProcessInfo*> allProcessInfo;
+  TaskInfo taskInfo;
   std::vector<int> pids;
   std::unordered_map<int, int> progStates;
   std::vector<std::string> allTopLines;
@@ -607,6 +615,7 @@ int main()
 		    std::ref(newInput));
   std::thread readData(readDataThread,
 		       std::ref(allProcessInfo),
+		       std::ref(taskInfo),
 		       std::ref(pids),
 		       std::ref(allTopLines));
   std::thread display(displayThread,
@@ -614,6 +623,7 @@ int main()
 		      std::ref(newInput),
 		      std::ref(wins),
 		      std::ref(allProcessInfo),
+		      std::ref(taskInfo),
 		      std::ref(pids),
 		      std::ref(allTopLines));		      
     
