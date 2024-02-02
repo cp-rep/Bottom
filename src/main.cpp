@@ -267,12 +267,12 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 	timeString = uptime.returnHHMMSS(timeinfo->tm_hour,
 					 timeinfo->tm_min,
 					 timeinfo->tm_sec);
-	defineTopWins(uptime.getHours() / 24,
-		      uptime.getHours() % 24,
-		      uptime.getMinutes(),
-		      parsedLoadAvg,
-		      numUsers,
-		      dynTWData);
+	extractSysInfo(uptime.getHours() / 24,
+		       uptime.getHours() % 24,
+		       uptime.getMinutes(),
+		       parsedLoadAvg,
+		       numUsers,
+		       dynTWData);
 
 	// update/add process data for still running and new found processes
 	for(int i = 0; i < pids.size(); i++)
