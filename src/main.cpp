@@ -106,11 +106,12 @@ void displayThread(char& userInput,
 		   const MemInfo& memInfo,
 		   const TaskInfo& taskInfo,
 		   const std::vector<int>& pids,
-		   struct DynamicTopWinData& dynTWData,
-		   std::vector<std::string> parsedLoadAvg,
-		   std::string HHMMSS)
+		   const struct DynamicTopWinData& dynTWData,
+		   const std::vector<std::string>& parsedLoadAvg,
+		   const std::string& timeString)
 {
   std::string colorLine;
+  SecondsToTime uptime;
 
   initializeCurses();
   initializeStartingWindows(wins);
@@ -127,8 +128,10 @@ void displayThread(char& userInput,
 	dataPrint.wait(lock, [] { return (printFlag == true); });
 	readFlag = false;
 	printFlag = false;
-
-	// print to windows
+	printTopWins(wins,
+		     dynTWData,
+		     parsedLoadAvg,
+		     timeString);
 	printTasksWins(wins);
 	printCpuWins(wins);
 	printMemWins(wins);
@@ -185,8 +188,10 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 		    TaskInfo& taskInfo,
 		    std::vector<int>& pids,
 		    struct DynamicTopWinData& dynTWData,
-		    std::vector<std::string> parsedLoadAvg,
-		    std::string HHMMSS)
+		    time_t rawtime,
+		    struct tm* timeinfo,
+		    std::vector<std::string>& parsedLoadAvg,
+		    std::string& timeString)
 {
   // new variables
   CPUInfo cpuInfo;
@@ -195,15 +200,14 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
   std::vector<int> pidsDead;
   ProcessInfo* process;
   std::vector<std::string> uptimeStrings;
-  std::vector<std::string> loadAvgStrings;
   SecondsToTime uptime;
   int numUsers;
   std::set<std::string> users;
 
   while(true)
     {
-      // lock block for reading
       {
+	// lock block for reading
 	std::unique_lock<std::mutex> lock(printReadMutex);
 	dataRead.wait(lock, [] { return ( readFlag == true ); });
 	printFlag = false;
@@ -212,8 +216,12 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 	// store old pids
 	pidsOld = pids;
 	pids.clear();
+
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
 	uptimeStrings.clear();
-	loadAvgStrings.clear();
+	timeString.clear();
+	parsedLoadAvg.clear();
 	users.clear();
 
 	// get new pids
@@ -238,8 +246,14 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 	extractProcUptime(uptime,
 			  uptimeStrings,
 			  _PROC_UPTIME);
-	extractProcLoadavg(loadAvgStrings,
+	extractProcLoadavg(parsedLoadAvg,
 			   _PROC_LOADAVG);
+	if(parsedLoadAvg.empty())
+	  {
+	    endwin();
+	    exit(EXIT_FAILURE);
+	  }
+
 	extractProcessData(procInfo,
 			   pids,
 			   memInfo,
@@ -249,6 +263,15 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 	numUsers = users.size();
 	countProcessStates(procInfo,
 			   taskInfo);
+	timeString = uptime.returnHHMMSS(timeinfo->tm_hour,
+					 timeinfo->tm_min,
+					 timeinfo->tm_sec);
+	defineTopWins(uptime.getHours() / 24,
+		      uptime.getHours() % 24,
+		      uptime.getMinutes(),
+		      parsedLoadAvg,
+		      numUsers,
+		      dynTWData);
 
 	// update/add process data for still running and new found processes
 	for(int i = 0; i < pids.size(); i++)
@@ -293,8 +316,10 @@ int main()
   bool newInput = false;
   char userInput = '\0';
   DynamicTopWinData dynTWData;
+  time_t rawtime;
+  struct tm* timeinfo;
   std::vector<std::string> parsedLoadAvg;
-  std::string HHMMSS;
+  std::string timeString;
   
   std::thread input(inputThread,
 		    std::ref(userInput),
@@ -306,8 +331,10 @@ int main()
 		       std::ref(taskInfo),
 		       std::ref(pids),
 		       std::ref(dynTWData),
+		       std::ref(rawtime),
+		       std::ref(timeinfo),
 		       std::ref(parsedLoadAvg),
-		       std::ref(HHMMSS));
+		       std::ref(timeString));
   std::thread display(displayThread,
 		      std::ref(userInput),
 		      std::ref(newInput),
@@ -319,7 +346,7 @@ int main()
 		      std::ref(pids),
 		      std::ref(dynTWData),
 		      std::ref(parsedLoadAvg),
-		      std::ref(HHMMSS));
+		      std::ref(timeString));
     
   input.join();
   display.join();
