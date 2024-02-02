@@ -31,14 +31,12 @@ void defineProcWinsStartVals(const std::unordered_map<int, CursesWindow*>& wins)
 void defineTopWinsDataStartVals(const std::unordered_map<int, CursesWindow*>& wins);
 void defineTopWinsStartVals(const std::unordered_map<int, CursesWindow*>& wins);
 void defineGraphWinStartVals(const std::unordered_map<int, CursesWindow*>& wins);
-void defineTopWins(const std::unordered_map<int, CursesWindow*>& wins,
-		   const std::string HHMMSS,
-		   const int numDays,
+void defineTopWins(const int numDays,
 		   const int numHours,
 		   const int numMinutes,
 		   const std::vector<std::string> parsedLoadAvg,
 		   const int& numUsers,
-		   struct DynamicTopWinData& dynTWData);
+		   DynamicTopWinData& dynTWData);
 void updateHelpWindowDimensions(const std::unordered_map<int, CursesWindow*>& wins);
 void updateTopWinDimensions(const std::unordered_map<int, CursesWindow*>& wins);
 void updateProcWinDimensions(const std::unordered_map<int, CursesWindow*>& wins,
@@ -78,9 +76,9 @@ void colorOnProcWins(const std::unordered_map<int, CursesWindow*>& wins,
 void colorOffProcWins(const std::unordered_map<int, CursesWindow*>& wins,
 		      const int colorPair);
 void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
-		  struct DynamicTopWinData& dynTWData,
+		  const struct DynamicTopWinData& dynTWData,
 		  std::vector<std::string> parsedLoadAvg,
-		  std::string HHMMSS);
+		  std::string timeString);
 void printTasksWins(const std::unordered_map<int, CursesWindow*>& wins);
 void printTasksDataWins(const std::unordered_map<int, CursesWindow*>& wins,
 			const TaskInfo& taskInfo);
