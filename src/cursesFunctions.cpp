@@ -1031,8 +1031,10 @@ void defineTopWins(const std::unordered_map<int, CursesWindow*>& wins,
 		   const int numHours,
 		   const int numMinutes,
 		   const std::vector<std::string> parsedLoadAvg,
-		   const int& numUsers)
+		   const int& numUsers,
+		   DynamicTopWinData& dynTWData)
 {
+  /*
   std::string days = intToStr(numDays);
   std::string hours = intToStr(numHours);
   std::string minutes = intToStr(numMinutes);
@@ -1048,226 +1050,256 @@ void defineTopWins(const std::unordered_map<int, CursesWindow*>& wins,
   int uptimePostCols = 0;
   bool postWin = false;
   int nextWinStartX = 0;
+  */
+
+  dynTWData.days = intToStr(numDays);
+  dynTWData.hours = intToStr(numHours);
+  dynTWData.minutes = intToStr(numMinutes);
+  dynTWData.users = intToStr(numUsers);
+  dynTWData.timeType.clear();
+  dynTWData.userString.clear();
+  dynTWData.uptime.clear();
+  dynTWData.uptimeDataCols = 0;
+  dynTWData.loadAvgWinCols = 0;
+  dynTWData.userCols = 0;
+  dynTWData.userDataCols = dynTWData.users.length();
+  dynTWData.uptimePostCols = 0;
+  dynTWData.postWin = false;
+  dynTWData.nextWinStartX = 0;
 
   if(numDays < 1)
     {
       if(numHours < 1)
 	{
-	  uptime.append(minutes);
-	  uptimeDataCols = minutes.length();
-	  uptimePostCols = 4;  // 'min,'
-	  timeType = "min,";
-	  postWin = true;
+	  dynTWData.uptime.append(dynTWData.minutes);
+	  dynTWData.uptimeDataCols = dynTWData.minutes.length();
+	  dynTWData.uptimePostCols = 4;  // 'min,'
+	  dynTWData.timeType = "min,";
+	  dynTWData.postWin = true;
 	}
       else
 	{
 	  if(numHours < 10)
 	    {
-	      uptime.append(" ");
-	      uptimeDataCols += 1;
+	      dynTWData.uptime.append(" ");
+	      dynTWData.uptimeDataCols += 1;
 	    }
-	  uptime.append(hours);
-	  uptime.append(":");
+	  dynTWData.uptime.append(dynTWData.hours);
+	  dynTWData.uptime.append(":");
 	  if(numMinutes < 10)
 	    {
-	      uptime.append("0");
+	      dynTWData.uptime.append("0");
 	    }
 
-	  uptime.append(minutes);
-	  uptime.append(",");
-	  uptimeDataCols += hours.length();
-	  uptimeDataCols += 4;
+	  dynTWData.uptime.append(dynTWData.minutes);
+	  dynTWData.uptime.append(",");
+	  dynTWData.uptimeDataCols += dynTWData.hours.length();
+	  dynTWData.uptimeDataCols += 4;
 	}
     }
   else if(numDays == 1)
     {
-      uptime.append(days);
-      uptimeDataCols = days.length();
-      uptimePostCols = 4; // 'day,'
-      timeType = "day,";
-      postWin = true;
+      dynTWData.uptime.append(dynTWData.days);
+      dynTWData.uptimeDataCols = dynTWData.days.length();
+      dynTWData.uptimePostCols = 4; // 'day,'
+      dynTWData.timeType = "day,";
+      dynTWData.postWin = true;
     }
   else
     {
-      uptime.append(days);
-      uptimeDataCols = days.length();
-      uptimePostCols = 5; // 'days,'
-      timeType = "days,";
-      postWin = true;
+      dynTWData.uptime.append(dynTWData.days);
+      dynTWData.uptimeDataCols = dynTWData.days.length();
+      dynTWData.uptimePostCols = 5; // 'days,'
+      dynTWData.timeType = "days,";
+      dynTWData.postWin = true;
     }
 
   if(numUsers == 1)
     {
-      userCols = 5;
-      userString = "user,";
+      dynTWData.userCols = 5;
+      dynTWData.userString = "user,";
     }
   else
     {
-      userCols = 6;
-      userString = "users,";
+      dynTWData.userCols = 6;
+      dynTWData.userString = "users,";
     }
   
   for(int i = 0; i < 3; i++)
     {
-      loadAvgWinCols += parsedLoadAvg.at(i).length();
+      dynTWData.loadAvgWinCols += parsedLoadAvg.at(i).length();
     }
-  
-  loadAvgWinCols += 4;
+
+  dynTWData.loadAvgWinCols += 4;
+} // end of "defineTopWins"
+
+
+
+/*
+  Function:
+   printTopWins
+*/
+void printTopWins(const std::unordered_map<int, CursesWindow*>& wins,
+		  DynamicTopWinData& dynTWData,
+		  std::vector<std::string> parsedLoadAvg,
+		  std::string HHMMSS)
+{
+  std::string outString;
   wins.at(_TOPWIN)->defineWindow(newwin(1,
 					_TOPWINCOLS,
 					_TOPWINSTARTY,
-					nextWinStartX),
+					dynTWData.nextWinStartX),
 				 "bottom",
 				 1,
 				 _TOPWINCOLS,
 				 _TOPWINSTARTY,
-				 nextWinStartX);
+				 dynTWData.nextWinStartX);
   outString = "bottom -";
   mvwaddstr(wins.at(_TOPWIN)->getWindow(),
 	    0,
 	    0,
 	    outString.c_str());
-  nextWinStartX = wins.at(_TOPWIN)->getNumCols() +
+  dynTWData.nextWinStartX = wins.at(_TOPWIN)->getNumCols() +
     wins.at(_TOPWIN)->getStartX() + 1;
   wins.at(_TOPCURRTIMEWIN)->defineWindow(newwin(1,
 						_TOPCURRTIMEWINCOLS,
 						_TOPWINSTARTY,
-						nextWinStartX),
+						dynTWData.nextWinStartX),
 					 "XX:XX:XX",
 					 1,
 					 _TOPCURRTIMEWINCOLS,
 					 _TOPWINSTARTY,
-					 nextWinStartX);
+					 dynTWData.nextWinStartX);
   outString = HHMMSS;
   mvwaddstr(wins.at(_TOPCURRTIMEWIN)->getWindow(),
 	    0,
 	    0,
 	    outString.c_str());  
 
-  nextWinStartX = wins.at(_TOPCURRTIMEWIN)->getNumCols() +
+  dynTWData.nextWinStartX = wins.at(_TOPCURRTIMEWIN)->getNumCols() +
     wins.at(_TOPCURRTIMEWIN)->getStartX() + 1;
   wins.at(_TOPUPWIN)->defineWindow(newwin(1,
 					  _TOPUPWINCOLS,
 					  _TOPWINSTARTY,
-					  nextWinStartX),
+					  dynTWData.nextWinStartX),
 				   "up",
 				   1,
 				   _TOPUPWINCOLS,
 				   _TOPWINSTARTY,
-				   nextWinStartX);
+				   dynTWData.nextWinStartX);
   outString = "up";
   mvwaddstr(wins.at(_TOPUPWIN)->getWindow(),
 	    0,
 	    0,
 	    outString.c_str());  
-  nextWinStartX = wins.at(_TOPUPWIN)->getNumCols() +
+  dynTWData.nextWinStartX = wins.at(_TOPUPWIN)->getNumCols() +
     wins.at(_TOPUPWIN)->getStartX() + 1;  
   wins.at(_TOPUPDATAWIN)->defineWindow(newwin(1,
-					      uptime.length(),
+					      dynTWData.uptime.length(),
 					      _TOPWINSTARTY,
-					      nextWinStartX),
+					      dynTWData.nextWinStartX),
 				       "",
 				       1,
-				       uptime.length(),
+				       dynTWData.uptime.length(),
 				       _TOPWINSTARTY,
-				       nextWinStartX);
-  outString = uptime;
+				       dynTWData.nextWinStartX);
+  outString = dynTWData.uptime;
   mvwaddstr(wins.at(_TOPUPDATAWIN)->getWindow(),
 	    0,
 	    0,
 	    outString.c_str());
 
-  if(postWin == true)
+  if(dynTWData.postWin == true)
     {
-      nextWinStartX = wins.at(_TOPUPDATAWIN)->getNumCols() +
+      dynTWData.nextWinStartX = wins.at(_TOPUPDATAWIN)->getNumCols() +
 	wins.at(_TOPUPDATAWIN)->getStartX() + 1;        
       wins.at(_TOPUPPOSTWIN)->defineWindow(newwin(1,
-						  uptimePostCols,
+						  dynTWData.uptimePostCols,
 						  _TOPWINSTARTY,
-						  nextWinStartX),
+						  dynTWData.nextWinStartX),
 					   "",
 					   1,
-					   uptimePostCols,
+					   dynTWData.uptimePostCols,
 					   _TOPWINSTARTY,
-					   nextWinStartX);
-      outString = timeType;
+					   dynTWData.nextWinStartX);
+      outString = dynTWData.timeType;
       mvwaddstr(wins.at(_TOPUPPOSTWIN)->getWindow(),
 		0,
 		0,
 		outString.c_str());  
-      nextWinStartX = wins.at(_TOPUPPOSTWIN)->getNumCols() +
+      dynTWData.nextWinStartX = wins.at(_TOPUPPOSTWIN)->getNumCols() +
 	wins.at(_TOPUPPOSTWIN)->getStartX() + 1;
     }
   else
     {
-      nextWinStartX = wins.at(_TOPUPDATAWIN)->getNumCols() +
+      dynTWData.nextWinStartX = wins.at(_TOPUPDATAWIN)->getNumCols() +
 	wins.at(_TOPUPDATAWIN)->getStartX() + 1;
     }
 
-  if(userDataCols < 10)
+  if(dynTWData.userDataCols < 10)
     {
-      userDataCols = 2;
+      dynTWData.userDataCols = 2;
     }
   
   wins.at(_TOPUSERDATAWIN)->defineWindow(newwin(1,
-						userDataCols,
+						dynTWData.userDataCols,
 						_TOPWINSTARTY,
-						nextWinStartX),
+						dynTWData.nextWinStartX),
 					 "",
 					 1,
-					 userDataCols,
+					 dynTWData.userDataCols,
 					 _TOPWINSTARTY,
-					 nextWinStartX);
-  outString = users;
+					 dynTWData.nextWinStartX);
+  outString = dynTWData.users;
   mvwaddstr(wins.at(_TOPUSERDATAWIN)->getWindow(),
 	    0,
 	    0,
 	    outString.c_str());  
-  nextWinStartX = wins.at(_TOPUSERDATAWIN)->getNumCols() +
+  dynTWData.nextWinStartX = wins.at(_TOPUSERDATAWIN)->getNumCols() +
     wins.at(_TOPUSERDATAWIN)->getStartX() + 1;        
   wins.at(_TOPUSERWIN)->defineWindow(newwin(1,
-					    userCols,
+					    dynTWData.userCols,
 					    _TOPWINSTARTY,
-					    nextWinStartX),
+					    dynTWData.nextWinStartX),
 				     "",
 				     1,
-				     userCols,
+				     dynTWData.userCols,
 				     _TOPWINSTARTY,
-				     nextWinStartX);
+				     dynTWData.nextWinStartX);
 
-  outString = userString;
+  outString = dynTWData.userString;
   mvwaddstr(wins.at(_TOPUSERWIN)->getWindow(),
 	    0,
 	    0,
 	    outString.c_str());  
-  nextWinStartX = wins.at(_TOPUSERWIN)->getNumCols() +
+  dynTWData.nextWinStartX = wins.at(_TOPUSERWIN)->getNumCols() +
     wins.at(_TOPUSERWIN)->getStartX() + 2;
   wins.at(_TOPLOADAVGWIN)->defineWindow(newwin(1,
 					       _TOPLOADAVGWINCOLS,
 					       _TOPWINSTARTY,
-					       nextWinStartX),
+					       dynTWData.nextWinStartX),
 					"",
 					1,
 					_TOPLOADAVGWINCOLS,
 					_TOPWINSTARTY,
-					nextWinStartX);
+					dynTWData.nextWinStartX);
   outString = "load average:";
   mvwaddstr(wins.at(_TOPLOADAVGWIN)->getWindow(),
 	    0,
 	    0,
 	    outString.c_str());  
 
-  nextWinStartX = wins.at(_TOPLOADAVGWIN)->getNumCols() +
+  dynTWData.nextWinStartX = wins.at(_TOPLOADAVGWIN)->getNumCols() +
     wins.at(_TOPLOADAVGWIN)->getStartX() + 1;
   wins.at(_TOPLOADAVGDATAWIN)->defineWindow(newwin(1,
-						   loadAvgWinCols,
+						   dynTWData.loadAvgWinCols,
 						   _TOPWINSTARTY,
-						   nextWinStartX),
+						   dynTWData.nextWinStartX),
 					    "",
 					    1,
-					    loadAvgWinCols,
+					    dynTWData.loadAvgWinCols,
 					    _TOPWINSTARTY,
-					    nextWinStartX);
+					    dynTWData.nextWinStartX);
   outString = parsedLoadAvg.at(0);
   outString.append(", ");
   outString.append(parsedLoadAvg.at(1));
@@ -1276,8 +1308,8 @@ void defineTopWins(const std::unordered_map<int, CursesWindow*>& wins,
   mvwaddstr(wins.at(_TOPLOADAVGDATAWIN)->getWindow(),
 	    0,
 	    0,
-	    outString.c_str());  
-} // end of "defineTopWins"
+	    outString.c_str());    
+}
 
 
 
