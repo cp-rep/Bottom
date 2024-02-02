@@ -784,7 +784,7 @@ void extractProcStat(CPUInfo& cpuInfo,
    data.
    
   Input:
-   allProcessInfo       - A unordored map<int, ProcessInfo*> object type
+   procInfo       - A unordored map<int, ProcessInfo*> object type
                           that holds process related data found in
 			  /proc/[pid]/. related directories. The index key
 			  is the corresponding PID for its ProcessInfo
@@ -798,7 +798,7 @@ void extractProcStat(CPUInfo& cpuInfo,
   Output:
    NONE
 */
-void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& procInfo,
 			  const int currentPid,
 			  std::string& filePath,
 			  std::set<std::string>& users)
@@ -825,22 +825,22 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	      
       if(!(getpwuid_r(uidt, &userData, buff, sizeof(buff), &userDataPtr)))
 	{
-	  allProcessInfo.at(currentPid)->setUSER(userData.pw_name);
+	  procInfo.at(currentPid)->setUSER(userData.pw_name);
 	}
       else
 	{
-	  allProcessInfo.at(currentPid)->setUSER("");
+	  procInfo.at(currentPid)->setUSER("");
 	}
     }
   else
     {
-      allProcessInfo.at(currentPid)->setUSER("");
+      procInfo.at(currentPid)->setUSER("");
     }
 
   // store user type in set for counting later
-  if(users.count(allProcessInfo.at(currentPid)->getUSER()) == 0)
+  if(users.count(procInfo.at(currentPid)->getUSER()) == 0)
     {
-      users.insert(allProcessInfo.at(currentPid)->getUSER());
+      users.insert(procInfo.at(currentPid)->getUSER());
     }	  
   
   // get VIRT
@@ -850,7 +850,7 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
     {
       parsedLine = parseLine(lineString);
       tempInt = strToInt(parsedLine.at(1));
-      allProcessInfo.at(currentPid)->setVIRT(tempInt);
+      procInfo.at(currentPid)->setVIRT(tempInt);
     }
 
   // get RES
@@ -860,7 +860,7 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
     {
       parsedLine = parseLine(lineString);
       tempInt = strToInt(parsedLine.at(1));
-      allProcessInfo.at(currentPid)->setRES(tempInt);
+      procInfo.at(currentPid)->setRES(tempInt);
     }
 
   // get SHR
@@ -870,7 +870,7 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
     {
       parsedLine = parseLine(lineString);
       tempInt = strToInt(parsedLine.at(1));
-      allProcessInfo.at(currentPid)->setSHR(tempInt);
+      procInfo.at(currentPid)->setSHR(tempInt);
     }
 } // end of "extractProcPidStatus"
 
@@ -887,7 +887,7 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
    data.
    
   Input:
-   allProcessInfo       - A unordored map<int, ProcessInfo*> object type
+   procInfo       - A unordored map<int, ProcessInfo*> object type
                           that holds process related data found in
 			  /proc/[pid]/. related directories. The index key
 			  is the corresponding PID for its ProcessInfo
@@ -909,7 +909,7 @@ void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   Output:
    NONE
 */
-void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& procInfo,
 			MemInfo& memInfo,
 			SecondsToTime& uptime,
 			const int currentPid,
@@ -937,20 +937,20 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       // use uptime values for helping calculate CPU usage
       percent = strToDouble(uptimeStrings.at(0));      
       uptime.setTotalSeconds(percent);
-      allProcessInfo.at(currentPid)->setCPUUsage(percent);
+      procInfo.at(currentPid)->setCPUUsage(percent);
 
       // get PR
       lineString = fixStatLine(lineString);
       parsedLine = parseLine(lineString);
       tempInt = strToInt(parsedLine.at(15));
-      allProcessInfo.at(currentPid)->setPR(tempInt);
+      procInfo.at(currentPid)->setPR(tempInt);
 
       // get NI
       tempInt = strToInt(parsedLine.at(16));
-      allProcessInfo.at(currentPid)->setNI(tempInt);
+      procInfo.at(currentPid)->setNI(tempInt);
 
       // get S
-      allProcessInfo.at(currentPid)->setS(lineString.at(0));
+      procInfo.at(currentPid)->setS(lineString.at(0));
 
       // get %CPU for current process
       utime = strToInt(parsedLine.at(11));
@@ -958,13 +958,13 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
       cutime = strToInt(parsedLine.at(13));
       cstime = strToInt(parsedLine.at(14));
       pstart = strToInt(parsedLine.at(19));
-      allProcessInfo.at(currentPid)->setUTime(utime);
-      allProcessInfo.at(currentPid)->setSTime(stime);
-      allProcessInfo.at(currentPid)->setCUTime(cutime);
-      allProcessInfo.at(currentPid)->setCSTime(cstime);
-      allProcessInfo.at(currentPid)->setPStart(pstart);
+      procInfo.at(currentPid)->setUTime(utime);
+      procInfo.at(currentPid)->setSTime(stime);
+      procInfo.at(currentPid)->setCUTime(cutime);
+      procInfo.at(currentPid)->setCSTime(cstime);
+      procInfo.at(currentPid)->setPStart(pstart);
       startUsage = (utime + cutime)/(uptime.getTotalSeconds() - (pstart/100));
-      allProcessInfo.at(currentPid)->setCPUUsage(startUsage);
+      procInfo.at(currentPid)->setCPUUsage(startUsage);
       
       /*
       percent = std::ceil(percent * 100);
@@ -980,27 +980,27 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	{
 	  tempDouble = tempInt;
 	  tempDouble = tempDouble/10;
-	  allProcessInfo.at(currentPid)->setCPUUsage(tempDouble);
+	  procInfo.at(currentPid)->setCPUUsage(tempDouble);
 	}
       else
 	{
-	  allProcessInfo.at(currentPid)->setCPUUsage(0);
+	  procInfo.at(currentPid)->setCPUUsage(0);
 	}
       */
       // get TIME+ (CPU time)
-      allProcessInfo.at(currentPid)->setCpuRawTime(utime + stime);
+      procInfo.at(currentPid)->setCpuRawTime(utime + stime);
       SecondsToTime timePlus((utime + cutime)/((double)sysconf(_SC_CLK_TCK)));
       std::string timePlusString = timePlus.returnHHMMSS(timePlus.getHours(),
 							 timePlus.getMinutes(),
 							 timePlus.getSeconds());
-      allProcessInfo.at(currentPid)->setProcessCPUTime(timePlusString);
+      procInfo.at(currentPid)->setProcessCPUTime(timePlusString);
 
       // get %MEM
-      percent = allProcessInfo.at(currentPid)->getRES();
+      percent = procInfo.at(currentPid)->getRES();
       percent = percent/(double)memInfo.getMemTotal();
       percent = std::ceil(percent * 1000.0);
       percent = percent/10;
-      allProcessInfo.at(currentPid)->setMEMUsage(percent);
+      procInfo.at(currentPid)->setMEMUsage(percent);
     }
 } // end of "extractProcPidStat"
 
@@ -1016,7 +1016,7 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
    member variables of the incoming paremter.
 
   Input:
-   allProcessInfo       - An unordored map<int, ProcessInfo*> object type
+   procInfo       - An unordored map<int, ProcessInfo*> object type
                           that holds process related data found in
 			  /proc/[pid]/. related directories. The index key
 			  is the corresponding PID for its ProcessInfo
@@ -1024,7 +1024,7 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			  
    pid                  - A const int type holding a process id to extract
                           its related command for.  It is used to as a key
-			  for the allProcessInfo key/value pairs.
+			  for the procInfo key/value pairs.
 
    filePath             - A reference to a constant string object that should
                           contain the full path to the file path
@@ -1033,12 +1033,12 @@ void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   Output:
    NONE
 */
-void extractProcPidComm(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+void extractProcPidComm(std::unordered_map<int, ProcessInfo*>& procInfo,
 		     const int pid,
 		     const std::string& filePath)
 {
   std::string lineString = returnFileLineByNumber(filePath, 1);
-  allProcessInfo[pid]->setCOMMAND(lineString);
+  procInfo[pid]->setCOMMAND(lineString);
 } // end of "extractProcPidComm"
 
 
@@ -1053,7 +1053,7 @@ void extractProcPidComm(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 
   Output:
 */
-void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+void extractProcessData(std::unordered_map<int, ProcessInfo*>& procInfo,
 			const std::vector<int>& pids,
 			MemInfo& memInfo,
 			SecondsToTime& uptime,
@@ -1067,14 +1067,14 @@ void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   for(std::vector<int>::const_iterator it = pids.begin(); it != pids.end(); it++)
       {
 	// if new process was found, allocate it
-	if(allProcessInfo.count(*it) == 0)
+	if(procInfo.count(*it) == 0)
 	  {
 	    process = new ProcessInfo();
-	    allProcessInfo.insert(std::make_pair(*it, process));
+	    procInfo.insert(std::make_pair(*it, process));
 	  }
 	
 	// set pid of current process
-	allProcessInfo.at(*it)->setPID(*it);
+	procInfo.at(*it)->setPID(*it);
 
 	// extract per process data (USER, PR, VIRT...)
 	// /proc/[pid]/status
@@ -1082,7 +1082,7 @@ void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	//	filePath = _PROC + myToString(*it);
 	filePath = _PROC + intToStr(*it);	
 	filePath.append(_STATUS);
-	extractProcPidStatus(allProcessInfo,
+	extractProcPidStatus(procInfo,
 			     *it,
 			     filePath,
 			     users);
@@ -1093,7 +1093,7 @@ void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	filePath = _PROC + intToStr(*it);	
 	//	filePath = _PROC + myToString(*it);	
 	filePath.append(_STAT);
-	extractProcPidStat(allProcessInfo,
+	extractProcPidStat(procInfo,
 			   memInfo,
 			   uptime,
 			   *it,
@@ -1107,7 +1107,7 @@ void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	filePath = _PROC + intToStr(*it);	
 	//	filePath = _PROC + myToString(*it);	
 	filePath.append(_COMM);
-	extractProcPidComm(allProcessInfo,
+	extractProcPidComm(procInfo,
 			   *it,
 			   filePath);
       }  
@@ -1126,7 +1126,7 @@ void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
    exists, it is overwritten.  If it doesn't exist, it is created.
 
   Input:
-   allProcessInfo       - A constant unordored map<int, ProcessInfo*> object type
+   procInfo       - A constant unordored map<int, ProcessInfo*> object type
                           that holds process data found in /proc/[pid]/.
 			  related directories. The index key is the corresponding
 			  PID for its ProcessInfo value.
@@ -1137,7 +1137,7 @@ void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
   Output:
    NONE
 */
-void createFileCSV(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+void createFileCSV(const std::unordered_map<int, ProcessInfo*>& procInfo,
 		   const std::string& filePath)
 {
   std::string tempPath = filePath;
@@ -1147,8 +1147,8 @@ void createFileCSV(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 
   csvOut.open(tempPath);
 
-  for(std::unordered_map<int, ProcessInfo*>::const_iterator it = allProcessInfo.begin();
-      it != allProcessInfo.end(); it++)
+  for(std::unordered_map<int, ProcessInfo*>::const_iterator it = procInfo.begin();
+      it != procInfo.end(); it++)
     {
       tempCommand = it->second->getCOMMAND();
       csvOut << tempCommand;
@@ -1235,7 +1235,7 @@ bool makeDirectory(const std::string& dirPath)
    in the TaskInfo object type parameter.
 
   Input:
-   allProcessInfo       - A const unordored map<int, ProcessInfo*> object type
+   procInfo       - A const unordored map<int, ProcessInfo*> object type
                           that holds process related data found in
 			  /proc/[pid]/. related directories. The index key
 			  is the corresponding PID for its ProcessInfo
@@ -1247,7 +1247,7 @@ bool makeDirectory(const std::string& dirPath)
   Output:
    NONE
 */
-void countProcessStates(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+void countProcessStates(const std::unordered_map<int, ProcessInfo*>& procInfo,
 			TaskInfo& taskInfo)
 {
   unsigned int running = 0;
@@ -1259,8 +1259,8 @@ void countProcessStates(const std::unordered_map<int, ProcessInfo*>& allProcessI
   unsigned int idle = 0;
   unsigned int total = 0;
 
-  for(std::unordered_map<int, ProcessInfo*>::const_iterator it = allProcessInfo.begin();
-      it != allProcessInfo.end(); it++)
+  for(std::unordered_map<int, ProcessInfo*>::const_iterator it = procInfo.begin();
+      it != procInfo.end(); it++)
     {
       switch(it->second->getS())
 	{
@@ -1367,12 +1367,12 @@ const bool findDeadProcesses(const std::vector<int>& pids,
    removeDeadProcessees
 
   Description:
-   Frees the process data stored in the allProcessInfo object parameter that
+   Frees the process data stored in the procInfo object parameter that
    represents processes that were found to have died between the previous
    program loop, and the current program loop.
 
   Input:
-   allProcessInfo       - A unordored map<int, ProcessInfo*> object type
+   procInfo       - A unordored map<int, ProcessInfo*> object type
                           that holds process related data found in
 			  /proc/[pid]/. related directories. The index key
 			  is the corresponding PID for its ProcessInfo
@@ -1385,17 +1385,17 @@ const bool findDeadProcesses(const std::vector<int>& pids,
   Output:
    NONE
 */
-void removeDeadProcesses(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+void removeDeadProcesses(std::unordered_map<int, ProcessInfo*>& procInfo,
 			 const std::vector<int>& pidsDead)
 {
   for(std::vector<int>::const_iterator it = pidsDead.begin();
       it != pidsDead.end(); it++)
     {
-      if(allProcessInfo.count(*it) > 0)
+      if(procInfo.count(*it) > 0)
 	{
-	  delete(allProcessInfo.at(*it));	  
-	  allProcessInfo.at(*it) = nullptr;
-	  allProcessInfo.erase(*it);
+	  delete(procInfo.at(*it));	  
+	  procInfo.at(*it) = nullptr;
+	  procInfo.erase(*it);
 	}
     }  
 } // end of "removeDeadProcesses"

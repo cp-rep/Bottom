@@ -52,26 +52,26 @@ void extractProcUptime(SecondsToTime& uptime,
 		       const std::string& filePath);
 void extractProcStat(CPUInfo& cpuInfo,
 		     const std::string& filePath);
-void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+void extractProcPidStatus(std::unordered_map<int, ProcessInfo*>& procInfo,
 			  const int currentPid,
 			  std::string& filePath,
 			  std::set<std::string>& users);			  
-void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+void extractProcPidStat(std::unordered_map<int, ProcessInfo*>& procInfo,
 			MemInfo& memInfo,
 			SecondsToTime& uptime,
 			const int currentPid,
 			const std::vector<std::string>& uptimeStrings,			
 			const std::string& filePath);
-void extractProcPidComm(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+void extractProcPidComm(std::unordered_map<int, ProcessInfo*>& procInfo,
 			const int pid,
 			const std::string& filePath);
-void extractProcessData(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+void extractProcessData(std::unordered_map<int, ProcessInfo*>& procInfo,
 			const std::vector<int>& pids,
 			MemInfo& memInfo,
 			SecondsToTime& uptime,
 			std::vector<std::string>& uptimeStrings,
 			std::set<std::string>& users);
-void createFileCSV(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+void createFileCSV(const std::unordered_map<int, ProcessInfo*>& procInfo,
 		   const std::string& filePath);
 bool doesDirectoryExist(const std::string& dirPath);
 bool makeDirectory(const std::string& dirPath);
@@ -82,8 +82,8 @@ int direntNoRecurse(const struct dirent *name);
 const bool findDeadProcesses(const std::vector<int>& pids,
 			     const std::vector<int>& pidsOld,
 			     std::vector<int>& pidsDead);
-void countProcessStates(const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+void countProcessStates(const std::unordered_map<int, ProcessInfo*>& procInfo,
 			TaskInfo& taskInfo);
-void removeDeadProcesses(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+void removeDeadProcesses(std::unordered_map<int, ProcessInfo*>& procInfo,
 			 const std::vector<int>& pidsDead);
 #endif
