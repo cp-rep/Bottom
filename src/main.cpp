@@ -24,14 +24,12 @@
   - create a docker image that comes with all the modules necessary for building
     Bottom and GTests for easier/"safer" testing for interested parties.
 */
-/*
 #include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <climits>
 #include <cmath>
 #include <condition_variable>
-#include <cstdlib>
 #include <ctime>
 #include <dirent.h>
 #include <fstream>
@@ -39,65 +37,6 @@
 #include <iostream>
 #include <limits>
 #include <mutex>
-#include <ncurses.h>
-#include <pwd.h>
-#include <set>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/param.h>
-#include <thread>
-#include <unistd.h>
-#include <unordered_map>
-#include "_cursesWinConsts.hpp"
-#include "_fileConsts.hpp"
-#include "_progStateConsts.hpp"
-#include "byteConverter.hpp"
-#include "COMMANDWindow.hpp"
-#include "cpuInfo.hpp"
-#include "cpuWindow.hpp"
-#include "cursesColors.hpp"
-#include "cursesFunctions.hpp"
-#include "cursesWindow.hpp"
-#include "extractFileData.hpp"
-#include "log.hpp"
-#include "mainWindow.hpp"
-#include "memInfo.hpp"
-#include "memWindow.hpp"
-#include "NIWindow.hpp"
-#include "percentCPUWindow.hpp"
-#include "percentMEMWindow.hpp"
-#include "PIDWindow.hpp"
-#include "processInfo.hpp"
-#include "PRWindow.hpp"
-#include "RESWindow.hpp"
-#include "secondsToTime.hpp"
-#include "sortProcessLists.hpp"
-#include "SHRWindow.hpp"
-#include "SWindow.hpp"
-#include "taskInfo.hpp"
-#include "tasksWindow.hpp"
-#include "TIMEWindow.hpp"
-#include "topWindow.hpp"
-#include "USERWindow.hpp"
-#include "VIRTWindow.hpp"
-*/
-// new
-#include <atomic>
-#include <mutex>
-#include <condition_variable>
-#include <thread>
-
-// old
-#include <algorithm>
-#include <chrono>
-#include <climits>
-#include <cmath>
-#include <ctime>
-#include <dirent.h>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <limits>
 #include <ncurses.h>
 #include <pwd.h>
 #include <queue>
@@ -107,6 +46,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/param.h>
+#include <thread>
 #include "_cursesWinConsts.hpp"
 #include "_fileConsts.hpp"
 #include "_progStateConsts.hpp"
@@ -147,7 +87,7 @@ bool printFlag = false;
 
 /*
   Function:
-   inputThread
+  inputThread
 */
 void inputThread(char& userInput,
 		 bool& newInput)
@@ -158,7 +98,7 @@ void inputThread(char& userInput,
 
 /*
   Function:
-   displayThread
+  displayThread
 */
 void displayThread(char& userInput,
 		   bool& newInput,
@@ -362,7 +302,6 @@ int main()
 		      std::ref(memInfo),
 		      std::ref(taskInfo),
 		      std::ref(pids));
-
     
   input.join();
   display.join();
@@ -371,32 +310,3 @@ int main()
   
   return 0;
 } // end of "main"
-
-
-
-/*
-  Function:
-   printWindowToLog
-
-  Description:
-   A debugging function that prints a CursesWindow object's current data members
-   to the log file.
-
-  Input:
-  log             - a reference to an output file stream object, the
-                    log file in the /Bottom/log/ folder
-		    
-  win             - A const reference to a CursesWindow object that will
-                    be used to print it's member data to the log file.
-
-  Output:
-  None
-*/
-void printWindowToLog(std::ofstream& log, const CursesWindow& win)
-{
-  log << "m_windowName: " << win.getWindowName() << std::endl;
-  log << "m_numLines: " << win.getNumLines() << std::endl;
-  log << "m_numCols: " << win.getNumCols() << std::endl;
-  log << "m_startY: " << win.getStartY() << std::endl;
-  log << "m_startX: " << win.getStartX() << std::endl;
-} // end of "printWindowToLog"
