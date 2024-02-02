@@ -1115,6 +1115,124 @@ void extractProcessData(std::unordered_map<int, ProcessInfo*>& procInfo,
 
 
 
+
+/*
+  Function:
+   extractSysInfo
+
+  Description:
+
+  Input/Ouput:
+
+  Input:  
+   numDays              - A const int type that holds the number of days the
+                          system has been up.
+
+   numHours             - A const int type that holds the number of hours the
+                          system has been up.
+
+   numMinutes           - A const int type that holds the number of minutes
+                          the system has been up.
+
+   parsedLoadAvg        - A const vector<string> object type that holds the
+                          data for the /proc/loadavg file, parsed into a
+			  individual strings for each value.
+  Output:
+   NONE
+   
+  Returns:
+   NONE
+*/
+void extractSysInfo(const int numDays,
+		   const int numHours,
+		   const int numMinutes,
+		   const std::vector<std::string> parsedLoadAvg,
+		   const int& numUsers,
+		   DynamicTopWinData& dynTWData)
+{
+  dynTWData.days = intToStr(numDays);
+  dynTWData.hours = intToStr(numHours);
+  dynTWData.minutes = intToStr(numMinutes);
+  dynTWData.users = intToStr(numUsers);
+  dynTWData.timeType.clear();
+  dynTWData.userString.clear();
+  dynTWData.uptime.clear();
+  dynTWData.uptimeDataCols = 0;
+  dynTWData.loadAvgWinCols = 0;
+  dynTWData.userCols = 0;
+  dynTWData.userDataCols = dynTWData.users.length();
+  dynTWData.uptimePostCols = 0;
+  dynTWData.postWin = false;
+  dynTWData.nextWinStartX = 0;
+
+  if(numDays < 1)
+    {
+      if(numHours < 1)
+	{
+	  dynTWData.uptime.append(dynTWData.minutes);
+	  dynTWData.uptimeDataCols = dynTWData.minutes.length();
+	  dynTWData.uptimePostCols = 4;  // 'min,'
+	  dynTWData.timeType = "min,";
+	  dynTWData.postWin = true;
+	}
+      else
+	{
+	  if(numHours < 10)
+	    {
+	      dynTWData.uptime.append(" ");
+	      dynTWData.uptimeDataCols += 1;
+	    }
+	  dynTWData.uptime.append(dynTWData.hours);
+	  dynTWData.uptime.append(":");
+	  if(numMinutes < 10)
+	    {
+	      dynTWData.uptime.append("0");
+	    }
+
+	  dynTWData.uptime.append(dynTWData.minutes);
+	  dynTWData.uptime.append(",");
+	  dynTWData.uptimeDataCols += dynTWData.hours.length();
+	  dynTWData.uptimeDataCols += 4;
+	}
+    }
+  else if(numDays == 1)
+    {
+      dynTWData.uptime.append(dynTWData.days);
+      dynTWData.uptimeDataCols = dynTWData.days.length();
+      dynTWData.uptimePostCols = 4; // 'day,'
+      dynTWData.timeType = "day,";
+      dynTWData.postWin = true;
+    }
+  else
+    {
+      dynTWData.uptime.append(dynTWData.days);
+      dynTWData.uptimeDataCols = dynTWData.days.length();
+      dynTWData.uptimePostCols = 5; // 'days,'
+      dynTWData.timeType = "days,";
+      dynTWData.postWin = true;
+    }
+
+  if(numUsers == 1)
+    {
+      dynTWData.userCols = 5;
+      dynTWData.userString = "user,";
+    }
+  else
+    {
+      dynTWData.userCols = 6;
+      dynTWData.userString = "users,";
+    }
+  
+  for(int i = 0; i < 3; i++)
+    {
+      dynTWData.loadAvgWinCols += parsedLoadAvg.at(i).length();
+    }
+
+  dynTWData.loadAvgWinCols += 4;  
+} // end of "extractSysInfo"
+
+
+
 /*
   Function:
    CreateFileCSV

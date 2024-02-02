@@ -22,6 +22,7 @@
 #include <vector>
 #include "_fileConsts.hpp"
 #include "cpuInfo.hpp"
+#include "dynData.hpp"
 #include "memInfo.hpp"
 #include "processInfo.hpp"
 #include "taskInfo.hpp"
@@ -71,6 +72,12 @@ void extractProcessData(std::unordered_map<int, ProcessInfo*>& procInfo,
 			SecondsToTime& uptime,
 			std::vector<std::string>& uptimeStrings,
 			std::set<std::string>& users);
+void extractSysInfo(const int numDays,
+		    const int numHours,
+		    const int numMinutes,
+		    const std::vector<std::string> parsedLoadAvg,
+		    const int& numUsers,
+		    DynamicTopWinData& dynTWData);
 void createFileCSV(const std::unordered_map<int, ProcessInfo*>& procInfo,
 		   const std::string& filePath);
 bool doesDirectoryExist(const std::string& dirPath);
