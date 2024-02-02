@@ -128,6 +128,7 @@ void displayThread(char& userInput,
 	dataPrint.wait(lock, [] { return (printFlag == true); });
 	readFlag = false;
 	printFlag = false;
+	clearAllWins(wins);
 	printTopWins(wins,
 		     dynTWData,
 		     parsedLoadAvg,
