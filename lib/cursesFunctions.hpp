@@ -14,12 +14,11 @@
 #include <unordered_map>
 #include "byteConverter.hpp"
 #include "cursesWindow.hpp"
+#include "dynData.hpp"
 #include "processInfo.hpp"
 #include "extractFileData.hpp"
 #include "_progStateConsts.hpp"
 #include "_cursesWinConsts.hpp"
-
-#include "dynData.hpp"
 
 void initializeCurses();
 void initializeStartingWindows(std::unordered_map<int, CursesWindow*>& wins);
@@ -31,12 +30,6 @@ void defineProcWinsStartVals(const std::unordered_map<int, CursesWindow*>& wins)
 void defineTopWinsDataStartVals(const std::unordered_map<int, CursesWindow*>& wins);
 void defineTopWinsStartVals(const std::unordered_map<int, CursesWindow*>& wins);
 void defineGraphWinStartVals(const std::unordered_map<int, CursesWindow*>& wins);
-void defineTopWins(const int numDays,
-		   const int numHours,
-		   const int numMinutes,
-		   const std::vector<std::string> parsedLoadAvg,
-		   const int& numUsers,
-		   DynamicTopWinData& dynTWData);
 void updateHelpWindowDimensions(const std::unordered_map<int, CursesWindow*>& wins);
 void updateTopWinDimensions(const std::unordered_map<int, CursesWindow*>& wins);
 void updateProcWinDimensions(const std::unordered_map<int, CursesWindow*>& wins,
