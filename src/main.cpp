@@ -63,6 +63,9 @@
 #include "sortProcessLists.hpp"
 #include "taskInfo.hpp"
 
+#include "dynData.hpp"
+
+
 // debug constants
 #define _CURSES 1
 #define _LOG 1
@@ -71,12 +74,7 @@
 #define _UTMPDUMP "utmpdump"
 #define _READ "r"
 
-// function prototypes
-void printWindowToLog(std::ofstream& log,
-		      const CursesWindow& win);
-const std::vector<int> sortByUSER
-(const std::vector<int>& pidNums,
- std::unordered_map<int, ProcessInfo*>& procData);
+// global vars
 std::condition_variable dataPrint;
 std::condition_variable dataRead;
 std::mutex printReadMutex;
@@ -103,11 +101,14 @@ void inputThread(char& userInput,
 void displayThread(char& userInput,
 		   bool& newInput,
 		   std::unordered_map<int, CursesWindow*>& wins,
-		   const std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+		   const std::unordered_map<int, ProcessInfo*>& procInfo,
 		   const CPUUsage& cpuUsage,
 		   const MemInfo& memInfo,
 		   const TaskInfo& taskInfo,
-		   const std::vector<int>& pids)
+		   const std::vector<int>& pids,
+		   struct DynamicTopWinData& dynTWData,
+		   std::vector<std::string> parsedLoadAvg,
+		   std::string HHMMSS)
 {
   std::string colorLine;
 
@@ -124,9 +125,10 @@ void displayThread(char& userInput,
       {
 	std::unique_lock<std::mutex> lock(printReadMutex);
 	dataPrint.wait(lock, [] { return (printFlag == true); });
-      
 	readFlag = false;
 	printFlag = false;
+
+	// print to windows
 	printTasksWins(wins);
 	printCpuWins(wins);
 	printMemWins(wins);
@@ -138,7 +140,7 @@ void displayThread(char& userInput,
 	printMemDataWins(wins,
 			 memInfo);
 	printProcs(wins,
-		   allProcessInfo,
+		   procInfo,
 		   pids,
 		   0,
 		   0,
@@ -158,13 +160,16 @@ void displayThread(char& userInput,
 			 0);
 	colorOffProcWins(wins,
 			 _BLACK_TEXT);
-	
+
+	// update flags and notify other thread locks
 	readFlag = true;
 	dataRead.notify_all();
       }
-      
+
       refreshAllWins(wins);
       doupdate();
+
+      std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 } // end of "displayThread"
 
@@ -174,11 +179,14 @@ void displayThread(char& userInput,
   Function:
    readDataThread
 */
-void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
+void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 		    CPUUsage& cpuUsage,
 		    MemInfo& memInfo,
 		    TaskInfo& taskInfo,
-		    std::vector<int>& pids)
+		    std::vector<int>& pids,
+		    struct DynamicTopWinData& dynTWData,
+		    std::vector<std::string> parsedLoadAvg,
+		    std::string HHMMSS)
 {
   // new variables
   CPUInfo cpuInfo;
@@ -215,13 +223,14 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	if(findDeadProcesses(pids, pidsOld, pidsDead))
 	  {
 	    // free from process list if found
-	    removeDeadProcesses(allProcessInfo, pidsDead);
+	    removeDeadProcesses(procInfo, pidsDead);
 	  }
-	
+
+	// extract process and system data
 	extractProcStat(cpuInfo,
 			_PROC_STAT);
 
-	// this needs to be fixed for interval
+	// this needs to be fixed for interval calculations
 	cpuUsage = calcCPUUsage(cpuInfo,
 				cpuInfo);
 	extractProcMeminfo(memInfo,
@@ -231,14 +240,14 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 			  _PROC_UPTIME);
 	extractProcLoadavg(loadAvgStrings,
 			   _PROC_LOADAVG);
-	extractProcessData(allProcessInfo,
+	extractProcessData(procInfo,
 			   pids,
 			   memInfo,
 			   uptime,
 			   uptimeStrings,
 			   users);
 	numUsers = users.size();
-	countProcessStates(allProcessInfo,
+	countProcessStates(procInfo,
 			   taskInfo);
 
 	// update/add process data for still running and new found processes
@@ -247,12 +256,12 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 	    for(std::vector<int>::const_iterator it = pids.begin(); it != pids.end(); it++)
 	      {
 		// if new process was found, allocate it
-		if(allProcessInfo.count(*it) == 0)
+		if(procInfo.count(*it) == 0)
 		  {
 		    process = new ProcessInfo();
-		    allProcessInfo.insert(std::make_pair(*it, process));
+		    procInfo.insert(std::make_pair(*it, process));
 		  }
-		allProcessInfo.at(*it)->setPID(*it);
+		procInfo.at(*it)->setPID(*it);
 	      }
 	  }
 	
@@ -275,7 +284,7 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& allProcessInfo,
 int main()
 {
   std::unordered_map<int, CursesWindow*> wins;
-  std::unordered_map<int, ProcessInfo*> allProcessInfo;
+  std::unordered_map<int, ProcessInfo*> procInfo;
   TaskInfo taskInfo;
   CPUUsage cpuUsage;
   MemInfo memInfo;
@@ -283,25 +292,34 @@ int main()
   std::unordered_map<int, int> progStates;
   bool newInput = false;
   char userInput = '\0';
+  DynamicTopWinData dynTWData;
+  std::vector<std::string> parsedLoadAvg;
+  std::string HHMMSS;
   
   std::thread input(inputThread,
 		    std::ref(userInput),
 		    std::ref(newInput));
   std::thread readData(readDataThread,
-		       std::ref(allProcessInfo),
+		       std::ref(procInfo),
 		       std::ref(cpuUsage),
 		       std::ref(memInfo),
 		       std::ref(taskInfo),
-		       std::ref(pids));
+		       std::ref(pids),
+		       std::ref(dynTWData),
+		       std::ref(parsedLoadAvg),
+		       std::ref(HHMMSS));
   std::thread display(displayThread,
 		      std::ref(userInput),
 		      std::ref(newInput),
 		      std::ref(wins),
-		      std::ref(allProcessInfo),
+		      std::ref(procInfo),
 		      std::ref(cpuUsage),
 		      std::ref(memInfo),
 		      std::ref(taskInfo),
-		      std::ref(pids));
+		      std::ref(pids),
+		      std::ref(dynTWData),
+		      std::ref(parsedLoadAvg),
+		      std::ref(HHMMSS));
     
   input.join();
   display.join();
