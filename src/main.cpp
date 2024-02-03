@@ -195,7 +195,8 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 		    std::string& timeString)
 {
   // new variables
-  CPUInfo cpuInfo;
+  CPUInfo cpuInfoCurr;
+  CPUInfo cpuInfoPrev;  
   std::mutex readDataMutex;
   std::vector<int> pidsOld;
   std::vector<int> pidsDead;
@@ -214,18 +215,19 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 	printFlag = false;
 	readFlag = false;
 
-	// store old pids
-	pidsOld = pids;
-	pids.clear();
-
-	time(&rawtime);
-	timeinfo = localtime(&rawtime);
+	// clear necessary old data
 	uptimeStrings.clear();
 	timeString.clear();
 	parsedLoadAvg.clear();
 	users.clear();
 
+	// update current time
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+
 	// get new pids
+	pidsOld = pids;
+	pids.clear();
 	pids = findNumericDirs(_PROC);
 
 	// find any processes that died during main extraction loop
@@ -235,13 +237,14 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 	    removeDeadProcesses(procInfo, pidsDead);
 	  }
 
+	cpuInfoPrev = cpuInfoCurr;
 	// extract process and system data
-	extractProcStat(cpuInfo,
+	extractProcStat(cpuInfoCurr,
 			_PROC_STAT);
 
 	// this needs to be fixed for interval calculations
-	cpuUsage = calcCPUUsage(cpuInfo,
-				cpuInfo);
+	cpuUsage = calcCPUUsage(cpuInfoPrev,
+				cpuInfoCurr);
 	extractProcMeminfo(memInfo,
 			   _PROC_MEMINFO);
 	extractProcUptime(uptime,
@@ -288,6 +291,11 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 		procInfo.at(*it)->setPID(*it);
 	      }
 	  }
+
+	updateSortState(procInfo,
+			pids,
+			pids,
+			_PROCCPUWIN);
 	
 	printFlag = true;
 	dataPrint.notify_all();
@@ -321,7 +329,8 @@ int main()
   struct tm* timeinfo;
   std::vector<std::string> parsedLoadAvg;
   std::string timeString;
-  
+
+  // start threads
   std::thread input(inputThread,
 		    std::ref(userInput),
 		    std::ref(newInput));
@@ -348,10 +357,13 @@ int main()
 		      std::ref(dynTWData),
 		      std::ref(parsedLoadAvg),
 		      std::ref(timeString));
-    
-  input.join();
+
+  // joint hreads
+  //  input.join();
   display.join();
   readData.join();
+
+  // clean up
   endwin();
   
   return 0;
