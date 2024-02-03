@@ -80,6 +80,9 @@ public:
   void setGun(const unsigned int& gun) {
     std::lock_guard<std::mutex> lock(m_gunMut);
     m_gun = gun; }
+
+  // overloaded operators
+  CPUInfo& operator=(const CPUInfo& other);
   
 private:
   unsigned int m_us;

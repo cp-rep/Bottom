@@ -101,84 +101,55 @@ CPUUsage calcCPUUsage(const CPUInfo& cpuInfoStart,
   unsigned long total = 0;
   unsigned long idle = 0;
 
-  usage.us = 0;
-	
-  
-  usage.ni = 0;
-	
-  
-  usage.sy = 0;
-	
-  
-  usage.id = 0;
-  
-  usage.wa = 0;
-	
-  
-  usage.irq = 0;
-	
-  
-  usage.sirq = 0;
-	
-  
-  usage.st = 0;
-	
-  
-  usage.gu = 0;
-	
-  
-  usage.gun = 0;
-
-  usage.utilization = 0;
-  
-
-  /*
   startIdle = cpuInfoStart.getId() + cpuInfoStart.getWa();
   endIdle = cpuInfoEnd.getId() + cpuInfoEnd.getWa();
-
   startNonIdle = cpuInfoStart.getUs() + cpuInfoStart.getNi() +
     cpuInfoStart.getSy() + cpuInfoStart.getIrq() + cpuInfoStart.getSirq() +
     cpuInfoStart.getSt();
   endNonIdle = cpuInfoEnd.getUs() + cpuInfoEnd.getNi() + cpuInfoEnd.getSy() +
     cpuInfoEnd.getIrq() + cpuInfoEnd.getSirq() + cpuInfoEnd.getSt();
-
   startTime = startIdle + startNonIdle;
   endTime = endIdle + endNonIdle;
-
   total = endTime - startTime;
   idle = endIdle - startIdle;
-
   usage.us = _MAXPERCENT * ((double) cpuInfoEnd.getUs() -
 			    (double)cpuInfoStart.getUs()) / total;
-  
   usage.ni = _MAXPERCENT * ((double)cpuInfoEnd.getNi() -
 			    (double)cpuInfoStart.getNi()) / total;
-  
   usage.sy = _MAXPERCENT * ((double)cpuInfoEnd.getSy() -
 			    (double)cpuInfoStart.getSy()) / total;
-  
   usage.id = _MAXPERCENT * idle / total;
-  
   usage.wa = _MAXPERCENT * ((double)cpuInfoEnd.getWa() -
 			    (double)cpuInfoStart.getWa()) / total;
-  
   usage.irq = _MAXPERCENT * ((double)cpuInfoEnd.getIrq() -
 			     (double)cpuInfoStart.getIrq()) / total;
-  
   usage.sirq = _MAXPERCENT * ((double)cpuInfoEnd.getSirq() -
 			      (double)cpuInfoStart.getSirq()) / total;
-  
   usage.st = _MAXPERCENT * ((double)cpuInfoEnd.getSt() -
 			    (double)cpuInfoStart.getSt()) / total;
-  
   usage.gu = _MAXPERCENT * ((double)cpuInfoEnd.getGu() -
 			    (double)cpuInfoStart.getGu()) / total;
-  
   usage.gun = _MAXPERCENT * ((double)cpuInfoEnd.getGun() -
 			     (double)cpuInfoStart.getGun()) / total;
-
   usage.utilization = _MAXPERCENT - usage.id;
-  */
 
   return usage;
 } // end of "calcCPUUsage"
+
+
+
+CPUInfo& CPUInfo::operator=(const CPUInfo& other)
+{
+  setUs(other.getUs());
+  setNi(other.getNi());
+  setSy(other.getSy());
+  setId(other.getId());
+  setWa(other.getWa());
+  setIrq(other.getIrq());
+  setSirq(other.getSirq());
+  setSt(other.getSt());
+  setGu(other.getGu());
+  setGun(other.getGun());
+  
+  return *this;
+} // end of "overloaded operator ="
