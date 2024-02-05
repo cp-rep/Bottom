@@ -55,6 +55,7 @@
 #include "cpuInfo.hpp"
 #include "cursesFunctions.hpp"
 #include "cursesWindow.hpp"
+#include "dynData.hpp"
 #include "extractFileData.hpp"
 #include "log.hpp"
 #include "memInfo.hpp"
@@ -62,9 +63,6 @@
 #include "secondsToTime.hpp"
 #include "sortProcessLists.hpp"
 #include "taskInfo.hpp"
-
-#include "dynData.hpp"
-
 
 // debug constants
 #define _CURSES 1
@@ -90,6 +88,11 @@ bool printFlag = false;
 void inputThread(char& userInput,
 		 bool& newInput)
 {
+
+  /*
+  while(true);
+  std::this_thread::sleep_for(std::chrono::nanoseconds(500));
+  */
 } // end of "inputThread"
 
 
@@ -108,7 +111,8 @@ void displayThread(char& userInput,
 		   const std::vector<int>& pids,
 		   const struct DynamicTopWinData& dynTWData,
 		   const std::vector<std::string>& parsedLoadAvg,
-		   const std::string& timeString)
+		   const std::string& timeString,
+		   const std::vector<int>& outPids)
 {
   std::string colorLine;
   SecondsToTime uptime;
@@ -145,8 +149,8 @@ void displayThread(char& userInput,
 			 memInfo);
 	printProcs(wins,
 		   procInfo,
-		   pids,
-		   0,
+		   outPids,
+		   1,
 		   0,
 		   0,
 		   0);
@@ -156,7 +160,8 @@ void displayThread(char& userInput,
 		  0,
 		  _BLACK_TEXT,
 		  _MAINWIN,
-		  colorLine);	
+		  colorLine);
+
 	colorOnProcWins(wins,
 			_BLACK_TEXT);
 	printWindowNames(wins,
@@ -165,7 +170,7 @@ void displayThread(char& userInput,
 	colorOffProcWins(wins,
 			 _BLACK_TEXT);
 
-	// update flags and notify other thread locks
+	// update flags and notify thread locks
 	readFlag = true;
 	dataRead.notify_all();
       }
@@ -192,11 +197,12 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 		    time_t rawtime,
 		    struct tm* timeinfo,
 		    std::vector<std::string>& parsedLoadAvg,
-		    std::string& timeString)
+		    std::string& timeString,
+		    std::vector<int>& outPids)
 {
   // new variables
   CPUInfo cpuInfoCurr;
-  CPUInfo cpuInfoPrev;  
+  CPUInfo cpuInfoPrev;
   std::mutex readDataMutex;
   std::vector<int> pidsOld;
   std::vector<int> pidsDead;
@@ -205,6 +211,9 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
   SecondsToTime uptime;
   int numUsers;
   std::set<std::string> users;
+  std::unordered_map<int, ProcessInfo*> procInfoPrev;
+  std::chrono::high_resolution_clock::time_point prevTime;
+  std::chrono::high_resolution_clock::time_point currTime;
 
   while(true)
     {
@@ -226,22 +235,25 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 	timeinfo = localtime(&rawtime);
 
 	// get new pids
+	pidsOld.clear();
 	pidsOld = pids;
 	pids.clear();
+	pidsDead.clear();
 	pids = findNumericDirs(_PROC);
-
-	// find any processes that died during main extraction loop
-	if(findDeadProcesses(pids, pidsOld, pidsDead))
-	  {
-	    // free from process list if found
-	    removeDeadProcesses(procInfo, pidsDead);
-	  }
-
 	cpuInfoPrev = cpuInfoCurr;
+	prevTime = currTime;
+
+	// copy old processes
+	for(std::vector<int>::const_iterator it = pidsOld.begin(); it != pidsOld.end(); it++)
+	  {
+	    process = new ProcessInfo(*procInfo.at(*it));
+	    procInfoPrev.insert(std::make_pair(*it, process));
+	  }
+	
 	// extract process and system data
 	extractProcStat(cpuInfoCurr,
 			_PROC_STAT);
-
+	
 	// this needs to be fixed for interval calculations
 	cpuUsage = calcCPUUsage(cpuInfoPrev,
 				cpuInfoCurr);
@@ -258,6 +270,12 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 	    exit(EXIT_FAILURE);
 	  }
 
+	// find any processes that died during main extraction loop
+	if(findDeadProcesses(pids, pidsOld, pidsDead))
+	  {
+	    // free from process list if found
+	    removeDeadProcesses(procInfo, pidsDead);
+	  }
 	extractProcessData(procInfo,
 			   pids,
 			   memInfo,
@@ -265,6 +283,7 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 			   uptimeStrings,
 			   users);
 	numUsers = users.size();
+
 	countProcessStates(procInfo,
 			   taskInfo);
 	timeString = uptime.returnHHMMSS(timeinfo->tm_hour,
@@ -292,14 +311,50 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 	      }
 	  }
 
+	
+	unsigned long elapsedTicks;
+	currTime = std::chrono::high_resolution_clock::now();	
+	elapsedTicks = std::chrono::duration_cast<std::chrono::seconds>(currTime - prevTime).count()
+	* sysconf(_SC_CLK_TCK);
+
+	// calculate per process cpu usage
+	for(std::vector<int>::iterator outer = pids.begin();
+	    outer != pids.end(); outer++)
+	  {
+	    for(std::vector<int>::iterator inner = pidsOld.begin();
+		inner != pidsOld.end(); inner++)
+	      {
+		if(*inner == *outer)
+		  {
+		    procInfo.at(*inner)->
+		      calcProcCPUUsage(*procInfoPrev.at(*outer),
+				       *procInfo.at(*outer),
+				       elapsedTicks);
+		  }
+	      }
+	  }
+
 	updateSortState(procInfo,
 			pids,
-			pids,
+			outPids,
 			_PROCCPUWIN);
+
+	// clear old processes
+	for(std::unordered_map<int, ProcessInfo*>::iterator it
+	      = procInfoPrev.begin();
+	    it != procInfoPrev.end(); it++)
+	  {
+	    delete(it->second);
+	    it->second = nullptr;
+	  }
 	
+	procInfoPrev.clear();
+
+	// notify threads
 	printFlag = true;
 	dataPrint.notify_all();
       }
+      
       std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 } // end of "readDataThread"
@@ -329,6 +384,7 @@ int main()
   struct tm* timeinfo;
   std::vector<std::string> parsedLoadAvg;
   std::string timeString;
+  std::vector<int> outPids;
 
   // start threads
   std::thread input(inputThread,
@@ -344,7 +400,8 @@ int main()
 		       std::ref(rawtime),
 		       std::ref(timeinfo),
 		       std::ref(parsedLoadAvg),
-		       std::ref(timeString));
+		       std::ref(timeString),
+		       std::ref(outPids));
   std::thread display(displayThread,
 		      std::ref(userInput),
 		      std::ref(newInput),
@@ -356,9 +413,10 @@ int main()
 		      std::ref(pids),
 		      std::ref(dynTWData),
 		      std::ref(parsedLoadAvg),
-		      std::ref(timeString));
+		      std::ref(timeString),
+		      std::ref(outPids));
 
-  // joint hreads
+  // join threads
   //  input.join();
   display.join();
   readData.join();
