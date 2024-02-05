@@ -4,6 +4,7 @@
   The ProcessInfo class implementation function definitions.
 */
 #include "processInfo.hpp"
+#include <unistd.h>
 
 ProcessInfo::ProcessInfo(const unsigned int& pid,
 			 const std::string& user,
@@ -321,10 +322,13 @@ void ProcessInfo::setCOMMANDUpper(const std::string& command)
   Output:
 
 */
-void ProcessInfo::calcProcCPUUsage(ProcessInfo& pInfoStart,
-				     ProcessInfo& pInfoEnd)
+void ProcessInfo::calcProcCPUUsage(const ProcessInfo& pInfoStart,
+				   const ProcessInfo& pInfoEnd,
+				   const unsigned long& elapsedTicks)
 {
-  std::lock_guard<std::mutex> lock(m_cpuUsageMut);
-  m_cpuUsage = (pInfoEnd.getUTime() + pInfoEnd.getSTime()) -
-    (pInfoStart.getUTime() + pInfoStart.getSTime());
+  double cpuTime = ((pInfoEnd.getUTime() + pInfoEnd.getSTime()) -
+		    (pInfoStart.getUTime() + pInfoStart.getSTime())) / sysconf(_SC_CLK_TCK);
+  double cpuUsage = (cpuTime / elapsedTicks) * 10000.0;
+  
+  setCPUUsage(cpuUsage);
 } // end of "calcProcCPUUsage"

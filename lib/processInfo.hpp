@@ -120,8 +120,9 @@ public:
     m_pstart = pstart; }
 
   // member functions
-  void calcProcCPUUsage(ProcessInfo& pInfoStart,
-			ProcessInfo& pInfoEnd);
+  void calcProcCPUUsage(const ProcessInfo& pInfoStart,
+			const ProcessInfo& pInfoEnd,
+			const unsigned long& elapsedTicks);  
       
 private:
   unsigned int m_pid;
