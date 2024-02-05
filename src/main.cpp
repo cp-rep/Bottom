@@ -253,8 +253,6 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 	// extract process and system data
 	extractProcStat(cpuInfoCurr,
 			_PROC_STAT);
-	
-	// this needs to be fixed for interval calculations
 	cpuUsage = calcCPUUsage(cpuInfoPrev,
 				cpuInfoCurr);
 	extractProcMeminfo(memInfo,
@@ -264,6 +262,7 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 			  _PROC_UPTIME);
 	extractProcLoadavg(parsedLoadAvg,
 			   _PROC_LOADAVG);
+
 	if(parsedLoadAvg.empty())
 	  {
 	    endwin();
@@ -276,6 +275,7 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 	    // free from process list if found
 	    removeDeadProcesses(procInfo, pidsDead);
 	  }
+	
 	extractProcessData(procInfo,
 			   pids,
 			   memInfo,
@@ -283,7 +283,6 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 			   uptimeStrings,
 			   users);
 	numUsers = users.size();
-
 	countProcessStates(procInfo,
 			   taskInfo);
 	timeString = uptime.returnHHMMSS(timeinfo->tm_hour,
@@ -311,7 +310,7 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 	      }
 	  }
 
-	
+	// calculate the passed time
 	unsigned long elapsedTicks;
 	currTime = std::chrono::high_resolution_clock::now();	
 	elapsedTicks = std::chrono::duration_cast<std::chrono::seconds>(currTime - prevTime).count()
@@ -334,12 +333,13 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 	      }
 	  }
 
+	// update sort states
 	updateSortState(procInfo,
 			pids,
 			outPids,
 			_PROCCPUWIN);
 
-	// clear old processes
+	// clean up the previously allocated processes
 	for(std::unordered_map<int, ProcessInfo*>::iterator it
 	      = procInfoPrev.begin();
 	    it != procInfoPrev.end(); it++)
