@@ -74,10 +74,8 @@
 
 // global vars
 std::atomic<bool> isRunning(true);
-std::condition_variable dataPrint;
+std::condition_variable cvPrintReadInput;
 std::mutex printReadMutex;
-std::mutex printMutex;
-std::mutex readMutex;
 bool readFlag = true;
 bool printFlag = false;
 bool inputFlag = false;
@@ -115,7 +113,7 @@ void displayThread(char& userInput,
       // lock block for printing
       {
 	std::unique_lock<std::mutex> lock(printReadMutex);
-	dataPrint.wait(lock, [] { return (printFlag == true && inputFlag == false); });
+	cvPrintReadInput.wait(lock, [] { return (printFlag == true && inputFlag == false); });
 
 	// update flags
 	readFlag = false;
@@ -171,7 +169,7 @@ void displayThread(char& userInput,
 	
 	readFlag = true;
 	inputFlag = true;
-	dataPrint.notify_all();	
+	cvPrintReadInput.notify_all();	
       }
       std::this_thread::sleep_for(std::chrono::seconds(1));      
     }
@@ -226,7 +224,7 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
       {
 	// lock block for reading
 	std::unique_lock<std::mutex> lock(printReadMutex);
-	dataPrint.wait(lock, [] { return (readFlag == true && inputFlag == false);});	
+	cvPrintReadInput.wait(lock, [] { return (readFlag == true && inputFlag == false);});	
 	printFlag = false;
 	readFlag = false;
 	inputFlag = false;
@@ -374,7 +372,7 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 	// notify threads
 	printFlag = true;
 	inputFlag = true;
-	dataPrint.notify_all();
+	cvPrintReadInput.notify_all();
       }
       std::this_thread::sleep_for(std::chrono::seconds(1));
     }
@@ -475,7 +473,7 @@ int main()
   while(true)
     {
       std::unique_lock<std::mutex> lock(printReadMutex);
-      dataPrint.wait(lock, [] { return (inputFlag == true); });
+      cvPrintReadInput.wait(lock, [] { return (inputFlag == true); });
 
       c = getch();
       if(c != -1)
@@ -490,7 +488,7 @@ int main()
       flushinp();
       inputFlag = false;
       printReadMutex.unlock();
-      dataPrint.notify_all();
+      cvPrintReadInput.notify_all();
       lock.unlock();
 
       if(quit == true)
