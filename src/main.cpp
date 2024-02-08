@@ -63,37 +63,24 @@
 #include "secondsToTime.hpp"
 #include "sortProcessLists.hpp"
 #include "taskInfo.hpp"
+#include "threadWrappers.hpp"
 
 // debug constants
 #define _CURSES 1
 #define _LOG 1
 
 // commands and options/modes constants
-#define _UTMPDUMP "utmpdump"
 #define _READ "r"
 
 // global vars
+std::atomic<bool> isRunning(true);
 std::condition_variable dataPrint;
-std::condition_variable dataRead;
 std::mutex printReadMutex;
+std::mutex printMutex;
+std::mutex readMutex;
 bool readFlag = true;
 bool printFlag = false;
-
-
-
-/*
-  Function:
-  inputThread
-*/
-void inputThread(char& userInput,
-		 bool& newInput)
-{
-
-  /*
-  while(true);
-  std::this_thread::sleep_for(std::chrono::nanoseconds(500));
-  */
-} // end of "inputThread"
+bool inputFlag = false;
 
 
 
@@ -112,27 +99,36 @@ void displayThread(char& userInput,
 		   const struct DynamicTopWinData& dynTWData,
 		   const std::vector<std::string>& parsedLoadAvg,
 		   const std::string& timeString,
-		   const std::vector<int>& outPids)
+		   const std::vector<int>& outPids,
+		   int& shiftY,
+		   int& shiftX,
+		   int& cpuGraphCount,
+		   int& memGraphCount,
+		   int& sortState,
+		   bool& highlight)
 {
   std::string colorLine;
   SecondsToTime uptime;
 
-  initializeCurses();
-  initializeStartingWindows(wins);
-  defineProcWinsStartVals(wins);
-  defineTopWinsStartVals(wins);
-  defineTopWinsDataStartVals(wins);
-  defineGraphWinStartVals(wins);
-
-  while(true)
+  while(isRunning.load())
     {
       // lock block for printing
       {
 	std::unique_lock<std::mutex> lock(printReadMutex);
-	dataPrint.wait(lock, [] { return (printFlag == true); });
+	dataPrint.wait(lock, [] { return (printFlag == true && inputFlag == false); });
+
+	// update flags
 	readFlag = false;
 	printFlag = false;
+	inputFlag = false;
+
+	// clear windows and print data
 	clearAllWins(wins);
+	updateWinDimensions(wins,
+			    shiftY,
+			    shiftX,
+			    cpuGraphCount,
+			    memGraphCount);	
 	printTopWins(wins,
 		     dynTWData,
 		     parsedLoadAvg,
@@ -150,10 +146,10 @@ void displayThread(char& userInput,
 	printProcs(wins,
 		   procInfo,
 		   outPids,
-		   1,
-		   0,
-		   0,
-		   0);
+		   shiftY,
+		   shiftX,
+		   sortState,
+		   highlight);
 	colorLine = createColorLine(wins.at(_MAINWIN)->getNumCols());
 	printLine(wins,
 		  _YOFFSET,
@@ -161,24 +157,23 @@ void displayThread(char& userInput,
 		  _BLACK_TEXT,
 		  _MAINWIN,
 		  colorLine);
-
 	colorOnProcWins(wins,
 			_BLACK_TEXT);
 	printWindowNames(wins,
-			 0,
-			 0);
+			 shiftY,
+			 shiftX);
 	colorOffProcWins(wins,
 			 _BLACK_TEXT);
 
 	// update flags and notify thread locks
+	refreshAllWins(wins);
+	doupdate();
+	
 	readFlag = true;
-	dataRead.notify_all();
+	inputFlag = true;
+	dataPrint.notify_all();	
       }
-
-      refreshAllWins(wins);
-      doupdate();
-
-      std::this_thread::sleep_for(std::chrono::seconds(1));
+      std::this_thread::sleep_for(std::chrono::seconds(1));      
     }
 } // end of "displayThread"
 
@@ -198,7 +193,18 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 		    struct tm* timeinfo,
 		    std::vector<std::string>& parsedLoadAvg,
 		    std::string& timeString,
-		    std::vector<int>& outPids)
+		    std::vector<int>& outPids,
+		    int& progState,
+		    int& prevState,
+		    int& sortState,
+		    bool& highlight,
+		    bool& quit,
+		    int& shiftY,
+		    int& shiftX,
+		    int& cpuGraphCount,
+		    int& memGraphCount,
+		    bool& stateChanged,
+		    std::unordered_map<int, CursesWindow*>& wins)
 {
   // new variables
   CPUInfo cpuInfoCurr;
@@ -215,24 +221,25 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
   std::chrono::high_resolution_clock::time_point prevTime;
   std::chrono::high_resolution_clock::time_point currTime;
 
-  while(true)
+  while(isRunning.load())
     {
       {
 	// lock block for reading
 	std::unique_lock<std::mutex> lock(printReadMutex);
-	dataRead.wait(lock, [] { return ( readFlag == true ); });
+	dataPrint.wait(lock, [] { return (readFlag == true && inputFlag == false);});	
 	printFlag = false;
 	readFlag = false;
+	inputFlag = false;
 
+	// update current time
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	
 	// clear necessary old data
 	uptimeStrings.clear();
 	timeString.clear();
 	parsedLoadAvg.clear();
 	users.clear();
-
-	// update current time
-	time(&rawtime);
-	timeinfo = localtime(&rawtime);
 
 	// get new pids
 	pidsOld.clear();
@@ -314,7 +321,7 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 	unsigned long elapsedTicks;
 	currTime = std::chrono::high_resolution_clock::now();	
 	elapsedTicks = std::chrono::duration_cast<std::chrono::seconds>(currTime - prevTime).count()
-	* sysconf(_SC_CLK_TCK);
+	  * sysconf(_SC_CLK_TCK);
 
 	// calculate per process cpu usage
 	for(std::vector<int>::iterator outer = pids.begin();
@@ -337,7 +344,21 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 	updateSortState(procInfo,
 			pids,
 			outPids,
-			_PROCCPUWIN);
+			sortState);
+	updateProgramState(procInfo,
+			   wins,
+			   progState,
+			   prevState,
+			   sortState,
+			   quit,
+			   highlight,
+			   outPids.at(0),
+			   shiftY,
+			   shiftX,
+			   outPids.size() + 2,
+			   stateChanged,
+			   cpuGraphCount,
+			   memGraphCount);	
 
 	// clean up the previously allocated processes
 	for(std::unordered_map<int, ProcessInfo*>::iterator it
@@ -352,9 +373,9 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 
 	// notify threads
 	printFlag = true;
+	inputFlag = true;
 	dataPrint.notify_all();
       }
-      
       std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 } // end of "readDataThread"
@@ -376,7 +397,7 @@ int main()
   CPUUsage cpuUsage;
   MemInfo memInfo;
   std::vector<int> pids;
-  std::unordered_map<int, int> progStates;
+  std::unordered_map<char, int> progStates;
   bool newInput = false;
   char userInput = '\0';
   DynamicTopWinData dynTWData;
@@ -385,11 +406,29 @@ int main()
   std::vector<std::string> parsedLoadAvg;
   std::string timeString;
   std::vector<int> outPids;
+  int progState = 0;
+  int prevState = 0;
+  int sortState = _PROCCPUWIN;
+  bool highlight = false;
+  bool quit = false;
+  int shiftY = 1;
+  int shiftX = _PIDWIN;
+  int cpuGraphCount = 0;
+  int memGraphCount = 0;
+  bool stateChanged = false;
+  bool input = false;
+  wchar_t c;  
 
+  // init curses and define windows
+  initializeCurses();
+  initializeStartingWindows(wins);
+  defineProcWinsStartVals(wins);
+  defineTopWinsStartVals(wins);
+  defineTopWinsDataStartVals(wins);
+  defineGraphWinStartVals(wins);
+  initializeProgramStates(progStates);  
+  
   // start threads
-  std::thread input(inputThread,
-		    std::ref(userInput),
-		    std::ref(newInput));
   std::thread readData(readDataThread,
 		       std::ref(procInfo),
 		       std::ref(cpuUsage),
@@ -401,7 +440,18 @@ int main()
 		       std::ref(timeinfo),
 		       std::ref(parsedLoadAvg),
 		       std::ref(timeString),
-		       std::ref(outPids));
+		       std::ref(outPids),
+		       std::ref(progState),
+		       std::ref(prevState),
+		       std::ref(sortState),
+		       std::ref(highlight),
+		       std::ref(quit),
+		       std::ref(shiftY),
+		       std::ref(shiftX),
+		       std::ref(cpuGraphCount),
+		       std::ref(memGraphCount),
+		       std::ref(stateChanged),
+		       std::ref(wins));
   std::thread display(displayThread,
 		      std::ref(userInput),
 		      std::ref(newInput),
@@ -414,10 +464,44 @@ int main()
 		      std::ref(dynTWData),
 		      std::ref(parsedLoadAvg),
 		      std::ref(timeString),
-		      std::ref(outPids));
+		      std::ref(outPids),
+		      std::ref(shiftY),
+		      std::ref(shiftX),
+		      std::ref(cpuGraphCount),
+		      std::ref(memGraphCount),
+		      std::ref(sortState),
+		      std::ref(highlight));
 
+  while(true)
+    {
+      std::unique_lock<std::mutex> lock(printReadMutex);
+      dataPrint.wait(lock, [] { return (inputFlag == true); });
+
+      c = getch();
+      if(c != -1)
+	{
+	  if(progStates[c])
+	    {
+	      prevState = progState;
+	      progState = c;
+	    }
+	}
+
+      flushinp();
+      inputFlag = false;
+      printReadMutex.unlock();
+      dataPrint.notify_all();
+      lock.unlock();
+
+      if(quit == true)
+	{
+	  isRunning.store(false);
+	  break;
+	}
+      std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    }
+  
   // join threads
-  //  input.join();
   display.join();
   readData.join();
 
