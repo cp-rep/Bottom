@@ -32,7 +32,7 @@ The main branch will maintain the stable version of Bottom.  It currently suppor
 
 ## Current Challenges/Known Issues
 - The current number of users are not gathered the same as Top.  According to the man pages for Top, Top gathers its data from '/var/run/utmp'.  Unfortunately, this file varies between platforms having been confirmed developing this program on both Arch Linux and Ubuntu. I have considered writing platform specific code to read from it, however, I have discovered in testing that Top reports the number of current users differently between these Linux distributions and others. Therefore I have chosen to report the number of users in Bottom based upon the different user strings reported in the "USER" column for process data.
-- Sychronizing an interruptable delay for the multithreaded version of Bottom has been a challenge.  I have been able to separate main jobs to different running threads without much issue but have not been able to make user input instantly change the program execution to update the display.  This is one of the features I am currently focused on implementing.
+- Sychronizing an interruptable delay for the multithreaded version of Bottom has not yet been implemented. This is one of the features I am currently working on.
 
 ## Future Changes/Additions I Would Like to Implement
 - Improved multithreading.
