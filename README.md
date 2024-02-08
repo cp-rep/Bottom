@@ -31,9 +31,10 @@ I wanted to write a small Linux process management utility that may be easier ex
 The main branch will maintain the stable version of Bottom.  It currently supports Arch Linux and Ubuntu which are the operating systems it has been tested on.  However, most Linux distributions should work just fine.
 
 ## Current Challenges/Known Issues
-The current number of users are not gathered the same as Top.  Top supposedly gathers its data from '/var/run/utmp'.  Unfortunately, this file varies between platforms.  I have considered writing platform specific code to read from it, however, I have recently discovered in testing that Top reports the number of current users differently between Linux distributions. Unless motivated otherwise, Bottom reports the number of users based upon the different users strings reported in the "USER" column.
+- The current number of users are not gathered the same as Top.  According to the man pages for Top, Top gathers its data from '/var/run/utmp'.  Unfortunately, this file varies between platforms having been confirmed developing this program on both Arch Linux and Ubuntu. I have considered writing platform specific code to read from it, however, I have discovered in testing that Top reports the number of current users differently between these Linux distributions and others. Therefore I have chosen to report the number of users in Bottom based upon the different user strings reported in the "USER" column for process data.
+- Sychronizing an interruptable delay for the multithreaded version of Bottom has been a challenge.  I have been able to separate main jobs to different running threads without much issue but have not been able to make user input instantly change the program execution to update the display.  This is one of the features I am currently focused on implementing.
 
 ## Future Changes/Additions I Would Like to Implement
-- Multithreading
+- Improved multithreading.
 - Other standard OS tool features.
 - Potentially others.
