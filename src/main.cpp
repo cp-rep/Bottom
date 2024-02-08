@@ -218,6 +218,10 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
   std::unordered_map<int, ProcessInfo*> procInfoPrev;
   std::chrono::high_resolution_clock::time_point prevTime;
   std::chrono::high_resolution_clock::time_point currTime;
+  std::string procStatString = _PROC_STAT;
+  std::string memString = _PROC_MEMINFO;
+  std::string uptimeString = _PROC_UPTIME;
+  std::string loadAvgString = _PROC_LOADAVG;  
 
   while(isRunning.load())
     {
@@ -254,12 +258,16 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 	    process = new ProcessInfo(*procInfo.at(*it));
 	    procInfoPrev.insert(std::make_pair(*it, process));
 	  }
-	
-	// extract process and system data
-	extractProcStat(cpuInfoCurr,
-			_PROC_STAT);
-	cpuUsage = calcCPUUsage(cpuInfoPrev,
-				cpuInfoCurr);
+
+	// extract mutually exclusive data for top wins
+	std::thread procThread(extractProcStatThreadWrapper,
+			       std::ref(cpuInfoCurr),
+			       std::ref(procStatString),
+			       &extractProcStat,
+			       std::ref(cpuInfoPrev),
+			       std::ref(cpuInfoCurr),
+			       &calcCPUUsage,
+			       std::ref(cpuUsage));
 	extractProcMeminfo(memInfo,
 			   _PROC_MEMINFO);
 	extractProcUptime(uptime,
@@ -267,6 +275,9 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 			  _PROC_UPTIME);
 	extractProcLoadavg(parsedLoadAvg,
 			   _PROC_LOADAVG);
+
+	// join threads
+	procThread.join();
 
 	if(parsedLoadAvg.empty())
 	  {
