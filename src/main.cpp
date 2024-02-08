@@ -270,16 +270,18 @@ void readDataThread(std::unordered_map<int, ProcessInfo*>& procInfo,
 			       std::ref(cpuUsage));
 	std::thread memThread(extractProcMeminfo,
 			      std::ref(memInfo),
-			      std::ref(memString));	
-	extractProcUptime(uptime,
-			  uptimeStrings,
-			  _PROC_UPTIME);
+			      std::ref(memString));
+	std::thread procUptimeThread(extractProcUptime,
+				     std::ref(uptime),
+				     std::ref(uptimeStrings),
+				     std::ref(uptimeString));	
 	extractProcLoadavg(parsedLoadAvg,
 			   _PROC_LOADAVG);
 
 	// join threads
 	procThread.join();
 	memThread.join();
+	procUptimeThread.join();
 
 	if(parsedLoadAvg.empty())
 	  {
