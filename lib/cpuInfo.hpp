@@ -10,17 +10,17 @@
 #define CPUINFO_HPP
 
 struct CPUUsage{
-  double us;
-  double ni;
-  double sy;
-  double id;
-  double wa;
-  double irq;
-  double sirq;
-  double st;
-  double gu;
-  double gun;
-  double utilization;
+  double us = 0;
+  double ni = 0;
+  double sy = 0;
+  double id = 0;
+  double wa = 0;
+  double irq = 0;
+  double sirq = 0;
+  double st = 0;
+  double gu = 0;
+  double gun = 0;
+  double utilization = 0;
 };
 
 class CPUInfo{
@@ -37,16 +37,16 @@ public:
 	  const unsigned int& gun = 0);
 
   // setters
-  void setUs(const unsigned int& us) { m_us = us; }
-  void setNi(const unsigned int& ni) { m_ni = ni; }
-  void setSy(const unsigned int& sy) { m_sy = sy; }
-  void setId(const unsigned int& id) { m_id = id; }
-  void setWa(const unsigned int& wa) { m_wa = wa; }
-  void setIrq(const unsigned int& irq) { m_irq = irq; }
-  void setSirq(const unsigned int& sirq) { m_sirq = sirq; }
-  void setSt(const unsigned int& st) { m_st = st; }
-  void setGu(const unsigned int& gu) { m_gu = gu; }
-  void setGun(const unsigned int& gun) { m_gun = gun; }
+  void setUs(const unsigned int& us) { m_us = (us >= 0) ? us : 0; }
+  void setNi(const unsigned int& ni) { m_ni = (ni >= 0) ? ni : 0; }
+  void setSy(const unsigned int& sy) { m_sy = (sy >= 0) ? sy : 0; }
+  void setId(const unsigned int& id) { m_id = (id >= 0) ? id : 0; }
+  void setWa(const unsigned int& wa) { m_wa = (wa >= 0) ? wa : 0; }
+  void setIrq(const unsigned int& irq) { m_irq = (irq >= 0) ? irq : 0; }
+  void setSirq(const unsigned int& sirq) { m_sirq = (sirq >= 0) ? sirq : 0; }
+  void setSt(const unsigned int& st) { m_st = (st >= 0) ? st : 0; }
+  void setGu(const unsigned int& gu) { m_gu = (gu >= 0) ? gu : 0; }
+  void setGun(const unsigned int& gun) { m_gun = (gun >= 0) ? gun : 0; }
   
   // getters
   const unsigned int& getUs() const { return m_us; }
