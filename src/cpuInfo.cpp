@@ -83,10 +83,27 @@ CPUInfo::CPUInfo(const unsigned int& us,
    calcCPUUsage
 
   Description:
+   Calculates the current time spent on CPU for the values
+   st, sy, ni id, wa, irq, sirq, st, gu, and gun.  This is done by
+   doing basic math calculations based on start and end read related
+   data values.
+
+  Guarantee: Basic Guarantee
 
   Input:
+   cpuInfoStart         - A const reference to CPUInfo object that
+                          contains the start interval read for cpu
+                          time values from the proc/stat file.
 
+   cpuInfoStart         - A const reference to CPUInfo object that
+                          contains the end interval read for cpu
+                          time values from the proc/stat file.
+   
   Output:
+   CPUUsage             - A local CPUUsage object that is returned
+                          by value containing the resulting cpu time
+                          and utilization values.
+   
 */
 CPUUsage calcCPUUsage(const CPUInfo& cpuInfoStart,
 		      const CPUInfo& cpuInfoEnd)
@@ -102,50 +119,70 @@ CPUUsage calcCPUUsage(const CPUInfo& cpuInfoStart,
   unsigned long idle;
   
   startIdle = cpuInfoStart.getId() + cpuInfoStart.getWa();
+  startIdle = (startIdle >= 0) ? startIdle : 0;
+  
   endIdle = cpuInfoEnd.getId() + cpuInfoEnd.getWa();
+  endIdle = (endIdle >= 0) ? endIdle : 0;  
 
   startNonIdle = cpuInfoStart.getUs() + cpuInfoStart.getNi() +
     cpuInfoStart.getSy() + cpuInfoStart.getIrq() + cpuInfoStart.getSirq() +
     cpuInfoStart.getSt();
+  startNonIdle = (startNonIdle >= 0) ? startNonIdle : 0;
+
   endNonIdle = cpuInfoEnd.getUs() + cpuInfoEnd.getNi() + cpuInfoEnd.getSy() +
     cpuInfoEnd.getIrq() + cpuInfoEnd.getSirq() + cpuInfoEnd.getSt();
+  endNonIdle = (endNonIdle >= 0) ? endNonIdle : 0;
 
   startTime = startIdle + startNonIdle;
   endTime = endIdle + endNonIdle;
 
   total = endTime - startTime;
-  idle = endIdle - startIdle;
+  total = (total >= 0) ? total : 0;
 
-  usage.us = _MAXPERCENT * ((double) cpuInfoEnd.getUs() -
-			    (double)cpuInfoStart.getUs()) / total;
+  idle = endIdle - startIdle;
+  idle = (idle >= 0) ? idle : 0;
+
+  usage.us = _MAXPERCENT * (static_cast<double>(cpuInfoEnd.getUs()) - 
+			    static_cast<double>(cpuInfoStart.getUs())) / total;
+  usage.us = (usage.us >= 0) ? usage.us : 0;
   
-  usage.ni = _MAXPERCENT * ((double)cpuInfoEnd.getNi() -
-			    (double)cpuInfoStart.getNi()) / total;
+  usage.ni = _MAXPERCENT * (static_cast<double>(cpuInfoEnd.getNi()) -
+			    static_cast<double>(cpuInfoStart.getNi())) / total;
+  usage.ni = (usage.ni >= 0) ? usage.ni : 0;
   
-  usage.sy = _MAXPERCENT * ((double)cpuInfoEnd.getSy() -
-			    (double)cpuInfoStart.getSy()) / total;
+  usage.sy = _MAXPERCENT * (static_cast<double>(cpuInfoEnd.getSy()) -
+			    static_cast<double>(cpuInfoStart.getSy())) / total;
+  usage.sy = (usage.sy >= 0) ? usage.sy : 0;  
   
   usage.id = _MAXPERCENT * idle / total;
+  usage.id = (usage.id >= 0) ? usage.id : 0;  
   
-  usage.wa = _MAXPERCENT * ((double)cpuInfoEnd.getWa() -
-			    (double)cpuInfoStart.getWa()) / total;
+  usage.wa = _MAXPERCENT * (static_cast<double>(cpuInfoEnd.getWa()) -
+			    static_cast<double>(cpuInfoStart.getWa())) / total;
+  usage.wa = (usage.wa >= 0) ? usage.wa : 0;  
   
-  usage.irq = _MAXPERCENT * ((double)cpuInfoEnd.getIrq() -
-			     (double)cpuInfoStart.getIrq()) / total;
+  usage.irq = _MAXPERCENT * (static_cast<double>(cpuInfoEnd.getIrq()) -
+			     static_cast<double>(cpuInfoStart.getIrq())) / total;
+  usage.irq = (usage.irq >= 0) ? usage.irq : 0;  
   
-  usage.sirq = _MAXPERCENT * ((double)cpuInfoEnd.getSirq() -
-			      (double)cpuInfoStart.getSirq()) / total;
+  usage.sirq = _MAXPERCENT * (static_cast<double>(cpuInfoEnd.getSirq()) -
+			      static_cast<double>(cpuInfoStart.getSirq())) / total;
+  usage.sirq = (usage.sirq >= 0) ? usage.sirq : 0;  
   
-  usage.st = _MAXPERCENT * ((double)cpuInfoEnd.getSt() -
-			    (double)cpuInfoStart.getSt()) / total;
+  usage.st = _MAXPERCENT * (static_cast<double>(cpuInfoEnd.getSt()) -
+			    static_cast<double>(cpuInfoStart.getSt())) / total;
+  usage.st = (usage.st >= 0) ? usage.st : 0;  
   
-  usage.gu = _MAXPERCENT * ((double)cpuInfoEnd.getGu() -
-			    (double)cpuInfoStart.getGu()) / total;
+  usage.gu = _MAXPERCENT * (static_cast<double>(cpuInfoEnd.getGu()) -
+			    static_cast<double>(cpuInfoStart.getGu())) / total;
+  usage.gu = (usage.gu >= 0) ? usage.gu : 0;
   
-  usage.gun = _MAXPERCENT * ((double)cpuInfoEnd.getGun() -
-			     (double)cpuInfoStart.getGun()) / total;
+  usage.gun = _MAXPERCENT * (static_cast<double>(cpuInfoEnd.getGun()) -
+			     static_cast<double>(cpuInfoStart.getGun())) / total;
+  usage.gun = (usage.gun >= 0) ? usage.gun : 0;
 
-  usage.utilization = _MAXPERCENT - usage.id;
+  usage.utilization = _MAXPERCENT - usage.id; 
+  usage.utilization = (usage.utilization >= 0) ? usage.utilization : 0; 
 
   return usage;
 } // end of "calcCPUUsage"
